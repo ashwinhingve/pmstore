@@ -1,0 +1,46 @@
+{
+  "name": "products_search",
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "name": [
+        { "type": "string", "analyzer": "lucene.standard", "searchAnalyzer": "lucene.standard" },
+        { "type": "autocomplete", "tokenization": "edgeGram", "minGrams": 2, "maxGrams": 15, "foldDiacritics": true }
+      ],
+      "salts": {
+        "type": "document",
+        "fields": {
+          "name": [
+            { "type": "string", "analyzer": "lucene.standard" },
+            { "type": "autocomplete", "tokenization": "edgeGram", "minGrams": 3, "maxGrams": 20, "foldDiacritics": true }
+          ],
+          "strength": { "type": "number" }
+        }
+      },
+      "manufacturer": [
+        { "type": "string", "analyzer": "lucene.standard" },
+        { "type": "autocomplete", "tokenization": "edgeGram", "minGrams": 2, "maxGrams": 15 }
+      ],
+      "compositionKey": { "type": "string", "analyzer": "lucene.keyword" },
+      "form": { "type": "string", "analyzer": "lucene.keyword" },
+      "tags": { "type": "string", "analyzer": "lucene.standard" },
+      "slug": { "type": "string", "analyzer": "lucene.keyword" },
+      "category": { "type": "objectId" },
+      "isActive": { "type": "boolean" },
+      "isDiscontinued": { "type": "boolean" },
+      "prescriptionRequired": { "type": "boolean" },
+      "unitPrice": { "type": "number" },
+      "price": { "type": "number" },
+      "stock": { "type": "number" },
+      "averageRating": { "type": "number" },
+      "orderCount": { "type": "number" }
+    }
+  },
+  "synonyms": [
+    {
+      "name": "salt_synonyms",
+      "analyzer": "lucene.standard",
+      "source": { "collection": "salt_synonyms" }
+    }
+  ]
+}

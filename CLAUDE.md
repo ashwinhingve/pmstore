@@ -1,109 +1,147 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code working in this repository. Read this first, every session.
+
+## What this is
+
+PMStore — a pharmacy eCommerce platform for Pratigya Medical Store (India).
+Web at `pratigyamedicalstore.com`, plus an Android app. Built by forking the Taptifs
+food-eCommerce codebase and replacing the domain layer with pharma.
+
+**Client constraint: very tight budget.** Everything runs on free tiers plus a ~₹400/month
+VPS. Do not introduce a paid service without flagging it first.
+
+**Delivery constraint: web live in 6 weeks, app by week 10.** Prefer the simple thing that
+works over the complete thing that doesn't ship.
 
 ## Commands
 
 ```bash
-# Development
-npm run dev        # Start Next.js dev server on http://localhost:3000
-
-# Production
-npm run build      # Build for production (output: standalone)
-npm run start      # Run production build locally
-
-# Code quality
-npm run lint       # ESLint via next lint
-
-# Scripts (run with tsx)
-npx tsx scripts/seed-products.ts      # Seed product data
-npx tsx scripts/validate-products.ts  # Validate product data
+npm run dev            # dev server, localhost:3000
+npm run build          # production build (output: standalone)
+npm run start          # run the production build
+npm run lint
+npm run test           # vitest
+npm run test:watch
+npx tsx scripts/import-products.ts <file.csv>    # catalogue import
+npx tsx scripts/backfill-composition.ts          # recompute compositionKey + unitPrice
 ```
 
-There are no automated tests in this project.
+## Architecture in one paragraph
 
-## Environment Variables
+Next.js 16 App Router monolith. MongoDB via Mongoose. NextAuth v4 (JWT strategy) for web
+sessions; a separate bearer-token scheme under `/api/v1/*` for the mobile app. Cloudinary for
+images, Atlas Search for search, Razorpay/Cashfree for payments, Brevo SMTP for email, FCM for
+push. There is **no separate Express backend** — the brief suggested one, we deliberately did not
+build one. See `docs/00-ARCHITECTURE.md`.
 
-Required in `.env.local`:
-- `MONGODB_URI` — MongoDB Atlas connection string
-- `NEXTAUTH_SECRET` — JWT secret for NextAuth
-- `NEXTAUTH_URL` — App base URL
-- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — OAuth
-- `CASHFREE_APP_ID` / `CASHFREE_SECRET_KEY` — Payment gateway
-- `CLOUDINARY_*` — Image uploads (cloud name, api key, api secret)
-- `TWILIO_*` — SMS/WhatsApp notifications
-- `SMTP_*` — Email via Nodemailer
+## Non-negotiable rules
 
-## Architecture
+These cause real harm if broken. Do not deviate without asking.
 
-This is a Next.js 16 App Router e-commerce app for Tapti Food & Spices (taptifs.com). The database is **MongoDB via Mongoose** (not Supabase — the README is outdated). Payment is via **Cashfree** (not Stripe).
+1. **Compare `unitPrice`, never `price`.** A ₹28 strip of 15 tablets costs more per tablet than
+   a ₹52 strip of 30. Any UI that shows brands side by side must lead with price per tablet/ml
+   and show pack size next to it. Getting this wrong on a pharmacy misleads people about their
+   medication costs.
 
-### Route Groups
+2. **`compositionKey` and `unitPrice` are derived, never hand-entered.** They are computed in a
+   Mongoose pre-save hook from `salts`/`form` and `price`/`packSize`. Never use `insertMany` or
+   `updateMany` on products — it skips the hook and silently breaks the Strip. Use `save()` or
+   `bulkWrite` with explicitly computed values.
+
+3. **Schedule H / H1 / X products cannot be checked out without a verified prescription.**
+   Enforce this server-side in the checkout route, not just in the UI. A hidden button is not
+   access control.
+
+4. **Never trust the JWT role for destructive admin actions.** Re-read the user's role from the
+   database inside the handler. A stale token must not be able to delete products.
+
+5. **No secrets in client components.** Anything under `'use client'` ships to the browser.
+
+6. **Never log prescription image URLs, phone numbers, or full addresses.** Health data.
+
+7. **`--rx` red is for prescription flags only.** Never use it for discounts or sale badges. On a
+   pharmacy, red means "this needs a doctor," and diluting that is a safety problem.
+
+## Scope guard — do NOT build these in v1
+
+The original brief listed ~60 features. We cut deliberately. If a task seems to call for one of
+these, stop and ask rather than building it:
+
+reviews & ratings · returns/refunds flow · courier API integration (Delhivery/Shiprocket) ·
+voice search · coupon UI (backend exists, leave it) · product variants · wholesale portal ·
+granular staff permissions · audit-log UI · backup/restore UI · multi-warehouse · loyalty points ·
+SMS OTP (needs DLT registration, deferred)
+
+Manual courier status updates and manual refunds are fine at this order volume.
+
+## What we DO build
+
+Search (brand + salt, typo-tolerant) · product page with the Strip · cart · checkout ·
+prescription upload · order tracking · account + addresses · **one-tap reorder** ·
+**refill reminders** · **order-by-prescription** (staff builds the cart) · **savings counter** ·
+admin products/orders/Rx-queue/CSV import-export · Expo Android app.
+
+## Conventions
+
+- TypeScript strict. No `any` in new code — use `unknown` and narrow.
+- Server Components by default. `'use client'` only when you need state, effects or handlers.
+- API routes: `await connectDB()` first, validate with Zod from `src/lib/validations/`, return
+  errors through `src/lib/utils/errorHandler.ts`. Never return a raw Mongoose error.
+- Mongoose reads that feed React get `.lean()`. Serialize `_id` to string at the boundary.
+- Money is stored in rupees as a `Number`, rounded to 2 decimals at write time. Never format
+  currency in a model — that's the UI's job.
+- Zustand for client state. The cart persists to `localStorage` under `pmstore-cart`. Auth
+  tokens do **not** go in `localStorage`.
+- Files: components `PascalCase.tsx`, everything else `kebab-case.ts`.
+- Commits: `feat|fix|chore|refactor(scope): message`. One logical change per commit.
+
+## Directory map
 
 ```
-src/app/
-  (shop)/          # Product listings, cart, checkout, orders
-  (info)/          # Static info pages
-  (wholesale)/     # B2B wholesale portal
-  admin/           # Admin dashboard (role-gated)
-  auth/            # Auth error/signout pages
-  api/             # All REST API routes
+src/
+  app/
+    (shop)/          storefront: products, cart, checkout, orders, prescriptions
+    (account)/       login, profile, addresses, saved medicines
+    (info)/          static pages
+    admin/           admin panel — role-gated
+    api/             web API routes (session-cookie auth)
+    api/v1/          mobile API routes (bearer-token auth)
+  components/
+    strip/           the Strip — signature component, see docs/03-DESIGN-SYSTEM.md
+    products/ cart/ checkout/ orders/ admin/ shared/ ui/
+  lib/
+    pharma/          composition.ts — compositionKey, unit pricing, ranking
+    search/          Atlas Search query builders
+    payment/ shipping/ notifications/ cloudinary/ validations/ utils/
+  models/            Mongoose schemas
+  store/             Zustand
+  styles/tokens.css  design tokens
+mobile/              Expo app (from week 7)
 ```
 
-### API Routes (`src/app/api/`)
+## Documentation index
 
-Key route namespaces: `products`, `orders`, `payment`, `auth`, `checkout`, `addresses`, `categories`, `discount`, `newsletter`, `reviews`, `shipping`, `shipments`, `wholesale`, `admin/*`, `pincode`, `team`, `settings`.
+| Read this | When |
+|---|---|
+| `docs/04-ROADMAP.md` | **Start here each week.** Tasks + acceptance criteria, weeks 1–10 |
+| `docs/00-ARCHITECTURE.md` | System design, request flows, why decisions were made |
+| `docs/01-DATA-MODEL.md` | Every collection, field, index, derived-value rule |
+| `docs/02-API-CONTRACT.md` | Route list, request/response shapes, error format |
+| `docs/03-DESIGN-SYSTEM.md` | Tokens, type rules, component specs, copy voice |
+| `docs/05-SETUP.md` | Local dev, Atlas, Atlas Search, deployment |
+| `docs/06-MOBILE-APP.md` | Expo app plan — weeks 7–10 |
+| `docs/07-TESTING.md` | What to test and in what order |
+| `docs/08-LAUNCH-CHECKLIST.md` | Security, SEO, performance, go-live |
+| `docs/PHASE-0-PATCHES.md` | Week 1 manual patches (CORS, RBAC, Product schema) |
 
-### Data Layer
+Nested `CLAUDE.md` files exist in `src/app/api/`, `src/components/` and `mobile/` with rules
+specific to those areas. They apply in addition to this file.
 
-- **Models** (`src/models/`) — Mongoose schemas: `User`, `Product`, `Order`, `OrderItem`, `CartItem`, `Review`, `Discount`, `Shipment`, `WholesaleApplication`, `Transaction`, `Otp`, `SiteSettings`, `TeamMember`, `ProductionSlide`, etc.
-- **DB connection** — `src/lib/mongodb/connection.ts`, exported via `src/lib/mongodb.ts` as `connectDB`. Always call `await connectDB()` in API routes before querying.
+## Working style
 
-### Authentication
-
-NextAuth v4 (`src/lib/auth.ts`) with JWT strategy:
-- **Providers**: Google OAuth + Email OTP (hashed with bcrypt, max 3 attempts, single-use)
-- **Roles**: `client` | `admin`. Admin role is granted only to `taptiagrofood@gmail.com`.
-- Token carries `id`, `email`, `role`. Middleware (`middleware.ts`) injects `x-user-id`, `x-user-role`, `x-user-email` headers for server-side use.
-- Protected routes: `/account`, `/orders`, `/profile`, `/wishlist`, `/wholesale/dashboard`. Admin routes: `/admin/*`.
-
-### State Management
-
-Zustand stores (`src/store/`):
-- `useCartStore` — persisted to `localStorage` as `tapti-cart-storage`. Cart items keyed by `productId__variantId` (see `cartItemKey` helper). Supports discount application.
-- `useAuthStore` — client-side auth state.
-
-### Payment Flow
-
-Cashfree PG (`src/lib/payment/cashfree.ts`):
-1. `POST /api/payment/initiate` — creates Cashfree order, returns `paymentSessionId`
-2. Cashfree redirects to `POST /api/payment/callback` — verifies payment, updates order status
-3. `POST /api/payment/confirm-cod` — for Cash on Delivery orders
-4. Idempotency via `IdempotencyKey` model to prevent double-processing
-
-### Shipping
-
-`src/lib/shipping/` — multi-provider shipping with `providerFactory.ts` supporting Delhivery and Shiprocket. `src/lib/queue/shipmentQueue.ts` handles async shipment creation.
-
-### Notifications
-
-`src/lib/notifications/`:
-- `email.ts` — Nodemailer
-- `sms.ts` — Twilio SMS
-- `whatsapp.ts` — Twilio WhatsApp
-
-### Image Storage
-
-Cloudinary for all product/media images via `next-cloudinary` and `src/lib/cloudinary/`. Product images stored as Cloudinary URLs.
-
-### Key Utilities
-
-- `src/lib/utils/errorHandler.ts` — standardized API error responses
-- `src/lib/utils/idempotency.ts` — idempotency key management
-- `src/lib/utils/circuitBreaker.ts` — external service resilience
-- `src/lib/validations/` — Zod schemas for request validation
-- `src/lib/gst.ts` — GST calculation helpers
-
-### Type Extensions
-
-`src/types/next-auth.d.ts` extends NextAuth `Session` and `JWT` types to include `id` and `role` fields.
+- Read `docs/04-ROADMAP.md` for the current week before starting. Work the acceptance criteria.
+- Run `npm run lint && npm run test && npm run build` before saying a task is done.
+- When a task is ambiguous, pick the simpler interpretation and say which you picked.
+- Don't refactor code you weren't asked to touch. This is a 10-week build.
+- If you find something genuinely broken outside your task, note it, don't fix it inline.

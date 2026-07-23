@@ -1,219 +1,86 @@
-# TAPTIFS - Tapti Food & Spices E-commerce Website 
+# PMStore — documentation and starter bundle
 
-A modern, production-ready e-commerce website for premium spices and food products, built with Next.js 14, TypeScript, and Tailwind CSS. 
- 
-## 🚀 Features
+Everything Claude Code needs to build the PMStore pharmacy platform end to end, weeks 1 to 10.
 
-### Phase 1: Foundation (COMPLETED ✅)
-- ✅ Next.js 14 with App Router and TypeScript
-- ✅ Tailwind CSS + shadcn/ui components
-- ✅ Responsive layout with Header, Footer, and Navigation
-- ✅ Route groups for organized page structure
-- ✅ Supabase integration configured
-- ✅ Database schema designed
-- ✅ Modern homepage with hero section and featured products
+## How to use this
 
-### Upcoming Features (Roadmap)
-- **E-commerce Core**: Product listings, shopping cart, checkout
-- **Payment Integration**: Stripe and PayPal
-- **User Authentication**: Login, signup, account management
-- **Recipe Blog**: Sanity CMS integration
-- **Reviews & Ratings**: Customer feedback system
-- **Wholesale Portal**: B2B ordering system
-- **Admin Dashboard**: Order and inventory management
-
-## 📋 Prerequisites
-
-- Node.js 18+ installed
-- npm or yarn package manager
-- Supabase account (for database)
-- Stripe account (for payments - optional for development)
-
-## 🛠️ Getting Started
-
-### 1. Install Dependencies
+This bundle is an **overlay**. Unzip it over a fresh fork of the Taptifs repo and every file
+lands where it belongs.
 
 ```bash
-npm install
+git clone https://github.com/ashwinhingve/taptifs.git pmstore
+cd pmstore
+rm -rf .git && git init
+
+unzip ~/Downloads/pmstore-docs.zip -d /tmp/
+cp -r /tmp/pmstore/. .
+
+git add -A && git commit -m "chore: fork from taptifs, add PMStore docs"
 ```
 
-### 2. Set Up Environment Variables
-
-Copy the example environment file:
-
-```bash
-cp .env.example .env.local
-```
-
-Edit `.env.local` and add your credentials:
-
-```env
-# Required for database
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# Required for payments (add when implementing)
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_key
-STRIPE_SECRET_KEY=your_stripe_secret
-
-# Optional services
-NEXT_PUBLIC_SANITY_PROJECT_ID=your_sanity_project_id
-```
-
-### 3. Set Up Database
-
-1. Create a new project in [Supabase](https://supabase.com)
-2. Go to SQL Editor in your Supabase dashboard
-3. Copy the contents of `database-schema.sql`
-4. Execute the SQL to create all tables and policies
-
-### 4. Run Development Server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view the website.
-
-## 📁 Project Structure
+Then point Claude Code at the repo and start with:
 
 ```
-taptifs/
-├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── (shop)/            # Shop route group
-│   │   ├── (recipes)/         # Recipes route group
-│   │   ├── (account)/         # Account route group
-│   │   ├── (wholesale)/       # Wholesale route group
-│   │   ├── (info)/            # Info pages route group
-│   │   └── api/               # API routes
-│   ├── components/            # React components
-│   │   ├── ui/                # shadcn/ui components
-│   │   ├── layout/            # Header, Footer, Navigation
-│   │   ├── products/          # Product components
-│   │   ├── cart/              # Cart components
-│   │   └── ...
-│   ├── lib/                   # Utilities and configurations
-│   │   ├── supabase/          # Supabase clients
-│   │   ├── utils.ts           # Helper functions
-│   │   └── constants.ts       # App constants
-│   ├── types/                 # TypeScript type definitions
-│   ├── store/                 # State management (Zustand)
-│   ├── hooks/                 # Custom React hooks
-│   └── styles/                # Global styles
-├── database-schema.sql        # Complete database schema
-├── .env.example               # Environment variables template
-└── components.json            # shadcn/ui configuration
+Read CLAUDE.md and docs/04-ROADMAP.md week 1.
+Give me a task-by-task plan before writing any code.
 ```
 
-## 🗃️ Database Schema
+## What's here
 
-The application uses PostgreSQL (via Supabase) with the following main tables:
+```
+CLAUDE.md                    ← Claude Code reads this every session
+PMStore-Build-Plan.md        ← scope, budget, timeline (the client-facing plan)
+.env.example                 ← free-tier stack
 
-- **profiles**: User profile information
-- **products**: Product catalog with pricing and inventory
-- **product_reviews**: Customer reviews and ratings
-- **orders**: Order management with full details
-- **order_items**: Individual items in orders
-- **cart_items**: Persistent shopping cart
-- **wishlist_items**: User wishlists
-- **addresses**: Shipping and billing addresses
-- **wholesale_applications**: B2B customer applications
+docs/
+  00-ARCHITECTURE.md         system design, request flows, why each decision
+  01-DATA-MODEL.md           collections, fields, indexes, derived-value rules
+  02-API-CONTRACT.md         routes, shapes, auth, errors, rate limits
+  03-DESIGN-SYSTEM.md        tokens, type rules, component specs, copy voice
+  04-ROADMAP.md              ← weeks 1–10, tasks + acceptance criteria
+  05-SETUP.md                local dev, Atlas, Atlas Search, deployment
+  06-MOBILE-APP.md           Expo app plan, weeks 7–10
+  07-TESTING.md              what to test, in priority order
+  08-LAUNCH-CHECKLIST.md     security, SEO, performance, compliance, go-live
+  09-PROMPTS.md              paste-ready prompts for each task
+  PHASE-0-PATCHES.md         week 1 manual patches (CORS, RBAC, Product schema)
 
-All tables have Row Level Security (RLS) enabled for data protection.
+src/
+  lib/pharma/composition.ts  compositionKey, unit pricing, alternative ranking
+  models/Prescription.ts     new collection
+  styles/tokens.css          design tokens
+  app/api/CLAUDE.md          API-specific rules
+  components/CLAUDE.md       component-specific rules
+mobile/CLAUDE.md             mobile-specific rules
 
-## 🎨 Tech Stack
+scripts/
+  phase0-strip.sh            removes Tapti modules, rebrands
+  atlas-search-index.json    Atlas Search index definition
 
-### Core
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui (Radix UI + Tailwind)
+templates/
+  product-import-template.csv    the catalogue import contract
+  IMPORT-NOTES.md                column rules and the no-salt-data fallback
 
-### Backend & Database
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
-- **ORM**: Supabase JavaScript Client
-
-### Payment & Services (To be integrated)
-- **Payments**: Stripe + PayPal
-- **CMS**: Sanity for recipes and blog
-- **State Management**: Zustand
-- **Email**: Resend or SendGrid
-
-## 🚢 Deployment
-
-### Deploy to Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Import project in [Vercel](https://vercel.com)
-3. Add environment variables
-4. Deploy!
-
-```bash
-# Or use Vercel CLI
-npm install -g vercel
-vercel
+.github/workflows/
+  ci.yml                     lint + test + build on push
+  cron.yml                   refill reminders, payment reconciliation
 ```
 
-### Environment Variables for Production
+## The four rules that matter most
 
-Make sure to add all required environment variables in your deployment platform:
-- Supabase credentials
-- Stripe keys
-- Sanity CMS credentials (when added)
-- Email service API keys (when added)
+Everything else is detail. These cause real harm if broken:
 
-## 📝 Development Commands
+1. **Compare `unitPrice`, never `price`.** A ₹28 strip of 15 costs more per tablet than a ₹52
+   strip of 30. Leading with pack price tells customers the opposite of the truth about their
+   medication costs.
+2. **`compositionKey` and `unitPrice` are derived in a pre-save hook.** Any write path that
+   bypasses `.save()` silently breaks the comparison feature.
+3. **Prescription enforcement is server-side.** A disabled button is not access control.
+4. **Roles are re-read from the database for destructive actions.** A stale JWT must not be able
+   to delete products.
 
-```bash
-# Development server
-npm run dev
+## Before week 2
 
-# Build for production
-npm run build
-
-# Run production build locally
-npm run start
-
-# Run linter
-npm run lint
-```
-
-## 🔐 Security
-
-- All database tables use Row Level Security (RLS)
-- Authentication handled by Supabase
-- Payment processing through secure Stripe integration
-- Environment variables for sensitive data
-- CORS and CSRF protection
-
-## 📈 Performance Optimizations
-
-- Next.js Image optimization for all product images
-- Server-side rendering for SEO
-- Code splitting and lazy loading
-- Static page generation where possible
-- Optimized bundle size with tree-shaking
-
-## 🤝 Contributing
-
-This is a private project, but contributions are welcome:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-Copyright © 2025 TAPTIFS - Tapti Food & Spices. All rights reserved.
-
-## 📧 Contact
-
-For questions or support, contact: info@taptifs.com
-
----
-
-**Built with ❤️ using Next.js, TypeScript, and Tailwind CSS**
+The client must supply a catalogue export **including salt composition per SKU**. Formula search,
+price comparison and alternatives all depend on it. If that data doesn't exist, weeks 2–3 stall
+no matter how fast the code goes. See `templates/IMPORT-NOTES.md` for the fallback.
