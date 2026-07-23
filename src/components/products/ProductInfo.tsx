@@ -18,7 +18,7 @@ interface Product {
   originalPrice?: number;
   discountPercentage?: number;
   stock: number;
-  category: string;
+  category: string | { _id: string; name: string; slug: string };
   images: (string | { url: string })[];
   averageRating: number;
   totalReviews: number;
@@ -49,6 +49,10 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
 
+  // Cart snapshot keeps category as a display string, whatever shape came in
+  const categoryName =
+    typeof product.category === 'string' ? product.category : product.category?.name ?? '';
+
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentOriginalPrice = selectedVariant ? selectedVariant.originalPrice : product.originalPrice;
   const currentStock = selectedVariant ? selectedVariant.stock : product.stock;
@@ -73,7 +77,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
       price: currentPrice,
       originalPrice: currentOriginalPrice,
       images: product.images,
-      category: product.category,
+      category: categoryName,
     }, quantity);
 
     setTimeout(() => {
@@ -91,7 +95,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
       price: currentPrice,
       originalPrice: currentOriginalPrice,
       images: product.images,
-      category: product.category,
+      category: categoryName,
     }, quantity);
     router.push('/checkout');
   };

@@ -138,8 +138,10 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
 
         {/* Product Info */}
         <div className="p-4 flex flex-col flex-1">
-          {/* Category */}
-          <p className="text-xs text-amber-600 font-medium mb-1 uppercase tracking-wide">{product.category}</p>
+          {/* Category (populated to { name }; tolerate a legacy string) */}
+          <p className="text-xs text-amber-600 font-medium mb-1 uppercase tracking-wide">
+            {typeof product.category === 'string' ? product.category : product.category?.name}
+          </p>
 
           {/* Product Name */}
           <h3 className="font-semibold text-sm md:text-base text-gray-900 mb-2 line-clamp-2 group-hover:text-amber-700 transition-colors leading-snug">

@@ -333,7 +333,7 @@ class EmailService {
     paymentMethod: string;
     shippingAddress?: any;
   }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
     const method = order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment';
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
 
@@ -396,7 +396,7 @@ class EmailService {
   }
 
   async notifyAdminPaymentFailed(order: { orderNumber: string; customerName: string; customerEmail: string; totalAmount: number }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Payment Failed: ${order.orderNumber} — Rs.${order.totalAmount.toFixed(2)}`;
     const html = `
@@ -430,7 +430,7 @@ class EmailService {
   }
 
   async notifyAdminShipmentCreated(order: { orderNumber: string; customerName: string; customerEmail: string }, shipment: { waybill?: string; provider?: string; trackingUrl?: string }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Order Shipped: ${order.orderNumber}`;
     const html = `
@@ -466,7 +466,7 @@ class EmailService {
   }
 
   async notifyAdminOrderDelivered(order: { orderNumber: string; customerName: string; customerEmail: string }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Order Delivered: ${order.orderNumber}`;
     const html = `
@@ -499,7 +499,7 @@ class EmailService {
   }
 
   async notifyAdminOrderCancelled(order: { orderNumber: string; customerName: string; customerEmail: string; totalAmount: number; refundAmount?: number }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Order Cancelled: ${order.orderNumber}`;
     const html = `
@@ -641,7 +641,7 @@ class EmailService {
    * Notify admin when a return request is submitted
    */
   async notifyAdminReturnRequest(order: any, returnRequest: any) {
-    const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
 
     const subject = `Return Request: Order ${order.orderNumber}`;

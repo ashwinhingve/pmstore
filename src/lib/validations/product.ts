@@ -42,6 +42,21 @@ export const productSEOSchema = z.object({
   ogImage: z.any().optional(),
 });
 
+// Salt validation schema (compositionKey is derived server-side, never accepted here)
+export const saltSchema = z.object({
+  name: z.string().min(1, 'Salt name is required'),
+  strength: z.number().min(0, 'Strength must be non-negative'),
+  unit: z.enum(['mg', 'mcg', 'g', 'ml', 'iu', '%']),
+});
+
+export const dosageFormEnum = z.enum([
+  'tablet', 'capsule', 'syrup', 'suspension', 'injection', 'cream',
+  'ointment', 'gel', 'drops', 'inhaler', 'powder', 'sachet', 'spray',
+  'patch', 'other',
+]);
+
+export const scheduleClassEnum = z.enum(['OTC', 'H', 'H1', 'X', 'G']);
+
 // Main product validation schema
 export const productSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters'),
@@ -52,7 +67,7 @@ export const productSchema = z.object({
   sku: z.string().min(3, 'SKU must be at least 3 characters'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
   longDescription: z.string().optional(),
-  category: z.string().min(1, 'Category is required'),
+  category: z.string().regex(/^[a-f\d]{24}$/i, 'A valid category is required'),
   subcategory: z.string().optional(),
   price: z.number().min(0, 'Price must be positive'),
   originalPrice: z.number().min(0).optional(),
@@ -95,6 +110,21 @@ export const productSchema = z.object({
     z.string().url().optional()
   ),
   relatedProducts: z.array(z.string()).optional(),
+  // ---- Pharma ---- (compositionKey and unitPrice are DERIVED server-side, not accepted here)
+  salts: z.array(saltSchema).min(1, 'At least one salt is required'),
+  form: dosageFormEnum,
+  manufacturer: z.string().min(1, 'Manufacturer is required'),
+  packSize: z.number().min(1, 'Pack size must be at least 1'),
+  packUnit: z.string().min(1, 'Pack unit is required'),
+  mrp: z.number().min(0).optional(),
+  prescriptionRequired: z.boolean().default(false),
+  scheduleClass: scheduleClassEnum.default('OTC'),
+  hsnCode: z.string().optional(),
+  storageInstructions: z.string().optional(),
+  usageInstructions: z.string().optional(),
+  sideEffects: z.array(z.string()).default([]),
+  contraindications: z.array(z.string()).default([]),
+  isDiscontinued: z.boolean().default(false),
 });
 
 // Type exports

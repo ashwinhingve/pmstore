@@ -43,8 +43,9 @@ export function Footer() {
               >
                 <Facebook className="h-4 w-4" />
               </Link>
+              {/* TODO: replace with the PMStore Instagram handle once it exists */}
               <Link
-                href="https://www.instagram.com/taptifoodspices/?utm_source=qr&igsh=dXIxb2ZzemM1ZXZ4"
+                href="#"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-700 transition-colors"
@@ -95,11 +96,6 @@ export function Footer() {
               <li>
                 <Link href="/products" className="hover:text-amber-700 hover:underline transition-colors">
                   Premium Teas
-                </Link>
-              </li>
-              <li>
-                <Link href="/wholesale" className="hover:text-amber-700 hover:underline transition-colors">
-                  Wholesale Orders
                 </Link>
               </li>
             </ul>

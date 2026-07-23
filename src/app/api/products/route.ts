@@ -38,7 +38,9 @@ export async function GET(req: NextRequest) {
     // Build query
     const query: any = { isActive: true };
 
-    if (category) {
+    // category is an ObjectId ref — only filter on a well-formed id, else a raw
+    // string would throw a CastError (500).
+    if (category && /^[a-f\d]{24}$/i.test(category)) {
       query.category = category;
     }
 
@@ -94,6 +96,7 @@ export async function GET(req: NextRequest) {
     const [products, total] = await Promise.all([
       Product.find(query)
         .select('-__v')
+        .populate('category', 'name slug')
         .sort(sort)
         .skip((page - 1) * limit)
         .limit(limit)

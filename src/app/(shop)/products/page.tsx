@@ -87,6 +87,10 @@ export default function ProductsPage() {
     fetchData()
   }, [])
 
+  // category is populated to { _id, name, slug }; tolerate a legacy string too
+  const catName = (p: any): string =>
+    typeof p?.category === 'string' ? p.category : p?.category?.name ?? ''
+
   const activeProducts = useMemo(() =>
     products.filter(p => p.isActive !== false),
     [products]
@@ -95,7 +99,7 @@ export default function ProductsPage() {
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {}
     activeProducts.forEach(product => {
-      counts[product.category] = (counts[product.category] || 0) + 1
+      counts[catName(product)] = (counts[catName(product)] || 0) + 1
     })
     return counts
   }, [activeProducts])
@@ -127,7 +131,7 @@ export default function ProductsPage() {
     let filtered = [...sectionFilteredProducts]
 
     if (selectedCategory !== "all") {
-      filtered = filtered.filter((p) => p.category === selectedCategory)
+      filtered = filtered.filter((p) => catName(p) === selectedCategory)
     }
 
     filtered = filtered.filter(
@@ -140,7 +144,7 @@ export default function ProductsPage() {
         (p) =>
           p.name.toLowerCase().includes(query) ||
           (p.description || '').toLowerCase().includes(query) ||
-          p.category.toLowerCase().includes(query)
+          catName(p).toLowerCase().includes(query)
       )
     }
 

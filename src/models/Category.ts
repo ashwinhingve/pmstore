@@ -1,6 +1,18 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-const categorySchema = new Schema(
+export interface ICategory extends Document {
+  _id: mongoose.Types.ObjectId;
+  name: string;
+  slug: string;
+  icon: string;
+  image: string;
+  order: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const categorySchema = new Schema<ICategory>(
   {
     name: {
       type: String,
@@ -36,6 +48,6 @@ const categorySchema = new Schema(
 );
 
 const Category =
-  mongoose.models.Category || mongoose.model('Category', categorySchema);
+  mongoose.models.Category || mongoose.model<ICategory>('Category', categorySchema);
 
 export default Category;

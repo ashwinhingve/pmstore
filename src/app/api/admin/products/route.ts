@@ -123,7 +123,8 @@ export async function GET(req: NextRequest) {
     // Build query
     const query: any = {};
 
-    if (category) {
+    // category is an ObjectId ref — guard against a CastError on a raw string.
+    if (category && /^[a-f\d]{24}$/i.test(category)) {
       query.category = category;
     }
 
@@ -158,6 +159,7 @@ export async function GET(req: NextRequest) {
     const [products, total] = await Promise.all([
       Product.find(query)
         .select('-__v')
+        .populate('category', 'name slug')
         .sort(sort)
         .skip((page - 1) * limit)
         .limit(limit)
@@ -165,9 +167,27 @@ export async function GET(req: NextRequest) {
       Product.countDocuments(query),
     ]);
 
-    // Get category counts for filters
+    // Get category counts for filters — join Category to expose name/slug
+    // alongside the ObjectId that products now group by.
     const categoryCounts = await Product.aggregate([
       { $group: { _id: '$category', count: { $sum: 1 } } },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'category',
+        },
+      },
+      { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          count: 1,
+          name: '$category.name',
+          slug: '$category.slug',
+        },
+      },
       { $sort: { count: -1 } },
     ]);
 

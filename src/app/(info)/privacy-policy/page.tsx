@@ -171,7 +171,7 @@ export default function PrivacyPolicyPage() {
                   <div className="space-y-2 text-gray-700">
                     <p><strong>PMStore (PMSTORE™)</strong></p>
                     <p>📍 Goula, Tehsil Multai, District Betul, Madhya Pradesh – 460557</p>
-                    <p>📧 Email: taptiagrofood@gmail.com</p>
+                    <p>📧 Email: pmstoremedicine@gmail.com</p>
                     <p>📞 Phone: +91-9770355137</p>
                     <p>🌐 Website: www.pratigyamedicalstore.com</p>
                   </div>

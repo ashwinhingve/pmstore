@@ -80,7 +80,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'tapti-auth-storage',
+      name: 'pmstore-auth-storage',
       partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
     }
   )

@@ -41,23 +41,7 @@ export async function PATCH(
 
     await connectDB();
 
-    // Calculate discount percentage if prices are updated
-    if (validated.originalPrice && validated.price) {
-      if (validated.originalPrice > validated.price) {
-        validated.discountPercentage = Math.round(
-          ((validated.originalPrice - validated.price) / validated.originalPrice) * 100
-        );
-      } else {
-        validated.discountPercentage = 0;
-      }
-    }
-
-    // Update product
-    const product = await Product.findByIdAndUpdate(
-      id,
-      { $set: validated },
-      { new: true, runValidators: true }
-    );
+    const product = await Product.findById(id);
 
     if (!product) {
       return NextResponse.json(
@@ -65,6 +49,26 @@ export async function PATCH(
         { status: 404 }
       );
     }
+
+    // Assign only the fields present in the payload, then save() — this fires the
+    // pre('validate') hook so compositionKey/unitPrice re-derive when salts, form,
+    // price or packSize change. findByIdAndUpdate skips document middleware and
+    // would silently stale those derived values (CLAUDE.md rule #2).
+    for (const [key, value] of Object.entries(validated)) {
+      if (value !== undefined) {
+        (product as any)[key] = value;
+      }
+    }
+
+    // Recalculate discount percentage when prices are present
+    if (product.originalPrice && product.price) {
+      product.discountPercentage =
+        product.originalPrice > product.price
+          ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+          : 0;
+    }
+
+    await product.save();
 
     // Invalidate homepage and products page cache
     revalidatePath('/');

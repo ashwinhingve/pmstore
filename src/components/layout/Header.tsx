@@ -7,8 +7,9 @@ import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "./Navigation";
 import { MobileMenu } from "./MobileMenu";
+import { SearchBar } from "@/components/search/SearchBar";
 import { useCartStore } from "@/store/useCartStore";
-import { Search, User, ShoppingCart, Menu, X, LogOut, LayoutDashboard, Package } from "lucide-react";
+import { User, ShoppingCart, Menu, X, LogOut, LayoutDashboard, Package } from "lucide-react";
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -68,15 +69,10 @@ export function Header() {
 
         {/* Right Side Actions */}
         <div className="flex items-center space-x-2 md:space-x-3">
-          {/* Search Icon */}
-          {/* <Button
-            variant="ghost"
-            size="icon"
-            className="hidden md:flex hover:bg-amber-50 hover:text-amber-700 transition-colors"
-            aria-label="Search"
-          >
-            <Search className="h-5 w-5" />
-          </Button> */}
+          {/* Search — primary navigation (docs/03-DESIGN-SYSTEM.md) */}
+          <div className="hidden md:block w-56 lg:w-72">
+            <SearchBar />
+          </div>
 
           {/* User Account */}
           {mounted && status === 'authenticated' && session?.user ? (
@@ -216,6 +212,11 @@ export function Header() {
             )}
           </Button>
         </div>
+      </div>
+
+      {/* Mobile search — full width under the bar; search is the primary action */}
+      <div className="border-t px-4 py-2 md:hidden">
+        <SearchBar />
       </div>
 
       {/* Mobile Menu */}

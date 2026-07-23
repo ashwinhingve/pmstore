@@ -10,12 +10,12 @@ cloudinary.config({
 
 // Folder structure for uploads
 export const CLOUDINARY_FOLDERS = {
-  PRODUCTS: 'tapti/products',
-  CATEGORIES: 'tapti/categories',
-  USERS: 'tapti/users',
-  HERO_SLIDES: 'tapti/hero-slides',
-  TEAM: 'tapti/team',
-  REVIEWS: 'tapti/reviews',
+  PRODUCTS: 'pmstore/products',
+  CATEGORIES: 'pmstore/categories',
+  USERS: 'pmstore/users',
+  HERO_SLIDES: 'pmstore/hero-slides',
+  TEAM: 'pmstore/team',
+  REVIEWS: 'pmstore/reviews',
 };
 
 // Upload configuration

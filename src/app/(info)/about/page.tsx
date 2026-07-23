@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/shared/AnimatedSection"
 import { CountUpStat } from "@/components/shared/CountUpStat"
 import { Timeline } from "@/components/shared/Timeline"
@@ -32,7 +32,7 @@ const FALLBACK_TEAM: TeamMember[] = [
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
     bio: "B.Com (Economics), MBA (Business Analyst). Expertise in finance, business strategy, supply chain & quality management. Leads the overall growth, innovation, and vision of the company.",
     linkedin: "https://linkedin.com",
-    email: "taptiagrofood@gmail.com",
+    email: "pmstoremedicine@gmail.com",
   },
   {
     name: "Mr. Bhavesh Deshmukh",
@@ -40,7 +40,7 @@ const FALLBACK_TEAM: TeamMember[] = [
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
     bio: "B.Com, LLB. Expertise in business partnerships, sales & offline distribution. Handles product collaborations, retail sales & marketing strategies.",
     linkedin: "https://linkedin.com",
-    email: "taptiagrofood@gmail.com",
+    email: "pmstoremedicine@gmail.com",
   },
   {
     name: "Mr. Ayush Deshmukh",
@@ -48,7 +48,7 @@ const FALLBACK_TEAM: TeamMember[] = [
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
     bio: "B.Sc. Agriculture. Expertise in farming, agri-markets, vendor management. Manages raw material procurement, farmer connect & product quality.",
     linkedin: "https://linkedin.com",
-    email: "taptiagrofood@gmail.com",
+    email: "pmstoremedicine@gmail.com",
   },
   {
     name: "Mr. Dipanshu Deshmukh",
@@ -56,7 +56,7 @@ const FALLBACK_TEAM: TeamMember[] = [
     image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop",
     bio: "B.Sc. Agriculture. Expertise in sales, customer relations, market expansion. Focuses on retail growth, distribution channels & regional markets.",
     linkedin: "https://linkedin.com",
-    email: "taptiagrofood@gmail.com",
+    email: "pmstoremedicine@gmail.com",
   },
   {
     name: "Ms. Pravina Sakre",
@@ -64,36 +64,13 @@ const FALLBACK_TEAM: TeamMember[] = [
     image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
     bio: "B.Tech. Expertise in social media, branding, packaging design & eCommerce. Drives online presence, digital campaigns & creative strategies.",
     linkedin: "https://linkedin.com",
-    email: "taptiagrofood@gmail.com",
+    email: "pmstoremedicine@gmail.com",
   },
 ]
 
 export default function AboutPage() {
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(FALLBACK_TEAM)
-
-  useEffect(() => {
-    fetch('/api/team')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.members && data.members.length > 0) {
-          // Map DB fields to TeamMemberCard format
-          setTeamMembers(
-            data.members.map((m: any) => ({
-              name: m.name,
-              role: m.designation,
-              image: m.photo || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-              bio: m.bio || '',
-              linkedin: m.linkedin || '',
-              twitter: m.twitter || '',
-              email: m.email || '',
-            }))
-          )
-        }
-      })
-      .catch(() => {
-        // Keep fallback on error
-      })
-  }, [])
+  // Team is served from static data. The staff-managed team API was cut from v1.
+  const teamMembers = FALLBACK_TEAM
 
   const timelineItems = [
     {

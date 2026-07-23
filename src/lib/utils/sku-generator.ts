@@ -18,7 +18,7 @@ export function generateSKU(category: string, productName: string): string {
 
   const timestamp = Date.now().toString(36).toUpperCase().substring(7);
 
-  return `TAPTI-${categoryPrefix}-${namePrefix}-${timestamp}`;
+  return `PMS-${categoryPrefix}-${namePrefix}-${timestamp}`;
 }
 
 /**

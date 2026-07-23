@@ -7,6 +7,13 @@ import ProductInfo from '@/components/products/ProductInfo';
 import ProductDetailsTabs from '@/components/products/ProductDetailsTabs';
 import { ProductCard } from '@/components/products/ProductCard';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import { Strip } from '@/components/strip/Strip';
+import { PriceBlock } from '@/components/shared/PriceBlock';
+import { RxBadge } from '@/components/shared/RxBadge';
+import { SaveButton } from '@/components/shared/SaveButton';
+import { Accordion } from '@/components/ui/Accordion';
+import { getAlternatives } from '@/lib/pharma/alternatives-data';
+import { formatComposition } from '@/lib/pharma/composition';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
 
@@ -102,6 +109,9 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
   // Serialize data
   const serializedProduct = JSON.parse(JSON.stringify(product));
   const serializedRelated = JSON.parse(JSON.stringify(relatedProducts));
+
+  // The Strip — same-composition alternatives, ranked server-side.
+  const strip = await getAlternatives(slug);
 
   const canonicalUrl = `${SITE_URL}/products/${serializedProduct.slug}`;
 
@@ -211,6 +221,87 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
           {/* Right: Product Info */}
           <ProductInfo product={serializedProduct} autoOpenReview={review === '1'} />
         </div>
+
+        {/* Pharma details + the Strip (price per unit is the headline) */}
+        <section className="mt-10 grid gap-8 rounded-[var(--radius-md)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-card)] lg:grid-cols-3">
+          <div className="space-y-4 lg:col-span-1">
+            {serializedProduct.scheduleClass && (
+              <RxBadge scheduleClass={serializedProduct.scheduleClass} />
+            )}
+            {serializedProduct.salts?.length > 0 && (
+              <div>
+                <p className="text-xs uppercase tracking-wide text-[var(--ink-40)]">Composition</p>
+                <p className="strength text-[var(--ink)]">
+                  {formatComposition(serializedProduct.salts)}
+                </p>
+              </div>
+            )}
+            <div className="flex flex-wrap gap-x-8 gap-y-3">
+              {serializedProduct.manufacturer && (
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-[var(--ink-40)]">Manufacturer</p>
+                  <p className="text-[var(--ink)]">{serializedProduct.manufacturer}</p>
+                </div>
+              )}
+              {serializedProduct.packSize > 0 && (
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-[var(--ink-40)]">Pack</p>
+                  <p className="pack text-[var(--ink)]">
+                    {serializedProduct.packSize} {serializedProduct.packUnit}
+                  </p>
+                </div>
+              )}
+            </div>
+            {serializedProduct.unitPrice != null && (
+              <PriceBlock
+                price={serializedProduct.price}
+                mrp={serializedProduct.mrp}
+                unitPrice={serializedProduct.unitPrice}
+                packSize={serializedProduct.packSize}
+                packUnit={serializedProduct.packUnit}
+              />
+            )}
+            <SaveButton productId={String(serializedProduct._id)} showLabel />
+          </div>
+          <div className="lg:col-span-2">{strip && <Strip strip={strip} />}</div>
+        </section>
+
+        {/* Usage / storage / safety — medical copy rendered verbatim */}
+        {(serializedProduct.usageInstructions ||
+          serializedProduct.storageInstructions ||
+          serializedProduct.sideEffects?.length > 0 ||
+          serializedProduct.contraindications?.length > 0) && (
+          <div className="mt-10 max-w-3xl">
+            {serializedProduct.usageInstructions && (
+              <Accordion title="How to take it" defaultOpen>
+                <p>{serializedProduct.usageInstructions}</p>
+              </Accordion>
+            )}
+            {serializedProduct.storageInstructions && (
+              <Accordion title="Storage">
+                <p>{serializedProduct.storageInstructions}</p>
+              </Accordion>
+            )}
+            {serializedProduct.sideEffects?.length > 0 && (
+              <Accordion title="Side effects">
+                <ul className="list-disc space-y-1 pl-5">
+                  {serializedProduct.sideEffects.map((s: string, i: number) => (
+                    <li key={i}>{s}</li>
+                  ))}
+                </ul>
+              </Accordion>
+            )}
+            {serializedProduct.contraindications?.length > 0 && (
+              <Accordion title="When not to use it">
+                <ul className="list-disc space-y-1 pl-5">
+                  {serializedProduct.contraindications.map((s: string, i: number) => (
+                    <li key={i}>{s}</li>
+                  ))}
+                </ul>
+              </Accordion>
+            )}
+          </div>
+        )}
 
         {/* Product Details Tabs */}
         <div className="mt-12">

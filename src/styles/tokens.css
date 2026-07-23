@@ -1,8 +1,9 @@
 /* PMStore design tokens
    Palette drawn from Indian pharmacy packaging: carton navy, blister foil,
-   prescription-pad paper. Deliberately not the stock medical teal. */
+   prescription-pad paper. Deliberately not the stock medical teal.
 
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Public+Sans:wght@400;500;600&family=Martian+Mono:wght@400;600&display=swap');
+   Fonts are self-hosted via next/font (see src/app/layout.tsx), which sets the
+   --font-*-loaded variables consumed below — no external @import needed. */
 
 :root {
   /* Core palette */
@@ -18,10 +19,10 @@
   --rx:         #B23A34;   /* Schedule H — prescription flags ONLY, never discounts */
   --rx-soft:    #FAECEA;
 
-  /* Type */
-  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-  --font-body:    'Public Sans', system-ui, sans-serif;
-  --font-data:    'Martian Mono', ui-monospace, monospace;
+  /* Type — families come from next/font via the --font-*-loaded variables */
+  --font-display: var(--font-display-loaded), 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body:    var(--font-body-loaded), 'Public Sans', system-ui, sans-serif;
+  --font-data:    var(--font-data-loaded), 'Martian Mono', ui-monospace, monospace;
 
   /* Rule: every measured value — strength, pack size, unit price — uses
      --font-data. It makes the page read like packaging and makes price

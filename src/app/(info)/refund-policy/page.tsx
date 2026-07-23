@@ -79,7 +79,7 @@ export default function ReturnPolicyPage() {
                   </p>
                   <div className="space-y-2 text-gray-700 mb-4">
                     <p>📞 Helpline: +91-9770355137</p>
-                    <p>📧 Email: taptiagrofood@gmail.com</p>
+                    <p>📧 Email: pmstoremedicine@gmail.com</p>
                   </div>
 
                   <div className="bg-amber-50 rounded-lg p-6 border-l-4 border-amber-500">
@@ -170,7 +170,7 @@ export default function ReturnPolicyPage() {
                   <div className="space-y-2 text-gray-700">
                     <p><strong>PMStore (PMSTORE™)</strong></p>
                     <p>📍 Goula, Tehsil Multai, District Betul, Madhya Pradesh – 460557</p>
-                    <p>📧 Email: taptiagrofood@gmail.com</p>
+                    <p>📧 Email: pmstoremedicine@gmail.com</p>
                     <p>📞 Phone: +91-9770355137</p>
                     <p>🌐 Website: www.pratigyamedicalstore.com</p>
                   </div>

@@ -1,4 +1,13 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import {
+  buildCompositionKey,
+  computeUnitPrice,
+  type Salt,
+  type DosageForm,
+} from '@/lib/pharma/composition';
+
+// Schedule class under the Drugs & Cosmetics Act (India)
+export type ScheduleClass = 'OTC' | 'H' | 'H1' | 'X' | 'G';
 
 // Image interface with Cloudinary metadata
 export interface IProductImage {
@@ -47,7 +56,7 @@ export interface IProduct extends Document {
   description: string;
   shortDescription?: string;
   longDescription?: string;
-  category: string;
+  category: mongoose.Types.ObjectId;
   subcategory?: string;
   price: number;
   originalPrice?: number;
@@ -77,6 +86,24 @@ export interface IProduct extends Document {
   gstRate: number; // 0 | 5 | 12 | 18 | 28 — GST rate; product price is GST-inclusive
   videoUrl?: string;
   relatedProducts?: mongoose.Types.ObjectId[];
+  // ---- Pharma ----
+  salts: Salt[];
+  form: DosageForm;
+  compositionKey: string; // DERIVED — buildCompositionKey(salts, form), never hand-entered
+  manufacturer: string;
+  packSize: number; // 15 tablets, 100 ml
+  packUnit: string; // 'tablet' | 'ml' | 'g' | 'unit'
+  unitPrice: number; // DERIVED — price / packSize, never hand-entered
+  mrp?: number;
+  prescriptionRequired: boolean;
+  scheduleClass: ScheduleClass;
+  hsnCode?: string;
+  storageInstructions?: string;
+  usageInstructions?: string;
+  sideEffects: string[];
+  contraindications: string[];
+  isDiscontinued: boolean;
+  orderCount: number; // rolling, powers the "most popular" badge
   createdAt: Date;
   updatedAt: Date;
 }
@@ -114,9 +141,10 @@ const ProductSchema = new Schema<IProduct>(
       type: String,
     },
     category: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
       required: true,
-      trim: true,
+      index: true,
     },
     subcategory: {
       type: String,
@@ -258,16 +286,77 @@ const ProductSchema = new Schema<IProduct>(
       default: 0,
       min: 0,
     },
+    // ---- Pharma ----
+    salts: [
+      {
+        name: { type: String, required: true, trim: true },
+        strength: { type: Number, required: true, min: 0 },
+        unit: {
+          type: String,
+          enum: ['mg', 'mcg', 'g', 'ml', 'iu', '%'],
+          required: true,
+        },
+      },
+    ],
+    form: {
+      type: String,
+      enum: [
+        'tablet', 'capsule', 'syrup', 'suspension', 'injection', 'cream',
+        'ointment', 'gel', 'drops', 'inhaler', 'powder', 'sachet', 'spray',
+        'patch', 'other',
+      ],
+      required: true,
+    },
+    // DERIVED in pre('validate') — see below. Never hand-entered.
+    compositionKey: { type: String, required: true, index: true },
+    manufacturer: { type: String, required: true, trim: true, index: true },
+    packSize: { type: Number, required: true, min: 1 }, // 15 tablets, 100 ml
+    packUnit: { type: String, required: true }, // 'tablet' | 'ml' | 'g' | 'unit'
+    // DERIVED in pre('validate') — price / packSize. Never hand-entered.
+    unitPrice: { type: Number, required: true, min: 0 },
+    mrp: { type: Number, min: 0 },
+    prescriptionRequired: { type: Boolean, default: false, index: true },
+    scheduleClass: {
+      type: String,
+      enum: ['OTC', 'H', 'H1', 'X', 'G'],
+      default: 'OTC',
+    },
+    hsnCode: { type: String, trim: true },
+    storageInstructions: String,
+    usageInstructions: String,
+    sideEffects: { type: [String], default: [] },
+    contraindications: { type: [String], default: [] },
+    isDiscontinued: { type: Boolean, default: false },
+    orderCount: { type: Number, default: 0 }, // rolling, for "most popular"
   },
   {
     timestamps: true,
   }
 );
 
+// Derive compositionKey and unitPrice — NEVER hand-entered (CLAUDE.md rule #2).
+// Runs on pre('validate') so the derived values exist before required-validation.
+// A pre('save') hook would run AFTER validation and the `required` checks on
+// compositionKey/unitPrice would fail. Bulk paths that skip document middleware
+// (insertMany/updateMany/findOneAndUpdate) must compute these explicitly.
+ProductSchema.pre('validate', function (next) {
+  if (this.salts?.length && (this.isModified('salts') || this.isModified('form'))) {
+    this.compositionKey = buildCompositionKey(this.salts, this.form);
+  }
+  if (this.isModified('price') || this.isModified('packSize')) {
+    this.unitPrice = computeUnitPrice(this.price, this.packSize);
+  }
+  next();
+});
+
 // Indexes (slug and sku already indexed via unique: true)
 ProductSchema.index({ category: 1, isActive: 1 });
 ProductSchema.index({ isFeatured: 1, isActive: 1 });
 ProductSchema.index({ averageRating: -1 });
 ProductSchema.index({ name: 'text', description: 'text', tags: 'text' });
+// Pharma — the Strip: group same-composition brands, cheapest-per-unit first
+ProductSchema.index({ compositionKey: 1, unitPrice: 1 });
+ProductSchema.index({ compositionKey: 1, isActive: 1, stock: -1 });
+ProductSchema.index({ prescriptionRequired: 1, isActive: 1 });
 
 export default mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);

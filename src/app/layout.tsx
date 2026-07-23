@@ -1,22 +1,45 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Bricolage_Grotesque, Public_Sans, Martian_Mono } from "next/font/google";
 import "@/styles/globals.css";
+import "@/styles/tokens.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import SessionProvider from "@/components/providers/SessionProvider";
 import { connectDB } from "@/lib/mongodb";
 import MarketingSettings from "@/models/MarketingSettings";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
+// Self-hosted via next/font — no external font request (works under strict CSP).
+// The CSS variables feed the --font-* tokens in tokens.css.
+const fontDisplay = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["400", "600", "800"],
+  variable: "--font-display-loaded",
+  display: "swap",
+});
+const fontBody = Public_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-body-loaded",
+  display: "swap",
+});
+const fontData = Martian_Mono({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  variable: "--font-data-loaded",
+  display: "swap",
+});
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pratigyamedicalstore.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "PMStore | The Taste of Purity | 100% Adulteration-Free Products",
+    default: "PMStore — Pratigya Medical Store | Online Pharmacy",
     template: "%s | PMStore",
   },
-  description: "Experience 'The Taste of Purity' with PMStore. 100% adulteration-free products sourced directly from our farms and trusted farmers. Shop authentic Indian spices, organic oils, pure desi ghee, premium teas, natural sweeteners, and traditional masalas. Available on Amazon, Flipkart, and Meesho. FSSAI Licensed: 21423150001550",
-  keywords: ["tapti food and spices", "pmstore", "spices", "food", "seasonings", "organic spices", "desi ghee", "cooking oil", "masala", "haldi", "mirchi", "chai", "jaggery", "saffron", "pure products", "adulteration-free", "farm-sourced", "Multai", "Betul", "Bhopal", "Madhya Pradesh"],
+  description: "PMStore (Pratigya Medical Store) — order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents of the same composition, upload a prescription, and reorder in one tap.",
+  keywords: ["pmstore", "pratigya medical store", "online pharmacy", "buy medicines online", "generic medicine", "price per tablet", "prescription upload", "medicine home delivery", "India pharmacy"],
   alternates: {
     canonical: SITE_URL,
   },
@@ -26,25 +49,25 @@ export const metadata: Metadata = {
     apple: "/images/logo.jpg",
   },
   openGraph: {
-    title: "PMStore | The Taste of Purity",
-    description: "100% adulteration-free food products - authentic Indian spices, organic oils, pure ghee, premium teas, and natural sweeteners sourced directly from farms",
+    title: "PMStore — Pratigya Medical Store | Online Pharmacy",
+    description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, upload a prescription, and reorder in one tap.",
     images: [
       {
         url: "/images/logo.jpg",
         width: 1200,
         height: 630,
-        alt: "PMStore — The Taste of Purity",
+        alt: "PMStore — Pratigya Medical Store",
       },
     ],
-    siteName: "PMStore (PMSTORE)",
+    siteName: "PMStore",
     type: "website",
     locale: "en_IN",
     url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "PMStore | The Taste of Purity",
-    description: "100% adulteration-free food products — authentic Indian spices, organic oils, pure ghee, premium teas, natural sweeteners sourced directly from farms.",
+    title: "PMStore — Pratigya Medical Store | Online Pharmacy",
+    description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, and upload a prescription.",
     images: ["/images/logo.jpg"],
   },
   robots: {
@@ -62,10 +85,10 @@ export const metadata: Metadata = {
 
 const orgJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "Pharmacy",
   "@id": `${SITE_URL}/#organization`,
-  "name": "PMStore",
-  "alternateName": "PMSTORE",
+  "name": "Pratigya Medical Store",
+  "alternateName": "PMStore",
   "url": SITE_URL,
   "logo": {
     "@type": "ImageObject",
@@ -73,19 +96,13 @@ const orgJsonLd = {
     "width": 512,
     "height": 512,
   },
-  "description": "100% adulteration-free food products — authentic Indian spices, organic oils, pure desi ghee, premium teas, natural sweeteners.",
+  "description": "Online pharmacy — genuine medicines with price-per-unit comparison, cheaper equivalents, and prescription upload.",
   "address": {
     "@type": "PostalAddress",
-    "addressLocality": "Multai",
     "addressRegion": "Madhya Pradesh",
     "addressCountry": "IN",
   },
-  "hasCredential": {
-    "@type": "EducationalOccupationalCredential",
-    "name": "FSSAI License",
-    "credentialCategory": "Food Safety License",
-    "identifier": "21423150001550",
-  },
+  // TODO (Week 6): add the drug-licence disclosure credential.
 };
 
 const websiteJsonLd = {
@@ -94,7 +111,7 @@ const websiteJsonLd = {
   "@id": `${SITE_URL}/#website`,
   "url": SITE_URL,
   "name": "PMStore",
-  "description": "Premium adulteration-free Indian food products",
+  "description": "Online pharmacy — genuine medicines, price-per-unit comparison, and prescription upload.",
   "publisher": {
     "@id": `${SITE_URL}/#organization`,
   },
@@ -148,7 +165,10 @@ export default async function RootLayout({
   const marketing = await getMarketingSettings();
 
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${fontDisplay.variable} ${fontBody.variable} ${fontData.variable}`}
+    >
       <head>
         {/* Organization structured data */}
         <script

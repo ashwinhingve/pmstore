@@ -119,38 +119,38 @@ class SMSService {
 
   async notifyAdminOrderConfirmed(orderNumber: string, customerName: string, amount: number, paymentMethod: string): Promise<SMSResult> {
     const method = paymentMethod === 'cod' ? 'COD' : 'Online';
-    const message = `[TAPTI] Order ${orderNumber} confirmed. Customer: ${customerName}. Amount: Rs.${amount.toFixed(2)}. Method: ${method}.`;
+    const message = `[PMStore] Order ${orderNumber} confirmed. Customer: ${customerName}. Amount: Rs.${amount.toFixed(2)}. Method: ${method}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminPaymentFailed(orderNumber: string, customerName: string, amount: number): Promise<SMSResult> {
-    const message = `[TAPTI] Payment FAILED for order ${orderNumber}. Customer: ${customerName}. Amount: Rs.${amount.toFixed(2)}.`;
+    const message = `[PMStore] Payment FAILED for order ${orderNumber}. Customer: ${customerName}. Amount: Rs.${amount.toFixed(2)}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminShipmentCreated(orderNumber: string, trackingNumber: string, customerName: string): Promise<SMSResult> {
-    const message = `[TAPTI] Order ${orderNumber} shipped. Tracking: ${trackingNumber}. Customer: ${customerName}.`;
+    const message = `[PMStore] Order ${orderNumber} shipped. Tracking: ${trackingNumber}. Customer: ${customerName}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminOutForDelivery(orderNumber: string, customerName: string): Promise<SMSResult> {
-    const message = `[TAPTI] Order ${orderNumber} out for delivery. Customer: ${customerName}.`;
+    const message = `[PMStore] Order ${orderNumber} out for delivery. Customer: ${customerName}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminOrderDelivered(orderNumber: string, customerName: string): Promise<SMSResult> {
-    const message = `[TAPTI] Order ${orderNumber} DELIVERED. Customer: ${customerName}.`;
+    const message = `[PMStore] Order ${orderNumber} DELIVERED. Customer: ${customerName}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminOrderCancelled(orderNumber: string, customerName: string, refundAmount?: number): Promise<SMSResult> {
     const refundText = refundAmount ? ` Refund: Rs.${refundAmount.toFixed(2)}.` : '';
-    const message = `[TAPTI] Order ${orderNumber} CANCELLED. Customer: ${customerName}.${refundText}`;
+    const message = `[PMStore] Order ${orderNumber} CANCELLED. Customer: ${customerName}.${refundText}`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminReturnRequest(orderNumber: string, customerName: string): Promise<SMSResult> {
-    const message = `[TAPTI] Return request for order ${orderNumber}. Customer: ${customerName}.`;
+    const message = `[PMStore] Return request for order ${orderNumber}. Customer: ${customerName}.`;
     return this.sendAdminSMS(message);
   }
 }

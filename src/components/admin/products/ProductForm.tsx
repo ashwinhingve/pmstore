@@ -33,7 +33,7 @@ function generateSKU(category: string, productName: string): string {
     .substring(0, 3)
     .toUpperCase();
   const timestamp = Date.now().toString(36).toUpperCase().substring(7);
-  return `TAPTI-${categoryPrefix}-${namePrefix}-${timestamp}`;
+  return `PMS-${categoryPrefix}-${namePrefix}-${timestamp}`;
 }
 
 function getYouTubeEmbedUrl(url: string): string {
@@ -50,12 +50,25 @@ interface ProductFormProps {
 
 const TABS = [
   { id: 'basic', label: 'Basic Info' },
+  { id: 'pharma', label: 'Pharma' },
   { id: 'images', label: 'Images & Video' },
   { id: 'pricing', label: 'Pricing & Inventory' },
   { id: 'variants', label: 'Variants' },
   { id: 'specifications', label: 'Specifications' },
   { id: 'seo', label: 'SEO' },
 ] as const;
+
+const DOSAGE_FORMS = [
+  'tablet', 'capsule', 'syrup', 'suspension', 'injection', 'cream',
+  'ointment', 'gel', 'drops', 'inhaler', 'powder', 'sachet', 'spray',
+  'patch', 'other',
+] as const;
+
+const SALT_UNITS = ['mg', 'mcg', 'g', 'ml', 'iu', '%'] as const;
+const SCHEDULE_CLASSES = ['OTC', 'H', 'H1', 'X', 'G'] as const;
+const PACK_UNITS = ['tablet', 'ml', 'g', 'unit'] as const;
+
+type SaltRow = { name: string; strength: number; unit: string };
 
 type TabId = typeof TABS[number]['id'];
 
@@ -68,14 +81,16 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
   const [showReplaceVideo, setShowReplaceVideo] = useState(false);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const replaceVideoInputRef = useRef<HTMLInputElement>(null);
-  const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<{ _id: string; name: string }[]>([]);
 
   useEffect(() => {
     fetch('/api/admin/categories')
       .then(res => res.json())
       .then(data => {
         if (data.categories?.length > 0) {
-          setCategoryOptions(data.categories.map((c: any) => c.name));
+          setCategoryOptions(
+            data.categories.map((c: any) => ({ _id: String(c._id), name: c.name }))
+          );
         }
       })
       .catch(() => {});
@@ -107,7 +122,33 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     hasVariants: initialData?.hasVariants || false,
     seo: initialData?.seo || { keywords: [] },
     videoUrl: initialData?.videoUrl || '',
+    // ---- Pharma ---- (compositionKey and unitPrice are derived server-side)
+    salts: initialData?.salts || [{ name: '', strength: 0, unit: 'mg' }],
+    form: initialData?.form || 'tablet',
+    manufacturer: initialData?.manufacturer || '',
+    packSize: initialData?.packSize || 1,
+    packUnit: initialData?.packUnit || 'tablet',
+    mrp: initialData?.mrp,
+    prescriptionRequired: initialData?.prescriptionRequired || false,
+    scheduleClass: initialData?.scheduleClass || 'OTC',
+    hsnCode: initialData?.hsnCode || '',
+    storageInstructions: initialData?.storageInstructions || '',
+    usageInstructions: initialData?.usageInstructions || '',
+    sideEffects: initialData?.sideEffects || [],
+    contraindications: initialData?.contraindications || [],
+    isDiscontinued: initialData?.isDiscontinued || false,
   });
+
+  // ---- Salt row helpers ----
+  const salts = (formData.salts as SaltRow[]) || [];
+  const updateSalt = (index: number, patch: Partial<SaltRow>) => {
+    const next = salts.map((s, i) => (i === index ? { ...s, ...patch } : s));
+    updateField('salts', next as ProductFormData['salts']);
+  };
+  const addSalt = () =>
+    updateField('salts', [...salts, { name: '', strength: 0, unit: 'mg' }] as ProductFormData['salts']);
+  const removeSalt = (index: number) =>
+    updateField('salts', salts.filter((_, i) => i !== index) as ProductFormData['salts']);
 
   const updateField = <K extends keyof ProductFormData>(
     field: K,
@@ -123,14 +164,16 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       }));
     }
 
-    // Auto-generate SKU if name or category changes
+    // Auto-generate SKU if name or category changes. category is now an ObjectId,
+    // so resolve its display name for the SKU prefix.
     if ((field === 'name' || field === 'category') && mode === 'create') {
       const name = field === 'name' ? (value as string) : formData.name || '';
-      const category = field === 'category' ? (value as string) : formData.category || '';
-      if (name && category) {
+      const categoryId = field === 'category' ? (value as string) : formData.category || '';
+      const categoryName = categoryOptions.find((c) => c._id === categoryId)?.name || '';
+      if (name && categoryName) {
         setFormData((prev) => ({
           ...prev,
-          sku: generateSKU(category, name),
+          sku: generateSKU(categoryName, name),
         }));
       }
     }
@@ -223,7 +266,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="text"
                   value={formData.sku}
                   onChange={(e) => updateField('sku', e.target.value.toUpperCase())}
-                  placeholder="TAPTI-ORG-CHI-ABC123"
+                  placeholder="PMS-ORG-CHI-ABC123"
                   required
                 />
               </div>
@@ -241,17 +284,13 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   >
                     <option value="">Select a category</option>
                     {categoryOptions.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
+                      <option key={cat._id} value={cat._id}>{cat.name}</option>
                     ))}
                   </select>
                 ) : (
-                  <Input
-                    type="text"
-                    value={formData.category}
-                    onChange={(e) => updateField('category', e.target.value)}
-                    placeholder="e.g., Seeds"
-                    required
-                  />
+                  <p className="text-sm text-gray-500">
+                    No categories yet. Create one under Categories first.
+                  </p>
                 )}
               </div>
             </div>
@@ -364,6 +403,277 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <span className="text-sm font-medium text-gray-700">Value Buy</span>
               </label>
             </div>
+          </div>
+        );
+
+      case 'pharma':
+        return (
+          <div className="space-y-6">
+            {/* Salts / composition */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Composition (salts) *
+                </label>
+                <button
+                  type="button"
+                  onClick={addSalt}
+                  className="text-sm font-medium text-amber-700 hover:text-amber-800"
+                >
+                  + Add salt
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mb-3">
+                Composition key and price-per-unit are derived automatically from these
+                values and the pack size — they are not entered by hand.
+              </p>
+              <div className="space-y-2">
+                {salts.map((salt, i) => (
+                  <div key={i} className="grid grid-cols-12 gap-2 items-start">
+                    <div className="col-span-6">
+                      <Input
+                        type="text"
+                        value={salt.name}
+                        onChange={(e) => updateSalt(i, { name: e.target.value })}
+                        placeholder="Salt name, e.g., Paracetamol"
+                        aria-label={`Salt ${i + 1} name`}
+                        required
+                      />
+                    </div>
+                    <div className="col-span-3">
+                      <Input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={salt.strength}
+                        onChange={(e) => updateSalt(i, { strength: parseFloat(e.target.value) || 0 })}
+                        placeholder="Strength"
+                        aria-label={`Salt ${i + 1} strength`}
+                        required
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <select
+                        value={salt.unit}
+                        onChange={(e) => updateSalt(i, { unit: e.target.value })}
+                        aria-label={`Salt ${i + 1} unit`}
+                        className="w-full px-2 py-2 border border-gray-300 rounded-md text-sm"
+                      >
+                        {SALT_UNITS.map((u) => (
+                          <option key={u} value={u}>{u}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="col-span-1 flex justify-center">
+                      {salts.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeSalt(i)}
+                          aria-label={`Remove salt ${i + 1}`}
+                          className="h-9 w-9 flex items-center justify-center text-gray-400 hover:text-red-600"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Dosage form *
+                </label>
+                <select
+                  value={formData.form}
+                  onChange={(e) => updateField('form', e.target.value as ProductFormData['form'])}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  required
+                >
+                  {DOSAGE_FORMS.map((f) => (
+                    <option key={f} value={f}>{f}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Manufacturer *
+                </label>
+                <Input
+                  type="text"
+                  value={formData.manufacturer}
+                  onChange={(e) => updateField('manufacturer', e.target.value)}
+                  placeholder="e.g., Cipla"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Pack size *
+                </label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={formData.packSize}
+                  onChange={(e) => updateField('packSize', parseInt(e.target.value) || 1)}
+                  placeholder="15"
+                  required
+                />
+                <p className="mt-1 text-xs text-gray-500">Tablets / ml per pack</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Pack unit *
+                </label>
+                <select
+                  value={formData.packUnit}
+                  onChange={(e) => updateField('packUnit', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  required
+                >
+                  {PACK_UNITS.map((u) => (
+                    <option key={u} value={u}>{u}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  MRP (₹)
+                </label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={formData.mrp ?? ''}
+                  onChange={(e) => updateField('mrp', parseFloat(e.target.value) || undefined)}
+                  placeholder="Printed MRP"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Schedule class *
+                </label>
+                <select
+                  value={formData.scheduleClass}
+                  onChange={(e) => updateField('scheduleClass', e.target.value as ProductFormData['scheduleClass'])}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                >
+                  {SCHEDULE_CLASSES.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  HSN code
+                </label>
+                <Input
+                  type="text"
+                  value={formData.hsnCode || ''}
+                  onChange={(e) => updateField('hsnCode', e.target.value)}
+                  placeholder="e.g., 3004"
+                />
+              </div>
+
+              <div className="flex items-end">
+                <label className="flex items-center gap-2 cursor-pointer pb-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.prescriptionRequired}
+                    onChange={(e) => updateField('prescriptionRequired', e.target.checked)}
+                    className="w-4 h-4 border-gray-300 rounded"
+                    style={{ accentColor: 'var(--rx, #c1121f)' }}
+                  />
+                  <span className="text-sm font-medium text-gray-700">Prescription required</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Storage instructions
+                </label>
+                <textarea
+                  value={formData.storageInstructions || ''}
+                  onChange={(e) => updateField('storageInstructions', e.target.value)}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+                  placeholder="Store below 25°C, away from light"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Usage instructions
+                </label>
+                <textarea
+                  value={formData.usageInstructions || ''}
+                  onChange={(e) => updateField('usageInstructions', e.target.value)}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+                  placeholder="As directed by the physician"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Side effects (comma-separated)
+                </label>
+                <Input
+                  type="text"
+                  value={formData.sideEffects?.join(', ') || ''}
+                  onChange={(e) =>
+                    updateField(
+                      'sideEffects',
+                      e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
+                    )
+                  }
+                  placeholder="nausea, drowsiness"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Contraindications (comma-separated)
+                </label>
+                <Input
+                  type="text"
+                  value={formData.contraindications?.join(', ') || ''}
+                  onChange={(e) =>
+                    updateField(
+                      'contraindications',
+                      e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
+                    )
+                  }
+                  placeholder="liver disease, pregnancy"
+                />
+              </div>
+            </div>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.isDiscontinued}
+                onChange={(e) => updateField('isDiscontinued', e.target.checked)}
+                className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+              />
+              <span className="text-sm font-medium text-gray-700">Discontinued</span>
+            </label>
           </div>
         );
 

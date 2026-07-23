@@ -206,7 +206,11 @@ export default function CartPage() {
                           <div className="flex justify-between items-start mb-2">
                             <div>
                               <h3 className="font-bold text-lg text-gray-800 mb-1">{item.product.name}</h3>
-                              <p className="text-sm text-gray-600">{item.product.category}</p>
+                              <p className="text-sm text-gray-600">
+                                {typeof item.product.category === 'string'
+                                  ? item.product.category
+                                  : (item.product.category as any)?.name}
+                              </p>
                             </div>
                             <button
                               onClick={() => removeItem(cartItemKey(item.product.id, item.product.variantId))}

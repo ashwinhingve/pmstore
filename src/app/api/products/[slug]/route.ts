@@ -20,6 +20,7 @@ export async function GET(
       isActive: true,
     })
       .select('-__v')
+      .populate('category', 'name slug')
       .lean() as any;
 
     if (!product) {
@@ -29,13 +30,19 @@ export async function GET(
       );
     }
 
-    // Fetch related products (same category, excluding current product)
+    // Related products share the same composition (the Strip's data), falling
+    // back to the same category. product.category is populated above, so match
+    // on its id.
+    const categoryId = product.category?._id ?? product.category;
     const relatedProducts = await Product.find({
-      category: product.category,
       isActive: true,
       _id: { $ne: product._id },
+      ...(product.compositionKey
+        ? { compositionKey: product.compositionKey }
+        : { category: categoryId }),
     })
-      .select('name slug price originalPrice images averageRating category')
+      .select('name slug price originalPrice unitPrice packSize packUnit images averageRating category')
+      .populate('category', 'name slug')
       .limit(4)
       .lean();
 

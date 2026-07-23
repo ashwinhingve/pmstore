@@ -10,12 +10,11 @@ export type {
   IOrderItem,
   ICartItem,
   IWishlistItem,
-  IWholesaleApplication,
 } from '@/models';
 
 // Legacy type aliases for backward compatibility (if needed)
 // These map the old Supabase types to new MongoDB types
-import type { IUser, IProduct, IReview, IAddress, IOrder, IOrderItem, ICartItem, IWishlistItem, IWholesaleApplication } from '@/models';
+import type { IUser, IProduct, IReview, IAddress, IOrder, IOrderItem, ICartItem, IWishlistItem } from '@/models';
 
 export type Profile = IUser;
 export type Product = IProduct;
@@ -25,4 +24,3 @@ export type Order = IOrder;
 export type OrderItem = IOrderItem;
 export type CartItem = ICartItem;
 export type WishlistItem = IWishlistItem;
-export type WholesaleApplication = IWholesaleApplication;

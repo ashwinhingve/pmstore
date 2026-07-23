@@ -23,7 +23,7 @@ interface Product {
   name: string;
   slug: string;
   sku: string;
-  category: string;
+  category: { _id: string; name: string; slug: string } | string;
   price: number;
   originalPrice?: number;
   stock: number;
@@ -45,7 +45,7 @@ interface ProductsTableProps {
     pages: number;
   };
   filters: {
-    categories: Array<{ _id: string; count: number }>;
+    categories: Array<{ _id: string; count: number; name?: string; slug?: string }>;
     statuses: Array<{ _id: boolean; count: number }>;
     stockLevels: Array<{ _id: string; count: number }>;
   };
@@ -171,7 +171,7 @@ export default function ProductsTable({
             <option value="">All Categories</option>
             {filters.categories.map((cat) => (
               <option key={cat._id} value={cat._id}>
-                {cat._id} ({cat.count})
+                {cat.name ?? 'Uncategorized'} ({cat.count})
               </option>
             ))}
           </select>
@@ -314,7 +314,9 @@ export default function ProductsTable({
                       {product.sku}
                     </td>
                     <td className="px-4 py-4 text-sm text-gray-600">
-                      {product.category}
+                      {typeof product.category === 'string'
+                        ? product.category
+                        : product.category?.name}
                     </td>
                     <td className="px-4 py-4 text-sm">
                       <div>

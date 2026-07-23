@@ -30,7 +30,7 @@ interface CategoryItem {
 async function uploadCategoryImage(file: File): Promise<string | null> {
   const fd = new FormData();
   fd.append('file', file);
-  fd.append('folder', 'tapti/categories');
+  fd.append('folder', 'pmstore/categories');
   const res = await fetch('/api/admin/products/upload-image', { method: 'POST', body: fd });
   const data = await res.json();
   if (!res.ok) {

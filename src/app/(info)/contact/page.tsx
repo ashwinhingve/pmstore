@@ -11,7 +11,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { FormField } from "@/components/ui/form-field"
 import { Button } from "@/components/ui/button"
-import { WhatsAppButton } from "@/components/home/WhatsAppButton"
 import {
   MapPin,
   Phone,
@@ -340,8 +339,9 @@ export default function ContactPage() {
               >
                 <Facebook className="w-8 h-8 text-gray-600 group-hover:text-blue-600 transition-colors" />
               </a>
+              {/* TODO: replace with the PMStore Instagram handle once it exists */}
               <a
-                href="https://www.instagram.com/taptifoodspices/?utm_source=qr&igsh=dXIxb2ZzemM1ZXZ4"
+                href="#"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group"
@@ -388,9 +388,6 @@ export default function ContactPage() {
           </AnimatedSection>
         </div>
       </section>
-
-      {/* WhatsApp Floating Button */}
-      <WhatsAppButton />
     </main>
   )
 }
