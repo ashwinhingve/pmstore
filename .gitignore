@@ -38,3 +38,7 @@ next-env.d.ts
 .vercel
 .worktrees/
 *.bak
+
+# stray nested clone and leftover Taptifs docs (kept locally, not tracked)
+/pmstore/
+/documents(taptifs)/
