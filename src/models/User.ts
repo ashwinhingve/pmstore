@@ -11,7 +11,7 @@ export interface IUser extends Document {
   image?: string;
   provider?: 'google' | 'email' | 'sms';
   googleId?: string;
-  role: 'client' | 'admin';
+  role: 'client' | 'staff' | 'admin';
   emailVerified: boolean;
   mobileVerified: boolean;
   lastLogin?: Date;
@@ -62,8 +62,9 @@ const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['client', 'admin'],
+      enum: ['client', 'staff', 'admin'],
       default: 'client',
+      index: true,
     },
     emailVerified: {
       type: Boolean,

@@ -16,8 +16,9 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   console.warn('Google OAuth credentials are not configured. Google sign-in will not work.');
 }
 
-// Admin email whitelist - only these emails get admin role
-const ADMIN_EMAILS = ['taptiagrofood@gmail.com'];
+// Roles are DB-driven (User.role). There is no hardcoded admin whitelist —
+// bootstrap the first admin with scripts/bootstrap-admin.ts. The jwt callback
+// sources token.role from the database, the single source of truth.
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -162,23 +163,16 @@ export const authOptions: NextAuthOptions = {
         let user = await User.findOne({ email });
 
         if (!user) {
-          const userRole = ADMIN_EMAILS.includes(email) ? 'admin' : 'client';
+          // Role defaults to 'client' via the schema. Admins/staff are granted
+          // in the database, never by email match.
           user = await User.create({
             email,
             provider: 'email',
-            role: userRole,
             emailVerified: true,
           });
-          console.log('New email user created:', email, 'role:', userRole);
+          console.log('New email user created:', email);
           emailService.sendWelcomeEmail(email, null).catch(() => {});
         } else {
-          // Update admin status if needed
-          const shouldBeAdmin = ADMIN_EMAILS.includes(email);
-          if (shouldBeAdmin && user.role !== 'admin') {
-            user.role = 'admin';
-          } else if (!shouldBeAdmin && user.role === 'admin') {
-            user.role = 'client';
-          }
           user.lastLogin = new Date();
           await user.save();
         }
@@ -207,9 +201,8 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!existingUser) {
-            // Determine role - admin for whitelisted emails, client for others
-            const userRole = ADMIN_EMAILS.includes(user.email?.toLowerCase() || '') ? 'admin' : 'client';
-
+            // Role defaults to 'client' via the schema. Admins/staff are granted
+            // in the database, never by email match.
             const newUser = await User.create({
               email: user.email,
               name: user.name,
@@ -217,20 +210,12 @@ export const authOptions: NextAuthOptions = {
               image: user.image,
               provider: 'google',
               googleId: profile?.sub,
-              role: userRole,
               emailVerified: true,
             });
 
-            console.log('New user created:', newUser.email, 'role:', userRole);
+            console.log('New user created:', newUser.email);
             emailService.sendWelcomeEmail(newUser.email, newUser.name || null).catch(() => {});
           } else {
-            // Ensure admin emails always have admin role
-            const shouldBeAdmin = ADMIN_EMAILS.includes(existingUser.email?.toLowerCase() || '');
-            if (shouldBeAdmin && existingUser.role !== 'admin') {
-              existingUser.role = 'admin';
-            } else if (!shouldBeAdmin && existingUser.role === 'admin') {
-              existingUser.role = 'client';
-            }
             // Update existing user if needed
             let updated = false;
 
@@ -328,7 +313,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email as string;
         session.user.name = token.name as string;
         session.user.image = token.picture as string;
-        session.user.role = token.role as 'client' | 'admin';
+        session.user.role = token.role as 'client' | 'staff' | 'admin';
         if (token.phoneNumber) {
           session.user.phoneNumber = token.phoneNumber as string;
         }

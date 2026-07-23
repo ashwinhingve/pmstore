@@ -1,71 +1,117 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
+// Origins allowed to call the mobile API surface (/api/v1/*) with credentials.
+// Native/Expo clients send no Origin header, so they are unaffected by this list.
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+// Routes that require authentication but no particular role.
+const PROTECTED_ROUTES = [
+  "/account",
+  "/orders",
+  "/profile",
+  "/wishlist",
+  "/wholesale/dashboard",
+];
+
+// Admin-only surfaces (staff is NOT allowed). Everything else under /admin and
+// /api/admin is available to both admin and staff.
+const ADMIN_ONLY_PAGES = ["/admin/settings", "/admin/users"];
+const ADMIN_ONLY_APIS = [
+  "/api/admin/settings",
+  "/api/admin/users",
+  "/api/admin/bulk-price",
+  "/api/admin/bulk-stock",
+];
+
+function matchesAny(pathname: string, prefixes: string[]) {
+  return prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+function jsonDenied(status: number, error: string) {
+  return NextResponse.json({ error }, { status });
+}
+
 export async function middleware(request: NextRequest) {
-  // List of protected routes that require authentication
-  const protectedRoutes = [
-    "/account",
-    "/orders",
-    "/profile",
-    "/wishlist",
-    "/wholesale/dashboard",
-  ];
+  const { pathname } = request.nextUrl;
 
-  // List of admin routes that require admin role
-  const adminRoutes = ["/admin"];
-
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
-
-  const isAdminRoute = adminRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
-
-  // Check for NextAuth session token
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  // Admin route protection: require authentication AND admin role
-  if (isAdminRoute) {
+  const isAdminPage = pathname.startsWith("/admin");
+  const isAdminApi = pathname.startsWith("/api/admin");
+
+  // --- Admin surfaces: role-gated. Pages redirect, APIs return JSON errors. ---
+  // NOTE: middleware trusts the token's role only as a fast first gate. Any
+  // destructive admin API handler MUST re-read the role from the database
+  // (see verifyAdminAccess) — a stale token must not be able to act.
+  if (isAdminPage || isAdminApi) {
     if (!token) {
-      // Not authenticated - redirect to login
+      if (isAdminApi) {
+        return jsonDenied(401, "Unauthorized: Authentication required");
+      }
       const url = new URL("/login", request.url);
-      url.searchParams.set("redirect", request.nextUrl.pathname);
+      url.searchParams.set("redirect", pathname);
       return NextResponse.redirect(url);
     }
 
-    if (token.role !== "admin") {
-      // Authenticated but not admin - redirect to home with error
+    const role = token.role as string | undefined;
+    const adminOnly =
+      matchesAny(pathname, ADMIN_ONLY_PAGES) ||
+      matchesAny(pathname, ADMIN_ONLY_APIS);
+    const allowed = adminOnly
+      ? role === "admin"
+      : role === "admin" || role === "staff";
+
+    if (!allowed) {
+      if (isAdminApi) {
+        return jsonDenied(403, "Forbidden: Insufficient role");
+      }
       const url = new URL("/", request.url);
       url.searchParams.set("error", "admin_access_required");
       return NextResponse.redirect(url);
     }
   }
 
-  // If route is protected and no token exists, redirect to login
+  // --- Auth-only protected routes ---
+  const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
+    pathname.startsWith(route)
+  );
   if (isProtectedRoute && !token) {
     const url = new URL("/login", request.url);
-    url.searchParams.set("redirect", request.nextUrl.pathname);
+    url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
 
-  // If token exists, forward user info as request headers so API routes can read them
+  // --- Build the onward response, forwarding user info to downstream routes ---
+  let response: NextResponse;
   if (token) {
     const requestHeaders = new Headers(request.headers);
     // Only set headers when values are genuinely present to avoid "undefined" strings
     if (token.id) requestHeaders.set("x-user-id", token.id as string);
     if (token.role) requestHeaders.set("x-user-role", token.role as string);
     if (token.email) requestHeaders.set("x-user-email", token.email as string);
-
-    return NextResponse.next({
-      request: { headers: requestHeaders },
-    });
+    response = NextResponse.next({ request: { headers: requestHeaders } });
+  } else {
+    response = NextResponse.next();
   }
 
-  return NextResponse.next();
+  // --- CORS: only the mobile API surface, only for allow-listed origins ---
+  if (pathname.startsWith("/api/v1")) {
+    const origin = request.headers.get("origin");
+    if (origin && ALLOWED_ORIGINS.includes(origin)) {
+      response.headers.set("Access-Control-Allow-Origin", origin);
+      response.headers.set("Access-Control-Allow-Credentials", "true");
+      response.headers.set("Vary", "Origin");
+    }
+  }
+
+  return response;
 }
 
 export const config = {

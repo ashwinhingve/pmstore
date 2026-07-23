@@ -60,9 +60,26 @@ const nextConfig = {
       {
         source: '/:path*',
         headers: [
+          // CORS is intentionally NOT set globally. It is scoped to the mobile
+          // API surface (/api/v1/*) with an origin allow-list in middleware.ts.
           {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              // Next.js runtime needs inline/eval; payment SDKs load their own scripts.
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.razorpay.com https://*.cashfree.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com data:",
+              // Cloudinary + other remote image hosts (see images.remotePatterns).
+              "img-src 'self' data: blob: https:",
+              "connect-src 'self' https://res.cloudinary.com https://*.razorpay.com https://*.cashfree.com",
+              // Payment gateways render in iframes.
+              "frame-src 'self' https://*.razorpay.com https://*.cashfree.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'self'",
+            ].join('; '),
           },
           {
             key: 'X-DNS-Prefetch-Control',

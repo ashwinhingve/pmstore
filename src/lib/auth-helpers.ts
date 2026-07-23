@@ -2,6 +2,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from './auth';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
+import { connectDB } from './mongodb';
+import User from '@/models/User';
 
 /**
  * Get the current session from NextAuth
@@ -101,7 +103,14 @@ export async function verifyAdminAccess(): Promise<{
     };
   }
 
-  if (session.user.role !== 'admin') {
+  // Never trust the JWT role for a privileged action (CLAUDE.md rule #4). The
+  // session role is derived from the token, which may be stale or forged — a
+  // demoted user could still be carrying an old admin claim. Re-read the role
+  // from the database, the single source of truth.
+  await connectDB();
+  const dbUser = await User.findById(session.user.id).select('role').lean<{ role?: string } | null>();
+
+  if (dbUser?.role !== 'admin') {
     return {
       error: new Response(
         JSON.stringify({ error: 'Forbidden: Admin access required' }),
