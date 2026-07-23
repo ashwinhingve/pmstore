@@ -1,0 +1,585 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import {
+  Search,
+  Filter,
+  Eye,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  Truck,
+  RefreshCw,
+} from 'lucide-react';
+
+interface Shipment {
+  id: string;
+  waybill: string;
+  orderNumber: string;
+  orderId: string | null;
+  customerName: string;
+  customerEmail: string;
+  status: string;
+  courier: string;
+  provider: string;
+  trackingUrl: string | null;
+  origin: string | null;
+  destination: string | null;
+  estimatedDelivery: string | null;
+  deliveredAt: string | null;
+  createdAt: string;
+  lastUpdated: string;
+}
+
+interface Filters {
+  search: string;
+  status: string;
+  dateFrom: string;
+  dateTo: string;
+}
+
+interface PendingOrder {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  totalAmount: number;
+  paymentMethod: 'cod';
+  createdAt: string;
+}
+
+interface ShipmentsTableProps {
+  shipments: Shipment[];
+  totalPages: number;
+  currentPage: number;
+  filters: Filters;
+  statusCounts: Array<{ _id: string; count: number }>;
+  pendingOrders?: PendingOrder[];
+}
+
+// Keys must match Delhivery's actual shipmentStatus strings stored in the DB
+const statusConfig: Record<string, { color: string; label: string }> = {
+  'Pending': { color: 'bg-yellow-100 text-yellow-700', label: 'Pending' },
+  'Manifested': { color: 'bg-blue-50 text-blue-600', label: 'Manifested' },
+  'Dispatched': { color: 'bg-indigo-100 text-indigo-700', label: 'Dispatched' },
+  'In Transit': { color: 'bg-purple-100 text-purple-700', label: 'In Transit' },
+  'Out for Delivery': { color: 'bg-cyan-100 text-cyan-700', label: 'Out for Delivery' },
+  'Delivered': { color: 'bg-green-100 text-green-700', label: 'Delivered' },
+  'Cancelled': { color: 'bg-red-100 text-red-700', label: 'Cancelled' },
+  'RTO': { color: 'bg-orange-100 text-orange-700', label: 'RTO' },
+  'RTO Delivered': { color: 'bg-orange-100 text-orange-700', label: 'RTO Delivered' },
+  'Lost': { color: 'bg-red-200 text-red-800', label: 'Lost' },
+  'Damaged': { color: 'bg-red-100 text-red-700', label: 'Damaged' },
+  'Shipment Created': { color: 'bg-blue-100 text-blue-700', label: 'Created' },
+};
+
+export default function ShipmentsTable({
+  shipments,
+  totalPages,
+  currentPage,
+  filters,
+  statusCounts,
+  pendingOrders = [],
+}: ShipmentsTableProps) {
+  const router = useRouter();
+  const [showFilters, setShowFilters] = useState(false);
+  const [localSearch, setLocalSearch] = useState(filters.search);
+  const [localFilters, setLocalFilters] = useState(filters);
+  const [providerFilter, setProviderFilter] = useState<'all' | 'delhivery' | 'shiprocket'>('all');
+  const [creatingFor, setCreatingFor] = useState<string | null>(null);
+  const [pendingProvider, setPendingProvider] = useState<Record<string, 'delhivery' | 'shiprocket'>>({});
+  const [pendingResults, setPendingResults] = useState<Record<string, string>>({});
+  const [isPolling, setIsPolling] = useState(false);
+  const [pollResult, setPollResult] = useState<string | null>(null);
+
+  const handlePollTracking = async () => {
+    setIsPolling(true);
+    setPollResult(null);
+    try {
+      const res = await fetch('/api/shipping/poll-tracking');
+      const data = await res.json();
+      if (data.success) {
+        setPollResult(`Updated ${data.updated} of ${data.total} shipments`);
+        if (data.updated > 0) {
+          router.refresh();
+        }
+      } else {
+        setPollResult(data.error || 'Failed to poll');
+      }
+    } catch (err: any) {
+      setPollResult('Error: ' + err.message);
+    } finally {
+      setIsPolling(false);
+      setTimeout(() => setPollResult(null), 5000);
+    }
+  };
+
+  const updateURL = (newFilters: Partial<Filters>, page = 1) => {
+    const params = new URLSearchParams();
+
+    if (page > 1) params.set('page', page.toString());
+    if (newFilters.search) params.set('search', newFilters.search);
+    if (newFilters.status) params.set('status', newFilters.status);
+    if (newFilters.dateFrom) params.set('dateFrom', newFilters.dateFrom);
+    if (newFilters.dateTo) params.set('dateTo', newFilters.dateTo);
+
+    router.push(`/admin/shipments?${params.toString()}`);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateURL({ ...localFilters, search: localSearch });
+  };
+
+  const handleFilterChange = (key: keyof Filters, value: string) => {
+    const newFilters = { ...localFilters, [key]: value };
+    setLocalFilters(newFilters);
+  };
+
+  const applyFilters = () => {
+    updateURL(localFilters);
+    setShowFilters(false);
+  };
+
+  const clearFilters = () => {
+    const resetFilters = {
+      search: '',
+      status: '',
+      dateFrom: '',
+      dateTo: '',
+    };
+    setLocalFilters(resetFilters);
+    setLocalSearch('');
+    updateURL(resetFilters);
+    setShowFilters(false);
+  };
+
+  const hasActiveFilters = filters.status || filters.dateFrom || filters.dateTo || filters.search;
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(date);
+  };
+
+  const getTrackingUrl = (shipment: Shipment) =>
+    shipment.trackingUrl || `https://www.delhivery.com/track/package/${shipment.waybill}`;
+
+  const visibleShipments =
+    providerFilter === 'all'
+      ? shipments
+      : shipments.filter((s) => (s.provider || 'delhivery') === providerFilter);
+
+  async function handleCreateShipment(orderId: string) {
+    const provider = pendingProvider[orderId] || 'delhivery';
+    setCreatingFor(orderId);
+    try {
+      const res = await fetch('/api/shipping/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, provider }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setPendingResults((prev) => ({ ...prev, [orderId]: data.waybill }));
+        router.refresh();
+      } else {
+        setPendingResults((prev) => ({ ...prev, [orderId]: `Error: ${data.error || 'Failed'}` }));
+      }
+    } catch (err: any) {
+      setPendingResults((prev) => ({ ...prev, [orderId]: `Error: ${err.message}` }));
+    } finally {
+      setCreatingFor(null);
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Pending COD orders — awaiting shipment creation */}
+      {pendingOrders.length > 0 && (
+        <div className="bg-white rounded-lg shadow-sm border border-amber-200">
+          <div className="px-6 py-4 border-b border-amber-100 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+            <h3 className="text-sm font-semibold text-amber-800">
+              Orders Awaiting Shipment ({pendingOrders.length})
+            </h3>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {pendingOrders.map((order) => {
+              const result = pendingResults[order.id];
+              const isCreating = creatingFor === order.id;
+              const selectedProvider = pendingProvider[order.id] || 'delhivery';
+
+              return (
+                <div key={order.id} className="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Link
+                        href={`/admin/orders/${order.id}`}
+                        className="text-sm font-semibold text-amber-700 hover:text-amber-800"
+                      >
+                        {order.orderNumber}
+                      </Link>
+                      <span className="inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">
+                        COD
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700 mt-0.5">{order.customerName}</p>
+                    <p className="text-xs text-gray-500">{order.customerEmail}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      ₹{order.totalAmount.toLocaleString('en-IN')} &middot;{' '}
+                      {formatDate(order.createdAt)}
+                    </p>
+                  </div>
+
+                  {result ? (
+                    <div className={`text-xs font-medium px-3 py-1.5 rounded-md ${
+                      result.startsWith('Error')
+                        ? 'bg-red-50 text-red-700'
+                        : 'bg-green-50 text-green-700'
+                    }`}>
+                      {result.startsWith('Error') ? result : `Waybill: ${result}`}
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <select
+                        value={selectedProvider}
+                        onChange={(e) =>
+                          setPendingProvider((prev) => ({
+                            ...prev,
+                            [order.id]: e.target.value as 'delhivery' | 'shiprocket',
+                          }))
+                        }
+                        disabled={isCreating}
+                        className="text-xs border border-gray-300 rounded px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      >
+                        <option value="delhivery">Delhivery</option>
+                        <option value="shiprocket">Shiprocket</option>
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => handleCreateShipment(order.id)}
+                        disabled={isCreating}
+                        className="px-3 py-1.5 bg-amber-600 text-white text-xs font-semibold rounded hover:bg-amber-700 disabled:opacity-50 whitespace-nowrap"
+                      >
+                        {isCreating ? 'Creating...' : 'Create Shipment'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      {/* Search and Filter Bar */}
+      <div className="p-4 border-b border-gray-200 space-y-4">
+        <div className="flex items-center gap-4">
+          {/* Search */}
+          <form onSubmit={handleSearch} className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+                placeholder="Search by waybill or order number..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              />
+            </div>
+          </form>
+
+          {/* Refresh Tracking Button */}
+          <button
+            type="button"
+            onClick={handlePollTracking}
+            disabled={isPolling}
+            className="inline-flex items-center gap-2 px-4 py-2 border border-green-500 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100 transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${isPolling ? 'animate-spin' : ''}`} />
+            {isPolling ? 'Updating...' : 'Refresh Tracking'}
+          </button>
+
+          {/* Filter Button */}
+          <button
+            type="button"
+            onClick={() => setShowFilters(!showFilters)}
+            className={`inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
+              hasActiveFilters
+                ? 'bg-amber-50 border-amber-500 text-amber-700'
+                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            <Filter className="w-4 h-4" />
+            Filters
+            {hasActiveFilters && (
+              <span className="bg-amber-600 text-white text-xs rounded-full px-2 py-0.5">
+                Active
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Provider filter */}
+        <div className="flex items-center gap-2">
+          {(['all', 'delhivery', 'shiprocket'] as const).map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setProviderFilter(p)}
+              className={`px-3 py-1 text-xs font-medium rounded-full border transition-colors ${
+                providerFilter === p
+                  ? p === 'shiprocket'
+                    ? 'bg-orange-100 border-orange-400 text-orange-700'
+                    : p === 'delhivery'
+                    ? 'bg-blue-100 border-blue-400 text-blue-700'
+                    : 'bg-gray-200 border-gray-400 text-gray-700'
+                  : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+              }`}
+            >
+              {p === 'all' ? 'All Providers' : p === 'shiprocket' ? 'Shiprocket' : 'Delhivery'}
+            </button>
+          ))}
+        </div>
+
+        {/* Poll Result Message */}
+        {pollResult && (
+          <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+            {pollResult}
+          </div>
+        )}
+
+        {/* Filter Panel */}
+        {showFilters && (
+          <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Status */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Shipment Status
+                </label>
+                <select
+                  value={localFilters.status}
+                  onChange={(e) => handleFilterChange('status', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="">All Statuses</option>
+                  {Object.entries(statusConfig).map(([key, config]) => (
+                    <option key={key} value={key}>
+                      {config.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Date From */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date From
+                </label>
+                <input
+                  type="date"
+                  value={localFilters.dateFrom}
+                  onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Date To */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date To
+                </label>
+                <input
+                  type="date"
+                  value={localFilters.dateTo}
+                  onChange={(e) => handleFilterChange('dateTo', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+            </div>
+
+            {/* Filter Actions */}
+            <div className="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                Clear All
+              </button>
+              <button
+                type="button"
+                onClick={applyFilters}
+                className="px-4 py-2 bg-gradient-to-r from-amber-600 to-red-700 text-white text-sm font-medium rounded-lg hover:from-amber-700 hover:to-red-800"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Waybill
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Order
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Customer
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Courier
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Created
+              </th>
+              <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {visibleShipments.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-6 py-8 text-center text-sm text-gray-500">
+                  No shipments found
+                </td>
+              </tr>
+            ) : (
+              visibleShipments.map((shipment) => {
+                const statusInfo = statusConfig[shipment.status] || {
+                  color: 'bg-gray-100 text-gray-700',
+                  label: shipment.status,
+                };
+                const provider = shipment.provider || 'delhivery';
+
+                return (
+                  <tr key={shipment.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <Truck className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm font-medium text-gray-900 font-mono">
+                          {shipment.waybill}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {shipment.orderId ? (
+                        <Link
+                          href={`/admin/orders/${shipment.orderId}`}
+                          className="text-sm text-amber-600 hover:text-amber-700 font-medium"
+                        >
+                          {shipment.orderNumber}
+                        </Link>
+                      ) : (
+                        <span className="text-sm text-gray-500">{shipment.orderNumber}</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900">{shipment.customerName}</div>
+                      <div className="text-xs text-gray-500">{shipment.customerEmail}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${statusInfo.color}`}
+                      >
+                        {statusInfo.label}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-700">{shipment.courier}</div>
+                      <span
+                        className={`inline-flex mt-1 px-1.5 py-0.5 text-xs font-medium rounded-full ${
+                          provider === 'shiprocket'
+                            ? 'bg-orange-100 text-orange-700'
+                            : 'bg-blue-100 text-blue-700'
+                        }`}
+                      >
+                        {provider === 'shiprocket' ? 'Shiprocket' : 'Delhivery'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {formatDate(shipment.createdAt)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {shipment.orderId && (
+                          <Link
+                            href={`/admin/orders/${shipment.orderId}`}
+                            className="inline-flex items-center gap-1 text-sm font-medium text-amber-600 hover:text-amber-700"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Link>
+                        )}
+                        <a
+                          href={getTrackingUrl(shipment)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="p-4 border-t border-gray-200 flex items-center justify-between">
+          <div className="text-sm text-gray-700">
+            Page {currentPage} of {totalPages}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={currentPage === 1}
+              onClick={() => updateURL(filters, currentPage - 1)}
+              className="inline-flex items-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </button>
+
+            <button
+              type="button"
+              disabled={currentPage === totalPages}
+              onClick={() => updateURL(filters, currentPage + 1)}
+              className="inline-flex items-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+    </div>
+  );
+}

@@ -1,0 +1,137 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+interface OrderActionsProps {
+  orderId: string;
+  orderStatus: string;
+  paymentStatus: string;
+  trackingNumber?: string;
+}
+
+export default function OrderActions({
+  orderId,
+  orderStatus,
+  paymentStatus,
+  trackingNumber,
+}: OrderActionsProps) {
+  const router = useRouter();
+  const [cancelling, setCancelling] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+
+  const handleCancelOrder = async () => {
+    if (!window.confirm('Are you sure you want to cancel this order?')) {
+      return;
+    }
+
+    setCancelling(true);
+
+    try {
+      const response = await fetch(`/api/orders/${orderId}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reason: cancelReason || 'Customer requested cancellation',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to cancel order');
+      }
+
+      alert('Order cancelled successfully!');
+      router.refresh();
+    } catch (error: any) {
+      console.error('Error cancelling order:', error);
+      alert(error.message || 'Failed to cancel order');
+    } finally {
+      setCancelling(false);
+      setShowCancelModal(false);
+    }
+  };
+
+  const canCancel = ['pending', 'confirmed', 'processing'].includes(orderStatus);
+
+  return (
+    <div className="space-y-3">
+      {paymentStatus === 'pending' && (
+        <button className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 font-medium">
+          Retry Payment
+        </button>
+      )}
+
+      {trackingNumber && (
+        <a
+          href="#tracking"
+          className="block w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 font-medium text-center"
+        >
+          View Tracking
+        </a>
+      )}
+
+      {canCancel && (
+        <button
+          onClick={() => setShowCancelModal(true)}
+          disabled={cancelling}
+          className="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 font-medium disabled:opacity-50"
+        >
+          {cancelling ? 'Cancelling...' : 'Cancel Order'}
+        </button>
+      )}
+
+      <a
+        href="/orders"
+        className="block w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 font-medium text-center"
+      >
+        View All Orders
+      </a>
+
+      {/* Cancel Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Cancel Order</h3>
+            <p className="text-gray-600 mb-4">
+              Are you sure you want to cancel this order? This action cannot be undone.
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Reason (Optional)
+              </label>
+              <textarea
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg p-2 text-sm"
+                rows={3}
+                placeholder="Tell us why you're cancelling..."
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 font-medium"
+              >
+                Keep Order
+              </button>
+              <button
+                onClick={handleCancelOrder}
+                disabled={cancelling}
+                className="flex-1 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 font-medium disabled:opacity-50"
+              >
+                {cancelling ? 'Cancelling...' : 'Yes, Cancel'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
