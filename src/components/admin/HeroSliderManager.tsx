@@ -463,7 +463,7 @@ function SlideForm({
             <Input
               value={f('title')}
               onChange={(e) => onChange({ ...form, title: e.target.value })}
-              placeholder="e.g., Welcome to Taptifs"
+              placeholder="e.g., Welcome to PMStorefs"
             />
           </div>
           <div>

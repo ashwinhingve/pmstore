@@ -179,7 +179,7 @@ export default function LoginPage() {
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-2">
               <span className="bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
-                Welcome to Tapti
+                Welcome to PMStore
               </span>
             </h1>
             <p className="text-gray-600 text-lg">Sign in to continue</p>

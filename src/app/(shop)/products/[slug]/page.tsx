@@ -8,7 +8,7 @@ import ProductDetailsTabs from '@/components/products/ProductDetailsTabs';
 import { ProductCard } from '@/components/products/ProductCard';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://taptifs.in';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -36,7 +36,7 @@ export async function generateMetadata({
     return { title: 'Product Not Found' };
   }
 
-  const title = product.seo?.metaTitle || `${product.name} | Tapti Food & Spices`;
+  const title = product.seo?.metaTitle || `${product.name} | PMStore`;
   const description = product.seo?.metaDescription || product.description;
   const ogImage = product.seo?.ogImage || product.images?.[0]?.url || `${SITE_URL}/images/logo.jpg`;
   const canonicalUrl = `${SITE_URL}/products/${product.slug}`;
@@ -53,7 +53,7 @@ export async function generateMetadata({
       description,
       type: 'website',
       url: canonicalUrl,
-      siteName: 'Tapti Food & Spices',
+      siteName: 'PMStore',
       locale: 'en_IN',
       images: [
         {
@@ -115,7 +115,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
     "sku": serializedProduct.sku,
     "brand": {
       "@type": "Brand",
-      "name": "Tapti Food & Spices",
+      "name": "PMStore",
     },
     "offers": {
       "@type": "Offer",
@@ -128,7 +128,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
       "itemCondition": "https://schema.org/NewCondition",
       "seller": {
         "@type": "Organization",
-        "name": "Tapti Food & Spices",
+        "name": "PMStore",
       },
     },
   };

@@ -40,12 +40,12 @@ export function Header() {
         <Link
           href="/"
           className="flex items-center space-x-3 group transition-opacity hover:opacity-80"
-          aria-label="Tapti Food & Spices - Home"
+          aria-label="PMStore - Home"
         >
           <div className="relative h-12 w-12 md:h-16 md:w-16 shrink-0">
             <Image
               src="/images/logo.jpg"
-              alt="Tapti Food & Spices Logo"
+              alt="PMStore Logo"
               fill
               className="object-contain rounded-full"
               priority
@@ -53,7 +53,7 @@ export function Header() {
           </div>
           <div className="flex flex-col">
             <span className="text-lg md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent leading-tight">
-              Tapti Food &amp; Spices
+              PMStore Food &amp; Spices
             </span>
             <span className="text-xs md:text-sm font-semibold text-muted-foreground hidden lg:pl-6 sm:block">
               शुद्धता का वादा - The Taste of Purity

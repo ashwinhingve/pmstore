@@ -5,7 +5,7 @@
  *
  * ONE-TIME SETUP:
  *   1. Open Telegram, search for @BotFather and send /newbot
- *   2. Follow prompts — give it a name like "Taptifs Orders"
+ *   2. Follow prompts — give it a name like "PMStorefs Orders"
  *   3. BotFather sends you a bot token like: 123456789:AAFxxx...
  *   4. Search for your new bot in Telegram and press Start
  *   5. Open: https://api.telegram.org/bot<TOKEN>/getUpdates
@@ -79,7 +79,7 @@ class WhatsAppService {
     paymentMethod: string;
   }): Promise<void> {
     const method = order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taptifs.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
 
     const message =
       `<b>New Order Received!</b>\n\n` +

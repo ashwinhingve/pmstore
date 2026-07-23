@@ -41,7 +41,7 @@ class DelhiveryService implements IShippingProvider {
         returnCity: process.env.DELHIVERY_RETURN_CITY || 'Mumbai',
         returnState: process.env.DELHIVERY_RETURN_STATE || 'Maharashtra',
         returnCountry: process.env.DELHIVERY_RETURN_COUNTRY || 'India',
-        returnName: process.env.DELHIVERY_RETURN_NAME || 'Tapti Spices',
+        returnName: process.env.DELHIVERY_RETURN_NAME || 'PMStore Spices',
         returnPhone: process.env.DELHIVERY_RETURN_PHONE || '9876543210',
       };
 

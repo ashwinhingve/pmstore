@@ -17,7 +17,7 @@ export default async function AdminSettingsPage() {
         enabled: true,
         announcements: [
           { text: 'Free Shipping Above ₹499', emoji: '🚚', isActive: true },
-          { text: 'Boost Your Daily Nutrition with TAPTIFS', emoji: '✨', isActive: true },
+          { text: 'Boost Your Daily Nutrition with PMSTORE', emoji: '✨', isActive: true },
         ],
       },
       heroSlider: { slides: [] },

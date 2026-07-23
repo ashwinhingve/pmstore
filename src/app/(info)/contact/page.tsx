@@ -168,8 +168,8 @@ export default function ContactPage() {
                   <Mail className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-800 mb-2">Email Us</h3>
-                <a href="mailto:info@taptifs.com" className="text-sm text-gray-600 hover:text-amber-600 transition-colors block">
-                  info@taptifs.com
+                <a href="mailto:info@pratigyamedicalstore.com" className="text-sm text-gray-600 hover:text-amber-600 transition-colors block">
+                  info@pratigyamedicalstore.com
                 </a>
               </div>
             </StaggerItem>
@@ -262,7 +262,7 @@ export default function ContactPage() {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="TAPTIFS Location"
+                  title="PMSTORE Location"
                 ></iframe>
               </div>
 
@@ -299,7 +299,7 @@ export default function ContactPage() {
                   </a>
 
                   <a
-                    href="mailto:info@taptifs.com"
+                    href="mailto:info@pratigyamedicalstore.com"
                     className="flex items-center gap-4 p-4 bg-white rounded-lg hover:shadow-md transition-all duration-300 group"
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -307,7 +307,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-gray-800">Email Us</p>
-                      <p className="text-sm text-gray-600">info@taptifs.com</p>
+                      <p className="text-sm text-gray-600">info@pratigyamedicalstore.com</p>
                     </div>
                   </a>
                 </div>
@@ -349,7 +349,7 @@ export default function ContactPage() {
                 <Instagram className="w-8 h-8 text-gray-600 group-hover:text-pink-600 transition-colors" />
               </a>
               <a
-                href="https://x.com/Tapti_food"
+                href="https://x.com/PMStore_food"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group"

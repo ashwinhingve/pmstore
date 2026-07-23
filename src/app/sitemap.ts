@@ -5,7 +5,7 @@ import Category from '@/models/Category';
 
 export const revalidate = 86400; // refresh sitemap every 24 hours
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://taptifs.in';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
 
 const staticPages: MetadataRoute.Sitemap = [
   {

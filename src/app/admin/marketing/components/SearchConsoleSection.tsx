@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Search, Copy, Check, ChevronDown, ChevronUp, CheckCircle2, XCircle } from 'lucide-react';
 
-const SITEMAP_URL = 'https://taptifs.in/sitemap.xml';
+const SITEMAP_URL = 'https://pmstore.in/sitemap.xml';
 
 export default function SearchConsoleSection({ verified }: { verified: boolean }) {
   const [copied, setCopied] = useState(false);

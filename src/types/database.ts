@@ -1,4 +1,4 @@
-// Database Types for TAPTIFS (MongoDB with Mongoose)
+// Database Types for PMSTORE (MongoDB with Mongoose)
 // Re-export types from Mongoose models for use throughout the application
 
 export type {

@@ -7,16 +7,16 @@ import SessionProvider from "@/components/providers/SessionProvider";
 import { connectDB } from "@/lib/mongodb";
 import MarketingSettings from "@/models/MarketingSettings";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://taptifs.in';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Tapti Food & Spices | The Taste of Purity | 100% Adulteration-Free Products",
-    template: "%s | Tapti Food & Spices",
+    default: "PMStore | The Taste of Purity | 100% Adulteration-Free Products",
+    template: "%s | PMStore",
   },
-  description: "Experience 'The Taste of Purity' with Tapti Food & Spices. 100% adulteration-free products sourced directly from our farms and trusted farmers. Shop authentic Indian spices, organic oils, pure desi ghee, premium teas, natural sweeteners, and traditional masalas. Available on Amazon, Flipkart, and Meesho. FSSAI Licensed: 21423150001550",
-  keywords: ["tapti food and spices", "taptifs", "spices", "food", "seasonings", "organic spices", "desi ghee", "cooking oil", "masala", "haldi", "mirchi", "chai", "jaggery", "saffron", "pure products", "adulteration-free", "farm-sourced", "Multai", "Betul", "Bhopal", "Madhya Pradesh"],
+  description: "Experience 'The Taste of Purity' with PMStore. 100% adulteration-free products sourced directly from our farms and trusted farmers. Shop authentic Indian spices, organic oils, pure desi ghee, premium teas, natural sweeteners, and traditional masalas. Available on Amazon, Flipkart, and Meesho. FSSAI Licensed: 21423150001550",
+  keywords: ["tapti food and spices", "pmstore", "spices", "food", "seasonings", "organic spices", "desi ghee", "cooking oil", "masala", "haldi", "mirchi", "chai", "jaggery", "saffron", "pure products", "adulteration-free", "farm-sourced", "Multai", "Betul", "Bhopal", "Madhya Pradesh"],
   alternates: {
     canonical: SITE_URL,
   },
@@ -26,24 +26,24 @@ export const metadata: Metadata = {
     apple: "/images/logo.jpg",
   },
   openGraph: {
-    title: "Tapti Food & Spices | The Taste of Purity",
+    title: "PMStore | The Taste of Purity",
     description: "100% adulteration-free food products - authentic Indian spices, organic oils, pure ghee, premium teas, and natural sweeteners sourced directly from farms",
     images: [
       {
         url: "/images/logo.jpg",
         width: 1200,
         height: 630,
-        alt: "Tapti Food & Spices — The Taste of Purity",
+        alt: "PMStore — The Taste of Purity",
       },
     ],
-    siteName: "Tapti Food & Spices (TAPTIFS)",
+    siteName: "PMStore (PMSTORE)",
     type: "website",
     locale: "en_IN",
     url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tapti Food & Spices | The Taste of Purity",
+    title: "PMStore | The Taste of Purity",
     description: "100% adulteration-free food products — authentic Indian spices, organic oils, pure ghee, premium teas, natural sweeteners sourced directly from farms.",
     images: ["/images/logo.jpg"],
   },
@@ -64,8 +64,8 @@ const orgJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "@id": `${SITE_URL}/#organization`,
-  "name": "Tapti Food & Spices",
-  "alternateName": "TAPTIFS",
+  "name": "PMStore",
+  "alternateName": "PMSTORE",
   "url": SITE_URL,
   "logo": {
     "@type": "ImageObject",
@@ -93,7 +93,7 @@ const websiteJsonLd = {
   "@type": "WebSite",
   "@id": `${SITE_URL}/#website`,
   "url": SITE_URL,
-  "name": "Tapti Food & Spices",
+  "name": "PMStore",
   "description": "Premium adulteration-free Indian food products",
   "publisher": {
     "@id": `${SITE_URL}/#organization`,

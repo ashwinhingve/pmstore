@@ -16,14 +16,14 @@ export function Footer() {
               <div className="relative h-12 w-12 flex-shrink-0">
                 <Image
                   src="/images/logo.jpg"
-                  alt="Tapti Food & Spices Logo"
+                  alt="PMStore Logo"
                   fill
                   className="object-contain rounded-full"
                 />
               </div>
               <div>
                 <h3 className="text-lg font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
-                  Tapti Food &amp; Spices
+                  PMStore Food &amp; Spices
                 </h3>
                 <p className="text-xs font-medium text-muted-foreground">शुद्धता का वादा</p>
               </div>
@@ -53,7 +53,7 @@ export function Footer() {
                 <Instagram className="h-4 w-4" />
               </Link>
               <Link
-                href="https://x.com/Tapti_food"
+                href="https://x.com/PMStore_food"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-700 transition-colors"
@@ -199,10 +199,10 @@ export function Footer() {
             <div>
               <p className="text-sm font-semibold text-gray-900">Email Us</p>
               <a
-                href="mailto:info@taptifs.com"
+                href="mailto:info@pratigyamedicalstore.com"
                 className="text-sm text-muted-foreground hover:text-amber-700 hover:underline transition-colors"
               >
-                info@taptifs.com
+                info@pratigyamedicalstore.com
               </a>
             </div>
           </div>
@@ -220,7 +220,7 @@ export function Footer() {
         <div className="border-t pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-muted-foreground text-center md:text-left">
-              &copy; {currentYear} Tapti Food &amp; Spices (TAPTIFS™). All rights reserved.
+              &copy; {currentYear} PMStore Food &amp; Spices (PMSTORE™). All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground text-center md:text-right">
               Now delivering to 20000+ pincodes

@@ -1,6 +1,6 @@
 // Application Constants
 
-export const SITE_NAME = "TAPTIFS";
+export const SITE_NAME = "PMSTORE";
 export const SITE_DESCRIPTION = "Premium Quality Food & Spices";
 
 // Product Categories
@@ -55,11 +55,11 @@ export const IMAGE_SIZES = {
 
 // Social Media Links
 export const SOCIAL_LINKS = {
-  FACEBOOK: "https://facebook.com/taptifs",
-  INSTAGRAM: "https://instagram.com/taptifs",
-  TWITTER: "https://twitter.com/taptifs",
+  FACEBOOK: "https://facebook.com/pmstore",
+  INSTAGRAM: "https://instagram.com/pmstore",
+  TWITTER: "https://twitter.com/pmstore",
 };
 
 // Contact Info
-export const CONTACT_EMAIL = "info@taptifs.com";
+export const CONTACT_EMAIL = "info@pratigyamedicalstore.com";
 export const CONTACT_PHONE = "+91-93292 16544";

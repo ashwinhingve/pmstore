@@ -138,7 +138,7 @@ export const products: ProductData[] = [
     tags: ["dry fruits", "powder", "healthy", "vitamins", "nutrition"],
     averageRating: 4.4,
     totalReviews: 18,
-    amazonUrl: "https://www.amazon.in/Tapti-Nutrient-Pistachios-Boosting-Superfood/dp/B0FNN6M4HJ/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&ref_=lscx_w_ssf_na"
+    amazonUrl: "https://www.amazon.in/PMStore-Nutrient-Pistachios-Boosting-Superfood/dp/B0FNN6M4HJ/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&ref_=lscx_w_ssf_na"
   },
   {
     id: "6",
@@ -160,7 +160,7 @@ export const products: ProductData[] = [
     tags: ["saffron", "kesar", "premium", "kashmiri", "spice"],
     averageRating: 4.9,
     totalReviews: 67,
-    amazonUrl: "https://www.amazon.in/Taptifs-Premium-Kashmiri-Saffron-Traditional/dp/B0FV3CPS4P/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_p=da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_r=QSKYYM6AFYVWSHD5CV0N&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&ref_=lscx_w_ssf_na"
+    amazonUrl: "https://www.amazon.in/PMStorefs-Premium-Kashmiri-Saffron-Traditional/dp/B0FV3CPS4P/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_p=da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_r=QSKYYM6AFYVWSHD5CV0N&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&ref_=lscx_w_ssf_na"
   },
   {
     id: "7",
@@ -182,7 +182,7 @@ export const products: ProductData[] = [
     tags: ["dry fruits", "premium", "nutrition", "healthy"],
     averageRating: 4.5,
     totalReviews: 22,
-    amazonUrl: "https://www.amazon.in/Taptifs-Fruits-Mixture-Powder-Preservative-Free/dp/B0FSKV4YXC/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_p=da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_r=QSKYYM6AFYVWSHD5CV0N&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&ref_=lscx_w_ssf_na"
+    amazonUrl: "https://www.amazon.in/PMStorefs-Fruits-Mixture-Powder-Preservative-Free/dp/B0FSKV4YXC/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_p=da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_r=QSKYYM6AFYVWSHD5CV0N&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&ref_=lscx_w_ssf_na"
   },
   {
     id: "8",
@@ -292,7 +292,7 @@ export const products: ProductData[] = [
     tags: ["gond katira", "ayurvedic", "natural", "health"],
     averageRating: 4.4,
     totalReviews: 14,
-    amazonUrl: "https://www.amazon.in/Taptifs-Premium-Gond-Katira-Preservative-Free/dp/B0FV8DZLKZ/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_p=da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_r=QSKYYM6AFYVWSHD5CV0N&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&ref_=lscx_w_ssf_na"
+    amazonUrl: "https://www.amazon.in/PMStorefs-Premium-Gond-Katira-Preservative-Free/dp/B0FV8DZLKZ/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_p=da911696-31a7-479c-9922-299ce8aee4d0&pf_rd_r=QSKYYM6AFYVWSHD5CV0N&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&ref_=lscx_w_ssf_na"
   },
   {
     id: "13",
@@ -314,7 +314,7 @@ export const products: ProductData[] = [
     tags: ["jaggery", "powder", "chemical free", "healthy"],
     averageRating: 4.5,
     totalReviews: 21,
-    amazonUrl: "https://www.amazon.in/Taptifs-Jaggery-Powder-Preservative-Free-Sweetener/dp/B0FSKRWNXV/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&ref_=lscx_w_ssf_na"
+    amazonUrl: "https://www.amazon.in/PMStorefs-Jaggery-Powder-Preservative-Free-Sweetener/dp/B0FSKRWNXV/?_encoding=UTF8&m=AP7UIG7ND66L&psc=1&pd_rd_w=YxY5F&pd_rd_wg=r0N2g&pd_rd_r=0c84583b-c61f-4201-bf36-e06f95679031&content-id=amzn1.sym.da911696-31a7-479c-9922-299ce8aee4d0&ref_=lscx_w_ssf_na"
   },
   {
     id: "14",

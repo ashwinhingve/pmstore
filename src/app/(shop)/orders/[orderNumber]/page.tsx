@@ -410,10 +410,10 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                 </p>
                 <div className="space-y-2">
                   <a
-                    href="mailto:support@taptifs.com"
+                    href="mailto:support@pratigyamedicalstore.com"
                     className="block text-sm font-medium text-amber-600 hover:text-amber-700"
                   >
-                    📧 support@taptifs.com
+                    📧 support@pratigyamedicalstore.com
                   </a>
                   <a
                     href="tel:+919329216544"

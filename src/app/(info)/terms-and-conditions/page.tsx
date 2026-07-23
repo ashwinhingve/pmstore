@@ -37,7 +37,7 @@ export default function TermsConditionsPage() {
             {/* Introduction */}
             <div className="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-8 shadow-lg">
               <p className="text-gray-700 leading-relaxed">
-                By accessing or using <strong>www.taptifs.com</strong>, you agree to the following terms and conditions. Please read them carefully before placing an order.
+                By accessing or using <strong>www.pratigyamedicalstore.com</strong>, you agree to the following terms and conditions. Please read them carefully before placing an order.
               </p>
             </div>
 
@@ -104,7 +104,7 @@ export default function TermsConditionsPage() {
                       All payments are processed through secure and trusted third-party payment gateways.
                     </p>
                     <p className="leading-relaxed">
-                      Tapti Food & Spices does not have access to customer payment credentials.
+                      PMStore does not have access to customer payment credentials.
                     </p>
                     <p className="leading-relaxed">
                       Transaction delays, failures, or refunds are subject to the policies of the respective banks and payment gateway providers.
@@ -124,7 +124,7 @@ export default function TermsConditionsPage() {
                   <h2 className="text-2xl font-bold text-gray-800 mb-3">Shipping & Delivery</h2>
                   <ul className="space-y-2 text-gray-700">
                     <li>• Delivery timelines are estimated and may vary due to logistics partners or unforeseen circumstances</li>
-                    <li>• Tapti Food & Spices is not liable for courier-related delays</li>
+                    <li>• PMStore is not liable for courier-related delays</li>
                   </ul>
                 </div>
               </div>
@@ -134,7 +134,7 @@ export default function TermsConditionsPage() {
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-gray-800">Intellectual Property</h2>
               <p className="text-gray-700 leading-relaxed">
-                All website content, logos, images, and branding are the exclusive property of Tapti Food & Spices and may not be used without written permission.
+                All website content, logos, images, and branding are the exclusive property of PMStore and may not be used without written permission.
               </p>
             </div>
 
@@ -142,7 +142,7 @@ export default function TermsConditionsPage() {
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-gray-800">Limitation of Liability</h2>
               <p className="text-gray-700 leading-relaxed mb-3">
-                Tapti Food & Spices shall not be liable for:
+                PMStore shall not be liable for:
               </p>
               <ul className="space-y-2 text-gray-700">
                 <li>• Indirect or consequential damages</li>
@@ -175,11 +175,11 @@ export default function TermsConditionsPage() {
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold text-gray-800 mb-4">Contact Information</h2>
                   <div className="space-y-2 text-gray-700">
-                    <p><strong>Tapti Food & Spices (TAPTIFS™)</strong></p>
+                    <p><strong>PMStore (PMSTORE™)</strong></p>
                     <p>📍 Goula, Tehsil Multai, District Betul, Madhya Pradesh – 460557</p>
                     <p>📧 Email: taptiagrofood@gmail.com</p>
                     <p>📞 Phone: +91-9770355137</p>
-                    <p>🌐 Website: www.taptifs.com</p>
+                    <p>🌐 Website: www.pratigyamedicalstore.com</p>
                   </div>
                 </div>
               </div>

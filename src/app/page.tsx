@@ -142,7 +142,7 @@ export default async function Home() {
                 Goodness Inside, Quality Outside
               </h3>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                TAPTIFS spices are a wholesome fusion of tradition and taste,
+                PMSTORE spices are a wholesome fusion of tradition and taste,
                 crafted with nutrient-rich ingredients sourced from the finest farms.
                 Available in delightful variants, each spice offers a unique flavor
                 experience. Made with care and natural ingredients, they are ideal for
@@ -236,7 +236,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Why Choose TAPTIFS — Trust Badges */}
+      {/* Why Choose PMSTORE — Trust Badges */}
       <TrustBadges />
 
       {/* Production Process */}

@@ -61,38 +61,38 @@ class SMSService {
   }
 
   private async sendOtp(phone: string, otp: string): Promise<SMSResult> {
-    const message = `${otp} is your Tapti Spices verification code. Valid for 5 minutes. Do not share this with anyone.`;
+    const message = `${otp} is your PMStore Spices verification code. Valid for 5 minutes. Do not share this with anyone.`;
     return this.sendSMS(phone, message);
   }
 
   async sendOrderConfirmationSMS(phone: string, orderNumber: string, amount: number): Promise<SMSResult> {
-    const message = `Your order ${orderNumber} has been confirmed! Amount: Rs.${amount.toFixed(2)}. Track at ${process.env.NEXT_PUBLIC_APP_URL}/orders - Tapti Spices`;
+    const message = `Your order ${orderNumber} has been confirmed! Amount: Rs.${amount.toFixed(2)}. Track at ${process.env.NEXT_PUBLIC_APP_URL}/orders - PMStore Spices`;
     return this.sendSMS(phone, message);
   }
 
   async sendShipmentSMS(phone: string, orderNumber: string, trackingNumber: string): Promise<SMSResult> {
-    const message = `Your order ${orderNumber} has been shipped! Tracking: ${trackingNumber}. Track at ${process.env.NEXT_PUBLIC_APP_URL}/orders - Tapti Spices`;
+    const message = `Your order ${orderNumber} has been shipped! Tracking: ${trackingNumber}. Track at ${process.env.NEXT_PUBLIC_APP_URL}/orders - PMStore Spices`;
     return this.sendSMS(phone, message);
   }
 
   async sendDeliverySMS(phone: string, orderNumber: string): Promise<SMSResult> {
-    const message = `Your order ${orderNumber} has been delivered! Thank you for shopping with Tapti Spices.`;
+    const message = `Your order ${orderNumber} has been delivered! Thank you for shopping with PMStore Spices.`;
     return this.sendSMS(phone, message);
   }
 
   async sendPaymentFailedSMS(phone: string, orderNumber: string): Promise<SMSResult> {
-    const message = `Payment failed for order ${orderNumber}. Please retry at ${process.env.NEXT_PUBLIC_APP_URL}/orders - Tapti Spices`;
+    const message = `Payment failed for order ${orderNumber}. Please retry at ${process.env.NEXT_PUBLIC_APP_URL}/orders - PMStore Spices`;
     return this.sendSMS(phone, message);
   }
 
   async sendOrderCancelledSMS(phone: string, orderNumber: string, refundAmount?: number): Promise<SMSResult> {
     const refundText = refundAmount ? ` Refund of Rs.${refundAmount.toFixed(2)} will be processed in 5-7 days.` : '';
-    const message = `Your order ${orderNumber} has been cancelled.${refundText} - Tapti Spices`;
+    const message = `Your order ${orderNumber} has been cancelled.${refundText} - PMStore Spices`;
     return this.sendSMS(phone, message);
   }
 
   async sendOutForDeliverySMS(phone: string, orderNumber: string): Promise<SMSResult> {
-    const message = `Your order ${orderNumber} is out for delivery and will reach you soon! - Tapti Spices`;
+    const message = `Your order ${orderNumber} is out for delivery and will reach you soon! - PMStore Spices`;
     return this.sendSMS(phone, message);
   }
 
@@ -101,12 +101,12 @@ class SMSService {
   }
 
   async sendReturnRequestSMS(phone: string, orderNumber: string): Promise<SMSResult> {
-    const message = `Return request for order ${orderNumber} received. We'll review within 2-3 business days. - Tapti Spices`;
+    const message = `Return request for order ${orderNumber} received. We'll review within 2-3 business days. - PMStore Spices`;
     return this.sendSMS(phone, message);
   }
 
   async sendFeedbackRequestSMS(phone: string, orderNumber: string, reviewUrl: string): Promise<SMSResult> {
-    const message = `Thank you for your Tapti order ${orderNumber}! Share your experience: ${reviewUrl} - Tapti Spices`;
+    const message = `Thank you for your PMStore order ${orderNumber}! Share your experience: ${reviewUrl} - PMStore Spices`;
     return this.sendSMS(phone, message);
   }
 

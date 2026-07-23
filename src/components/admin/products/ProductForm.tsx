@@ -823,9 +823,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-5 h-5 rounded-full bg-gray-100 border border-gray-200 flex-shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-600 leading-none font-medium">taptifs.in</p>
+                    <p className="text-xs text-gray-600 leading-none font-medium">pmstore.in</p>
                     <p className="text-[11px] text-gray-400 leading-none mt-0.5">
-                      taptifs.in &rsaquo; products &rsaquo; {formData.slug || 'product-slug'}
+                      pmstore.in &rsaquo; products &rsaquo; {formData.slug || 'product-slug'}
                     </p>
                   </div>
                 </div>

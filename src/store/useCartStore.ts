@@ -156,7 +156,7 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: 'tapti-cart-storage',
+      name: 'pmstore-cart',
     }
   )
 );

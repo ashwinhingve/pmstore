@@ -26,8 +26,8 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Email to admin - ALWAYS send to info@taptifs.com
-    const adminEmail = process.env.ADMIN_EMAIL || "info@taptifs.com"
+    // Email to admin - ALWAYS send to info@pratigyamedicalstore.com
+    const adminEmail = process.env.ADMIN_EMAIL || "info@pratigyamedicalstore.com"
     const adminMailOptions = {
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: adminEmail,
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
             <p style="line-height: 1.6; color: #6b7280;">${message}</p>
           </div>
           <p style="color: #9ca3af; font-size: 12px; margin-top: 30px;">
-            This email was sent from the TAPTIFS contact form.
+            This email was sent from the PMSTORE contact form.
           </p>
         </div>
       `,
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     const userMailOptions = {
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: email,
-      subject: "Thank you for contacting TAPTIFS",
+      subject: "Thank you for contacting PMSTORE",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #d97706;">Thank You for Contacting Us!</h2>
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
             <p><strong>Your message:</strong></p>
             <p style="line-height: 1.6; color: #6b7280;">${message}</p>
           </div>
-          <p>Best regards,<br>The TAPTIFS Team</p>
+          <p>Best regards,<br>The PMSTORE Team</p>
         </div>
       `,
     }
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     // Send emails (only if SMTP is configured)
     if (process.env.SMTP_USER && process.env.SMTP_PASS) {
       try {
-        // Always send to admin (info@taptifs.com)
+        // Always send to admin (info@pratigyamedicalstore.com)
         console.log(`Sending contact form to: ${adminEmail}`)
         await transporter.sendMail(adminMailOptions)
         console.log(`✓ Contact form sent successfully to ${adminEmail}`)

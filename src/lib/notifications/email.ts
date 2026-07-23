@@ -39,7 +39,7 @@ class EmailService {
           user: process.env.SMTP_USER,
           pass: smtpPassword,
         },
-        from: process.env.EMAIL_FROM || process.env.SMTP_FROM || 'Tapti Spices <noreply@taptifs.com>',
+        from: process.env.EMAIL_FROM || process.env.SMTP_FROM || 'PMStore Spices <noreply@pratigyamedicalstore.com>',
       };
 
       this.transporter = nodemailer.createTransport({
@@ -138,7 +138,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Tapti Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
               <p>If you have any questions, please contact our support team.</p>
             </div>
           </div>
@@ -198,7 +198,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Tapti Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -248,10 +248,10 @@ class EmailService {
                 <a href="${process.env.NEXT_PUBLIC_APP_URL}/orders/${order._id}" class="button">View Order</a>
               </div>
 
-              <p style="margin-top: 20px;">Thank you for shopping with Tapti Spices!</p>
+              <p style="margin-top: 20px;">Thank you for shopping with PMStore Spices!</p>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Tapti Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -310,7 +310,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Tapti Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
               <p>Need help? Contact our support team.</p>
             </div>
           </div>
@@ -335,7 +335,7 @@ class EmailService {
   }): Promise<void> {
     const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
     const method = order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taptifs.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
 
     const subject = `New Order: ${order.orderNumber} — Rs.${order.totalAmount.toFixed(2)}`;
     const html = `
@@ -385,7 +385,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>Taptifs Admin Notification</p>
+              <p>PMStorefs Admin Notification</p>
             </div>
           </div>
         </body>
@@ -397,7 +397,7 @@ class EmailService {
 
   async notifyAdminPaymentFailed(order: { orderNumber: string; customerName: string; customerEmail: string; totalAmount: number }): Promise<void> {
     const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taptifs.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Payment Failed: ${order.orderNumber} — Rs.${order.totalAmount.toFixed(2)}`;
     const html = `
       <!DOCTYPE html><html><head><style>
@@ -423,7 +423,7 @@ class EmailService {
               <a href="${appUrl}/admin/orders" class="button">View in Admin Panel</a>
             </div>
           </div>
-          <div class="footer"><p>Taptifs Admin Notification</p></div>
+          <div class="footer"><p>PMStorefs Admin Notification</p></div>
         </div>
       </body></html>`;
     await this.sendEmail(adminEmail, subject, html);
@@ -431,7 +431,7 @@ class EmailService {
 
   async notifyAdminShipmentCreated(order: { orderNumber: string; customerName: string; customerEmail: string }, shipment: { waybill?: string; provider?: string; trackingUrl?: string }): Promise<void> {
     const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taptifs.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Order Shipped: ${order.orderNumber}`;
     const html = `
       <!DOCTYPE html><html><head><style>
@@ -459,7 +459,7 @@ class EmailService {
               <a href="${appUrl}/admin/orders" class="button">View in Admin Panel</a>
             </div>
           </div>
-          <div class="footer"><p>Taptifs Admin Notification</p></div>
+          <div class="footer"><p>PMStorefs Admin Notification</p></div>
         </div>
       </body></html>`;
     await this.sendEmail(adminEmail, subject, html);
@@ -467,7 +467,7 @@ class EmailService {
 
   async notifyAdminOrderDelivered(order: { orderNumber: string; customerName: string; customerEmail: string }): Promise<void> {
     const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taptifs.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Order Delivered: ${order.orderNumber}`;
     const html = `
       <!DOCTYPE html><html><head><style>
@@ -492,7 +492,7 @@ class EmailService {
               <a href="${appUrl}/admin/orders" class="button">View in Admin Panel</a>
             </div>
           </div>
-          <div class="footer"><p>Taptifs Admin Notification</p></div>
+          <div class="footer"><p>PMStorefs Admin Notification</p></div>
         </div>
       </body></html>`;
     await this.sendEmail(adminEmail, subject, html);
@@ -500,7 +500,7 @@ class EmailService {
 
   async notifyAdminOrderCancelled(order: { orderNumber: string; customerName: string; customerEmail: string; totalAmount: number; refundAmount?: number }): Promise<void> {
     const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taptifs.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Order Cancelled: ${order.orderNumber}`;
     const html = `
       <!DOCTYPE html><html><head><style>
@@ -527,7 +527,7 @@ class EmailService {
               <a href="${appUrl}/admin/orders" class="button">View in Admin Panel</a>
             </div>
           </div>
-          <div class="footer"><p>Taptifs Admin Notification</p></div>
+          <div class="footer"><p>PMStorefs Admin Notification</p></div>
         </div>
       </body></html>`;
     await this.sendEmail(adminEmail, subject, html);
@@ -559,7 +559,7 @@ class EmailService {
             </div>
             <div class="content">
               <p>Hello,</p>
-              <p>Use the following code to sign in to your Tapti Spices account:</p>
+              <p>Use the following code to sign in to your PMStore Spices account:</p>
 
               <div class="otp-box">
                 <p><strong>Your verification code:</strong></p>
@@ -570,7 +570,7 @@ class EmailService {
               <p>If you did not request this code, you can safely ignore this email.</p>
             </div>
             <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} Tapti Spices. All rights reserved.</p>
+              <p>&copy; ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -590,7 +590,7 @@ class EmailService {
       return;
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taptifs.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const reviewUrl = `${appUrl}/orders/${order._id}#reviews`;
     const subject = `Thank you for your order ${order.orderNumber} - Share your experience!`;
     const html = `
@@ -614,7 +614,7 @@ class EmailService {
             </div>
             <div class="content">
               <p>Dear Customer,</p>
-              <p>Your order <strong>${order.orderNumber}</strong> has been delivered. We hope you're enjoying your Tapti Spices products!</p>
+              <p>Your order <strong>${order.orderNumber}</strong> has been delivered. We hope you're enjoying your PMStore Spices products!</p>
 
               <div class="stars">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
 
@@ -624,10 +624,10 @@ class EmailService {
                 <a href="${reviewUrl}" class="button">Leave a Review</a>
               </div>
 
-              <p>Thank you for choosing Tapti Spices. We look forward to serving you again!</p>
+              <p>Thank you for choosing PMStore Spices. We look forward to serving you again!</p>
             </div>
             <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} Tapti Spices. All rights reserved.</p>
+              <p>&copy; ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -642,7 +642,7 @@ class EmailService {
    */
   async notifyAdminReturnRequest(order: any, returnRequest: any) {
     const adminEmail = process.env.ADMIN_EMAIL || 'taptiagrofood@gmail.com';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://taptifs.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
 
     const subject = `Return Request: Order ${order.orderNumber}`;
     const html = `
@@ -685,7 +685,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>Taptifs Admin Notification</p>
+              <p>PMStorefs Admin Notification</p>
             </div>
           </div>
         </body>
@@ -745,7 +745,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Tapti Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -783,10 +783,10 @@ class EmailService {
       // DB lookup failed — send email without promo code
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://taptifs.in';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://pmstore.in';
     const greeting = name ? `Hi ${name},` : 'Hello,';
 
-    const subject = 'Welcome to Tapti Food & Spices!';
+    const subject = 'Welcome to PMStore!';
     const html = `
       <!DOCTYPE html>
       <html>
@@ -800,12 +800,12 @@ class EmailService {
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="color:#fff;margin:0;font-size:28px;">Welcome to TAPTIFS!</h1>
+              <h1 style="color:#fff;margin:0;font-size:28px;">Welcome to PMSTORE!</h1>
               <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:15px;">The Taste of Purity</p>
             </div>
             <div class="content">
               <p>${greeting}</p>
-              <p>Thank you for joining Tapti Food &amp; Spices — your destination for 100% adulteration-free spices, oils, and superfoods sourced straight from trusted farms.</p>
+              <p>Thank you for joining PMStore Food &amp; Spices — your destination for 100% adulteration-free spices, oils, and superfoods sourced straight from trusted farms.</p>
               ${promoBlock}
               <p>Start exploring our collection and taste the difference of pure, farm-fresh quality.</p>
               <div style="text-align:center;margin:28px 0;">
@@ -815,7 +815,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Tapti Food &amp; Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} PMStore Food &amp; Spices. All rights reserved.</p>
             </div>
           </div>
         </body>

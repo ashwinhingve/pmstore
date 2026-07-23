@@ -37,7 +37,7 @@ export default function PrivacyPolicyPage() {
             {/* Introduction */}
             <div className="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-8 shadow-lg">
               <p className="text-gray-700 leading-relaxed">
-                Tapti Food & Spices (TAPTIFS™) respects customer privacy and is committed to protecting personal information shared with us.
+                PMStore (PMSTORE™) respects customer privacy and is committed to protecting personal information shared with us.
               </p>
             </div>
 
@@ -133,13 +133,13 @@ export default function PrivacyPolicyPage() {
                   We use trusted, secure, and PCI-DSS compliant payment gateways.
                 </p>
                 <p className="leading-relaxed">
-                  Tapti Food & Spices does not store or process any debit card, credit card, UPI, or net-banking details.
+                  PMStore does not store or process any debit card, credit card, UPI, or net-banking details.
                 </p>
                 <p className="leading-relaxed">
                   All payment transactions are encrypted and handled directly by the payment gateway provider.
                 </p>
                 <p className="leading-relaxed">
-                  Tapti Food & Spices shall not be liable for any technical or operational issues arising from the payment gateway or banking institutions.
+                  PMStore shall not be liable for any technical or operational issues arising from the payment gateway or banking institutions.
                 </p>
               </div>
             </div>
@@ -169,11 +169,11 @@ export default function PrivacyPolicyPage() {
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold text-gray-800 mb-4">Contact Information</h2>
                   <div className="space-y-2 text-gray-700">
-                    <p><strong>Tapti Food & Spices (TAPTIFS™)</strong></p>
+                    <p><strong>PMStore (PMSTORE™)</strong></p>
                     <p>📍 Goula, Tehsil Multai, District Betul, Madhya Pradesh – 460557</p>
                     <p>📧 Email: taptiagrofood@gmail.com</p>
                     <p>📞 Phone: +91-9770355137</p>
-                    <p>🌐 Website: www.taptifs.com</p>
+                    <p>🌐 Website: www.pratigyamedicalstore.com</p>
                   </div>
                 </div>
               </div>

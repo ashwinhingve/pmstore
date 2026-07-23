@@ -171,9 +171,9 @@ export default function ShippingPolicyPage() {
                   Our customer support team is happy to help with any shipping-related queries.
                 </p>
                 <div className="flex flex-wrap gap-6">
-                  <a href="mailto:support@taptifs.com" className="flex items-center gap-2 text-white hover:text-amber-200 transition">
+                  <a href="mailto:support@pratigyamedicalstore.com" className="flex items-center gap-2 text-white hover:text-amber-200 transition">
                     <Mail className="w-5 h-5" />
-                    support@taptifs.com
+                    support@pratigyamedicalstore.com
                   </a>
                   <a href="tel:+919329216544" className="flex items-center gap-2 text-white hover:text-amber-200 transition">
                     <Phone className="w-5 h-5" />

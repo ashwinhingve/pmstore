@@ -99,7 +99,7 @@ export default function AboutPage() {
     {
       year: "2019",
       title: "The Beginning",
-      description: "TAPTIFS was founded with a mission to make premium superfoods accessible to everyone. Started with a small team and big dreams.",
+      description: "PMSTORE was founded with a mission to make premium superfoods accessible to everyone. Started with a small team and big dreams.",
       icon: <Sparkles className="w-8 h-8 text-white" />,
     },
     {
@@ -360,7 +360,7 @@ export default function AboutPage() {
             </h2>
             <div className="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
-              The passionate people behind TAPTIFS, dedicated to bringing you the finest superfoods
+              The passionate people behind PMSTORE, dedicated to bringing you the finest superfoods
             </p>
           </AnimatedSection>
 
@@ -416,7 +416,7 @@ export default function AboutPage() {
               Ready to Start Your Health Journey?
             </h2>
             <p className="text-xl text-gray-700 mb-8">
-              Join thousands of satisfied customers who have transformed their lives with TAPTIFS superfoods
+              Join thousands of satisfied customers who have transformed their lives with PMSTORE superfoods
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products">

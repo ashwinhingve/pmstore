@@ -1,10 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cd /mnt/d/Do Not Open/project/tapti/taptifs && npx tailwindcss:*)",
+      "Bash(cd /mnt/d/Do Not Open/project/tapti/pmstore && npx tailwindcss:*)",
       "Bash(cat:*)",
-      "Bash(cd /mnt/d/Do\\ Not\\ Open/project/tapti/taptifs && npm install:*)",
-      "Bash(cd /mnt/d/Do\\ Not\\ Open/project/tapti/taptifs && npm run build:*)",
+      "Bash(cd /mnt/d/Do\\ Not\\ Open/project/tapti/pmstore && npm install:*)",
+      "Bash(cd /mnt/d/Do\\ Not\\ Open/project/tapti/pmstore && npm run build:*)",
       "WebFetch(domain:www.amazon.in)",
       "WebSearch",
       "WebFetch(domain:upload.wikimedia.org)",
@@ -13,15 +13,15 @@
       "Bash(find:*)",
       "Bash(pkill:*)",
       "Bash(timeout 8 npm run dev)",
-      "Bash(cd /mnt/d/Do Not Open/project/tapti/taptifs && timeout 180 npm run build:*)",
+      "Bash(cd /mnt/d/Do Not Open/project/tapti/pmstore && timeout 180 npm run build:*)",
       "Bash(grep:*)",
       "Bash(npm install:*)",
-      "Bash(cd /mnt/d/Do\\\\ Not\\\\ Open/project/tapti/taptifs && npx ts-node:*)",
+      "Bash(cd /mnt/d/Do\\\\ Not\\\\ Open/project/tapti/pmstore && npx ts-node:*)",
       "Bash(cd:*)",
       "Bash(source .env.local)",
       "Bash(npx tsx:*)",
       "Bash(pgrep:*)",
-      "Bash(cd /mnt/d/Do\\\\ Not\\\\ Open/project/tapti/taptifs && timeout 180 npm run dev:*)",
+      "Bash(cd /mnt/d/Do\\\\ Not\\\\ Open/project/tapti/pmstore && timeout 180 npm run dev:*)",
       "Bash(curl:*)",
       "Bash(npm run build:*)",
       "Bash(npx tsc:*)"

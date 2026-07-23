@@ -285,9 +285,9 @@ function generateInvoiceHTML(order: any): string {
 
   <div class="invoice-header">
     <div class="company-info">
-      <h1>Tapti Food & Spices</h1>
+      <h1>PMStore</h1>
       <p>Premium Quality Food Products</p>
-      <p>Email: support@taptifs.com</p>
+      <p>Email: support@pratigyamedicalstore.com</p>
       <p>Phone: +91-93292 16544</p>
       <p>GST No: 23GGLPD7346M1ZZ</p>
     </div>
@@ -404,7 +404,7 @@ function generateInvoiceHTML(order: any): string {
   <div class="footer">
     <p>Thank you for your business!</p>
     <p>This is a computer-generated invoice and does not require a signature.</p>
-    <p>&copy; ${new Date().getFullYear()} Tapti Food & Spices. All rights reserved.</p>
+    <p>&copy; ${new Date().getFullYear()} PMStore. All rights reserved.</p>
   </div>
 </body>
 </html>

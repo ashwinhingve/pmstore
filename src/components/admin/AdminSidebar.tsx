@@ -99,7 +99,7 @@ export default function AdminSidebar() {
               <h2 className="text-xl font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
                 Admin Panel
               </h2>
-              <p className="text-sm text-gray-500">Tapti Food & Spices</p>
+              <p className="text-sm text-gray-500">PMStore</p>
             </div>
           </div>
 
