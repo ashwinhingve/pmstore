@@ -23,8 +23,9 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             />
             <div
               className={cn(
-                "w-5 h-5 rounded border-2 transition-all duration-200 flex items-center justify-center",
+                "w-5 h-5 rounded border-2 transition-all duration-[var(--dur-fast)] flex items-center justify-center",
                 "peer-checked:bg-[var(--mint)] peer-checked:border-[var(--mint)]",
+                "peer-focus-visible:outline-2 peer-focus-visible:outline-[var(--ink)] peer-focus-visible:outline-offset-2",
                 error
                   ? "border-[var(--ink)]"
                   : "border-[var(--foil-soft)] group-hover:border-[var(--ink)]",

@@ -18,9 +18,9 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           <input
             type="tel"
             className={cn(
-              "flex h-12 w-full rounded-[var(--radius-sm)] border-2 bg-[var(--paper-card)] pl-12 pr-4 py-3 text-base transition-all duration-200",
+              "flex h-12 w-full rounded-[var(--radius-sm)] border-2 bg-[var(--paper-card)] pl-12 pr-4 py-3 text-base transition-[border-color,box-shadow] duration-[var(--dur-fast)]",
               "placeholder:text-[var(--ink-40)]",
-              "focus:outline-none",
+              "focus:outline-none focus:border-[var(--ink-70)] focus:shadow-[0_0_0_4px_var(--foil-soft)]",
               "disabled:cursor-not-allowed disabled:opacity-50",
               error
                 ? "border-[var(--ink)] aria-invalid:border-[var(--ink)]"

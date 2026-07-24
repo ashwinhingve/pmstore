@@ -10,12 +10,15 @@ export function EmptyState({
   description,
   action,
   icon,
+  illustration,
   className,
 }: {
   title: string;
   description: string;
   action?: { label: string; href: string };
   icon?: React.ReactNode;
+  /** A component from src/components/illustrations — preferred over icon. */
+  illustration?: React.ReactNode;
   className?: string;
 }) {
   return (
@@ -25,7 +28,8 @@ export function EmptyState({
         className
       )}
     >
-      {icon && <div className="mb-3 text-[var(--ink-40)]">{icon}</div>}
+      {illustration && <div className="mb-5 w-44 max-w-full sm:w-52">{illustration}</div>}
+      {!illustration && icon && <div className="mb-3 text-[var(--ink-40)]">{icon}</div>}
       <h2 className="text-[length:var(--step-1)] font-semibold text-[var(--ink)]">{title}</h2>
       <p className="mx-auto mt-2 max-w-sm text-[var(--ink-70)]">{description}</p>
       {action && (
