@@ -64,14 +64,14 @@ export const CountUpStat: React.FC<CountUpStatProps> = ({
       className={`text-center p-6 ${className}`}
     >
       {icon && (
-        <div className="flex justify-center mb-4 text-amber-600">
+        <div className="flex justify-center mb-4 text-[var(--ink)]">
           {icon}
         </div>
       )}
-      <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent mb-2">
+      <div className="text-4xl md:text-5xl font-bold text-[var(--ink)] mb-2" style={{ fontFamily: 'var(--font-data)' }}>
         {prefix}{count.toLocaleString()}{suffix}
       </div>
-      <div className="text-sm md:text-base text-gray-600 font-medium">
+      <div className="text-sm md:text-base text-[var(--ink-70)] font-medium">
         {label}
       </div>
     </motion.div>

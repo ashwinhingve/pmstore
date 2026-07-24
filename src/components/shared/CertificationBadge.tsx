@@ -25,12 +25,12 @@ export const CertificationBadge: React.FC<CertificationBadgeProps> = ({
     <motion.div
       whileHover={{ scale: 1.05, y: -5 }}
       transition={{ duration: 0.3 }}
-      className={`bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 ${className}`}
+      className={`bg-[var(--paper-card)] rounded-xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 ${className}`}
     >
       {/* Icon or Image */}
       <div className="flex justify-center mb-4">
         {certification.image ? (
-          <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-amber-100 to-red-100 p-2">
+          <div className="relative w-24 h-24 rounded-full overflow-hidden bg-[var(--foil-soft)] p-2">
             <Image
               src={certification.image}
               alt={certification.name}
@@ -40,17 +40,17 @@ export const CertificationBadge: React.FC<CertificationBadgeProps> = ({
             />
           </div>
         ) : (
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-500 to-red-600 flex items-center justify-center">
-            {certification.icon || <Shield className="w-12 h-12 text-white" />}
+          <div className="w-24 h-24 rounded-full bg-[var(--mint)] flex items-center justify-center">
+            {certification.icon || <Shield className="w-12 h-12 text-[var(--paper-card)]" />}
           </div>
         )}
       </div>
 
       {/* Content */}
-      <h3 className="text-lg font-bold text-gray-800 text-center mb-2">
+      <h3 className="text-lg font-bold text-[var(--ink)] text-center mb-2">
         {certification.name}
       </h3>
-      <p className="text-sm text-gray-600 text-center leading-relaxed">
+      <p className="text-sm text-[var(--ink-70)] text-center leading-relaxed">
         {certification.description}
       </p>
     </motion.div>

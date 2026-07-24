@@ -34,9 +34,9 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
       whileHover={{ y: -8 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+      <div className="bg-[var(--paper-card)] rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
         {/* Image Container */}
-        <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-amber-100 to-red-100">
+        <div className="relative aspect-square overflow-hidden bg-[var(--foil-soft)]">
           <Image
             src={member.image}
             alt={member.name}
@@ -60,8 +60,8 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
 
         {/* Content */}
         <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-1">{member.name}</h3>
-          <p className="text-amber-600 font-medium mb-4">{member.role}</p>
+          <h3 className="text-xl font-bold text-[var(--ink)] mb-1">{member.name}</h3>
+          <p className="text-[var(--ink-70)] font-medium mb-4">{member.role}</p>
 
           {/* Social Links */}
           <div className="flex gap-3">
@@ -70,7 +70,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
                 href={member.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-100 to-red-100 flex items-center justify-center hover:from-amber-600 hover:to-red-700 text-gray-600 hover:text-white transition-all duration-300"
+                className="w-9 h-9 rounded-full bg-[var(--foil-soft)] flex items-center justify-center hover:bg-[var(--mint)] text-[var(--ink)] hover:text-[var(--paper-card)] transition-all duration-300"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
@@ -80,7 +80,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
                 href={member.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-100 to-red-100 flex items-center justify-center hover:from-amber-600 hover:to-red-700 text-gray-600 hover:text-white transition-all duration-300"
+                className="w-9 h-9 rounded-full bg-[var(--foil-soft)] flex items-center justify-center hover:bg-[var(--mint)] text-[var(--ink)] hover:text-[var(--paper-card)] transition-all duration-300"
               >
                 <Twitter className="w-4 h-4" />
               </a>
@@ -88,7 +88,7 @@ export const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
             {member.email && (
               <a
                 href={`mailto:${member.email}`}
-                className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-100 to-red-100 flex items-center justify-center hover:from-amber-600 hover:to-red-700 text-gray-600 hover:text-white transition-all duration-300"
+                className="w-9 h-9 rounded-full bg-[var(--foil-soft)] flex items-center justify-center hover:bg-[var(--mint)] text-[var(--ink)] hover:text-[var(--paper-card)] transition-all duration-300"
               >
                 <Mail className="w-4 h-4" />
               </a>

@@ -28,8 +28,8 @@ export default function ProductImageGallery({
 
   if (imageUrls.length === 0 && !videoUrl) {
     return (
-      <div className="aspect-square bg-gray-100 rounded-2xl flex items-center justify-center">
-        <p className="text-gray-400">No images available</p>
+      <div className="aspect-square bg-[var(--foil-soft)] rounded-2xl flex items-center justify-center">
+        <p className="text-[var(--ink-40)]">No images available</p>
       </div>
     );
   }
@@ -46,7 +46,7 @@ export default function ProductImageGallery({
   return (
     <div className="space-y-4">
       {/* Main Image / Video */}
-      <div className="relative aspect-square bg-white rounded-2xl shadow-xl overflow-hidden group">
+      <div className="relative aspect-square bg-[var(--paper-card)] rounded-2xl shadow-xl overflow-hidden group">
         {showVideo && videoUrl ? (
           <div className="w-full h-full flex items-center justify-center bg-black">
             {isYouTube ? (
@@ -84,9 +84,9 @@ export default function ProductImageGallery({
             {/* Zoom Button */}
             <button
               onClick={() => setIsLightboxOpen(true)}
-              className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-4 right-4 p-2 bg-[var(--paper-card)] rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              <ZoomIn className="w-5 h-5 text-gray-700" />
+              <ZoomIn className="w-5 h-5 text-[var(--ink)]" />
             </button>
           </>
         )}
@@ -104,8 +104,8 @@ export default function ProductImageGallery({
               }}
               className={`relative aspect-square rounded-lg overflow-hidden transition-all ${
                 selectedIndex === index && !showVideo
-                  ? 'ring-2 ring-amber-600 shadow-lg scale-105'
-                  : 'ring-1 ring-gray-200 hover:ring-amber-400'
+                  ? 'ring-2 ring-[var(--ink)] shadow-lg scale-105'
+                  : 'ring-1 ring-[var(--foil-soft)] hover:ring-[var(--ink)]'
               }`}
             >
               <Image
@@ -124,13 +124,13 @@ export default function ProductImageGallery({
               onClick={() => setShowVideo(true)}
               className={`relative aspect-square rounded-lg overflow-hidden transition-all ${
                 showVideo
-                  ? 'ring-2 ring-amber-600 shadow-lg scale-105'
-                  : 'ring-1 ring-gray-200 hover:ring-amber-400'
+                  ? 'ring-2 ring-[var(--ink)] shadow-lg scale-105'
+                  : 'ring-1 ring-[var(--foil-soft)] hover:ring-[var(--ink)]'
               }`}
             >
-              <div className="w-full h-full bg-gray-900 flex flex-col items-center justify-center">
-                <Play className="w-8 h-8 text-white mb-1" />
-                <span className="text-white text-xs font-medium">Video</span>
+              <div className="w-full h-full bg-[var(--ink)] flex flex-col items-center justify-center">
+                <Play className="w-8 h-8 text-[var(--paper-card)] mb-1" />
+                <span className="text-[var(--paper-card)] text-xs font-medium">Video</span>
               </div>
             </button>
           )}
@@ -145,9 +145,9 @@ export default function ProductImageGallery({
         >
           <button
             onClick={() => setIsLightboxOpen(false)}
-            className="absolute top-4 right-4 p-2 bg-white rounded-full hover:bg-gray-100 transition-colors"
+            className="absolute top-4 right-4 p-2 bg-[var(--paper-card)] rounded-full hover:bg-[var(--foil-soft)] transition-colors"
           >
-            <X className="w-6 h-6 text-gray-700" />
+            <X className="w-6 h-6 text-[var(--ink)]" />
           </button>
 
           <div className="relative w-full max-w-5xl aspect-square">
@@ -173,7 +173,7 @@ export default function ProductImageGallery({
                   }}
                   className={`w-3 h-3 rounded-full transition-all ${
                     selectedIndex === index
-                      ? 'bg-amber-500 w-8'
+                      ? 'bg-[var(--ink)] w-8'
                       : 'bg-white bg-opacity-50 hover:bg-opacity-75'
                   }`}
                 />

@@ -29,8 +29,8 @@ export default function VariantSelector({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-3">
-        Select Variant
+      <label className="block text-sm font-medium text-[var(--ink-70)] mb-3">
+        Select variant
       </label>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {activeVariants.map((variant) => {
@@ -44,23 +44,23 @@ export default function VariantSelector({
               disabled={isOutOfStock}
               className={`p-4 rounded-lg border-2 transition-all text-left ${
                 isSelected
-                  ? 'border-amber-600 bg-amber-50'
+                  ? 'border-[var(--ink)] bg-[var(--foil-soft)]'
                   : isOutOfStock
-                  ? 'border-gray-200 bg-gray-100 cursor-not-allowed opacity-50'
-                  : 'border-gray-200 hover:border-amber-400 hover:bg-amber-50'
+                  ? 'border-[var(--foil-soft)] bg-[var(--foil-soft)] cursor-not-allowed opacity-50'
+                  : 'border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)]'
               }`}
             >
-              <p className="font-medium text-gray-900">{variant.name}</p>
-              <p className="text-sm text-amber-600 font-medium mt-1">
+              <p className="font-medium text-[var(--ink)]">{variant.name}</p>
+              <p className="price text-sm text-[var(--ink)] font-medium mt-1" style={{ fontFamily: 'var(--font-data)' }}>
                 ₹{variant.price.toLocaleString()}
               </p>
               {variant.originalPrice && variant.originalPrice > variant.price && (
-                <p className="text-xs text-gray-400 line-through">
+                <p className="price text-xs text-[var(--ink-40)] line-through" style={{ fontFamily: 'var(--font-data)' }}>
                   ₹{variant.originalPrice.toLocaleString()}
                 </p>
               )}
               {isOutOfStock && (
-                <p className="text-xs text-red-600 mt-1">Out of stock</p>
+                <p className="text-xs text-[var(--ink-70)] mt-1">Out of stock</p>
               )}
             </button>
           );

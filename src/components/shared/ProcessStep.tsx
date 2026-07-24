@@ -30,20 +30,20 @@ export const ProcessStep: React.FC<ProcessStepProps> = ({
           <div className="relative">
             {/* Connector line */}
             {index < steps.length - 1 && (
-              <div className="hidden lg:block absolute top-12 left-full w-full h-1 bg-gradient-to-r from-amber-300 to-transparent -z-10" />
+              <div className="hidden lg:block absolute top-12 left-full w-full h-1 bg-[var(--foil)] -z-10" />
             )}
 
-            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 h-full group hover:scale-105">
+            <div className="bg-[var(--paper-card)] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 h-full group hover:scale-105">
               {/* Number Circle */}
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-red-600 flex items-center justify-center text-white text-2xl font-bold mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+              <div className="w-16 h-16 rounded-full bg-[var(--ink)] flex items-center justify-center text-[var(--paper-card)] text-2xl font-bold mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
                 {step.icon || step.number}
               </div>
 
               {/* Content */}
-              <h3 className="text-lg font-bold text-gray-800 text-center mb-3">
+              <h3 className="text-lg font-bold text-[var(--ink)] text-center mb-3">
                 {step.title}
               </h3>
-              <p className="text-sm text-gray-600 text-center leading-relaxed">
+              <p className="text-sm text-[var(--ink-70)] text-center leading-relaxed">
                 {step.description}
               </p>
             </div>

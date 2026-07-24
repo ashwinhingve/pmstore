@@ -29,13 +29,13 @@ export const FAQAccordion: React.FC<FAQAccordionProps> = ({
       {items.map((item, index) => (
         <div
           key={index}
-          className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+          className="bg-[var(--paper-card)] rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
         >
           <button
             onClick={() => toggleItem(index)}
             className="w-full px-6 py-4 flex items-center justify-between text-left group"
           >
-            <span className="font-semibold text-gray-800 group-hover:text-amber-600 transition-colors">
+            <span className="font-semibold text-[var(--ink)] group-hover:text-[var(--ink-70)] transition-colors">
               {item.question}
             </span>
             <motion.div
@@ -43,7 +43,7 @@ export const FAQAccordion: React.FC<FAQAccordionProps> = ({
               transition={{ duration: 0.3 }}
               className="flex-shrink-0 ml-4"
             >
-              <ChevronDown className="w-5 h-5 text-gray-500 group-hover:text-amber-600" />
+              <ChevronDown className="w-5 h-5 text-[var(--ink-40)] group-hover:text-[var(--ink-70)]" />
             </motion.div>
           </button>
 
@@ -55,7 +55,7 @@ export const FAQAccordion: React.FC<FAQAccordionProps> = ({
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                <div className="px-6 pb-4 text-gray-600 leading-relaxed">
+                <div className="px-6 pb-4 text-[var(--ink-70)] leading-relaxed">
                   {item.answer}
                 </div>
               </motion.div>
