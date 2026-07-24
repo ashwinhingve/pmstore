@@ -3,6 +3,9 @@
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { AlertTriangle } from 'lucide-react';
+import { AuthShell, AuthCard } from '@/components/account/AuthShell';
+import { Button } from '@/components/ui/button';
 
 function ErrorContent() {
   const searchParams = useSearchParams();
@@ -12,18 +15,18 @@ function ErrorContent() {
     switch (error) {
       case 'Configuration':
         return {
-          title: 'Server Configuration Error',
+          title: 'Server configuration error',
           message: 'There is a problem with the server configuration. Please contact support.',
         };
       case 'AccessDenied':
         return {
-          title: 'Access Denied',
+          title: 'Access denied',
           message: 'You do not have permission to sign in.',
         };
       case 'Verification':
         return {
-          title: 'Verification Failed',
-          message: 'The verification token has expired or has already been used.',
+          title: 'Verification failed',
+          message: 'That code has expired or was already used. Request a new one and try again.',
         };
       case 'OAuthSignin':
       case 'OAuthCallback':
@@ -31,33 +34,33 @@ function ErrorContent() {
       case 'EmailCreateAccount':
       case 'Callback':
         return {
-          title: 'Authentication Error',
+          title: 'Sign-in error',
           message: 'There was a problem signing you in. Please try again.',
         };
       case 'OAuthAccountNotLinked':
         return {
-          title: 'Account Already Exists',
-          message: 'An account with this email already exists. Please sign in with the original method you used.',
+          title: 'Account already exists',
+          message: 'An account with this email already exists. Sign in with the method you used originally.',
         };
       case 'EmailSignin':
         return {
-          title: 'Email Sign In Error',
-          message: 'Unable to send sign in email. Please try again.',
+          title: 'Could not send email',
+          message: 'We could not send the sign-in email. Please try again.',
         };
       case 'CredentialsSignin':
         return {
-          title: 'Invalid Credentials',
-          message: 'The email or password you entered is incorrect.',
+          title: 'Sign-in failed',
+          message: 'We could not verify that code. Request a new one and try again.',
         };
       case 'SessionRequired':
         return {
-          title: 'Authentication Required',
-          message: 'You must be signed in to access this page.',
+          title: 'Sign in required',
+          message: 'You must be signed in to view this page.',
         };
       default:
         return {
-          title: 'Authentication Error',
-          message: 'An unexpected error occurred. Please try again.',
+          title: 'Sign-in error',
+          message: 'Something went wrong. Please try again.',
         };
     }
   };
@@ -65,73 +68,54 @@ function ErrorContent() {
   const errorInfo = getErrorMessage(error);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-white to-red-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-6">
-          <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-red-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
+    <AuthShell>
+      <AuthCard className="p-8">
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--foil-soft)]">
+            <AlertTriangle className="h-8 w-8 text-[var(--ink)]" aria-hidden="true" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {errorInfo.title}
-          </h1>
-          <p className="text-gray-600">{errorInfo.message}</p>
+          <h1 className="mb-2 text-[length:var(--step-1)] text-[var(--ink)]">{errorInfo.title}</h1>
+          <p className="text-[var(--ink-70)]">{errorInfo.message}</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-red-700">
-              <strong>Error Code:</strong> {error}
+          <div className="mb-6 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper)] p-4">
+            <p className="text-sm text-[var(--ink-70)]">
+              Reference:{' '}
+              <span style={{ fontFamily: 'var(--font-data)' }} className="text-[var(--ink)]">{error}</span>
             </p>
           </div>
         )}
 
         <div className="space-y-3">
-          <Link
-            href="/login"
-            className="block w-full bg-gradient-to-r from-amber-600 to-red-700 text-white py-3 px-4 rounded-lg hover:from-amber-700 hover:to-red-800 font-medium text-center transition-all"
-          >
-            Try Again
-          </Link>
-          <Link
-            href="/"
-            className="block w-full bg-gray-200 text-gray-800 py-3 px-4 rounded-lg hover:bg-gray-300 font-medium text-center transition-all"
-          >
-            Go to Homepage
-          </Link>
+          <Button asChild className="h-12 w-full text-base font-semibold">
+            <Link href="/login">Try again</Link>
+          </Button>
+          <Button asChild variant="outline" className="h-12 w-full text-base font-semibold">
+            <Link href="/">Go to homepage</Link>
+          </Button>
         </div>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-[var(--ink-70)]">
             Need help?{' '}
-            <Link href="/contact" className="text-amber-600 hover:text-amber-700 font-medium">
-              Contact Support
+            <Link href="/contact" className="font-medium text-[var(--ink)] hover:underline">
+              Contact support
             </Link>
           </p>
         </div>
-      </div>
-    </div>
+      </AuthCard>
+    </AuthShell>
   );
 }
 
 export default function AuthErrorPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--paper)]">
         <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-[var(--foil-soft)] border-t-[var(--ink)]" />
+          <p className="mt-4 text-[var(--ink-70)]">Loading…</p>
         </div>
       </div>
     }>
