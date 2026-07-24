@@ -123,6 +123,59 @@ export async function verifyAdminAccess(): Promise<{
 }
 
 /**
+ * Require staff (or admin) role for a Server Component — redirects otherwise.
+ * Staff run the Rx queue and order-by-prescription flow; admins can do
+ * everything staff can.
+ */
+export async function requireStaff() {
+  const session = await requireAuth();
+
+  if (session.user.role !== 'staff' && session.user.role !== 'admin') {
+    redirect('/');
+  }
+
+  return session;
+}
+
+/**
+ * Verify staff (or admin) access for API routes. Returns a JSON error response
+ * if the caller isn't staff/admin.
+ *
+ * Like verifyAdminAccess, the role is re-read from the database, not trusted
+ * from the JWT (CLAUDE.md rule #4) — a demoted account must lose access the
+ * moment the DB says so, not when its token expires.
+ */
+export async function verifyStaffAccess(): Promise<{
+  session?: any;
+  error?: Response;
+}> {
+  const session = await getSession();
+
+  if (!session || !session.user) {
+    return {
+      error: new Response(
+        JSON.stringify({ error: 'Unauthorized: Authentication required' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      ),
+    };
+  }
+
+  await connectDB();
+  const dbUser = await User.findById(session.user.id).select('role').lean<{ role?: string } | null>();
+
+  if (dbUser?.role !== 'staff' && dbUser?.role !== 'admin') {
+    return {
+      error: new Response(
+        JSON.stringify({ error: 'Forbidden: Staff access required' }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      ),
+    };
+  }
+
+  return { session };
+}
+
+/**
  * Verify authentication for API routes
  * Returns a JSON error response if not authenticated
  *

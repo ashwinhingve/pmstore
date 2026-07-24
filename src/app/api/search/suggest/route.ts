@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb/connection';
 import { searchSuggestSchema } from '@/lib/validations/search';
 import { executeSuggest } from '@/lib/search/execute';
+import { applyRateLimit } from '@/lib/middleware/rateLimit';
 import { Errors, createErrorResponse } from '@/lib/utils/errorHandler';
+
+// Fires on every keystroke, so the ceiling is higher than full search but still
+// bounded per IP to keep autocomplete from being used as a scraping firehose.
+const SUGGEST_RATE_LIMIT = { windowMs: 60_000, maxRequests: 120, keyPrefix: 'search:suggest' };
 
 /**
  * GET /api/search/suggest
@@ -11,6 +16,9 @@ import { Errors, createErrorResponse } from '@/lib/utils/errorHandler';
  */
 export async function GET(req: NextRequest) {
   try {
+    const limited = await applyRateLimit(req, SUGGEST_RATE_LIMIT);
+    if (limited) return limited;
+
     await connectDB();
 
     const parsed = searchSuggestSchema.safeParse(

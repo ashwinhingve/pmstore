@@ -534,6 +534,65 @@ class EmailService {
   }
 
   /**
+   * Refill reminder — nudge a customer to reorder a repeat medicine before they
+   * run out. Called by the refill cron (src/app/api/cron/refill-reminders).
+   *
+   * Health-data note (CLAUDE.md rule #6): this method receives the medicine name
+   * to render the email but the caller must NOT log it, the recipient address,
+   * or any address. `unsubscribeUrl` lets the customer opt out in one click.
+   */
+  async sendRefillReminder(
+    email: string,
+    medicineName: string,
+    productUrl: string,
+    unsubscribeUrl: string
+  ) {
+    if (!email) return { success: false, error: 'No recipient' };
+
+    const subject = 'Time to refill your medicine';
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #0f766e; color: white; padding: 20px; text-align: center; }
+            .content { padding: 20px; background-color: #f9f9f9; }
+            .box { background-color: white; padding: 20px; margin: 20px 0; border-radius: 5px; text-align: center; }
+            .med { font-size: 20px; font-weight: bold; color: #0f766e; margin: 10px 0; }
+            .button { display: inline-block; padding: 12px 28px; background-color: #0f766e; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; font-weight: bold; }
+            .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
+            .footer a { color: #666; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Running low?</h1>
+            </div>
+            <div class="content">
+              <p>Hello,</p>
+              <p>Based on your last order, you may be running low on:</p>
+              <div class="box">
+                <div class="med">${medicineName}</div>
+                <a href="${productUrl}" class="button">Reorder now</a>
+              </div>
+              <p>Reordering early means you won't miss a dose. If you've already stocked up, you can ignore this reminder.</p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Pratigya Medical Store. All rights reserved.</p>
+              <p>Don't want refill reminders? <a href="${unsubscribeUrl}">Unsubscribe</a>.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    return this.sendEmail(email, subject, html);
+  }
+
+  /**
    * Send OTP for email login
    */
   async sendOtp(email: string, otp: string) {
