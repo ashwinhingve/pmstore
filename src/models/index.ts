@@ -16,3 +16,4 @@ export { default as Discount, type IDiscount } from './Discount';
 export { default as Prescription, type IPrescription } from './Prescription';
 export { default as SaltSynonym, type ISaltSynonym } from './SaltSynonym';
 export { default as SavedMedicine, type ISavedMedicine } from './SavedMedicine';
+export { default as RefillReminder, type IRefillReminder } from './RefillReminder';

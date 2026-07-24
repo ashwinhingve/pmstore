@@ -15,6 +15,10 @@ export interface IUser extends Document {
   emailVerified: boolean;
   mobileVerified: boolean;
   lastLogin?: Date;
+  /** Customer opted out of refill reminder emails. Default false (opted in). */
+  refillOptOut: boolean;
+  /** FCM device tokens for the mobile app push channel. */
+  pushTokens: string[];
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -76,6 +80,14 @@ const UserSchema = new Schema<IUser>(
     },
     lastLogin: {
       type: Date,
+    },
+    refillOptOut: {
+      type: Boolean,
+      default: false,
+    },
+    pushTokens: {
+      type: [String],
+      default: [],
     },
   },
   {
