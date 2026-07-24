@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 
 export interface CountUpStatProps {
   end: number;
@@ -24,12 +24,17 @@ export const CountUpStat: React.FC<CountUpStatProps> = ({
   className = "",
 }) => {
   const [count, setCount] = useState(0)
+  const reduceMotion = useReducedMotion()
   const [ref, inView] = useInView({
     threshold: 0.3,
     triggerOnce: true,
   })
 
   useEffect(() => {
+    if (inView && reduceMotion) {
+      setCount(end)
+      return
+    }
     if (inView) {
       let startTime: number
       let animationFrame: number
@@ -53,14 +58,14 @@ export const CountUpStat: React.FC<CountUpStatProps> = ({
 
       return () => cancelAnimationFrame(animationFrame)
     }
-  }, [inView, end, duration])
+  }, [inView, end, duration, reduceMotion])
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.9 }}
+      animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: reduceMotion ? 1 : 0.9 }}
+      transition={{ duration: reduceMotion ? 0 : 0.5 }}
       className={`text-center p-6 ${className}`}
     >
       {icon && (

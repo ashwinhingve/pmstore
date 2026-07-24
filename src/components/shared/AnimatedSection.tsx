@@ -1,8 +1,14 @@
 "use client"
 
 import React from "react"
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
+
+/* Entrance reveals for marketing surfaces (docs/03-DESIGN-SYSTEM.md): fire
+   once, never move content more than 16px, and collapse to a plain fade at
+   zero offset under prefers-reduced-motion. */
+
+const EASE = [0.25, 0.46, 0.45, 0.94] as const
 
 export interface AnimatedSectionProps {
   children: React.ReactNode;
@@ -18,28 +24,31 @@ export const AnimatedSection: React.FC<AnimatedSectionProps> = ({
   className = "",
   delay = 0,
   direction = "up",
-  duration = 0.6,
+  duration = 0.5,
   once = true,
 }) => {
+  const reduceMotion = useReducedMotion()
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: once,
   })
 
+  const offset = reduceMotion ? 0 : 16
+
   const variants = {
     hidden: {
       opacity: 0,
-      y: direction === "up" ? 40 : direction === "down" ? -40 : 0,
-      x: direction === "left" ? 40 : direction === "right" ? -40 : 0,
+      y: direction === "up" ? offset : direction === "down" ? -offset : 0,
+      x: direction === "left" ? offset : direction === "right" ? -offset : 0,
     },
     visible: {
       opacity: 1,
       y: 0,
       x: 0,
       transition: {
-        duration,
-        delay,
-        ease: [0.25, 0.46, 0.45, 0.94] as any,
+        duration: reduceMotion ? 0 : duration,
+        delay: reduceMotion ? 0 : delay,
+        ease: EASE,
       },
     },
   }
@@ -67,9 +76,10 @@ export interface StaggerContainerProps {
 export const StaggerContainer: React.FC<StaggerContainerProps> = ({
   children,
   className = "",
-  staggerDelay = 0.1,
+  staggerDelay = 0.08,
   once = true,
 }) => {
+  const reduceMotion = useReducedMotion()
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: once,
@@ -80,7 +90,7 @@ export const StaggerContainer: React.FC<StaggerContainerProps> = ({
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: staggerDelay,
+        staggerChildren: reduceMotion ? 0 : staggerDelay,
       },
     },
   }
@@ -102,14 +112,16 @@ export const StaggerItem: React.FC<{ children: React.ReactNode; className?: stri
   children,
   className = "",
 }) => {
+  const reduceMotion = useReducedMotion()
+
   const item = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 16 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94] as any,
+        duration: reduceMotion ? 0 : 0.4,
+        ease: EASE,
       },
     },
   }

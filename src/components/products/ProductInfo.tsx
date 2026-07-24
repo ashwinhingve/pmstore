@@ -154,7 +154,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
         <h1 className="text-3xl md:text-4xl font-bold text-[var(--ink)] mb-2">
           {product.name}
         </h1>
-        <p className="text-sm text-[var(--ink-40)] font-mono">SKU: {product.sku}</p>
+        <p className="text-sm text-[var(--ink-40)] data">SKU: {product.sku}</p>
       </div>
 
       {/* Rating */}

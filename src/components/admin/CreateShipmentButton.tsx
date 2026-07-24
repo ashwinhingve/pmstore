@@ -55,7 +55,7 @@ export default function CreateShipmentButton({ orderId, orderNumber, paymentMeth
           <h3 className="text-sm font-semibold text-[var(--mint)]">Shipment created</h3>
         </div>
         <p className="text-sm text-[var(--ink-70)] mb-1">Waybill</p>
-        <p className="text-sm font-mono font-semibold text-[var(--ink)] mb-3" style={{ fontFamily: 'var(--font-data)' }}>{result.waybill}</p>
+        <p className="text-sm data font-semibold text-[var(--ink)] mb-3" style={{ fontFamily: 'var(--font-data)' }}>{result.waybill}</p>
         {result.trackingUrl && (
           <a
             href={result.trackingUrl}

@@ -323,7 +323,7 @@ export default function CartPage() {
                     <CheckCircle className="w-5 h-5 text-[var(--mint)] flex-shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-[var(--ink)]">
-                        Coupon <span className="font-mono bg-[var(--mint-soft)] px-1.5 py-0.5 rounded text-[var(--mint)]">{discount.code}</span> applied
+                        Coupon <span className="data bg-[var(--mint-soft)] px-1.5 py-0.5 rounded text-[var(--mint)]">{discount.code}</span> applied
                       </p>
                       <p className="text-xs text-[var(--ink-70)] mt-0.5">{discount.name}</p>
                     </div>
@@ -361,7 +361,7 @@ export default function CartPage() {
                       onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError("") }}
                       onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
                       placeholder="Enter coupon code"
-                      className="flex-1 px-4 py-2.5 border-2 border-[var(--foil-soft)] rounded-xl text-sm font-mono uppercase text-[var(--ink)] placeholder:text-[var(--ink-40)]"
+                      className="flex-1 px-4 py-2.5 border-2 border-[var(--foil-soft)] rounded-xl text-sm data uppercase text-[var(--ink)] placeholder:text-[var(--ink-40)]"
                       disabled={couponLoading}
                     />
                     <Button

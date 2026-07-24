@@ -304,7 +304,7 @@ export default function AdminOffersPage() {
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="e.g., SAVE20"
                 disabled={form.type !== 'coupon'}
-                className="font-mono uppercase"
+                className="data uppercase"
               />
               {form.type !== 'coupon' && (
                 <p className="mt-1 text-xs text-[var(--ink-40)]">Not required — this offer is auto-applied</p>
@@ -519,7 +519,7 @@ export default function AdminOffersPage() {
                       <td className="px-4 py-3.5">
                         <p className="font-semibold text-[var(--ink)] text-sm">{d.name}</p>
                         {d.code && (
-                          <span className="text-xs font-mono bg-[var(--foil-soft)] text-[var(--ink)] px-1.5 py-0.5 rounded mt-0.5 inline-block">
+                          <span className="text-xs data bg-[var(--foil-soft)] text-[var(--ink)] px-1.5 py-0.5 rounded mt-0.5 inline-block">
                             {d.code}
                           </span>
                         )}

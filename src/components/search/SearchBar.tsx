@@ -229,7 +229,7 @@ export function SearchBar({ className }: { className?: string }) {
                 )}
                 <span className="flex-1 truncate">{label}</span>
                 {s?.unitPrice != null && (
-                  <span className="shrink-0 font-mono text-xs tabular-nums text-[var(--ink-40)]">
+                  <span className="shrink-0 data text-xs tabular-nums text-[var(--ink-40)]">
                     ₹{s.unitPrice.toFixed(2)}/{s.packUnit ?? 'unit'}
                   </span>
                 )}

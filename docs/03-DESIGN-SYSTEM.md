@@ -164,7 +164,22 @@ close. Show recent searches on focus when empty. Placeholder is a real example:
 
 An invitation, not an apology. Headline names the space, one line explains, one verb CTA.
 "No saved medicines yet / Save the ones you buy often and reorder in one tap / Browse medicines".
-Never "Nothing here."
+Never "Nothing here." Prefer the `illustration` prop with a piece from
+`src/components/illustrations` over a bare icon.
+
+### Shared primitives (added in the premium pass)
+
+| Component | Where | Use |
+|---|---|---|
+| `Card` | `ui/card.tsx` | surface/elevated/interactive/flat variants on the elevation scale |
+| `Skeleton` | `ui/skeleton.tsx` | shimmer loading blocks — every `loading.tsx` builds from these |
+| `Drawer` | `ui/drawer.tsx` | the one slide-in panel: mobile nav, product filters, admin nav. Focus trap, Escape, scroll lock built in — never hand-roll another drawer |
+| `Container` | `shared/Container.tsx` | 1200px page width + standard padding |
+| `SectionHeading` | `shared/SectionHeading.tsx` | eyebrow + display title + description; `onDark` for navy bands |
+| `AccountShell` | `account/AccountShell.tsx` | signed-in account chrome (sidebar / pill nav) |
+| Illustrations | `illustrations/index.tsx` | 8 inline-SVG pieces in token colors — the only imagery besides product photos |
+
+Buttons support a `loading` prop (spinner + `aria-busy`); default height is 44px.
 
 ---
 
