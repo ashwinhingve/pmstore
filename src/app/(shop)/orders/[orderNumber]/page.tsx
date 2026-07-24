@@ -10,6 +10,7 @@ import OrderActions from '@/components/orders/OrderActions';
 import { ArrowLeft, Download, Package, Truck } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { CONTACT } from '@/lib/constants';
 
 interface PageProps {
   params: Promise<{
@@ -403,23 +404,23 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
               )}
 
               {/* Need Help? */}
-              <div className="bg-gradient-to-br from-amber-50 to-red-50 rounded-2xl shadow-xl p-6 border-2 border-amber-200">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Need Help?</h3>
-                <p className="text-sm text-gray-700 mb-4">
+              <div className="bg-gradient-to-br from-[var(--mint)] to-[var(--ink)] rounded-2xl shadow-xl p-6 border-2 border-[var(--mint)]">
+                <h3 className="text-lg font-bold text-white mb-3">Need Help?</h3>
+                <p className="text-sm text-white mb-4">
                   Have questions about your order? Our customer support team is here to help.
                 </p>
                 <div className="space-y-2">
                   <a
-                    href="mailto:support@pratigyamedicalstore.com"
-                    className="block text-sm font-medium text-amber-600 hover:text-amber-700"
+                    href={CONTACT.emailHref}
+                    className="block text-sm font-medium text-white hover:opacity-90"
                   >
-                    📧 support@pratigyamedicalstore.com
+                    📧 {CONTACT.email}
                   </a>
                   <a
-                    href="tel:+919329216544"
-                    className="block text-sm font-medium text-amber-600 hover:text-amber-700"
+                    href={CONTACT.phoneHref}
+                    className="block text-sm font-medium text-white hover:opacity-90"
                   >
-                    📞 +91-93292 16544
+                    📞 {CONTACT.phone}
                   </a>
                 </div>
               </div>

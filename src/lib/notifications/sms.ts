@@ -1,3 +1,5 @@
+import { SITE_NAME } from '@/lib/constants';
+
 interface SMSResult {
   success: boolean;
   error?: unknown;
@@ -61,38 +63,38 @@ class SMSService {
   }
 
   private async sendOtp(phone: string, otp: string): Promise<SMSResult> {
-    const message = `${otp} is your PMStore Spices verification code. Valid for 5 minutes. Do not share this with anyone.`;
+    const message = `${otp} is your ${SITE_NAME} verification code. Valid for 5 minutes. Do not share this with anyone.`;
     return this.sendSMS(phone, message);
   }
 
   async sendOrderConfirmationSMS(phone: string, orderNumber: string, amount: number): Promise<SMSResult> {
-    const message = `Your order ${orderNumber} has been confirmed! Amount: Rs.${amount.toFixed(2)}. Track at ${process.env.NEXT_PUBLIC_APP_URL}/orders - PMStore Spices`;
+    const message = `Your order ${orderNumber} has been confirmed! Amount: Rs.${amount.toFixed(2)}. Track at ${process.env.NEXT_PUBLIC_APP_URL}/orders - ${SITE_NAME}`;
     return this.sendSMS(phone, message);
   }
 
   async sendShipmentSMS(phone: string, orderNumber: string, trackingNumber: string): Promise<SMSResult> {
-    const message = `Your order ${orderNumber} has been shipped! Tracking: ${trackingNumber}. Track at ${process.env.NEXT_PUBLIC_APP_URL}/orders - PMStore Spices`;
+    const message = `Your order ${orderNumber} has been shipped! Tracking: ${trackingNumber}. Track at ${process.env.NEXT_PUBLIC_APP_URL}/orders - ${SITE_NAME}`;
     return this.sendSMS(phone, message);
   }
 
   async sendDeliverySMS(phone: string, orderNumber: string): Promise<SMSResult> {
-    const message = `Your order ${orderNumber} has been delivered! Thank you for shopping with PMStore Spices.`;
+    const message = `Your order ${orderNumber} has been delivered! Thank you for shopping with ${SITE_NAME}.`;
     return this.sendSMS(phone, message);
   }
 
   async sendPaymentFailedSMS(phone: string, orderNumber: string): Promise<SMSResult> {
-    const message = `Payment failed for order ${orderNumber}. Please retry at ${process.env.NEXT_PUBLIC_APP_URL}/orders - PMStore Spices`;
+    const message = `Payment failed for order ${orderNumber}. Please retry at ${process.env.NEXT_PUBLIC_APP_URL}/orders - ${SITE_NAME}`;
     return this.sendSMS(phone, message);
   }
 
   async sendOrderCancelledSMS(phone: string, orderNumber: string, refundAmount?: number): Promise<SMSResult> {
     const refundText = refundAmount ? ` Refund of Rs.${refundAmount.toFixed(2)} will be processed in 5-7 days.` : '';
-    const message = `Your order ${orderNumber} has been cancelled.${refundText} - PMStore Spices`;
+    const message = `Your order ${orderNumber} has been cancelled.${refundText} - ${SITE_NAME}`;
     return this.sendSMS(phone, message);
   }
 
   async sendOutForDeliverySMS(phone: string, orderNumber: string): Promise<SMSResult> {
-    const message = `Your order ${orderNumber} is out for delivery and will reach you soon! - PMStore Spices`;
+    const message = `Your order ${orderNumber} is out for delivery and will reach you soon! - ${SITE_NAME}`;
     return this.sendSMS(phone, message);
   }
 
@@ -101,12 +103,12 @@ class SMSService {
   }
 
   async sendReturnRequestSMS(phone: string, orderNumber: string): Promise<SMSResult> {
-    const message = `Return request for order ${orderNumber} received. We'll review within 2-3 business days. - PMStore Spices`;
+    const message = `Return request for order ${orderNumber} received. We'll review within 2-3 business days. - ${SITE_NAME}`;
     return this.sendSMS(phone, message);
   }
 
   async sendFeedbackRequestSMS(phone: string, orderNumber: string, reviewUrl: string): Promise<SMSResult> {
-    const message = `Thank you for your PMStore order ${orderNumber}! Share your experience: ${reviewUrl} - PMStore Spices`;
+    const message = `Thank you for your PMStore order ${orderNumber}! Share your experience: ${reviewUrl} - ${SITE_NAME}`;
     return this.sendSMS(phone, message);
   }
 

@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import type { IOrder } from '@/models/Order';
 import type { IShipment } from '@/models/Shipment';
 import Discount from '@/models/Discount';
+import { SITE_NAME, CONTACT_EMAIL } from '@/lib/constants';
 
 interface EmailConfig {
   host: string;
@@ -39,7 +40,7 @@ class EmailService {
           user: process.env.SMTP_USER,
           pass: smtpPassword,
         },
-        from: process.env.EMAIL_FROM || process.env.SMTP_FROM || 'PMStore Spices <noreply@pratigyamedicalstore.com>',
+        from: process.env.EMAIL_FROM || process.env.SMTP_FROM || `${SITE_NAME} <noreply@pratigyamedicalstore.com>`,
       };
 
       this.transporter = nodemailer.createTransport({
@@ -138,7 +139,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
               <p>If you have any questions, please contact our support team.</p>
             </div>
           </div>
@@ -198,7 +199,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -248,10 +249,10 @@ class EmailService {
                 <a href="${process.env.NEXT_PUBLIC_APP_URL}/orders/${order._id}" class="button">View Order</a>
               </div>
 
-              <p style="margin-top: 20px;">Thank you for shopping with PMStore Spices!</p>
+              <p style="margin-top: 20px;">Thank you for shopping with ${SITE_NAME}!</p>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -310,7 +311,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
               <p>Need help? Contact our support team.</p>
             </div>
           </div>
@@ -333,7 +334,7 @@ class EmailService {
     paymentMethod: string;
     shippingAddress?: any;
   }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || CONTACT_EMAIL;
     const method = order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment';
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
 
@@ -385,7 +386,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>PMStorefs Admin Notification</p>
+              <p>${SITE_NAME} Admin Notification</p>
             </div>
           </div>
         </body>
@@ -396,7 +397,7 @@ class EmailService {
   }
 
   async notifyAdminPaymentFailed(order: { orderNumber: string; customerName: string; customerEmail: string; totalAmount: number }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || CONTACT_EMAIL;
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Payment Failed: ${order.orderNumber} — Rs.${order.totalAmount.toFixed(2)}`;
     const html = `
@@ -430,7 +431,7 @@ class EmailService {
   }
 
   async notifyAdminShipmentCreated(order: { orderNumber: string; customerName: string; customerEmail: string }, shipment: { waybill?: string; provider?: string; trackingUrl?: string }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || CONTACT_EMAIL;
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Order Shipped: ${order.orderNumber}`;
     const html = `
@@ -466,7 +467,7 @@ class EmailService {
   }
 
   async notifyAdminOrderDelivered(order: { orderNumber: string; customerName: string; customerEmail: string }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || CONTACT_EMAIL;
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Order Delivered: ${order.orderNumber}`;
     const html = `
@@ -499,7 +500,7 @@ class EmailService {
   }
 
   async notifyAdminOrderCancelled(order: { orderNumber: string; customerName: string; customerEmail: string; totalAmount: number; refundAmount?: number }): Promise<void> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || CONTACT_EMAIL;
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const subject = `Order Cancelled: ${order.orderNumber}`;
     const html = `
@@ -581,7 +582,7 @@ class EmailService {
               <p>Reordering early means you won't miss a dose. If you've already stocked up, you can ignore this reminder.</p>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Pratigya Medical Store. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
               <p>Don't want refill reminders? <a href="${unsubscribeUrl}">Unsubscribe</a>.</p>
             </div>
           </div>
@@ -618,7 +619,7 @@ class EmailService {
             </div>
             <div class="content">
               <p>Hello,</p>
-              <p>Use the following code to sign in to your PMStore Spices account:</p>
+              <p>Use the following code to sign in to your ${SITE_NAME} account:</p>
 
               <div class="otp-box">
                 <p><strong>Your verification code:</strong></p>
@@ -629,7 +630,7 @@ class EmailService {
               <p>If you did not request this code, you can safely ignore this email.</p>
             </div>
             <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
+              <p>&copy; ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -673,7 +674,7 @@ class EmailService {
             </div>
             <div class="content">
               <p>Dear Customer,</p>
-              <p>Your order <strong>${order.orderNumber}</strong> has been delivered. We hope you're enjoying your PMStore Spices products!</p>
+              <p>Your order <strong>${order.orderNumber}</strong> has been delivered. We hope you're enjoying your ${SITE_NAME} medicines!</p>
 
               <div class="stars">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
 
@@ -683,10 +684,10 @@ class EmailService {
                 <a href="${reviewUrl}" class="button">Leave a Review</a>
               </div>
 
-              <p>Thank you for choosing PMStore Spices. We look forward to serving you again!</p>
+              <p>Thank you for choosing ${SITE_NAME}. We look forward to serving you again!</p>
             </div>
             <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
+              <p>&copy; ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -700,7 +701,7 @@ class EmailService {
    * Notify admin when a return request is submitted
    */
   async notifyAdminReturnRequest(order: any, returnRequest: any) {
-    const adminEmail = process.env.ADMIN_EMAIL || 'pmstoremedicine@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || CONTACT_EMAIL;
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
 
     const subject = `Return Request: Order ${order.orderNumber}`;
@@ -744,7 +745,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>PMStorefs Admin Notification</p>
+              <p>${SITE_NAME} Admin Notification</p>
             </div>
           </div>
         </body>
@@ -804,7 +805,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} PMStore Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -859,14 +860,14 @@ class EmailService {
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="color:#fff;margin:0;font-size:28px;">Welcome to PMSTORE!</h1>
-              <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:15px;">The Taste of Purity</p>
+              <h1 style="color:#fff;margin:0;font-size:28px;">Welcome to ${SITE_NAME}!</h1>
+              <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:15px;">Government Approved Generic Brand</p>
             </div>
             <div class="content">
               <p>${greeting}</p>
-              <p>Thank you for joining PMStore Food &amp; Spices — your destination for 100% adulteration-free spices, oils, and superfoods sourced straight from trusted farms.</p>
+              <p>Thank you for joining ${SITE_NAME} — a trusted pharmacy bridging doctors and patients with genuine prescription and OTC medicines at generic prices.</p>
               ${promoBlock}
-              <p>Start exploring our collection and taste the difference of pure, farm-fresh quality.</p>
+              <p>Start exploring our collection and save 60–70% on your medicine costs.</p>
               <div style="text-align:center;margin:28px 0;">
                 <a href="${siteUrl}/products" style="background:linear-gradient(135deg,#d97706 0%,#dc2626 100%);color:#fff;padding:14px 36px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;font-size:15px;">
                   Shop Now
@@ -874,7 +875,7 @@ class EmailService {
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} PMStore Food &amp; Spices. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
             </div>
           </div>
         </body>

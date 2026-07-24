@@ -4,6 +4,7 @@ import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import '@/models/OrderItem';
 import '@/models/Address';
+import { SITE_NAME, CONTACT } from '@/lib/constants';
 
 /**
  * GET /api/orders/[orderId]/invoice
@@ -285,10 +286,10 @@ function generateInvoiceHTML(order: any): string {
 
   <div class="invoice-header">
     <div class="company-info">
-      <h1>PMStore</h1>
-      <p>Premium Quality Food Products</p>
-      <p>Email: support@pratigyamedicalstore.com</p>
-      <p>Phone: +91-93292 16544</p>
+      <h1>${SITE_NAME}</h1>
+      <p>Government Approved Generic Brand</p>
+      <p>Email: ${CONTACT.email}</p>
+      <p>Phone: ${CONTACT.phone}</p>
       <p>GST No: 23GGLPD7346M1ZZ</p>
     </div>
     <div class="invoice-details">
@@ -404,7 +405,7 @@ function generateInvoiceHTML(order: any): string {
   <div class="footer">
     <p>Thank you for your business!</p>
     <p>This is a computer-generated invoice and does not require a signature.</p>
-    <p>&copy; ${new Date().getFullYear()} PMStore. All rights reserved.</p>
+    <p>&copy; ${new Date().getFullYear()} ${SITE_NAME}. All rights reserved.</p>
   </div>
 </body>
 </html>

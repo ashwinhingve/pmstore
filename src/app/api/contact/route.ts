@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import nodemailer from "nodemailer"
+import { SITE_SHORT_NAME, CONTACT_EMAIL } from "@/lib/constants"
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,15 +27,15 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Email to admin - ALWAYS send to info@pratigyamedicalstore.com
-    const adminEmail = process.env.ADMIN_EMAIL || "info@pratigyamedicalstore.com"
+    // Email to admin - ALWAYS send to configured CONTACT_EMAIL
+    const adminEmail = process.env.ADMIN_EMAIL || CONTACT_EMAIL
     const adminMailOptions = {
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: adminEmail,
       subject: `Contact Form: ${subject || "New Message"}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #d97706; border-bottom: 3px solid #dc2626; padding-bottom: 10px;">
+          <h2 style="color: #0E8F6E; border-bottom: 3px solid #0E8F6E; padding-bottom: 10px;">
             New Contact Form Submission
           </h2>
           <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -43,12 +44,12 @@ export async function POST(request: NextRequest) {
             <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
             <p><strong>Subject:</strong> ${subject || "General Inquiry"}</p>
           </div>
-          <div style="background: white; padding: 20px; border-left: 4px solid #d97706; margin: 20px 0;">
+          <div style="background: white; padding: 20px; border-left: 4px solid #0E8F6E; margin: 20px 0;">
             <h3 style="margin-top: 0; color: #374151;">Message:</h3>
             <p style="line-height: 1.6; color: #6b7280;">${message}</p>
           </div>
           <p style="color: #9ca3af; font-size: 12px; margin-top: 30px;">
-            This email was sent from the PMSTORE contact form.
+            This email was sent from the ${SITE_SHORT_NAME} contact form.
           </p>
         </div>
       `,
@@ -58,17 +59,17 @@ export async function POST(request: NextRequest) {
     const userMailOptions = {
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: email,
-      subject: "Thank you for contacting PMSTORE",
+      subject: `Thank you for contacting ${SITE_SHORT_NAME}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #d97706;">Thank You for Contacting Us!</h2>
+          <h2 style="color: #0E8F6E;">Thank You for Contacting Us!</h2>
           <p>Dear ${name},</p>
           <p>We have received your message and will get back to you as soon as possible.</p>
           <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <p><strong>Your message:</strong></p>
             <p style="line-height: 1.6; color: #6b7280;">${message}</p>
           </div>
-          <p>Best regards,<br>The PMSTORE Team</p>
+          <p>Best regards,<br>The ${SITE_SHORT_NAME} Team</p>
         </div>
       `,
     }
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
     // Send emails (only if SMTP is configured)
     if (process.env.SMTP_USER && process.env.SMTP_PASS) {
       try {
-        // Always send to admin (info@pratigyamedicalstore.com)
+        // Always send to the store admin (ADMIN_EMAIL / CONTACT_EMAIL)
         console.log(`Sending contact form to: ${adminEmail}`)
         await transporter.sendMail(adminMailOptions)
         console.log(`✓ Contact form sent successfully to ${adminEmail}`)

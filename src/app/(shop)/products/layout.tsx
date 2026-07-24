@@ -3,45 +3,45 @@ import type { Metadata } from 'next';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
 
 export const metadata: Metadata = {
-  title: 'Shop All Products | PMStore',
+  title: 'Shop medicines | Pratigya Medical Store',
   description:
-    'Browse 100% adulteration-free Indian spices, organic cooking oils, pure desi ghee, premium teas, natural sweeteners, and traditional masalas from PMStore. FSSAI certified. Fast delivery across India.',
+    'Order genuine prescription and OTC medicines online from Pratigya Medical Store, Bhopal. Compare brands by price per tablet, find cheaper equivalents of the same composition, and save 60–70% with generic brands. Free home delivery.',
   keywords: [
-    'buy spices online India',
-    'organic spices online',
-    'pure desi ghee buy',
-    'cooking oil online',
-    'buy masala online',
-    'PMSTORE shop',
-    'adulteration-free food products',
-    'PMStore Food and Spices products',
-    'natural sweeteners India',
-    'premium Indian spices',
+    'buy medicines online',
+    'generic medicines online India',
+    'cheaper medicine alternatives',
+    'price per tablet comparison',
+    'online pharmacy Bhopal',
+    'prescription medicines online',
+    'Pratigya Medical Store',
+    'generic brand medicines',
+    'affordable medicines India',
+    'order medicine online',
   ],
   alternates: {
     canonical: `${SITE_URL}/products`,
   },
   openGraph: {
-    title: 'Shop All Products | PMStore',
+    title: 'Shop medicines | Pratigya Medical Store',
     description:
-      'Browse adulteration-free Indian spices, organic oils, pure ghee, premium teas and natural sweeteners. FSSAI certified. Fast delivery across India.',
+      'Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents of the same composition, and save with generic brands. Free home delivery.',
     url: `${SITE_URL}/products`,
     type: 'website',
-    siteName: 'PMStore (PMSTORE)',
+    siteName: 'Pratigya Medical Store',
     images: [
       {
         url: '/images/logo.jpg',
         width: 1200,
         height: 630,
-        alt: 'PMStore — Shop All Products',
+        alt: 'Pratigya Medical Store — Shop medicines',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Shop All Products | PMStore',
+    title: 'Shop medicines | Pratigya Medical Store',
     description:
-      'Browse adulteration-free Indian spices, organic oils, pure ghee, premium teas and natural sweeteners.',
+      'Order genuine medicines online. Compare brands by price per tablet and find cheaper equivalents of the same composition.',
     images: ['/images/logo.jpg'],
   },
 };

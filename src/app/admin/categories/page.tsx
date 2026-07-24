@@ -235,7 +235,7 @@ export default function AdminCategoriesPage() {
               <Input
                 value={addForm.name}
                 onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                placeholder="e.g., Spices & Masalas"
+                placeholder="e.g., Diabetes Care"
               />
             </div>
             <div>

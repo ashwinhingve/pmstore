@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Shop - PMSTORE | Premium Spices & Food Products",
-  description: "Browse our wide selection of premium quality spices, blends, and food products.",
+  title: "Shop medicines | Pratigya Medical Store",
+  description:
+    "Order genuine prescription and OTC medicines online. Compare brands by price per tablet and find cheaper equivalents of the same composition.",
 };
 
 export default function ShopLayout({

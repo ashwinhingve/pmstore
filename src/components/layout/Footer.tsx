@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Facebook, Instagram, Twitter, MessageCircle, Mail, Phone, MapPin } from "lucide-react";
+import { MessageCircle, Mail, Phone, MapPin } from "lucide-react";
+import { SITE_NAME, SITE_DESCRIPTION, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full border-t bg-gradient-to-br from-gray-50 via-white to-amber-50">
+    <footer className="w-full border-t border-[var(--foil-soft)] bg-[var(--paper)]">
       <div className="container mx-auto px-4 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
@@ -16,57 +17,29 @@ export function Footer() {
               <div className="relative h-12 w-12 flex-shrink-0">
                 <Image
                   src="/images/logo.jpg"
-                  alt="PMStore Logo"
+                  alt={`${SITE_NAME} Logo`}
                   fill
                   className="object-contain rounded-full"
                 />
               </div>
               <div>
-                <h3 className="text-lg font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
-                  PMStore Food &amp; Spices
+                <h3 className="text-lg font-bold text-[var(--ink)]">
+                  {SITE_NAME}
                 </h3>
-                <p className="text-xs font-medium text-muted-foreground">शुद्धता का वादा</p>
+                <p className="text-xs font-medium text-muted-foreground">Trusted Pharmacy</p>
               </div>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              100% adulteration-free premium food and spices sourced directly from our farms. Experience the taste of purity.
+              {SITE_DESCRIPTION}
             </p>
 
             {/* Social Media Links */}
             <div className="flex space-x-3">
               <Link
-                href="https://www.facebook.com/share/1ALNnyV4yz/"
+                href={SOCIAL_LINKS.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-700 transition-colors"
-                aria-label="Visit our Facebook page"
-              >
-                <Facebook className="h-4 w-4" />
-              </Link>
-              {/* TODO: replace with the PMStore Instagram handle once it exists */}
-              <Link
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-700 transition-colors"
-                aria-label="Visit our Instagram page"
-              >
-                <Instagram className="h-4 w-4" />
-              </Link>
-              <Link
-                href="https://x.com/PMStore_food"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-700 transition-colors"
-                aria-label="Visit our Twitter page"
-              >
-                <Twitter className="h-4 w-4" />
-              </Link>
-              <Link
-                href="https://wa.me/919329216544"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-700 transition-colors"
+                className="p-2 rounded-full bg-[var(--mint)] hover:opacity-80 text-white transition-opacity"
                 aria-label="Contact us on WhatsApp"
               >
                 <MessageCircle className="h-4 w-4" />
@@ -76,26 +49,26 @@ export function Footer() {
 
           {/* Shop Links */}
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-gray-900">Shop</h3>
+            <h3 className="text-base font-bold text-[var(--ink)]">Shop</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/products" className="hover:text-amber-700 hover:underline transition-colors">
-                  All Products
+                <Link href="/products" className="hover:text-[var(--mint)] hover:underline transition-colors">
+                  All medicines
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="hover:text-amber-700 hover:underline transition-colors">
-                  Spices &amp; Masalas
+                <Link href="/prescriptions" className="hover:text-[var(--mint)] hover:underline transition-colors">
+                  Upload prescription
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="hover:text-amber-700 hover:underline transition-colors">
-                  Organic Oils
+                <Link href="/orders" className="hover:text-[var(--mint)] hover:underline transition-colors">
+                  Your orders
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="hover:text-amber-700 hover:underline transition-colors">
-                  Premium Teas
+                <Link href="/saved" className="hover:text-[var(--mint)] hover:underline transition-colors">
+                  Saved medicines
                 </Link>
               </li>
             </ul>
@@ -103,25 +76,25 @@ export function Footer() {
 
           {/* Company Links */}
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-gray-900">Company</h3>
+            <h3 className="text-base font-bold text-[var(--ink)]">Company</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/about" className="hover:text-amber-700 hover:underline transition-colors">
+                <Link href="/about" className="hover:text-[var(--mint)] hover:underline transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-amber-700 hover:underline transition-colors">
+                <Link href="/about" className="hover:text-[var(--mint)] hover:underline transition-colors">
                   Our Story
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-amber-700 hover:underline transition-colors">
+                <Link href="/contact" className="hover:text-[var(--mint)] hover:underline transition-colors">
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-amber-700 hover:underline transition-colors">
+                <Link href="/contact" className="hover:text-[var(--mint)] hover:underline transition-colors">
                   Careers
                 </Link>
               </li>
@@ -130,30 +103,30 @@ export function Footer() {
 
           {/* Legal & Support Links */}
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-gray-900">Legal &amp; Support</h3>
+            <h3 className="text-base font-bold text-[var(--ink)]">Legal &amp; Support</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/privacy-policy" className="hover:text-amber-700 hover:underline transition-colors">
+                <Link href="/privacy-policy" className="hover:text-[var(--mint)] hover:underline transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms-and-conditions" className="hover:text-amber-700 hover:underline transition-colors">
+                <Link href="/terms-and-conditions" className="hover:text-[var(--mint)] hover:underline transition-colors">
                   Terms &amp; Conditions
                 </Link>
               </li>
               <li>
-                <Link href="/refund-policy" className="hover:text-amber-700 hover:underline transition-colors">
+                <Link href="/refund-policy" className="hover:text-[var(--mint)] hover:underline transition-colors">
                   Refund Policy
                 </Link>
               </li>
               <li>
-                <Link href="/shipping-policy" className="hover:text-amber-700 hover:underline transition-colors">
+                <Link href="/shipping-policy" className="hover:text-[var(--mint)] hover:underline transition-colors">
                   Shipping Policy
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-amber-700 hover:underline transition-colors">
+                <Link href="/contact" className="hover:text-[var(--mint)] hover:underline transition-colors">
                   FAQ
                 </Link>
               </li>
@@ -164,50 +137,53 @@ export function Footer() {
         {/* Divider */}
         <div className="border-t my-8"></div>
 
-        {/* Certifications & Registration */}
+        {/* Compliance */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center md:text-left">
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">FSSAI Licensed</p>
-            <p className="text-sm text-muted-foreground">License No: 21425150001179</p>
+            <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Government approved</p>
+            <p className="text-sm text-muted-foreground">Generic-brand medicines</p>
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">GST Registered</p>
-            <p className="text-sm text-muted-foreground">GST No: 23GGLPD7346M1ZZ</p>
+            <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Licensed pharmacy</p>
+            <Link href="/drug-licence" className="text-sm text-muted-foreground hover:text-[var(--mint)] hover:underline transition-colors">
+              View drug licence
+            </Link>
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">UDYAM Registration</p>
-            <p className="text-sm text-muted-foreground">UDYAM-MP-08-0030813</p>
+            <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Trained pharmacists</p>
+            <p className="text-sm text-muted-foreground">20+ years of trusted service</p>
           </div>
         </div>
 
         {/* Contact Information */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="flex items-start space-x-3">
-            <MapPin className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <MapPin className="h-5 w-5 text-[var(--mint)] flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-gray-900">Our Locations</p>
-              <p className="text-sm text-muted-foreground">Village Gaula | Multai | Betul | Bhopal | Indore</p>
-              <p className="text-sm text-muted-foreground">Madhya Pradesh, India</p>
+              <p className="text-sm font-semibold text-[var(--ink)]">Location</p>
+              <p className="text-sm text-muted-foreground">{CONTACT.address.line1}</p>
+              <p className="text-sm text-muted-foreground">{CONTACT.address.city}, {CONTACT.address.state} — {CONTACT.address.postalCode}</p>
             </div>
           </div>
           <div className="flex items-start space-x-3">
-            <Mail className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <Mail className="h-5 w-5 text-[var(--mint)] flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-gray-900">Email Us</p>
+              <p className="text-sm font-semibold text-[var(--ink)]">Email Us</p>
               <a
-                href="mailto:info@pratigyamedicalstore.com"
-                className="text-sm text-muted-foreground hover:text-amber-700 hover:underline transition-colors"
+                href={CONTACT.emailHref}
+                className="text-sm text-muted-foreground hover:text-[var(--mint)] hover:underline transition-colors"
               >
-                info@pratigyamedicalstore.com
+                {CONTACT.email}
               </a>
             </div>
           </div>
           <div className="flex items-start space-x-3">
-            <Phone className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <Phone className="h-5 w-5 text-[var(--mint)] flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-gray-900">Call Us</p>
-              <p className="text-sm text-muted-foreground">+91-93292 16544</p>
-              <p className="text-sm text-muted-foreground">+91-97703 55137</p>
+              <p className="text-sm font-semibold text-[var(--ink)]">Call Us</p>
+              <a href={CONTACT.phoneHref} className="text-sm text-muted-foreground hover:text-[var(--mint)] hover:underline transition-colors">
+                {CONTACT.phone}
+              </a>
             </div>
           </div>
         </div>
@@ -216,10 +192,10 @@ export function Footer() {
         <div className="border-t pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-muted-foreground text-center md:text-left">
-              &copy; {currentYear} PMStore Food &amp; Spices (PMSTORE™). All rights reserved.
+              &copy; {currentYear} {SITE_NAME}. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground text-center md:text-right">
-              Now delivering to 20000+ pincodes
+              {CONTACT.hours}
             </p>
           </div>
         </div>
