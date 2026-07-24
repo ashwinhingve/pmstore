@@ -47,27 +47,37 @@ const FAQS = [
 
 export default function FaqPage() {
   return (
-    <main className="container mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(faqSchema(FAQS)) }}
       />
 
-      <h1 className="mb-8 text-[length:var(--step-3)] font-extrabold text-[var(--ink)]">
+      <h1 className="mb-2 text-[length:var(--step-3)] text-[var(--ink)]">
         Frequently asked questions
       </h1>
+      <p className="mb-8 text-[var(--ink-70)]">
+        Prescriptions, delivery, generics and refills — answered.
+      </p>
 
-      <dl className="space-y-6">
+      <dl className="space-y-4">
         {FAQS.map((faq) => (
           <div
             key={faq.question}
-            className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6"
+            className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-xs)]"
           >
             <dt className="mb-2 font-bold text-[var(--ink)]">{faq.question}</dt>
-            <dd className="text-[length:var(--step--1)] leading-relaxed text-[var(--ink)]">{faq.answer}</dd>
+            <dd className="leading-relaxed text-[var(--ink-70)]">{faq.answer}</dd>
           </div>
         ))}
       </dl>
-    </main>
+
+      <p className="mt-10 text-center text-[var(--ink-70)]">
+        Can&apos;t find your answer?{' '}
+        <a href="/contact" className="font-medium text-[var(--mint)] underline underline-offset-2">
+          Contact us
+        </a>
+      </p>
+    </div>
   );
 }

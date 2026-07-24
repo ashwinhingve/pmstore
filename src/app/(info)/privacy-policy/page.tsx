@@ -15,7 +15,7 @@ export default function PrivacyPolicyPage() {
             <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-6">
               <Shield className="w-10 h-10 text-[var(--ink)]" />
             </div>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-display mb-6 text-[var(--ink)]">
+            <h1 className="text-[length:var(--step-3)] mb-6 text-[var(--ink)]">
               Privacy Policy
             </h1>
             <p className="text-xl md:text-2xl text-[var(--ink-70)] mb-4">

@@ -15,13 +15,13 @@ export const metadata: Metadata = {
  */
 export default function DrugLicencePage() {
   return (
-    <main className="container mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
       <div className="mb-8 flex items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--mint)]">
-          <ShieldCheck className="h-6 w-6 text-[var(--ink)]" aria-hidden="true" />
+        <span className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[var(--mint-soft)]">
+          <ShieldCheck className="h-6 w-6 text-[var(--mint)]" aria-hidden="true" />
         </span>
-        <h1 className="text-[length:var(--step-3)] font-extrabold text-[var(--ink)]">
-          Drug Licence &amp; Compliance
+        <h1 className="text-[length:var(--step-3)] text-[var(--ink)]">
+          Drug licence &amp; compliance
         </h1>
       </div>
 
@@ -31,7 +31,7 @@ export default function DrugLicencePage() {
         dispensed only against a valid prescription verified by our registered pharmacist.
       </p>
 
-      <section className="space-y-4 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6">
+      <section className="space-y-4 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
         <Detail label="Legal entity" value="Pratigya Medical Store" />
         <Detail label="Retail drug licence no." value="[To be added before go-live]" placeholder />
         <Detail label="Wholesale drug licence no." value="[To be added before go-live]" placeholder />
@@ -58,7 +58,7 @@ export default function DrugLicencePage() {
         </a>
         .
       </p>
-    </main>
+    </div>
   );
 }
 

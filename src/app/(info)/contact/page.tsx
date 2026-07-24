@@ -106,7 +106,7 @@ export default function ContactPage() {
       <section className="relative overflow-hidden bg-[var(--paper)] py-20 md:py-32">
         <div className="container mx-auto px-4">
           <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-display mb-6 text-[var(--ink)]">
+            <h1 className="text-[length:var(--step-3)] mb-6 text-[var(--ink)]">
               Get In Touch
             </h1>
             <p className="text-xl md:text-2xl text-[var(--ink-70)] mb-8">
@@ -305,7 +305,7 @@ export default function ContactPage() {
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold font-display mb-2 text-[var(--ink)]">
+            <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
               Frequently Asked Questions
             </h2>
             <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
