@@ -35,6 +35,33 @@ Defined in `src/styles/tokens.css`. Never hardcode a hex value in a component.
 doctor." Diluting that is a safety problem, not a style choice. Use `--ink-70` for destructive
 confirmations and `--mint` for savings.
 
+### Surfaces and tints
+
+| Token | Value | Use |
+|---|---|---|
+| `--ink-deep` | `#0F1A2E` | gradient end for navy bands |
+| `--ink-10` | `#E4E7ED` | hairlines and subtle fills on dark surfaces |
+| `--surface-hero` | navy 140° gradient | hero and closing CTA bands, footer |
+| `--surface-mint` | mint 140° gradient | rare emphasis surfaces (savings feature) |
+| `--paper-tint` | `#F4F2ED` | warm alternating-section background |
+| `--paper-tint-mint` | `#F0F8F5` | mint-washed section background |
+
+These are the only sanctioned gradients. Text on `--surface-hero` is `--paper`; hairlines on it
+are `--ink-10`. Never invent a new gradient in a component.
+
+### Elevation
+
+| Token | Use |
+|---|---|
+| `--shadow-xs` | pressed / resting chips |
+| `--shadow-sm` | resting cards, sticky header after scroll |
+| `--shadow-md` | raised cards, dropdowns, hovered interactive cards |
+| `--shadow-lg` | drawers, dialogs, sticky order summaries |
+| `--shadow-hero` | the hero search card and nothing else |
+
+`--shadow-card` remains as a legacy alias; new work picks from the scale. An interactive card may
+raise one step on hover (`sm → md`) over `--dur-fast`. No scale transforms on hover.
+
 ---
 
 ## Typography
@@ -122,8 +149,9 @@ the cart line. A customer should never reach checkout surprised.
 ### ProductCard
 
 Image (square, `next/image`, `sizes` set), name in display, composition in mono at `--step--1`,
-PriceBlock, stock state, RxBadge if applicable. No hover lift, no shadow animation. One card
-style everywhere.
+PriceBlock, stock state, RxBadge if applicable. On hover the card raises one elevation step
+(`--shadow-sm → --shadow-md`) over `--dur-fast`; no scale, no translate. One card style
+everywhere.
 
 ### SearchBar
 
@@ -142,14 +170,16 @@ Never "Nothing here."
 
 ## Layout
 
-Home page is **search-first**. Three doors, in this order:
+Home page is **search-first**. The hero is a `--surface-hero` navy band whose primary element is
+the search card (`--shadow-hero`) — not a promotion. Three doors, in this order:
 
 1. Search
 2. Order again — last order, one tap, only when signed in with order history
 3. Upload prescription
 
-No hero banner, no carousel, no smiling pharmacist stock photo. A repeat-purchase product should
-open on the repeat action. Categories and offers go below the fold.
+No carousels, no smiling pharmacist stock photos, no festival banners. Illustration is inline SVG
+in token colors only. Below the fold, sections alternate `--paper` / `--paper-tint` backgrounds
+instead of hairline dividers. Categories and offers go below the fold.
 
 Container max-width 1200px. Mobile-first — build the 360px layout, then widen.
 
@@ -157,11 +187,17 @@ Container max-width 1200px. Mobile-first — build the 360px layout, then widen.
 
 ## Motion
 
-Restrained. The one orchestrated moment is switching brands in the Strip: 180 ms ease-out on the
-active border and the price crossfade. Everything else is instant or a 120 ms opacity fade.
+Restrained. Durations come from tokens: `--dur-fast` (120 ms) for hovers and fades, `--dur-base`
+(180 ms) for the Strip's brand switch and step transitions, `--dur-slow` (240 ms) for drawers.
+Nothing slower. Easing is `--ease-out`.
 
-Respect `prefers-reduced-motion` — already handled in `tokens.css`. No scroll-triggered
-animation anywhere; customers are here to buy medicine, often in a hurry, sometimes worried.
+The one orchestrated moment is switching brands in the Strip: 180 ms ease-out on the active
+border and the price crossfade. Entrance reveals (stagger, fade-up) are allowed only on marketing
+surfaces (home, about, wholesale), fire once, and never move content more than 16px.
+
+Respect `prefers-reduced-motion` — the global kill-switch lives in `tokens.css`, and
+framer-motion components must also check `useReducedMotion`. No parallax anywhere; customers are
+here to buy medicine, often in a hurry, sometimes worried.
 
 ---
 

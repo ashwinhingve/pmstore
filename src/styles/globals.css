@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+::selection {
+  background: var(--foil-soft);
+  color: var(--ink);
+}
+
+/* Skeleton shimmer — paused entirely under prefers-reduced-motion via tokens.css */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--foil-soft) 25%,
+    var(--paper) 50%,
+    var(--foil-soft) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
 /* Increase base text sizes */
 p {
   font-size: 1rem;

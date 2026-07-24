@@ -43,10 +43,34 @@
 
   --radius-sm: 6px;
   --radius-md: 10px;
+  --radius-lg: 14px;
   --radius-pill: 999px;
 
+  /* Elevation scale. --shadow-card is the legacy alias for --shadow-sm-tier
+     surfaces; new work picks from the scale below. */
+  --shadow-xs:   0 1px 2px rgba(22, 35, 58, 0.05);
+  --shadow-sm:   0 1px 2px rgba(22, 35, 58, 0.06), 0 2px 8px rgba(22, 35, 58, 0.04);
+  --shadow-md:   0 2px 4px rgba(22, 35, 58, 0.06), 0 8px 20px rgba(22, 35, 58, 0.07);
+  --shadow-lg:   0 4px 8px rgba(22, 35, 58, 0.08), 0 16px 36px rgba(22, 35, 58, 0.10);
+  --shadow-hero: 0 12px 32px rgba(22, 35, 58, 0.16), 0 32px 64px rgba(22, 35, 58, 0.10);
   --shadow-card: 0 1px 2px rgba(22, 35, 58, 0.06), 0 4px 16px rgba(22, 35, 58, 0.05);
   --border: 1px solid var(--foil-soft);
+
+  /* Premium surfaces — the only sanctioned gradients. Navy hero bands use
+     --surface-hero; anything on top of it uses --paper text and --ink-10
+     hairlines. */
+  --ink-deep:        #0F1A2E;
+  --ink-10:          #E4E7ED;   /* on-dark hairlines, subtle fills */
+  --surface-hero:    linear-gradient(140deg, var(--ink) 0%, var(--ink-deep) 100%);
+  --surface-mint:    linear-gradient(140deg, var(--mint) 0%, #0A6B54 100%);
+  --paper-tint:      #F4F2ED;   /* warm alternating-section tint */
+  --paper-tint-mint: #F0F8F5;   /* mint-washed section tint */
+
+  /* Motion — pick from these three durations; nothing slower than --dur-slow. */
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-slow: 240ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body {
