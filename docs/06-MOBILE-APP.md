@@ -3,6 +3,21 @@
 Expo React Native, Android first, structured so iOS is a build target and not a rewrite. Lives
 in `mobile/` in the same repo so types and validation schemas are shared with the web.
 
+## Implementation status
+
+- **Server (`/api/v1/*`): built and verified** (typecheck + vitest). Week-7 auth/search/products
+  plus the week 8–9 mirrors: product detail, alternatives (the Strip), checkout with server-side
+  Rx enforcement, payment initiate + COD, orders list/detail, reorder, prescriptions upload, and
+  saved-medicines. FCM push sending (`src/lib/notifications/fcm.ts`) is wired into the order
+  status-change and refill-reminder flows, additive to email.
+- **Client (`mobile/`): written, NOT yet verified.** The full Expo source (screens, tab nav,
+  refresh-queuing API client, the Strip, cart, checkout, prescription upload, orders, reorder,
+  saved medicines, FCM deep links) exists but has never been run — this build session had no
+  native toolchain, emulator, or network. Treat it as spec-complete code to build and harden on
+  a real machine. See `mobile/BUILD-RUNBOOK.md` for the build/run/EAS/Play-Store steps and
+  `mobile/IMPLEMENTATION-SUMMARY.md` for open integration points (fonts, `google-services.json`,
+  the payment SDK wiring).
+
 ## Stack
 
 | | |
@@ -73,6 +88,17 @@ before any value is delivered gets denied and cannot be asked again.
 
 Notify on: order confirmed, out for delivery, delivered, prescription verified or rejected,
 refill due. Nothing promotional in v1. Every push deep-links to the relevant screen.
+
+Sending uses `firebase-admin` server-side and needs three env vars (a service-account key from
+the Firebase console). `firebase-admin` is loaded lazily so a missing package/config degrades to
+a no-op rather than crashing — email always still sends. Set on the server (not in
+`.env.local.example`, which is left as-is):
+
+```
+FIREBASE_PROJECT_ID=…
+FIREBASE_CLIENT_EMAIL=…
+FIREBASE_PRIVATE_KEY=…     # multiline; keep the \n escapes
+```
 
 ## Play Store
 

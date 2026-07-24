@@ -263,6 +263,11 @@ design tokens in place.
 
 **Done when:** a full order can be placed from the app, COD and online.
 
+> **Status:** server endpoints built + verified (`/api/v1/products/[slug]`, `/alternatives`,
+> `/checkout/create-order` with Rx enforcement, `/payment/initiate`, `/payment/confirm-cod`,
+> `/orders`, `/orders/[id]`, `/prescriptions`). Client screens written in `mobile/` but not yet
+> run on a device (payment-SDK wiring is the remaining integration point).
+
 ---
 
 ## Week 9 — Mobile retention and polish
@@ -277,6 +282,11 @@ design tokens in place.
 
 **Done when:** push arrives on a real device and deep links open the correct screen.
 
+> **Status:** server ready — `/api/v1/orders/[id]/reorder`, `/api/v1/saved-medicines`, and FCM
+> sending (`src/lib/notifications/fcm.ts`) wired into order-status and refill flows. Client
+> reorder/saved/push/deep-link screens written in `mobile/`; needs `google-services.json` and a
+> device to verify push + deep links.
+
 ---
 
 ## Week 10 — QA and launch
@@ -288,6 +298,12 @@ design tokens in place.
    pharmacy/health category.
 5. Production monitoring, crash reporting, alert thresholds.
 6. Hand over: admin training for the client's staff, runbook, credentials transfer.
+
+**Done when:** the app is published to the Play Store and the client owns the listing.
+
+> **Status:** device matrix, load test, and Play Store submission are all on-device / live-account
+> work that cannot be done in this build session. Checklist and hand-off steps are in
+> `mobile/PLAY-STORE.md` and `mobile/BUILD-RUNBOOK.md`.
 
 **→ App live.**
 
