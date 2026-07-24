@@ -61,7 +61,7 @@ export default function OrderActions({
   return (
     <div className="space-y-3">
       {paymentStatus === 'pending' && (
-        <button className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 font-medium">
+        <button className="w-full bg-[var(--ink)] text-[var(--paper-card)] py-2 px-4 rounded-lg hover:opacity-90 font-medium">
           Retry Payment
         </button>
       )}
@@ -69,7 +69,7 @@ export default function OrderActions({
       {trackingNumber && (
         <a
           href="#tracking"
-          className="block w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 font-medium text-center"
+          className="block w-full bg-[var(--ink)] text-[var(--paper-card)] py-2 px-4 rounded-lg hover:opacity-90 font-medium text-center"
         >
           View Tracking
         </a>
@@ -79,7 +79,7 @@ export default function OrderActions({
         <button
           onClick={() => setShowCancelModal(true)}
           disabled={cancelling}
-          className="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 font-medium disabled:opacity-50"
+          className="w-full bg-[var(--foil-soft)] text-[var(--ink)] py-2 px-4 rounded-lg hover:bg-[var(--foil)] font-medium disabled:opacity-50"
         >
           {cancelling ? 'Cancelling...' : 'Cancel Order'}
         </button>
@@ -87,7 +87,7 @@ export default function OrderActions({
 
       <a
         href="/orders"
-        className="block w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 font-medium text-center"
+        className="block w-full bg-[var(--foil-soft)] text-[var(--ink)] py-2 px-4 rounded-lg hover:bg-[var(--foil)] font-medium text-center"
       >
         View All Orders
       </a>
@@ -95,20 +95,20 @@ export default function OrderActions({
       {/* Cancel Modal */}
       {showCancelModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Cancel Order</h3>
-            <p className="text-gray-600 mb-4">
+          <div className="bg-[var(--paper-card)] rounded-lg max-w-md w-full p-6">
+            <h3 className="text-xl font-bold text-[var(--ink)] mb-4">Cancel Order</h3>
+            <p className="text-[var(--ink-70)] mb-4">
               Are you sure you want to cancel this order? This action cannot be undone.
             </p>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                 Reason (Optional)
               </label>
               <textarea
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg p-2 text-sm"
+                className="w-full border border-[var(--foil-soft)] rounded-lg p-2 text-sm text-[var(--ink)]"
                 rows={3}
                 placeholder="Tell us why you're cancelling..."
               />
@@ -117,14 +117,14 @@ export default function OrderActions({
             <div className="flex gap-3">
               <button
                 onClick={() => setShowCancelModal(false)}
-                className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 font-medium"
+                className="flex-1 bg-[var(--foil-soft)] text-[var(--ink)] py-2 px-4 rounded-lg hover:bg-[var(--foil)] font-medium"
               >
                 Keep Order
               </button>
               <button
                 onClick={handleCancelOrder}
                 disabled={cancelling}
-                className="flex-1 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 font-medium disabled:opacity-50"
+                className="flex-1 bg-[var(--ink)] text-[var(--paper-card)] py-2 px-4 rounded-lg hover:opacity-90 font-medium disabled:opacity-50"
               >
                 {cancelling ? 'Cancelling...' : 'Yes, Cancel'}
               </button>

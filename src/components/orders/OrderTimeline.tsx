@@ -151,8 +151,8 @@ function Timeline({
   formatDate: (date: string) => string;
 }) {
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6">
-      <h3 className="text-xl font-bold text-gray-900 mb-6">Order Status</h3>
+    <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
+      <h3 className="text-xl font-bold text-[var(--ink)] mb-6">Order Status</h3>
 
       <div className="relative">
         {steps.map((step, index) => {
@@ -165,7 +165,7 @@ function Timeline({
               {!isLast && (
                 <div
                   className={`absolute left-5 top-12 w-0.5 h-full ${
-                    step.status === 'completed' ? 'bg-green-500' : 'bg-gray-200'
+                    step.status === 'completed' ? 'bg-[var(--mint)]' : 'bg-[var(--foil-soft)]'
                   }`}
                 />
               )}
@@ -174,19 +174,19 @@ function Timeline({
               <div
                 className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
                   step.status === 'completed'
-                    ? 'bg-green-100'
+                    ? 'bg-[var(--mint-soft)]'
                     : step.status === 'current'
-                    ? 'bg-amber-100'
-                    : 'bg-gray-100'
+                    ? 'bg-[var(--foil-soft)]'
+                    : 'bg-[var(--foil-soft)]'
                 }`}
               >
                 <Icon
                   className={`w-5 h-5 ${
                     step.status === 'completed'
-                      ? 'text-green-600'
+                      ? 'text-[var(--mint)]'
                       : step.status === 'current'
-                      ? 'text-amber-600'
-                      : 'text-gray-400'
+                      ? 'text-[var(--ink)]'
+                      : 'text-[var(--ink-40)]'
                   }`}
                 />
               </div>
@@ -196,16 +196,16 @@ function Timeline({
                 <p
                   className={`text-base font-medium ${
                     step.status === 'completed'
-                      ? 'text-gray-900'
+                      ? 'text-[var(--ink)]'
                       : step.status === 'current'
-                      ? 'text-amber-700'
-                      : 'text-gray-500'
+                      ? 'text-[var(--ink)]'
+                      : 'text-[var(--ink-40)]'
                   }`}
                 >
                   {step.label}
                 </p>
                 {step.date && (
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-[var(--ink-70)] mt-1 pack">
                     {typeof step.date === 'string' && step.date.startsWith('Est.')
                       ? step.date
                       : formatDate(step.date)}
@@ -228,27 +228,27 @@ function FailedTimeline({
   formatDate: (date: string) => string;
 }) {
   return (
-    <div className="bg-red-50 rounded-2xl border-2 border-red-200 shadow-xl p-6">
-      <h3 className="text-xl font-bold text-red-900 mb-6">Order Status</h3>
+    <div className="bg-[var(--foil-soft)] rounded-2xl border-2 border-[var(--foil)] shadow-[var(--shadow-card)] p-6">
+      <h3 className="text-xl font-bold text-[var(--ink)] mb-6">Order Status</h3>
 
       <div className="space-y-4">
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-            <CheckCircle className="w-5 h-5 text-green-600" />
+          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[var(--mint-soft)] flex items-center justify-center">
+            <CheckCircle className="w-5 h-5 text-[var(--mint)]" />
           </div>
           <div>
-            <p className="text-base font-medium text-gray-900">Order Placed</p>
-            <p className="text-sm text-gray-600 mt-1">{formatDate(createdAt)}</p>
+            <p className="text-base font-medium text-[var(--ink)]">Order Placed</p>
+            <p className="text-sm text-[var(--ink-70)] mt-1 pack">{formatDate(createdAt)}</p>
           </div>
         </div>
 
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-            <XCircle className="w-5 h-5 text-red-600" />
+          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[var(--foil-soft)] flex items-center justify-center">
+            <XCircle className="w-5 h-5 text-[var(--ink)]" />
           </div>
           <div>
-            <p className="text-base font-medium text-red-900">Payment Failed / Order Cancelled</p>
-            <p className="text-sm text-red-700 mt-1">Please contact support for assistance</p>
+            <p className="text-base font-medium text-[var(--ink)]">Payment Failed / Order Cancelled</p>
+            <p className="text-sm text-[var(--ink-70)] mt-1">Please contact support for assistance</p>
           </div>
         </div>
       </div>

@@ -14,27 +14,27 @@ export default function OrderSummaryCard({ orderData }: OrderSummaryCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'delivered':
-        return 'bg-green-100 text-green-700 border-green-300';
+        return 'bg-[var(--mint-soft)] text-[var(--mint)] border-[var(--mint)]';
       case 'shipped':
-        return 'bg-blue-100 text-blue-700 border-blue-300';
+        return 'bg-[var(--foil-soft)] text-[var(--ink)] border-[var(--foil)]';
       case 'processing':
       case 'confirmed':
-        return 'bg-purple-100 text-purple-700 border-purple-300';
+        return 'bg-[var(--foil-soft)] text-[var(--ink)] border-[var(--foil)]';
       case 'cancelled':
-        return 'bg-red-100 text-red-700 border-red-300';
+        return 'bg-[var(--foil-soft)] text-[var(--ink)] border-[var(--foil)]';
       default:
-        return 'bg-yellow-100 text-yellow-700 border-yellow-300';
+        return 'bg-[var(--foil-soft)] text-[var(--ink-70)] border-[var(--foil)]';
     }
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6">
-      <h3 className="text-xl font-bold text-gray-900 mb-4">Order Summary</h3>
+    <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
+      <h3 className="text-xl font-bold text-[var(--ink)] mb-4">Order Summary</h3>
 
       {/* Status Badges */}
       <div className="space-y-2 mb-6">
         <div>
-          <p className="text-xs text-gray-600 mb-1">Order Status</p>
+          <p className="text-xs text-[var(--ink-70)] mb-1">Order Status</p>
           <span
             className={`inline-flex px-3 py-1.5 text-sm font-semibold rounded-lg border-2 capitalize ${getStatusColor(
               orderData.orderStatus
@@ -44,14 +44,14 @@ export default function OrderSummaryCard({ orderData }: OrderSummaryCardProps) {
           </span>
         </div>
         <div>
-          <p className="text-xs text-gray-600 mb-1">Payment Status</p>
+          <p className="text-xs text-[var(--ink-70)] mb-1">Payment Status</p>
           <span
             className={`inline-flex px-3 py-1.5 text-sm font-semibold rounded-lg border-2 capitalize ${
               orderData.paymentStatus === 'paid'
-                ? 'bg-green-100 text-green-700 border-green-300'
+                ? 'bg-[var(--mint-soft)] text-[var(--mint)] border-[var(--mint)]'
                 : orderData.paymentStatus === 'pending'
-                ? 'bg-yellow-100 text-yellow-700 border-yellow-300'
-                : 'bg-red-100 text-red-700 border-red-300'
+                ? 'bg-[var(--foil-soft)] text-[var(--ink-70)] border-[var(--foil)]'
+                : 'bg-[var(--foil-soft)] text-[var(--ink)] border-[var(--foil)]'
             }`}
           >
             {orderData.paymentStatus}
@@ -60,18 +60,18 @@ export default function OrderSummaryCard({ orderData }: OrderSummaryCardProps) {
       </div>
 
       {/* Price Breakdown */}
-      <div className="space-y-3 border-t border-gray-200 pt-4">
+      <div className="space-y-3 border-t border-[var(--foil-soft)] pt-4">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">Subtotal</span>
-          <span className="font-medium text-gray-900">
+          <span className="text-[var(--ink-70)]">Subtotal</span>
+          <span className="font-medium text-[var(--ink)] price">
             ₹{orderData.subtotal.toLocaleString('en-IN')}
           </span>
         </div>
 
         {orderData.shippingCost > 0 && (
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">Shipping</span>
-            <span className="font-medium text-gray-900">
+            <span className="text-[var(--ink-70)]">Shipping</span>
+            <span className="font-medium text-[var(--ink)] price">
               ₹{orderData.shippingCost.toLocaleString('en-IN')}
             </span>
           </div>
@@ -79,17 +79,17 @@ export default function OrderSummaryCard({ orderData }: OrderSummaryCardProps) {
 
         {orderData.discount > 0 && (
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">Discount</span>
-            <span className="font-medium text-green-600">
+            <span className="text-[var(--ink-70)]">Discount</span>
+            <span className="font-medium text-[var(--mint)] price">
               -₹{orderData.discount.toLocaleString('en-IN')}
             </span>
           </div>
         )}
 
-        <div className="border-t border-gray-200 pt-3 mt-3">
+        <div className="border-t border-[var(--foil-soft)] pt-3 mt-3">
           <div className="flex items-center justify-between">
-            <span className="text-lg font-bold text-gray-900">Total</span>
-            <span className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
+            <span className="text-lg font-bold text-[var(--ink)]">Total</span>
+            <span className="text-2xl font-bold text-[var(--ink)] price">
               ₹{orderData.totalAmount.toLocaleString('en-IN')}
             </span>
           </div>

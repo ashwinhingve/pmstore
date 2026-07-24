@@ -66,15 +66,15 @@ export default function ShipmentTracker({
   const getStatusColor = (status: string) => {
     const lowerStatus = status.toLowerCase();
 
-    if (lowerStatus.includes('delivered')) return 'text-green-600 bg-green-100';
-    if (lowerStatus.includes('out for delivery')) return 'text-blue-600 bg-blue-100';
+    if (lowerStatus.includes('delivered')) return 'text-[var(--mint)] bg-[var(--mint-soft)]';
+    if (lowerStatus.includes('out for delivery')) return 'text-[var(--ink)] bg-[var(--foil-soft)]';
     if (lowerStatus.includes('in transit') || lowerStatus.includes('dispatched'))
-      return 'text-purple-600 bg-purple-100';
-    if (lowerStatus.includes('pending')) return 'text-yellow-600 bg-yellow-100';
+      return 'text-[var(--ink)] bg-[var(--foil-soft)]';
+    if (lowerStatus.includes('pending')) return 'text-[var(--ink-70)] bg-[var(--foil-soft)]';
     if (lowerStatus.includes('cancelled') || lowerStatus.includes('rto'))
-      return 'text-red-600 bg-red-100';
+      return 'text-[var(--ink)] bg-[var(--foil-soft)]';
 
-    return 'text-gray-600 bg-gray-100';
+    return 'text-[var(--ink-70)] bg-[var(--foil-soft)]';
   };
 
   const copyToClipboard = () => {
@@ -84,10 +84,10 @@ export default function ShipmentTracker({
 
   if (loading && !tracking) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[var(--paper-card)] rounded-lg shadow-[var(--shadow-card)] p-6">
         <div className="flex items-center justify-center py-8">
-          <div className="inline-block w-8 h-8 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="ml-3 text-gray-600">Loading tracking information...</p>
+          <div className="inline-block w-8 h-8 border-4 border-[var(--ink)] border-t-transparent rounded-full animate-spin"></div>
+          <p className="ml-3 text-[var(--ink-70)]">Loading tracking information...</p>
         </div>
       </div>
     );
@@ -95,17 +95,17 @@ export default function ShipmentTracker({
 
   if (error) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div className="bg-[var(--paper-card)] rounded-lg shadow-[var(--shadow-card)] p-6">
+        <div className="bg-[var(--foil-soft)] border border-[var(--foil)] rounded-lg p-4">
           <div className="flex items-center gap-3">
             <svg
-              className="w-5 h-5 text-red-600"
+              className="w-5 h-5 text-[var(--ink)]"
               fill="currentColor"
               viewBox="0 0 24 24"
             >
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
             </svg>
-            <p className="text-sm text-red-700">{error}</p>
+            <p className="text-sm text-[var(--ink-70)]">{error}</p>
           </div>
         </div>
       </div>
@@ -117,13 +117,13 @@ export default function ShipmentTracker({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6" id="tracking">
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-[var(--shadow-card)] p-6" id="tracking">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold text-gray-900">Shipment Tracking</h3>
+        <h3 className="text-xl font-bold text-[var(--ink)]">Shipment Tracking</h3>
         <button
           onClick={fetchTracking}
           disabled={loading}
-          className="text-orange-600 hover:text-orange-700 flex items-center gap-2 text-sm"
+          className="text-[var(--ink)] hover:opacity-70 flex items-center gap-2 text-sm"
         >
           <svg
             className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
@@ -143,18 +143,18 @@ export default function ShipmentTracker({
       </div>
 
       {/* Tracking Number */}
-      <div className="bg-gray-50 rounded-lg p-4 mb-6">
+      <div className="bg-[var(--foil-soft)] rounded-lg p-4 mb-6">
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Tracking Number</p>
-            <p className="text-lg font-bold text-gray-900">{tracking.waybill}</p>
+            <p className="text-sm text-[var(--ink-70)] mb-1">Tracking Number</p>
+            <p className="text-lg font-bold text-[var(--ink)] pack">{tracking.waybill}</p>
           </div>
           <button
             onClick={copyToClipboard}
-            className="bg-white border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+            className="bg-[var(--paper-card)] border border-[var(--foil-soft)] px-4 py-2 rounded-lg hover:bg-[var(--foil-soft)] flex items-center gap-2"
           >
             <svg
-              className="w-4 h-4 text-gray-600"
+              className="w-4 h-4 text-[var(--ink-70)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -166,7 +166,7 @@ export default function ShipmentTracker({
                 d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
               />
             </svg>
-            <span className="text-sm">Copy</span>
+            <span className="text-sm text-[var(--ink)]">Copy</span>
           </button>
         </div>
       </div>
@@ -182,7 +182,7 @@ export default function ShipmentTracker({
             {tracking.status}
           </div>
           {tracking.currentLocation && (
-            <div className="flex items-center gap-2 text-gray-600">
+            <div className="flex items-center gap-2 text-[var(--ink-70)]">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -208,16 +208,16 @@ export default function ShipmentTracker({
         </div>
 
         {tracking.estimatedDelivery && !tracking.deliveryDate && (
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-[var(--ink-70)] mt-2">
             Estimated Delivery:{' '}
-            <span className="font-medium">
+            <span className="font-medium pack">
               {new Date(tracking.estimatedDelivery).toLocaleDateString()}
             </span>
           </p>
         )}
 
         {tracking.deliveryDate && (
-          <p className="text-sm text-green-600 mt-2 font-medium">
+          <p className="text-sm text-[var(--mint)] mt-2 font-medium pack">
             Delivered on {new Date(tracking.deliveryDate).toLocaleDateString()}
           </p>
         )}
@@ -225,7 +225,7 @@ export default function ShipmentTracker({
 
       {/* Tracking Timeline */}
       <div>
-        <h4 className="font-semibold text-gray-900 mb-4">Tracking History</h4>
+        <h4 className="font-semibold text-[var(--ink)] mb-4">Tracking History</h4>
         <div className="space-y-4">
           {tracking.scans.map((scan, index) => (
             <div key={index} className="flex gap-4">
@@ -233,25 +233,25 @@ export default function ShipmentTracker({
               <div className="flex flex-col items-center">
                 <div
                   className={`w-3 h-3 rounded-full ${
-                    index === 0 ? 'bg-orange-500' : 'bg-gray-300'
+                    index === 0 ? 'bg-[var(--ink)]' : 'bg-[var(--foil-soft)]'
                   }`}
                 ></div>
                 {index < tracking.scans.length - 1 && (
-                  <div className="w-0.5 h-full bg-gray-200 mt-1"></div>
+                  <div className="w-0.5 h-full bg-[var(--foil-soft)] mt-1"></div>
                 )}
               </div>
 
               {/* Scan details */}
               <div className="flex-1 pb-4">
                 <div className="flex justify-between items-start mb-1">
-                  <p className="font-medium text-gray-900">{scan.status}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="font-medium text-[var(--ink)]">{scan.status}</p>
+                  <p className="text-sm text-[var(--ink-40)] pack">
                     {new Date(scan.timestamp).toLocaleString()}
                   </p>
                 </div>
-                <p className="text-sm text-gray-600">{scan.location}</p>
+                <p className="text-sm text-[var(--ink-70)]">{scan.location}</p>
                 {scan.remarks && (
-                  <p className="text-xs text-gray-500 mt-1">{scan.remarks}</p>
+                  <p className="text-xs text-[var(--ink-40)] mt-1">{scan.remarks}</p>
                 )}
               </div>
             </div>

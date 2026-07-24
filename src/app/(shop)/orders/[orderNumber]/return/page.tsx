@@ -149,10 +149,10 @@ export default function ReturnRequestPage({
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-white to-red-50">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
         <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="inline-block w-12 h-12 border-4 border-[var(--ink)] border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-[var(--ink-70)]">Loading...</p>
         </div>
       </div>
     );
@@ -160,88 +160,86 @@ export default function ReturnRequestPage({
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-white to-red-50">
-        <div className="bg-white rounded-2xl shadow-xl p-12 max-w-md text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="w-10 h-10 text-green-600" />
+      <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
+        <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-12 max-w-md text-center">
+          <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-10 h-10 text-[var(--mint)]" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-[var(--ink)] mb-2">
             Return Request Submitted!
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-[var(--ink-70)] mb-6">
             Your return request has been submitted successfully. Our team will review it
             shortly.
           </p>
-          <p className="text-sm text-gray-500">Redirecting to order details...</p>
+          <p className="text-sm text-[var(--ink-40)]">Redirecting to order details...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-red-50 py-12">
+    <div className="min-h-screen bg-[var(--paper)] py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">
             <Link
               href={`/orders/${orderNumber}`}
-              className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-700 mb-4"
+              className="inline-flex items-center gap-2 text-[var(--ink)] hover:opacity-70 mb-4"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Order
             </Link>
 
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">
-              <span className="bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
-                Request Return/Refund
-              </span>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 text-[var(--ink)]">
+              Request Return/Refund
             </h1>
-            <p className="text-gray-600">Order #{orderNumber}</p>
+            <p className="text-[var(--ink-70)]">Order <span className="pack">#{orderNumber}</span></p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-red-800">{error}</p>
+            <div className="bg-[var(--foil-soft)] border-2 border-[var(--foil)] rounded-xl p-4 mb-6 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-[var(--ink)] flex-shrink-0 mt-0.5" />
+              <p className="text-[var(--ink-70)]">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Return Type */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Return Type</h3>
+            <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
+              <h3 className="text-lg font-bold text-[var(--ink)] mb-4">Return Type</h3>
               <div className="grid grid-cols-2 gap-4">
                 <button
                   type="button"
                   onClick={() => setReturnType('refund')}
                   className={`p-4 rounded-xl border-2 text-left transition-all ${
                     returnType === 'refund'
-                      ? 'border-amber-500 bg-amber-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-[var(--ink)] bg-[var(--foil-soft)]'
+                      : 'border-[var(--foil-soft)] hover:border-[var(--foil)]'
                   }`}
                 >
-                  <p className="font-semibold text-gray-900">Refund</p>
-                  <p className="text-sm text-gray-600">Get your money back</p>
+                  <p className="font-semibold text-[var(--ink)]">Refund</p>
+                  <p className="text-sm text-[var(--ink-70)]">Get your money back</p>
                 </button>
                 <button
                   type="button"
                   onClick={() => setReturnType('exchange')}
                   className={`p-4 rounded-xl border-2 text-left transition-all ${
                     returnType === 'exchange'
-                      ? 'border-amber-500 bg-amber-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-[var(--ink)] bg-[var(--foil-soft)]'
+                      : 'border-[var(--foil-soft)] hover:border-[var(--foil)]'
                   }`}
                 >
-                  <p className="font-semibold text-gray-900">Exchange</p>
-                  <p className="text-sm text-gray-600">Replace with same product</p>
+                  <p className="font-semibold text-[var(--ink)]">Exchange</p>
+                  <p className="text-sm text-[var(--ink-70)]">Replace with same product</p>
                 </button>
               </div>
             </div>
 
             {/* Select Items */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Select Items</h3>
+            <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
+              <h3 className="text-lg font-bold text-[var(--ink)] mb-4">Select Items</h3>
               <div className="space-y-3">
                 {orderItems.map((item) => {
                   const isSelected = selectedItems.some(
@@ -253,15 +251,15 @@ export default function ReturnRequestPage({
                       key={item.productId}
                       className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
                         isSelected
-                          ? 'border-amber-500 bg-amber-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-[var(--ink)] bg-[var(--foil-soft)]'
+                          : 'border-[var(--foil-soft)] hover:border-[var(--foil)]'
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => handleItemToggle(item.productId, item.quantity)}
-                        className="w-5 h-5 text-amber-600 rounded focus:ring-amber-500"
+                        className="w-5 h-5 text-[var(--ink)] rounded focus:ring-[var(--ink)]"
                       />
                       {item.image && (
                         <img
@@ -271,12 +269,12 @@ export default function ReturnRequestPage({
                         />
                       )}
                       <div className="flex-1">
-                        <p className="font-semibold text-gray-900">{item.productName}</p>
-                        <p className="text-sm text-gray-600">
-                          Qty: {item.quantity} × ₹{item.price.toLocaleString('en-IN')}
+                        <p className="font-semibold text-[var(--ink)]">{item.productName}</p>
+                        <p className="text-sm text-[var(--ink-70)]">
+                          Qty: {item.quantity} × <span className="price">₹{item.price.toLocaleString('en-IN')}</span>
                         </p>
                       </div>
-                      <p className="font-bold text-gray-900">
+                      <p className="font-bold text-[var(--ink)] price">
                         ₹{(item.quantity * item.price).toLocaleString('en-IN')}
                       </p>
                     </label>
@@ -286,14 +284,14 @@ export default function ReturnRequestPage({
             </div>
 
             {/* Return Reason */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Return Reason</h3>
+            <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
+              <h3 className="text-lg font-bold text-[var(--ink)] mb-4">Return Reason</h3>
               <div className="space-y-4">
                 <select
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   required
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-[var(--foil-soft)] focus:border-[var(--ink)] focus:outline-none text-[var(--ink)]"
                 >
                   <option value="">Select a reason</option>
                   <option value="defective">Defective or damaged product</option>
@@ -309,28 +307,28 @@ export default function ReturnRequestPage({
                   onChange={(e) => setReasonDetails(e.target.value)}
                   placeholder="Please provide additional details (optional)"
                   rows={4}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none resize-none"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-[var(--foil-soft)] focus:border-[var(--ink)] focus:outline-none resize-none text-[var(--ink)]"
                 />
               </div>
             </div>
 
             {/* Refund Summary */}
             {selectedItems.length > 0 && (
-              <div className="bg-gradient-to-br from-amber-50 to-red-50 rounded-2xl border-2 border-amber-200 shadow-xl p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">
+              <div className="bg-[var(--foil-soft)] rounded-2xl border-2 border-[var(--foil)] shadow-[var(--shadow-card)] p-6">
+                <h3 className="text-lg font-bold text-[var(--ink)] mb-3">
                   {returnType === 'refund' ? 'Refund' : 'Exchange'} Summary
                 </h3>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Items Selected:</span>
-                    <span className="font-semibold text-gray-900">
+                    <span className="text-[var(--ink-70)]">Items Selected:</span>
+                    <span className="font-semibold text-[var(--ink)]">
                       {selectedItems.length}
                     </span>
                   </div>
                   {returnType === 'refund' && (
-                    <div className="flex justify-between text-lg font-bold border-t border-amber-200 pt-2">
-                      <span className="text-gray-900">Refund Amount:</span>
-                      <span className="text-amber-700">
+                    <div className="flex justify-between text-lg font-bold border-t border-[var(--foil)] pt-2">
+                      <span className="text-[var(--ink)]">Refund Amount:</span>
+                      <span className="text-[var(--ink)] price">
                         ₹{calculateRefundAmount().toLocaleString('en-IN')}
                       </span>
                     </div>
@@ -353,7 +351,7 @@ export default function ReturnRequestPage({
               <Button
                 type="submit"
                 disabled={isSubmitting || selectedItems.length === 0}
-                className="flex-1 bg-gradient-to-r from-amber-600 to-red-700 hover:from-amber-700 hover:to-red-800"
+                className="flex-1 bg-[var(--ink)] hover:opacity-90 text-[var(--paper-card)]"
               >
                 {isSubmitting ? (
                   <>
@@ -368,9 +366,9 @@ export default function ReturnRequestPage({
           </form>
 
           {/* Policy Info */}
-          <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
-            <h4 className="font-semibold text-blue-900 mb-2">Return Policy</h4>
-            <ul className="space-y-1 text-sm text-blue-800">
+          <div className="mt-6 bg-[var(--foil-soft)] border-2 border-[var(--foil)] rounded-xl p-6">
+            <h4 className="font-semibold text-[var(--ink)] mb-2">Return Policy</h4>
+            <ul className="space-y-1 text-sm text-[var(--ink-70)]">
               <li>• Returns are accepted within 7 days of delivery</li>
               <li>• Items must be unused and in original packaging</li>
               <li>• Refunds will be processed within 5-7 business days</li>

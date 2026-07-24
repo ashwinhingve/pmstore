@@ -427,7 +427,7 @@ export default function OrdersPage() {
                             </Link>
                           )}
                           {order.paymentStatus === 'failed' && (
-                            <Button className="w-full bg-gradient-to-r from-amber-600 to-red-700">
+                            <Button className="w-full bg-[var(--ink)] hover:opacity-90 text-[var(--paper-card)]">
                               Retry Payment
                             </Button>
                           )}
