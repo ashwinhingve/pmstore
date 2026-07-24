@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb/connection';
 import { searchQuerySchema } from '@/lib/validations/search';
 import { executeSearch } from '@/lib/search/execute';
+import { applyRateLimit } from '@/lib/middleware/rateLimit';
 import { Errors, createErrorResponse } from '@/lib/utils/errorHandler';
+
+// Public + unauthenticated + hits Atlas on every call — the obvious abuse
+// target, so cap it per IP. Generous enough for real typing-as-you-search.
+const SEARCH_RATE_LIMIT = { windowMs: 60_000, maxRequests: 60, keyPrefix: 'search:full' };
 
 /**
  * GET /api/search
@@ -11,6 +16,9 @@ import { Errors, createErrorResponse } from '@/lib/utils/errorHandler';
  */
 export async function GET(req: NextRequest) {
   try {
+    const limited = await applyRateLimit(req, SEARCH_RATE_LIMIT);
+    if (limited) return limited;
+
     await connectDB();
 
     const parsed = searchQuerySchema.safeParse(
