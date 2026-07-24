@@ -1,7 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Star } from 'lucide-react';
+import { Container } from '@/components/shared/Container';
+import { SectionHeading } from '@/components/shared/SectionHeading';
 
 /**
  * Testimonials — SAMPLE curated testimonials. Replace with real client feedback.
@@ -26,7 +28,7 @@ const SAMPLE_TESTIMONIALS = [
     initials: 'A.V.',
     name: 'Arun V.',
     quote:
-      'Uploading my prescription was super simple. They prepared my order and delivered it within 24 hours.',
+      'Uploading my prescription was quick. They prepared my order and delivered it within 24 hours.',
     stars: 5,
   },
   {
@@ -46,58 +48,71 @@ const SAMPLE_TESTIMONIALS = [
 ];
 
 export function Testimonials() {
-  const shouldReduceMotion = typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="mx-auto max-w-5xl px-4 py-16 sm:py-24 bg-[var(--foil-soft)]/30">
-      <div className="text-center mb-12">
-        <h2 className="text-[length:var(--step-2)] font-bold text-[var(--ink)]">
-          Trusted by customers
-        </h2>
-        <p className="mt-2 text-[var(--ink-70)]">
-          Real feedback from people who use Pratigya Medical Store
-        </p>
-      </div>
+    <section className="bg-[var(--paper)]">
+      <Container className="py-14 sm:py-20">
+        <SectionHeading
+          align="center"
+          eyebrow="Customers"
+          title="Trusted by customers"
+          description="Feedback from people who use Pratigya Medical Store"
+          className="mb-10"
+        />
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {SAMPLE_TESTIMONIALS.map((testimonial, i) => (
-          <motion.div
-            key={testimonial.name}
-            className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-card)]"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: shouldReduceMotion ? 0 : 0.4,
-              delay: shouldReduceMotion ? 0 : (i % 3) * 0.1,
-            }}
-            viewport={{ once: true, margin: '0px 0px -80px 0px' }}
-          >
-            <div className="flex gap-3 mb-3">
-              {Array.from({ length: testimonial.stars }).map((_, j) => (
-                <Star
-                  key={j}
-                  className="h-4 w-4 fill-[var(--mint)] text-[var(--mint)]"
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {SAMPLE_TESTIMONIALS.slice(0, 3).map((testimonial, i) => (
+            <motion.figure
+              key={testimonial.name}
+              className="relative flex h-full flex-col rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]"
+              initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.4,
+                delay: reduceMotion ? 0 : (i % 3) * 0.08,
+              }}
+              viewport={{ once: true, margin: '0px 0px -80px 0px' }}
+            >
+              {/* Decorative quote mark */}
+              <svg
+                viewBox="0 0 32 24"
+                className="absolute right-5 top-5 h-6 w-8 text-[var(--foil-soft)]"
+                aria-hidden="true"
+                fill="currentColor"
+              >
+                <path d="M0 24V14.4C0 6.4 4.8 1.2 12.4 0l1.4 3.6c-4.4 1.2-6.8 4-7 8.4H12V24H0Zm18 0V14.4C18 6.4 22.8 1.2 30.4 0l1.4 3.6c-4.4 1.2-6.8 4-7 8.4H30V24H18Z" />
+              </svg>
+
+              <div className="mb-3 flex gap-1" aria-label={`${testimonial.stars} out of 5 stars`}>
+                {Array.from({ length: testimonial.stars }).map((_, j) => (
+                  <Star
+                    key={j}
+                    className="h-4 w-4 fill-[var(--mint)] text-[var(--mint)]"
+                    aria-hidden="true"
+                  />
+                ))}
+              </div>
+              <blockquote className="flex-1 text-[var(--ink)]">{testimonial.quote}</blockquote>
+              <figcaption className="mt-4 flex items-center gap-3 border-t border-[var(--foil-soft)] pt-4">
+                <span
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--mint-soft)] text-sm font-semibold text-[var(--mint)]"
                   aria-hidden="true"
-                />
-              ))}
-            </div>
-            <p className="text-[var(--ink)] mb-4">{testimonial.quote}</p>
-            <div>
-              <p className="font-semibold text-[var(--ink)] text-[0.9375rem]">
-                {testimonial.name}
-              </p>
-              <p className="text-[0.8125rem] text-[var(--ink-40)]">
-                Customer since 2024
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+                >
+                  {testimonial.initials}
+                </span>
+                <span className="text-[0.9375rem] font-semibold text-[var(--ink)]">
+                  {testimonial.name}
+                </span>
+              </figcaption>
+            </motion.figure>
+          ))}
+        </div>
 
-      <div className="mt-8 text-center text-[0.875rem] text-[var(--ink-40)] bg-[var(--mint-soft)] rounded-[var(--radius-md)] p-4 border border-[var(--mint)]">
-        <strong>Note:</strong> These are sample testimonials for demonstration. Real customer feedback will replace these once we gather verified reviews.
-      </div>
+        <p className="mt-8 text-center text-sm text-[var(--ink-40)]">
+          Sample testimonials for demonstration — verified customer feedback will replace these.
+        </p>
+      </Container>
     </section>
   );
 }

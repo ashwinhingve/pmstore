@@ -1,87 +1,84 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
+import { Container } from '@/components/shared/Container';
+import { SectionHeading } from '@/components/shared/SectionHeading';
 import { CONTACT, SOCIAL_LINKS } from '@/lib/constants';
 
 /**
- * ContactCta — contact info + WhatsApp CTA + link to /contact.
+ * ContactCta — closing navy band mirroring the hero: contact info,
+ * WhatsApp CTA and a link to /contact.
  */
 export function ContactCta() {
-  const shouldReduceMotion = typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = useReducedMotion();
+
+  const cardClass =
+    'flex flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--paper)]/15 bg-[var(--paper)]/5 p-6 transition-colors duration-[var(--dur-fast)]';
 
   return (
-    <section className="mx-auto max-w-5xl px-4 py-16 sm:py-24 bg-gradient-to-br from-[var(--mint-soft)] to-[var(--paper)]">
-      <motion.div
-        className="text-center"
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
-        viewport={{ once: true, margin: '0px 0px -100px 0px' }}
-      >
-        <h2 className="text-[length:var(--step-2)] font-bold text-[var(--ink)]">
-          Get in touch
-        </h2>
-        <p className="mt-2 text-[var(--ink-70)]">
-          Have questions? We're here to help
-        </p>
+    <section className="bg-[image:var(--surface-hero)]">
+      <Container className="py-14 sm:py-20">
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.5 }}
+          viewport={{ once: true, margin: '0px 0px -100px 0px' }}
+        >
+          <SectionHeading
+            align="center"
+            onDark
+            eyebrow="Contact"
+            title="Get in touch"
+            description="Have questions? We're here to help"
+            className="mb-12"
+          />
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-3">
-          {/* Phone */}
-          <a
-            href={CONTACT.phoneHref}
-            className="flex flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil)] bg-[var(--paper-card)] p-6 hover:border-[var(--mint)] transition-colors"
-          >
-            <Phone className="h-6 w-6 text-[var(--mint)]" aria-hidden="true" />
-            <span className="font-semibold text-[var(--ink)]">Call us</span>
-            <span className="text-[0.875rem] text-[var(--ink-70)]">{CONTACT.phone}</span>
-          </a>
+          <div className="grid gap-5 sm:grid-cols-3">
+            <a href={CONTACT.phoneHref} className={`${cardClass} hover:border-[var(--mint)]`}>
+              <Phone className="h-6 w-6 text-[var(--mint-soft)]" aria-hidden="true" />
+              <span className="font-semibold text-[var(--paper)]">Call us</span>
+              <span className="data text-sm text-[var(--ink-10)]">{CONTACT.phone}</span>
+            </a>
 
-          {/* Email */}
-          <a
-            href={CONTACT.emailHref}
-            className="flex flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil)] bg-[var(--paper-card)] p-6 hover:border-[var(--mint)] transition-colors"
-          >
-            <Mail className="h-6 w-6 text-[var(--mint)]" aria-hidden="true" />
-            <span className="font-semibold text-[var(--ink)]">Email us</span>
-            <span className="text-[0.875rem] text-[var(--ink-70)] break-all">{CONTACT.email}</span>
-          </a>
+            <a href={CONTACT.emailHref} className={`${cardClass} hover:border-[var(--mint)]`}>
+              <Mail className="h-6 w-6 text-[var(--mint-soft)]" aria-hidden="true" />
+              <span className="font-semibold text-[var(--paper)]">Email us</span>
+              <span className="break-all text-sm text-[var(--ink-10)]">{CONTACT.email}</span>
+            </a>
 
-          {/* Address */}
-          <div className="flex flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil)] bg-[var(--paper-card)] p-6">
-            <MapPin className="h-6 w-6 text-[var(--mint)]" aria-hidden="true" />
-            <span className="font-semibold text-[var(--ink)]">Visit us</span>
-            <span className="text-[0.875rem] text-[var(--ink-70)] text-center">
-              {CONTACT.address.line1}, {CONTACT.address.city}
-            </span>
+            <div className={cardClass}>
+              <MapPin className="h-6 w-6 text-[var(--mint-soft)]" aria-hidden="true" />
+              <span className="font-semibold text-[var(--paper)]">Visit us</span>
+              <span className="text-center text-sm text-[var(--ink-10)]">
+                {CONTACT.address.line1}, {CONTACT.address.city}
+              </span>
+            </div>
           </div>
-        </div>
 
-        {/* WhatsApp CTA */}
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row justify-center">
-          <a
-            href={SOCIAL_LINKS.whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[#25D366] px-8 font-semibold text-white transition-opacity hover:opacity-90"
-          >
-            <MessageCircle className="h-5 w-5" aria-hidden="true" />
-            Chat on WhatsApp
-          </a>
-          <Link
-            href="/contact"
-            className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border border-[var(--foil)] bg-[var(--paper-card)] px-8 font-semibold text-[var(--ink)] transition-colors hover:bg-[var(--foil-soft)]"
-          >
-            Contact form
-          </Link>
-        </div>
+          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+            <a
+              href={SOCIAL_LINKS.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[var(--mint)] px-8 font-semibold text-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-[background-color,box-shadow] duration-[var(--dur-fast)] hover:bg-[var(--mint-deep)] hover:shadow-[var(--shadow-md)]"
+            >
+              <MessageCircle className="h-5 w-5" aria-hidden="true" />
+              Chat on WhatsApp
+            </a>
+            <Link
+              href="/contact"
+              className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-md)] border border-[var(--paper)]/30 px-8 font-semibold text-[var(--paper)] transition-colors duration-[var(--dur-fast)] hover:border-[var(--paper)]/60 hover:bg-[var(--paper)]/10"
+            >
+              Contact form
+            </Link>
+          </div>
 
-        <p className="mt-6 text-[0.875rem] text-[var(--ink-70)]">
-          {CONTACT.hours}
-        </p>
-      </motion.div>
+          <p className="mt-6 text-sm text-[var(--ink-10)]">{CONTACT.hours}</p>
+        </motion.div>
+      </Container>
     </section>
   );
 }

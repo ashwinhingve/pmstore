@@ -96,39 +96,17 @@ export default async function Home() {
   }
 
   return (
-    <main className="w-full">
-      {/* Each section is mounted with proper spacing via CSS */}
+    <div className="w-full">
+      {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
       <Hero />
-
-      <div className="border-b border-[var(--foil-soft)]">
-        <VideoSection />
-      </div>
-
-      <div className="border-b border-[var(--foil-soft)]">
-        <QuickActions signedIn={signedIn} />
-      </div>
-
-      <div className="border-b border-[var(--foil-soft)]">
-        <Categories />
-      </div>
-
-      <div className="border-b border-[var(--foil-soft)]">
-        <FeaturedProducts products={featuredProducts} />
-      </div>
-
-      <div className="border-b border-[var(--foil-soft)]">
-        <TrustBand />
-      </div>
-
-      <div className="border-b border-[var(--foil-soft)]">
-        <Testimonials />
-      </div>
-
-      <div className="border-b border-[var(--foil-soft)]">
-        <FaqPreview />
-      </div>
-
+      <QuickActions signedIn={signedIn} />
+      <VideoSection />
+      <FeaturedProducts products={featuredProducts} />
+      <Categories />
+      <TrustBand />
+      <Testimonials />
+      <FaqPreview />
       <ContactCta />
-    </main>
+    </div>
   );
 }

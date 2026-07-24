@@ -60,9 +60,10 @@
      --surface-hero; anything on top of it uses --paper text and --ink-10
      hairlines. */
   --ink-deep:        #0F1A2E;
+  --mint-deep:       #0A6B54;   /* hover state for mint fills */
   --ink-10:          #E4E7ED;   /* on-dark hairlines, subtle fills */
   --surface-hero:    linear-gradient(140deg, var(--ink) 0%, var(--ink-deep) 100%);
-  --surface-mint:    linear-gradient(140deg, var(--mint) 0%, #0A6B54 100%);
+  --surface-mint:    linear-gradient(140deg, var(--mint) 0%, var(--mint-deep) 100%);
   --paper-tint:      #F4F2ED;   /* warm alternating-section tint */
   --paper-tint-mint: #F0F8F5;   /* mint-washed section tint */
 

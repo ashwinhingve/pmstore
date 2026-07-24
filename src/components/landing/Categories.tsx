@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   Pill,
   Shield,
@@ -12,69 +12,68 @@ import {
   Baby,
   Flower2,
 } from 'lucide-react';
+import { Container } from '@/components/shared/Container';
+import { SectionHeading } from '@/components/shared/SectionHeading';
 
 /**
  * Categories — a curated STATIC list of pharma categories.
  * Do NOT read from DB (food-store leftovers).
  */
 const CATEGORIES = [
-  { name: 'Pain Relief', icon: Pill, emoji: '💊' },
-  { name: 'Antibiotics', icon: Shield, emoji: '⚕️' },
-  { name: 'Diabetes Care', icon: Droplets, emoji: '🩺' },
-  { name: 'Heart & BP', icon: Heart, emoji: '❤️' },
-  { name: 'Skin Care', icon: Sparkles, emoji: '✨' },
-  { name: 'Vitamins & Minerals', icon: Leaf, emoji: '🌿' },
-  { name: 'Baby Care', icon: Baby, emoji: '👶' },
-  { name: 'Ayurveda', icon: Flower2, emoji: '🌸' },
+  { name: 'Pain Relief', icon: Pill },
+  { name: 'Antibiotics', icon: Shield },
+  { name: 'Diabetes Care', icon: Droplets },
+  { name: 'Heart & BP', icon: Heart },
+  { name: 'Skin Care', icon: Sparkles },
+  { name: 'Vitamins & Minerals', icon: Leaf },
+  { name: 'Baby Care', icon: Baby },
+  { name: 'Ayurveda', icon: Flower2 },
 ];
 
 export function Categories() {
-  const shouldReduceMotion = typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="mx-auto max-w-5xl px-4 py-16 sm:py-24 bg-[var(--foil-soft)]/30">
-      <div className="text-center mb-12">
-        <h2 className="text-[length:var(--step-2)] font-bold text-[var(--ink)]">
-          Browse by category
-        </h2>
-        <p className="mt-2 text-[var(--ink-70)]">
-          Find medicines for common health needs
-        </p>
-      </div>
+    <section className="bg-[var(--paper)]">
+      <Container className="py-14 sm:py-20">
+        <SectionHeading
+          align="center"
+          eyebrow="Catalogue"
+          title="Browse by category"
+          description="Find medicines for common health needs"
+          className="mb-10"
+        />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {CATEGORIES.map((category, i) => {
-          const Icon = category.icon;
-          return (
-            <motion.div
-              key={category.name}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: shouldReduceMotion ? 0 : 0.4,
-                delay: shouldReduceMotion ? 0 : (i % 4) * 0.1,
-              }}
-              viewport={{ once: true, margin: '0px 0px -80px 0px' }}
-            >
-              <Link
-                href={`/products`}
-                className="flex flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 text-center transition-all hover:border-[var(--mint)] hover:shadow-md"
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {CATEGORIES.map((category, i) => {
+            const Icon = category.icon;
+            return (
+              <motion.div
+                key={category.name}
+                initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.4,
+                  delay: reduceMotion ? 0 : (i % 4) * 0.06,
+                }}
+                viewport={{ once: true, margin: '0px 0px -60px 0px' }}
               >
-                <div className="inline-flex items-center justify-center rounded-full bg-[var(--mint-soft)] p-3 text-[var(--mint)]">
-                  <Icon className="h-6 w-6" aria-hidden="true" />
-                </div>
-                <h3 className="font-semibold text-[var(--ink)] text-[0.9375rem]">
-                  {category.name}
-                </h3>
-                <span className="text-[0.75rem] text-[var(--ink-40)]">
-                  Browse
-                </span>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </div>
+                <Link
+                  href="/products"
+                  className="flex h-full flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 text-center shadow-[var(--shadow-xs)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]"
+                >
+                  <div className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--mint-soft)] p-3 text-[var(--mint)]">
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-[0.9375rem] font-semibold text-[var(--ink)]">
+                    {category.name}
+                  </h3>
+                </Link>
+              </motion.div>
+            );
+          })}
+        </div>
+      </Container>
     </section>
   );
 }

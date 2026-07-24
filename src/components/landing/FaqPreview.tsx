@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Accordion } from '@/components/ui/Accordion';
-import { HelpCircle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { Container } from '@/components/shared/Container';
+import { SectionHeading } from '@/components/shared/SectionHeading';
 
 /**
  * FaqPreview — 3-4 sample Q&As using Accordion, with a link to /faq for full list.
@@ -32,58 +34,45 @@ const SAMPLE_FAQS = [
 ];
 
 export function FaqPreview() {
-  const shouldReduceMotion = typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
-        viewport={{ once: true, margin: '0px 0px -100px 0px' }}
-      >
-        <div className="text-center mb-12">
-          <h2 className="text-[length:var(--step-2)] font-bold text-[var(--ink)]">
-            Frequently asked questions
-          </h2>
-          <p className="mt-2 text-[var(--ink-70)]">
-            Quick answers to common questions
-          </p>
-        </div>
+    <section className="bg-[var(--paper-tint)]">
+      <Container className="py-14 sm:py-20">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: reduceMotion ? 0 : 0.5 }}
+          viewport={{ once: true, margin: '0px 0px -100px 0px' }}
+          className="mx-auto max-w-3xl"
+        >
+          <SectionHeading
+            align="center"
+            eyebrow="Help"
+            title="Frequently asked questions"
+            description="Quick answers to common questions"
+            className="mb-10"
+          />
 
-        <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-card)]">
-          {SAMPLE_FAQS.map((faq, i) => (
-            <motion.div
-              key={faq.question}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{
-                duration: shouldReduceMotion ? 0 : 0.4,
-                delay: shouldReduceMotion ? 0 : i * 0.1,
-              }}
-              viewport={{ once: true }}
-            >
-              <Accordion
-                title={faq.question}
-                defaultOpen={i === 0}
-              >
+          <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-2 shadow-[var(--shadow-sm)]">
+            {SAMPLE_FAQS.map((faq, i) => (
+              <Accordion key={faq.question} title={faq.question} defaultOpen={i === 0}>
                 <p>{faq.answer}</p>
               </Accordion>
-            </motion.div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="mt-8 text-center">
-          <Link
-            href="/faq"
-            className="inline-flex items-center gap-2 text-[var(--mint)] font-semibold hover:opacity-80 transition-opacity"
-          >
-            <HelpCircle className="h-5 w-5" aria-hidden="true" />
-            View all FAQs
-          </Link>
-        </div>
-      </motion.div>
+          <div className="mt-8 text-center">
+            <Link
+              href="/faq"
+              className="inline-flex items-center gap-1.5 font-medium text-[var(--mint)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+            >
+              View all FAQs
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </motion.div>
+      </Container>
     </section>
   );
 }

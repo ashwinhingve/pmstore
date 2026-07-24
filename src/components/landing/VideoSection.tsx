@@ -43,9 +43,9 @@ export function VideoSection() {
   }, [inView, prefersReducedMotion]);
 
   return (
-    <section ref={ref} className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
-      <div className="text-center mb-8">
-        <h2 className="text-[length:var(--step-2)] font-bold text-[var(--ink)]">
+    <section ref={ref} className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+      <div className="mb-8 text-center">
+        <h2 className="text-[length:var(--step-2)] text-[var(--ink)]">
           See what we offer
         </h2>
         <p className="mt-2 text-[var(--ink-70)]">
@@ -53,7 +53,7 @@ export function VideoSection() {
         </p>
       </div>
 
-      <div className="relative overflow-hidden rounded-[var(--radius-md)] bg-[var(--ink)]">
+      <div className="relative overflow-hidden rounded-[var(--radius-lg)] bg-[var(--ink)] shadow-[var(--shadow-md)]">
         <video
           ref={videoRef}
           className="w-full h-auto block"
