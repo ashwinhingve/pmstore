@@ -1,6 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { MessageCircle, Mail, Phone, MapPin } from "lucide-react";
+import { Logo } from "@/components/shared/Logo";
+import { NewsletterForm } from "./NewsletterForm";
 import { SITE_NAME, SITE_DESCRIPTION, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
 
 export function Footer() {
@@ -13,21 +14,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center space-x-3 group">
-              <div className="relative h-12 w-12 flex-shrink-0">
-                <Image
-                  src="/images/logo.jpg"
-                  alt={`${SITE_NAME} Logo`}
-                  fill
-                  className="object-contain rounded-full"
-                />
+            <Link href="/" className="inline-block group transition-opacity hover:opacity-80">
+              <div className="text-[var(--ink)] mb-2">
+                <Logo size={40} variant="mark" />
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-[var(--ink)]">
-                  {SITE_NAME}
-                </h3>
-                <p className="text-xs font-medium text-muted-foreground">Trusted Pharmacy</p>
-              </div>
+              <h3 className="text-lg font-bold text-[var(--ink)]">
+                {SITE_NAME}
+              </h3>
+              <p className="text-xs font-medium text-muted-foreground">Trusted Pharmacy</p>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {SITE_DESCRIPTION}
@@ -131,6 +125,19 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
+          </div>
+        </div>
+
+        {/* Newsletter Section */}
+        <div className="border-t my-8 pt-8">
+          <div className="max-w-md">
+            <h3 className="text-lg font-bold text-[var(--ink)] mb-2">
+              Stay updated
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Get news about new medicines and special offers.
+            </p>
+            <NewsletterForm />
           </div>
         </div>
 

@@ -1,6 +1,21 @@
+import { Logo } from "@/components/shared/Logo";
+
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[var(--paper)]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--paper)]">
+      {/* Logo with pulse animation */}
+      <div className="mb-12 text-[var(--ink)]">
+        <div
+          className="animate-pulse"
+          style={{
+            animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+          }}
+        >
+          <Logo size={56} variant="mark" />
+        </div>
+      </div>
+
+      {/* Skeleton grid */}
       <div className="grid grid-cols-3 gap-4">
         {[...Array(9)].map((_, i) => (
           <div

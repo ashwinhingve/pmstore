@@ -1,0 +1,30 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pratigya Medical Store Logo: Capsule with P mark -->
+  <!-- Colors: mint (#0E8F6E) for capsule, ink (#16233A) for P -->
+
+  <!-- Capsule outline in mint green -->
+  <rect
+    x="10"
+    y="16"
+    width="44"
+    height="32"
+    rx="16"
+    fill="none"
+    stroke="#0E8F6E"
+    stroke-width="2"
+  />
+
+  <!-- Stylized "P" mark in navy ink -->
+  <!-- Vertical stem of P -->
+  <rect x="22" y="18" width="3" height="28" fill="#16233A" />
+
+  <!-- Rounded top loop of P -->
+  <path
+    d="M 25 18 Q 35 18 35 26 Q 35 34 25 34"
+    fill="none"
+    stroke="#16233A"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

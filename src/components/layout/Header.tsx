@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Navigation } from "./Navigation";
 import { MobileMenu } from "./MobileMenu";
 import { SearchBar } from "@/components/search/SearchBar";
+import { Logo } from "@/components/shared/Logo";
 import { useCartStore } from "@/store/useCartStore";
 import { User, ShoppingCart, Menu, X, LogOut, LayoutDashboard, Package } from "lucide-react";
-import { SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
+import { SITE_NAME } from "@/lib/constants";
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -41,24 +42,15 @@ export function Header() {
         {/* Logo and Brand */}
         <Link
           href="/"
-          className="flex items-center space-x-3 group transition-opacity hover:opacity-80"
+          className="flex items-center gap-3 group transition-opacity hover:opacity-80"
           aria-label={`${SITE_NAME} - Home`}
         >
-          <div className="relative h-12 w-12 md:h-16 md:w-16 shrink-0">
-            <Image
-              src="/images/logo.jpg"
-              alt="PMStore Logo"
-              fill
-              className="object-contain rounded-full"
-              priority
-            />
+          <div className="shrink-0 text-[var(--ink)]">
+            <Logo size={48} variant="mark" />
           </div>
-          <div className="flex flex-col">
-            <span className="text-lg md:text-2xl lg:text-3xl font-bold text-[var(--ink)] leading-tight">
+          <div className="hidden sm:flex lg:hidden xl:flex flex-col">
+            <span className="text-lg md:text-xl font-bold text-[var(--ink)] leading-tight">
               {SITE_NAME}
-            </span>
-            <span className="text-xs md:text-sm font-semibold text-muted-foreground hidden lg:pl-6 sm:block">
-              {SITE_TAGLINE}
             </span>
           </div>
         </Link>

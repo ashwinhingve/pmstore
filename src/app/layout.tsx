@@ -43,19 +43,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
-  icons: {
-    icon: "/images/logo.jpg",
-    shortcut: "/images/logo.jpg",
-    apple: "/images/logo.jpg",
-  },
   openGraph: {
     title: "PMStore — Pratigya Medical Store | Online Pharmacy",
     description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, upload a prescription, and reorder in one tap.",
     images: [
       {
-        url: "/images/logo.jpg",
-        width: 1200,
-        height: 630,
+        url: "/logo.svg",
+        width: 512,
+        height: 512,
         alt: "PMStore — Pratigya Medical Store",
       },
     ],
@@ -68,7 +63,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PMStore — Pratigya Medical Store | Online Pharmacy",
     description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, and upload a prescription.",
-    images: ["/images/logo.jpg"],
+    images: ["/logo.svg"],
   },
   robots: {
     index: true,
@@ -92,7 +87,7 @@ const orgJsonLd = {
   "url": SITE_URL,
   "logo": {
     "@type": "ImageObject",
-    "url": `${SITE_URL}/images/logo.jpg`,
+    "url": `${SITE_URL}/logo.svg`,
     "width": 512,
     "height": 512,
   },
