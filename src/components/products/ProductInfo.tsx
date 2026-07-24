@@ -298,7 +298,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
           title="Copy review link"
         >
           {reviewLinkCopied ? (
-            <Check className="w-5 h-5 text-green-600" />
+            <Check className="w-5 h-5 text-[var(--mint)]" />
           ) : (
             <Link2 className="w-5 h-5" />
           )}

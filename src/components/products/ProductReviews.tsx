@@ -54,12 +54,13 @@ function StarRating({
           onMouseEnter={() => interactive && setHovered(star)}
           onMouseLeave={() => interactive && setHovered(0)}
           className={interactive ? 'cursor-pointer' : 'cursor-default'}
+          aria-label={interactive ? `Rate ${star} out of 5` : undefined}
         >
           <Star
             className={`${sizeClass} ${
               star <= (hovered || rating)
-                ? 'text-yellow-400 fill-yellow-400'
-                : 'text-gray-300'
+                ? 'text-[var(--mint)] fill-[var(--mint)]'
+                : 'text-[var(--foil)]'
             }`}
           />
         </button>
@@ -236,8 +237,8 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
   if (loading) {
     return (
       <div className="py-8 text-center">
-        <div className="inline-block w-6 h-6 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-2 text-sm text-gray-500">Loading reviews...</p>
+        <div className="inline-block w-6 h-6 border-2 border-[var(--foil-soft)] border-t-[var(--ink)] rounded-full animate-spin"></div>
+        <p className="mt-2 text-sm text-[var(--ink-40)]">Loading reviews…</p>
       </div>
     );
   }
@@ -247,10 +248,16 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
       {/* Rating Summary */}
       <div className="flex flex-col sm:flex-row gap-8">
         <div className="text-center sm:text-left">
-          <div className="text-5xl font-bold text-gray-900">{averageRating || '—'}</div>
+          <div
+            className="text-5xl font-bold text-[var(--ink)]"
+            style={{ fontFamily: 'var(--font-data)' }}
+          >
+            {averageRating || '—'}
+          </div>
           <StarRating rating={Math.round(averageRating)} />
-          <p className="text-sm text-gray-500 mt-1">
-            {totalReviews} {totalReviews === 1 ? 'review' : 'reviews'}
+          <p className="text-sm text-[var(--ink-40)] mt-1">
+            <span style={{ fontFamily: 'var(--font-data)' }}>{totalReviews}</span>{' '}
+            {totalReviews === 1 ? 'review' : 'reviews'}
           </p>
         </div>
 
@@ -260,15 +267,15 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
             const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
             return (
               <div key={star} className="flex items-center gap-2 text-sm">
-                <span className="w-3 text-gray-600">{star}</span>
-                <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <span className="w-3 text-[var(--ink-70)]" style={{ fontFamily: 'var(--font-data)' }}>{star}</span>
+                <Star className="w-3.5 h-3.5 text-[var(--mint)] fill-[var(--mint)]" />
+                <div className="flex-1 h-2 bg-[var(--foil-soft)] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-yellow-400 rounded-full"
+                    className="h-full bg-[var(--mint)] rounded-full"
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
-                <span className="w-8 text-right text-gray-500">{count}</span>
+                <span className="w-8 text-right text-[var(--ink-40)]" style={{ fontFamily: 'var(--font-data)' }}>{count}</span>
               </div>
             );
           })}
@@ -279,15 +286,10 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
       {!showForm && !formSuccess && (
         <div ref={formRef}>
           {session ? (
-            <Button
-              onClick={() => setShowForm(true)}
-              className="bg-gradient-to-r from-amber-600 to-red-700 hover:from-amber-700 hover:to-red-800"
-            >
-              Write a Review
-            </Button>
+            <Button onClick={() => setShowForm(true)}>Write a review</Button>
           ) : (
-            <p className="text-sm text-gray-500">
-              <a href="/login" className="text-amber-600 hover:underline">
+            <p className="text-sm text-[var(--ink-70)]">
+              <a href="/login" className="text-[var(--ink)] font-medium hover:underline">
                 Sign in
               </a>{' '}
               to write a review
@@ -297,8 +299,8 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
       )}
 
       {formSuccess && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-sm text-green-700">Your review has been submitted successfully!</p>
+        <div className="bg-[var(--mint-soft)] border border-[var(--foil-soft)] rounded-[var(--radius-sm)] p-4">
+          <p className="text-sm text-[var(--mint)]">Thanks — your review has been posted.</p>
         </div>
       )}
 
@@ -306,18 +308,18 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
       {showForm && (
         <form
           onSubmit={handleSubmitReview}
-          className="bg-gray-50 rounded-lg p-6 space-y-4 border border-gray-200"
+          className="bg-[var(--paper)] rounded-[var(--radius-md)] p-6 space-y-4 border border-[var(--foil-soft)]"
         >
-          <h4 className="font-semibold text-gray-900">Write Your Review</h4>
+          <h4 className="font-semibold text-[var(--ink)]">Write your review</h4>
 
           {formError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-sm text-red-700">{formError}</p>
+            <div className="bg-[var(--foil-soft)] border border-[var(--ink)] rounded-[var(--radius-sm)] p-3">
+              <p className="text-sm text-[var(--ink)]">{formError}</p>
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--ink-70)] mb-2">
               Rating *
             </label>
             <StarRating
@@ -329,40 +331,42 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="reviewTitle" className="block text-sm font-medium text-[var(--ink-70)] mb-1">
               Title (optional)
             </label>
             <input
+              id="reviewTitle"
               type="text"
               value={formTitle}
               onChange={(e) => setFormTitle(e.target.value)}
               placeholder="Summarize your experience"
               maxLength={100}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              className="w-full px-3 py-2 border-2 border-[var(--foil-soft)] bg-[var(--paper-card)] rounded-[var(--radius-sm)] text-sm text-[var(--ink)] placeholder:text-[var(--ink-40)] focus:outline-none focus:border-[var(--ink)]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="reviewComment" className="block text-sm font-medium text-[var(--ink-70)] mb-1">
               Review *
             </label>
             <textarea
+              id="reviewComment"
               value={formComment}
               onChange={(e) => setFormComment(e.target.value)}
               placeholder="What did you like or dislike about this product?"
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm resize-none"
+              className="w-full px-3 py-2 border-2 border-[var(--foil-soft)] bg-[var(--paper-card)] rounded-[var(--radius-sm)] text-sm text-[var(--ink)] placeholder:text-[var(--ink-40)] resize-none focus:outline-none focus:border-[var(--ink)]"
               minLength={10}
               required
             />
-            <p className="text-xs text-gray-500 mt-1">
-              {formComment.length}/10 characters minimum
+            <p className="text-xs text-[var(--ink-40)] mt-1">
+              <span style={{ fontFamily: 'var(--font-data)' }}>{formComment.length}/10</span> characters minimum
             </p>
           </div>
 
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--ink-70)] mb-2">
               Photos (optional, up to {MAX_IMAGES})
             </label>
 
@@ -371,16 +375,16 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
               {uploadedImages.map((img, i) => (
                 <div
                   key={i}
-                  className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 bg-gray-100 flex-shrink-0"
+                  className="relative w-20 h-20 rounded-[var(--radius-sm)] overflow-hidden border border-[var(--foil-soft)] bg-[var(--foil-soft)] flex-shrink-0"
                 >
                   {img.uploading ? (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Loader2 className="w-5 h-5 text-amber-600 animate-spin" />
+                      <Loader2 className="w-5 h-5 text-[var(--ink)] animate-spin" />
                     </div>
                   ) : img.error ? (
                     <div className="w-full h-full flex flex-col items-center justify-center p-1">
-                      <X className="w-5 h-5 text-red-500" />
-                      <span className="text-xs text-red-500 text-center leading-tight mt-0.5">
+                      <X className="w-5 h-5 text-[var(--ink)]" />
+                      <span className="text-xs text-[var(--ink-70)] text-center leading-tight mt-0.5">
                         Failed
                       </span>
                     </div>
@@ -402,10 +406,10 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
                   <button
                     type="button"
                     onClick={() => removeImage(i)}
-                    className="absolute top-0.5 right-0.5 w-5 h-5 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center transition-colors"
+                    className="absolute top-0.5 right-0.5 w-5 h-5 bg-[var(--ink)]/70 hover:bg-[var(--ink)] rounded-full flex items-center justify-center transition-colors"
                     aria-label="Remove image"
                   >
-                    <X className="w-3 h-3 text-white" />
+                    <X className="w-3 h-3 text-[var(--paper-card)]" />
                   </button>
                 </div>
               ))}
@@ -415,10 +419,10 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 hover:border-amber-500 hover:bg-amber-50 flex flex-col items-center justify-center gap-1 transition-colors flex-shrink-0"
+                  className="w-20 h-20 rounded-[var(--radius-sm)] border-2 border-dashed border-[var(--foil)] hover:border-[var(--mint)] hover:bg-[var(--mint-soft)] flex flex-col items-center justify-center gap-1 transition-colors flex-shrink-0"
                 >
-                  <ImagePlus className="w-5 h-5 text-gray-400" />
-                  <span className="text-xs text-gray-400">Add photo</span>
+                  <ImagePlus className="w-5 h-5 text-[var(--ink-40)]" />
+                  <span className="text-xs text-[var(--ink-40)]">Add photo</span>
                 </button>
               )}
             </div>
@@ -431,7 +435,7 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
               className="hidden"
               onChange={handleImageSelect}
             />
-            <p className="text-xs text-gray-400 mt-1.5">
+            <p className="text-xs text-[var(--ink-40)] mt-1.5">
               JPG, PNG or WebP — max 5MB each
             </p>
           </div>
@@ -440,9 +444,8 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
             <Button
               type="submit"
               disabled={submitting || uploadedImages.some((img) => img.uploading)}
-              className="bg-gradient-to-r from-amber-600 to-red-700"
             >
-              {submitting ? 'Submitting...' : 'Submit Review'}
+              {submitting ? 'Submitting…' : 'Submit review'}
             </Button>
             <Button
               type="button"
@@ -462,39 +465,39 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
       {/* Reviews List */}
       <div className="space-y-4">
         {reviews.length === 0 ? (
-          <p className="text-gray-500 italic py-4">
-            No reviews yet. Be the first to review this product!
+          <p className="text-[var(--ink-70)] py-4">
+            No reviews yet. Be the first to review this product.
           </p>
         ) : (
           reviews.map((review) => (
             <div
               key={review.id}
-              className="border-b border-gray-200 pb-4 last:border-0"
+              className="border-b border-[var(--foil-soft)] pb-4 last:border-0"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center gap-2">
                     <StarRating rating={review.rating} />
                     {review.title && (
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-[var(--ink)]">
                         {review.title}
                       </span>
                     )}
                   </div>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-sm text-gray-600">{review.userName}</span>
+                    <span className="text-sm text-[var(--ink-70)]">{review.userName}</span>
                     {review.isVerifiedPurchase && (
-                      <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
-                        Verified Purchase
+                      <span className="text-xs bg-[var(--mint-soft)] text-[var(--mint)] px-1.5 py-0.5 rounded">
+                        Verified purchase
                       </span>
                     )}
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-[var(--ink-40)]" style={{ fontFamily: 'var(--font-data)' }}>
                       {formatDate(review.createdAt)}
                     </span>
                   </div>
                 </div>
               </div>
-              <p className="text-sm text-gray-700 mt-2">{review.comment}</p>
+              <p className="text-sm text-[var(--ink-70)] mt-2">{review.comment}</p>
 
               {/* Review images */}
               {review.images && review.images.length > 0 && (
@@ -504,7 +507,7 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
                       key={i}
                       type="button"
                       onClick={() => setLightboxUrl(url)}
-                      className="relative w-16 h-16 rounded-md overflow-hidden border border-gray-200 hover:opacity-90 transition-opacity flex-shrink-0"
+                      className="relative w-16 h-16 rounded-[var(--radius-sm)] overflow-hidden border border-[var(--foil-soft)] hover:opacity-90 transition-opacity flex-shrink-0"
                     >
                       <Image
                         src={url}
@@ -525,16 +528,16 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
       {/* Lightbox */}
       {lightboxUrl && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-[var(--ink)]/80 flex items-center justify-center p-4"
           onClick={() => setLightboxUrl(null)}
         >
           <button
             type="button"
-            className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+            className="absolute top-4 right-4 w-10 h-10 bg-[var(--paper-card)]/10 hover:bg-[var(--paper-card)]/20 rounded-full flex items-center justify-center transition-colors"
             onClick={() => setLightboxUrl(null)}
             aria-label="Close"
           >
-            <X className="w-5 h-5 text-white" />
+            <X className="w-5 h-5 text-[var(--paper-card)]" />
           </button>
           <div
             className="relative max-w-2xl max-h-[80vh] w-full"
@@ -545,7 +548,7 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
               alt="Review photo"
               width={800}
               height={800}
-              className="object-contain rounded-lg max-h-[80vh] w-auto mx-auto"
+              className="object-contain rounded-[var(--radius-md)] max-h-[80vh] w-auto mx-auto"
             />
           </div>
         </div>

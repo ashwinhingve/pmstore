@@ -187,7 +187,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-red-50 py-8">
+    <div className="min-h-screen bg-[var(--paper)] py-8">
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
@@ -314,8 +314,8 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
         {/* Related Products */}
         {serializedRelated.length > 0 && (
           <div className="mt-16">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
-              Related Products
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-[var(--ink)]">
+              Related products
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {serializedRelated.map((relatedProduct: any) => (
