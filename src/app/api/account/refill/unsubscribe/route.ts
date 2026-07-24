@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
     <div class="card">
       <h1>${ok ? 'Unsubscribed' : 'Something went wrong'}</h1>
       <p>${message}</p>
-      <p><a href="/account/settings">Go to account settings</a></p>
+      <p><a href="/settings">Go to account settings</a></p>
     </div>
   </body>
 </html>`;
