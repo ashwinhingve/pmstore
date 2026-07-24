@@ -130,19 +130,19 @@ export default function ProductsTable({
   };
 
   const getStockStatus = (stock: number) => {
-    if (stock === 0) return { label: 'Out of Stock', color: 'text-red-600 bg-red-50', icon: PackageX };
-    if (stock <= 10) return { label: 'Low Stock', color: 'text-yellow-600 bg-yellow-50', icon: AlertTriangle };
-    return { label: 'In Stock', color: 'text-green-600 bg-green-50', icon: Package };
+    if (stock === 0) return { label: 'Out of Stock', color: 'text-[var(--ink-70)] bg-[var(--foil-soft)]', icon: PackageX };
+    if (stock <= 10) return { label: 'Low Stock', color: 'text-[var(--ink-70)] bg-[var(--foil-soft)]', icon: AlertTriangle };
+    return { label: 'In Stock', color: 'text-[var(--mint)] bg-[var(--mint-soft)]', icon: Package };
   };
 
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-[var(--paper-card)] rounded-lg shadow">
       {/* Header Actions */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-[var(--foil-soft)]">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <form onSubmit={handleSearch} className="flex-1 max-w-md">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--ink-40)] w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Search by name, SKU, or description..."
@@ -154,7 +154,7 @@ export default function ProductsTable({
           </form>
 
           <Link href="/admin/products/new">
-            <Button className="bg-gradient-to-r from-amber-600 to-red-700 hover:from-amber-700 hover:to-red-800">
+            <Button className="bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)]">
               <Plus className="w-4 h-4 mr-2" />
               Add Product
             </Button>
@@ -166,7 +166,7 @@ export default function ProductsTable({
           <select
             value={currentFilters.category}
             onChange={(e) => updateFilters({ category: e.target.value, page: '1' })}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            className="px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm bg-[var(--paper-card)] text-[var(--ink)]"
           >
             <option value="">All Categories</option>
             {filters.categories.map((cat) => (
@@ -179,7 +179,7 @@ export default function ProductsTable({
           <select
             value={currentFilters.status}
             onChange={(e) => updateFilters({ status: e.target.value, page: '1' })}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            className="px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm bg-[var(--paper-card)] text-[var(--ink)]"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -189,7 +189,7 @@ export default function ProductsTable({
           <select
             value={currentFilters.stockLevel}
             onChange={(e) => updateFilters({ stockLevel: e.target.value, page: '1' })}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            className="px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm bg-[var(--paper-card)] text-[var(--ink)]"
           >
             <option value="">All Stock Levels</option>
             <option value="available">In Stock</option>
@@ -203,7 +203,7 @@ export default function ProductsTable({
               const [sortBy, sortOrder] = e.target.value.split('-');
               updateFilters({ sortBy, sortOrder });
             }}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            className="px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm bg-[var(--paper-card)] text-[var(--ink)]"
           >
             <option value="createdAt-desc">Newest First</option>
             <option value="createdAt-asc">Oldest First</option>
@@ -218,8 +218,8 @@ export default function ProductsTable({
       </div>
 
       {/* Results Count */}
-      <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-        <p className="text-sm text-gray-600">
+      <div className="px-4 py-3 bg-[var(--foil-soft)] border-b border-[var(--foil-soft)]">
+        <p className="text-sm text-[var(--ink-70)]">
           Showing {products.length} of {pagination.total} products
         </p>
       </div>
@@ -227,35 +227,35 @@ export default function ProductsTable({
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-[var(--foil-soft)] border-b border-[var(--foil-soft)]">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--ink-70)] uppercase tracking-wider">
                 Product
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--ink-70)] uppercase tracking-wider">
                 SKU
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--ink-70)] uppercase tracking-wider">
                 Category
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--ink-70)] uppercase tracking-wider">
                 Price
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--ink-70)] uppercase tracking-wider">
                 Stock
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--ink-70)] uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-right text-xs font-medium text-[var(--ink-70)] uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-[var(--foil-soft)]">
             {products.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-12 text-center text-gray-500">
+                <td colSpan={7} className="px-4 py-12 text-center text-[var(--ink-40)]">
                   No products found. Try adjusting your filters or create a new product.
                 </td>
               </tr>
@@ -265,10 +265,10 @@ export default function ProductsTable({
                 const StockIcon = stockStatus.icon;
 
                 return (
-                  <tr key={product._id} className="hover:bg-gray-50">
+                  <tr key={product._id} className="hover:bg-[var(--foil-soft)]">
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="relative w-12 h-12 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
+                        <div className="relative w-12 h-12 flex-shrink-0 bg-[var(--foil-soft)] rounded overflow-hidden">
                           {product.images[0]?.url ? (
                             <Image
                               src={product.images[0].url}
@@ -278,31 +278,31 @@ export default function ProductsTable({
                               sizes="48px"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            <div className="w-full h-full flex items-center justify-center text-[var(--ink-40)]">
                               <Package className="w-6 h-6" />
                             </div>
                           )}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">{product.name}</p>
+                          <p className="font-medium text-[var(--ink)]">{product.name}</p>
                           <div className="flex flex-wrap gap-1 mt-1">
                             {product.isFeatured && (
-                              <span className="inline-block px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded">
+                              <span className="inline-block px-2 py-0.5 bg-[var(--mint-soft)] text-[var(--mint)] text-xs rounded">
                                 Featured
                               </span>
                             )}
                             {product.isBestseller && (
-                              <span className="inline-block px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded">
+                              <span className="inline-block px-2 py-0.5 bg-[var(--mint-soft)] text-[var(--mint)] text-xs rounded">
                                 Bestseller
                               </span>
                             )}
                             {product.isTrending && (
-                              <span className="inline-block px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">
+                              <span className="inline-block px-2 py-0.5 bg-[var(--mint-soft)] text-[var(--mint)] text-xs rounded">
                                 Trending
                               </span>
                             )}
                             {product.isValueBuy && (
-                              <span className="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">
+                              <span className="inline-block px-2 py-0.5 bg-[var(--mint-soft)] text-[var(--mint)] text-xs rounded">
                                 Value Buy
                               </span>
                             )}
@@ -310,19 +310,19 @@ export default function ProductsTable({
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-4 text-sm text-gray-600 font-mono">
+                    <td className="px-4 py-4 text-sm text-[var(--ink-70)]" style={{ fontFamily: 'var(--font-data)' }}>
                       {product.sku}
                     </td>
-                    <td className="px-4 py-4 text-sm text-gray-600">
+                    <td className="px-4 py-4 text-sm text-[var(--ink-70)]">
                       {typeof product.category === 'string'
                         ? product.category
                         : product.category?.name}
                     </td>
                     <td className="px-4 py-4 text-sm">
                       <div>
-                        <p className="font-medium text-gray-900">₹{product.price.toLocaleString()}</p>
+                        <p className="font-medium text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>₹{product.price.toLocaleString()}</p>
                         {product.originalPrice && product.originalPrice > product.price && (
-                          <p className="text-xs text-gray-500 line-through">
+                          <p className="text-xs text-[var(--ink-40)] line-through" style={{ fontFamily: 'var(--font-data)' }}>
                             ₹{product.originalPrice.toLocaleString()}
                           </p>
                         )}
@@ -339,8 +339,8 @@ export default function ProductsTable({
                         onClick={() => toggleActive(product._id, product.isActive)}
                         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                           product.isActive
-                            ? 'bg-green-50 text-green-700'
-                            : 'bg-gray-100 text-gray-600'
+                            ? 'bg-[var(--mint-soft)] text-[var(--mint)]'
+                            : 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
                         }`}
                       >
                         {product.isActive ? (
@@ -368,10 +368,10 @@ export default function ProductsTable({
                           variant="outline"
                           onClick={() => handleDelete(product._id, product.name)}
                           disabled={isDeleting === product._id}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="text-[var(--ink-70)] hover:text-[var(--ink)] hover:bg-[var(--foil-soft)]"
                         >
                           {isDeleting === product._id ? (
-                            <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-[var(--ink-70)] border-t-transparent rounded-full animate-spin" />
                           ) : (
                             <Trash2 className="w-4 h-4" />
                           )}
@@ -388,9 +388,9 @@ export default function ProductsTable({
 
       {/* Pagination */}
       {pagination.pages > 1 && (
-        <div className="px-4 py-4 border-t border-gray-200">
+        <div className="px-4 py-4 border-t border-[var(--foil-soft)]">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-[var(--ink-70)]">
               Page {pagination.page} of {pagination.pages}
             </p>
             <div className="flex gap-2">

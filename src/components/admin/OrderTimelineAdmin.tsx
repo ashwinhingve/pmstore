@@ -157,8 +157,8 @@ function Timeline({
   formatDate: (date: string) => string;
 }) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-6">Order Timeline</h3>
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
+      <h3 className="text-lg font-semibold text-[var(--ink)] mb-6">Order Timeline</h3>
 
       <div className="relative">
         {events.map((event, index) => {
@@ -171,7 +171,7 @@ function Timeline({
               {!isLast && (
                 <div
                   className={`absolute left-5 top-11 w-0.5 h-full ${
-                    event.status === 'completed' ? 'bg-green-500' : 'bg-gray-200'
+                    event.status === 'completed' ? 'bg-[var(--mint)]' : 'bg-[var(--foil-soft)]'
                   }`}
                 />
               )}
@@ -180,19 +180,19 @@ function Timeline({
               <div
                 className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
                   event.status === 'completed'
-                    ? 'bg-green-100'
+                    ? 'bg-[var(--mint-soft)]'
                     : event.status === 'current'
-                    ? 'bg-amber-100'
-                    : 'bg-gray-100'
+                    ? 'bg-[var(--foil-soft)]'
+                    : 'bg-[var(--foil-soft)]'
                 }`}
               >
                 <Icon
                   className={`w-5 h-5 ${
                     event.status === 'completed'
-                      ? 'text-green-600'
+                      ? 'text-[var(--mint)]'
                       : event.status === 'current'
-                      ? 'text-amber-600'
-                      : 'text-gray-400'
+                      ? 'text-[var(--ink-70)]'
+                      : 'text-[var(--ink-40)]'
                   }`}
                 />
               </div>
@@ -202,16 +202,16 @@ function Timeline({
                 <p
                   className={`text-sm font-medium ${
                     event.status === 'completed'
-                      ? 'text-gray-900'
+                      ? 'text-[var(--ink)]'
                       : event.status === 'current'
-                      ? 'text-amber-700'
-                      : 'text-gray-500'
+                      ? 'text-[var(--ink)]'
+                      : 'text-[var(--ink-40)]'
                   }`}
                 >
                   {event.label}
                 </p>
                 {event.date && (
-                  <p className="text-xs text-gray-500 mt-1">{formatDate(event.date)}</p>
+                  <p className="text-xs text-[var(--ink-40)] mt-1">{formatDate(event.date)}</p>
                 )}
               </div>
             </div>
@@ -230,8 +230,8 @@ function FailedTimeline({
   formatDate: (date: string) => string;
 }) {
   return (
-    <div className="bg-red-50 rounded-lg border border-red-200 p-6">
-      <h3 className="text-lg font-semibold text-red-900 mb-6">Order Timeline</h3>
+    <div className="bg-[var(--foil-soft)] rounded-lg border border-[var(--foil-soft)] p-6">
+      <h3 className="text-lg font-semibold text-[var(--ink)] mb-6">Order Timeline</h3>
 
       <div className="relative">
         {events.map((event, index) => {
@@ -243,17 +243,17 @@ function FailedTimeline({
             <div key={index} className="relative flex gap-4 pb-8 last:pb-0">
               {/* Timeline Line */}
               {!isLast && (
-                <div className="absolute left-5 top-11 w-0.5 h-full bg-red-300" />
+                <div className="absolute left-5 top-11 w-0.5 h-full bg-[var(--foil)]" />
               )}
 
               {/* Icon */}
               <div
                 className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-                  isFailed ? 'bg-red-100' : 'bg-green-100'
+                  isFailed ? 'bg-[var(--foil-soft)]' : 'bg-[var(--mint-soft)]'
                 }`}
               >
                 <Icon
-                  className={`w-5 h-5 ${isFailed ? 'text-red-600' : 'text-green-600'}`}
+                  className={`w-5 h-5 ${isFailed ? 'text-[var(--ink)]' : 'text-[var(--mint)]'}`}
                 />
               </div>
 
@@ -261,13 +261,13 @@ function FailedTimeline({
               <div className="flex-1 pt-1">
                 <p
                   className={`text-sm font-medium ${
-                    isFailed ? 'text-red-900' : 'text-gray-900'
+                    isFailed ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
                   }`}
                 >
                   {event.label}
                 </p>
                 {event.date && (
-                  <p className="text-xs text-red-700 mt-1">{formatDate(event.date)}</p>
+                  <p className="text-xs text-[var(--ink-70)] mt-1">{formatDate(event.date)}</p>
                 )}
               </div>
             </div>

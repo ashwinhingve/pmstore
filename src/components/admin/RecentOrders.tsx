@@ -19,14 +19,15 @@ interface RecentOrdersProps {
 }
 
 const statusColorMap: Record<string, string> = {
-  success: 'bg-green-100 text-green-700',
-  pending: 'bg-yellow-100 text-yellow-700',
-  failed: 'bg-red-100 text-red-700',
-  confirmed: 'bg-blue-100 text-blue-700',
-  processing: 'bg-purple-100 text-purple-700',
-  shipped: 'bg-indigo-100 text-indigo-700',
-  delivered: 'bg-green-100 text-green-700',
-  cancelled: 'bg-red-100 text-red-700',
+  success: 'bg-[var(--mint-soft)] text-[var(--mint)]',
+  paid: 'bg-[var(--mint-soft)] text-[var(--mint)]',
+  pending: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
+  failed: 'bg-[var(--foil-soft)] text-[var(--ink)]',
+  confirmed: 'bg-[var(--foil-soft)] text-[var(--ink)]',
+  processing: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
+  shipped: 'bg-[var(--foil-soft)] text-[var(--ink)]',
+  delivered: 'bg-[var(--mint-soft)] text-[var(--mint)]',
+  cancelled: 'bg-[var(--foil-soft)] text-[var(--ink)]',
 };
 
 export default function RecentOrders({ orders }: RecentOrdersProps) {
@@ -42,75 +43,75 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
+      <div className="p-6 border-b border-[var(--foil-soft)] flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">Recent Orders</h3>
-          <p className="text-sm text-gray-500 mt-1">Latest orders from your store</p>
+          <h3 className="text-lg font-semibold text-[var(--ink)]">Recent orders</h3>
+          <p className="text-sm text-[var(--ink-70)] mt-1">Latest orders from your store</p>
         </div>
         <Link
           href="/admin/orders"
-          className="text-sm font-medium text-amber-600 hover:text-amber-700"
+          className="text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
         >
-          View All →
+          View all →
         </Link>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-[var(--foil-soft)] border-b border-[var(--foil-soft)]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Order
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Customer
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Amount
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Payment
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Date
               </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-[var(--foil-soft)]">
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-8 text-center text-sm text-gray-500">
+                <td colSpan={7} className="px-6 py-8 text-center text-sm text-[var(--ink-70)]">
                   No orders found
                 </td>
               </tr>
             ) : (
               orders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
+                <tr key={order.id} className="hover:bg-[var(--foil-soft)]">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                       {order.orderNumber}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">{order.customerName}</div>
-                    <div className="text-xs text-gray-500">{order.customerEmail}</div>
+                    <div className="text-sm text-[var(--ink)]">{order.customerName}</div>
+                    <div className="text-xs text-[var(--ink-70)]">{order.customerEmail}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-semibold text-gray-900">
+                    <div className="text-sm font-semibold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                       ₹{order.totalAmount.toLocaleString('en-IN')}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                        statusColorMap[order.paymentStatus] || 'bg-gray-100 text-gray-700'
+                        statusColorMap[order.paymentStatus] || 'bg-[var(--foil-soft)] text-[var(--ink)]'
                       }`}
                     >
                       {order.paymentStatus}
@@ -119,19 +120,19 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${
-                        statusColorMap[order.orderStatus] || 'bg-gray-100 text-gray-700'
+                        statusColorMap[order.orderStatus] || 'bg-[var(--foil-soft)] text-[var(--ink)]'
                       }`}
                     >
                       {order.orderStatus}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
                     {formatDate(order.createdAt)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <Link
                       href={`/admin/orders/${order.id}`}
-                      className="inline-flex items-center gap-1 text-sm font-medium text-amber-600 hover:text-amber-700"
+                      className="inline-flex items-center gap-1 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
                     >
                       <Eye className="w-4 h-4" />
                       View

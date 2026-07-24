@@ -14,13 +14,13 @@ interface OrderItemsListProps {
 
 export default function OrderItemsList({ items }: OrderItemsListProps) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="p-6 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Order Items</h3>
-        <p className="text-sm text-gray-500 mt-1">{items.length} item(s)</p>
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
+      <div className="p-6 border-b border-[var(--foil-soft)]">
+        <h3 className="text-lg font-semibold text-[var(--ink)]">Order Items</h3>
+        <p className="text-sm text-[var(--ink-40)] mt-1">{items.length} item(s)</p>
       </div>
 
-      <div className="divide-y divide-gray-200">
+      <div className="divide-y divide-[var(--foil-soft)]">
         {items.map((item, index) => (
           <div key={index} className="p-6 flex items-start gap-4">
             {/* Product Image */}
@@ -29,12 +29,12 @@ export default function OrderItemsList({ items }: OrderItemsListProps) {
                 <img
                   src={item.image}
                   alt={item.productName}
-                  className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                  className="w-20 h-20 object-cover rounded-lg border border-[var(--foil-soft)]"
                 />
               ) : (
-                <div className="w-20 h-20 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
+                <div className="w-20 h-20 bg-[var(--foil-soft)] rounded-lg border border-[var(--foil-soft)] flex items-center justify-center">
                   <svg
-                    className="w-8 h-8 text-gray-400"
+                    className="w-8 h-8 text-[var(--ink-40)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -52,26 +52,26 @@ export default function OrderItemsList({ items }: OrderItemsListProps) {
 
             {/* Product Details */}
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-medium text-gray-900">{item.productName}</h4>
-              <p className="text-sm text-gray-500 mt-1">SKU: {item.sku}</p>
+              <h4 className="text-sm font-medium text-[var(--ink)]">{item.productName}</h4>
+              <p className="text-sm text-[var(--ink-40)] mt-1">SKU: {item.sku}</p>
               <div className="flex items-center gap-4 mt-2">
                 <div>
-                  <p className="text-xs text-gray-500">Price</p>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-xs text-[var(--ink-40)]">Price</p>
+                  <p className="text-sm font-medium text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>
                     ₹{item.price.toLocaleString('en-IN')}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">Quantity</p>
-                  <p className="text-sm font-medium text-gray-900">×{item.quantity}</p>
+                  <p className="text-xs text-[var(--ink-40)]">Quantity</p>
+                  <p className="text-sm font-medium text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>×{item.quantity}</p>
                 </div>
               </div>
             </div>
 
             {/* Item Total */}
             <div className="flex-shrink-0 text-right">
-              <p className="text-xs text-gray-500">Total</p>
-              <p className="text-base font-semibold text-gray-900">
+              <p className="text-xs text-[var(--ink-40)]">Total</p>
+              <p className="text-base font-semibold text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>
                 ₹{item.total.toLocaleString('en-IN')}
               </p>
             </div>

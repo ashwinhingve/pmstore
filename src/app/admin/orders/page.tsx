@@ -130,9 +130,9 @@ export default async function AdminOrdersPage({
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Order Management</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Manage all orders from your store ({totalOrders.toLocaleString()} total)
+          <h1 className="text-2xl font-bold text-[var(--ink)]">Order management</h1>
+          <p className="text-sm text-[var(--ink-70)] mt-1">
+            Manage all orders from your store (<span style={{ fontFamily: 'var(--font-data)' }}>{totalOrders.toLocaleString()}</span> total)
           </p>
         </div>
 
@@ -144,12 +144,12 @@ export default async function AdminOrdersPage({
         <div
           className={`p-4 rounded-lg border-2 text-left ${
             !status
-              ? 'border-amber-500 bg-amber-50'
-              : 'border-gray-200 bg-white'
+              ? 'border-[var(--ink)] bg-[var(--foil-soft)]'
+              : 'border-[var(--foil-soft)] bg-[var(--paper-card)]'
           }`}
         >
-          <p className="text-xs text-gray-600 uppercase tracking-wide">All Orders</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{totalOrders}</p>
+          <p className="text-xs text-[var(--ink-70)] uppercase tracking-wide">All orders</p>
+          <p className="text-2xl font-bold text-[var(--ink)] mt-1 data" style={{ fontFamily: 'var(--font-data)' }}>{totalOrders}</p>
         </div>
 
         {statusCounts.map((item) => (
@@ -157,14 +157,14 @@ export default async function AdminOrdersPage({
             key={item._id}
             className={`p-4 rounded-lg border-2 text-left ${
               status === item._id
-                ? 'border-amber-500 bg-amber-50'
-                : 'border-gray-200 bg-white'
+                ? 'border-[var(--ink)] bg-[var(--foil-soft)]'
+                : 'border-[var(--foil-soft)] bg-[var(--paper-card)]'
             }`}
           >
-            <p className="text-xs text-gray-600 uppercase tracking-wide capitalize">
+            <p className="text-xs text-[var(--ink-70)] uppercase tracking-wide capitalize">
               {item._id}
             </p>
-            <p className="text-2xl font-bold text-gray-900 mt-1">{item.count}</p>
+            <p className="text-2xl font-bold text-[var(--ink)] mt-1 data" style={{ fontFamily: 'var(--font-data)' }}>{item.count}</p>
           </div>
         ))}
       </div>

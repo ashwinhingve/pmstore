@@ -45,14 +45,14 @@ const iconMap = {
 };
 
 const colorMap = {
-  totalOrders: 'text-blue-600 bg-blue-100',
-  totalRevenue: 'text-green-600 bg-green-100',
-  pendingOrders: 'text-yellow-600 bg-yellow-100',
-  activeShipments: 'text-purple-600 bg-purple-100',
-  failedPayments: 'text-red-600 bg-red-100',
-  totalUsers: 'text-indigo-600 bg-indigo-100',
-  totalProducts: 'text-amber-600 bg-amber-100',
-  lowStockProducts: 'text-orange-600 bg-orange-100',
+  totalOrders: 'text-[var(--ink)] bg-[var(--foil-soft)]',
+  totalRevenue: 'text-[var(--mint)] bg-[var(--mint-soft)]',
+  pendingOrders: 'text-[var(--ink-70)] bg-[var(--foil-soft)]',
+  activeShipments: 'text-[var(--ink)] bg-[var(--foil-soft)]',
+  failedPayments: 'text-[var(--ink-70)] bg-[var(--foil-soft)]',
+  totalUsers: 'text-[var(--ink)] bg-[var(--foil-soft)]',
+  totalProducts: 'text-[var(--ink)] bg-[var(--foil-soft)]',
+  lowStockProducts: 'text-[var(--ink-70)] bg-[var(--foil-soft)]',
 };
 
 export default function DashboardStats({ stats }: DashboardStatsProps) {
@@ -70,9 +70,9 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
   };
 
   const getTrendColor = (trend?: 'up' | 'down' | 'neutral') => {
-    if (trend === 'up') return 'text-green-600';
-    if (trend === 'down') return 'text-red-600';
-    return 'text-gray-600';
+    if (trend === 'up') return 'text-[var(--mint)]';
+    if (trend === 'down') return 'text-[var(--ink-70)]';
+    return 'text-[var(--ink-70)]';
   };
 
   return (
@@ -84,7 +84,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
         return (
           <div
             key={key}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+            className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-lg ${colorClass}`}>
@@ -103,10 +103,10 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             </div>
 
             <div>
-              <p className="text-2xl font-bold text-gray-900 mb-1">
+              <p className="text-2xl font-bold text-[var(--ink)] mb-1 data" style={{ fontFamily: 'var(--font-data)' }}>
                 {formatValue(key, stat.value)}
               </p>
-              <p className="text-sm text-gray-600">{stat.label}</p>
+              <p className="text-sm text-[var(--ink-70)]">{stat.label}</p>
             </div>
           </div>
         );

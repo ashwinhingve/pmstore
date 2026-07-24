@@ -186,8 +186,8 @@ export default async function AdminPaymentsPage({
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Payment Management</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-[var(--ink)]">Payment Management</h1>
+          <p className="text-sm text-[var(--ink-40)] mt-1">
             View and manage all payment transactions ({totalTransactions.toLocaleString()}{' '}
             total)
           </p>
@@ -198,12 +198,12 @@ export default async function AdminPaymentsPage({
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600">Total Revenue</p>
-            <div className="p-2 bg-green-100 rounded-lg">
+            <p className="text-sm text-[var(--ink-70)]">Total Revenue</p>
+            <div className="p-2 bg-[var(--mint-soft)] rounded-lg">
               <svg
-                className="w-5 h-5 text-green-600"
+                className="w-5 h-5 text-[var(--mint)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -217,39 +217,39 @@ export default async function AdminPaymentsPage({
               </svg>
             </div>
           </div>
-          <p className="text-2xl font-bold text-gray-900">
+          <p className="text-2xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>
             ₹{totalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
           </p>
-          <p className="text-xs text-gray-500 mt-1">Successful payments</p>
+          <p className="text-xs text-[var(--ink-40)] mt-1">Successful payments</p>
         </div>
 
         {statusCounts.map((item) => (
           <div
             key={item._id}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+            className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6"
           >
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm text-gray-600 capitalize">{item._id} Payments</p>
+              <p className="text-sm text-[var(--ink-70)] capitalize">{item._id} Payments</p>
               <div
                 className={`p-2 rounded-lg ${
                   item._id === 'success'
-                    ? 'bg-green-100'
+                    ? 'bg-[var(--mint-soft)]'
                     : item._id === 'pending'
-                    ? 'bg-yellow-100'
+                    ? 'bg-[var(--foil-soft)]'
                     : item._id === 'refunded'
-                    ? 'bg-purple-100'
-                    : 'bg-red-100'
+                    ? 'bg-[var(--foil-soft)]'
+                    : 'bg-[var(--foil-soft)]'
                 }`}
               >
                 <svg
                   className={`w-5 h-5 ${
                     item._id === 'success'
-                      ? 'text-green-600'
+                      ? 'text-[var(--mint)]'
                       : item._id === 'pending'
-                      ? 'text-yellow-600'
+                      ? 'text-[var(--ink-70)]'
                       : item._id === 'refunded'
-                      ? 'text-purple-600'
-                      : 'text-red-600'
+                      ? 'text-[var(--ink)]'
+                      : 'text-[var(--ink)]'
                   }`}
                   fill="none"
                   stroke="currentColor"
@@ -264,17 +264,17 @@ export default async function AdminPaymentsPage({
                 </svg>
               </div>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{item.count}</p>
+            <p className="text-2xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>{item.count}</p>
           </div>
         ))}
 
         {failedAmount > 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm text-gray-600">Failed Amount</p>
-              <div className="p-2 bg-red-100 rounded-lg">
+              <p className="text-sm text-[var(--ink-70)]">Failed Amount</p>
+              <div className="p-2 bg-[var(--foil-soft)] rounded-lg">
                 <svg
-                  className="w-5 h-5 text-red-600"
+                  className="w-5 h-5 text-[var(--ink)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -288,10 +288,10 @@ export default async function AdminPaymentsPage({
                 </svg>
               </div>
             </div>
-            <p className="text-2xl font-bold text-red-600">
+            <p className="text-2xl font-bold text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>
               ₹{failedAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
             </p>
-            <p className="text-xs text-gray-500 mt-1">Potential lost revenue</p>
+            <p className="text-xs text-[var(--ink-40)] mt-1">Potential lost revenue</p>
           </div>
         )}
       </div>

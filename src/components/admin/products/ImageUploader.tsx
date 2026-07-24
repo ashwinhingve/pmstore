@@ -144,28 +144,28 @@ export default function ImageUploader({
           {...getRootProps()}
           className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
             isDragActive
-              ? 'border-amber-500 bg-amber-50'
-              : 'border-gray-300 hover:border-amber-400 bg-gray-50'
+              ? 'border-[var(--mint)] bg-[var(--mint-soft)]'
+              : 'border-[var(--foil-soft)] hover:border-[var(--mint)] bg-[var(--foil-soft)]'
           } ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <input {...getInputProps()} />
-          <Upload className="w-10 h-10 mx-auto mb-3 text-gray-400" />
+          <Upload className="w-10 h-10 mx-auto mb-3 text-[var(--ink-40)]" />
           {uploading ? (
             <div>
-              <p className="text-gray-600 mb-2 font-medium">Uploading...</p>
-              <div className="w-full bg-gray-200 rounded-full h-2 max-w-xs mx-auto">
+              <p className="text-[var(--ink)] mb-2 font-medium">Uploading...</p>
+              <div className="w-full bg-[var(--foil-soft)] rounded-full h-2 max-w-xs mx-auto">
                 <div
-                  className="bg-gradient-to-r from-amber-600 to-red-700 h-2 rounded-full transition-all"
+                  className="bg-[var(--mint)] h-2 rounded-full transition-all"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
             </div>
           ) : (
             <div>
-              <p className="text-gray-700 font-medium mb-1">
+              <p className="text-[var(--ink)] font-medium mb-1">
                 {isDragActive ? 'Drop images here' : 'Drag & drop images or click to browse'}
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[var(--ink-40)]">
                 Up to {maxImages} images · 5MB each · JPEG, PNG, WebP
               </p>
             </div>
@@ -179,7 +179,7 @@ export default function ImageUploader({
           {images.map((image, index) => (
             <div
               key={image.publicId || index}
-              className="relative group aspect-square bg-gray-100 rounded-xl overflow-hidden border-2 border-gray-200 hover:border-amber-300 transition-colors"
+              className="relative group aspect-square bg-[var(--foil-soft)] rounded-xl overflow-hidden border-2 border-[var(--foil-soft)] hover:border-[var(--mint)] transition-colors"
             >
               <Image
                 src={image.url}
@@ -191,8 +191,8 @@ export default function ImageUploader({
 
               {/* Primary Badge */}
               {index === 0 && (
-                <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 bg-amber-600 text-white text-xs font-semibold rounded-lg shadow-md">
-                  <Star className="w-3 h-3 fill-white" />
+                <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 bg-[var(--mint)] text-[var(--paper-card)] text-xs font-semibold rounded-lg shadow-md">
+                  <Star className="w-3 h-3 fill-current" />
                   Primary
                 </div>
               )}
@@ -231,7 +231,7 @@ export default function ImageUploader({
                       title="Move left"
                       className="w-8 h-8 bg-white/90 hover:bg-white rounded-lg flex items-center justify-center shadow transition-colors"
                     >
-                      <MoveUp className="w-4 h-4 text-gray-700" />
+                      <MoveUp className="w-4 h-4 text-[var(--ink)]" />
                     </button>
                   )}
                   {index < images.length - 1 && (
@@ -241,7 +241,7 @@ export default function ImageUploader({
                       title="Move right"
                       className="w-8 h-8 bg-white/90 hover:bg-white rounded-lg flex items-center justify-center shadow transition-colors"
                     >
-                      <MoveDown className="w-4 h-4 text-gray-700" />
+                      <MoveDown className="w-4 h-4 text-[var(--ink)]" />
                     </button>
                   )}
                 </div>
@@ -254,7 +254,7 @@ export default function ImageUploader({
                     onClick={() => replaceInputRefs.current[index]?.click()}
                     title="Replace image"
                     disabled={replacingIndex !== null}
-                    className="w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-lg flex items-center justify-center shadow transition-colors disabled:opacity-50"
+                    className="w-8 h-8 bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)] rounded-lg flex items-center justify-center shadow transition-colors disabled:opacity-50"
                   >
                     <RefreshCw className="w-4 h-4" />
                   </button>
@@ -265,7 +265,7 @@ export default function ImageUploader({
                       type="button"
                       onClick={() => setAsPrimary(index)}
                       title="Set as primary"
-                      className="w-8 h-8 bg-amber-500 hover:bg-amber-600 text-white rounded-lg flex items-center justify-center shadow transition-colors"
+                      className="w-8 h-8 bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)] rounded-lg flex items-center justify-center shadow transition-colors"
                     >
                       <Star className="w-4 h-4" />
                     </button>
@@ -276,7 +276,7 @@ export default function ImageUploader({
                     type="button"
                     onClick={() => removeImage(index)}
                     title="Delete image"
-                    className="w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center justify-center shadow transition-colors"
+                    className="w-8 h-8 bg-[var(--ink-70)] hover:bg-[var(--ink)] text-[var(--paper-card)] rounded-lg flex items-center justify-center shadow transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -284,7 +284,7 @@ export default function ImageUploader({
               </div>
 
               {/* Order number */}
-              <div className="absolute bottom-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-xs font-bold text-gray-700 shadow">
+              <div className="absolute bottom-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-xs font-bold text-[var(--ink)] shadow">
                 {index + 1}
               </div>
             </div>
@@ -293,13 +293,13 @@ export default function ImageUploader({
       )}
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-gray-500">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-[var(--ink-40)]">
         <span>{images.length}/{maxImages} images</span>
         {images.length > 0 && (
           <>
-            <span className="flex items-center gap-1"><Star className="w-3 h-3 text-amber-500" /> = Set as primary</span>
-            <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3 text-blue-500" /> = Replace image</span>
-            <span className="flex items-center gap-1"><X className="w-3 h-3 text-red-500" /> = Delete image</span>
+            <span className="flex items-center gap-1"><Star className="w-3 h-3 text-[var(--mint)]" /> = Set as primary</span>
+            <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3 text-[var(--mint)]" /> = Replace image</span>
+            <span className="flex items-center gap-1"><X className="w-3 h-3 text-[var(--ink-70)]" /> = Delete image</span>
           </>
         )}
       </div>

@@ -188,9 +188,9 @@ export default async function AdminDashboard() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Welcome back! Here's what's happening with your store today.
+        <h1 className="text-2xl font-bold text-[var(--ink)]">Dashboard overview</h1>
+        <p className="text-sm text-[var(--ink-70)] mt-1">
+          Here's what's happening with your store today.
         </p>
       </div>
 
@@ -203,32 +203,30 @@ export default async function AdminDashboard() {
         <RevenueChart data={revenueByDay} />
 
         {/* Orders by Status */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Orders by Status</h3>
+        <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
+          <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Orders by status</h3>
           <div className="space-y-3">
             {ordersByStatus.map((status) => (
               <div key={status._id} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-3 h-3 rounded-full ${
-                      status._id === 'confirmed'
-                        ? 'bg-blue-500'
-                        : status._id === 'processing'
-                        ? 'bg-yellow-500'
+                      status._id === 'confirmed' || status._id === 'processing'
+                        ? 'bg-[var(--ink)]'
                         : status._id === 'shipped'
-                        ? 'bg-purple-500'
+                        ? 'bg-[var(--mint)]'
                         : status._id === 'delivered'
-                        ? 'bg-green-500'
+                        ? 'bg-[var(--mint)]'
                         : status._id === 'cancelled'
-                        ? 'bg-red-500'
-                        : 'bg-gray-500'
+                        ? 'bg-[var(--ink-70)]'
+                        : 'bg-[var(--foil)]'
                     }`}
                   />
-                  <span className="text-sm font-medium text-gray-700 capitalize">
+                  <span className="text-sm font-medium text-[var(--ink-70)] capitalize">
                     {status._id}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-gray-900">{status.count}</span>
+                <span className="text-sm font-semibold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>{status.count}</span>
               </div>
             ))}
           </div>
@@ -239,46 +237,46 @@ export default async function AdminDashboard() {
       <RecentOrders orders={recentOrders} />
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+      <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
+        <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Quick actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <a
             href="/admin/orders?status=pending"
-            className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 hover:border-amber-500 hover:bg-amber-50 transition-all"
+            className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
           >
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Process Pending Orders</p>
-              <p className="text-xs text-gray-500 mt-1">{pendingOrders} orders waiting</p>
+              <p className="text-sm font-medium text-[var(--ink)]">Process pending orders</p>
+              <p className="text-xs text-[var(--ink-70)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>{pendingOrders} orders waiting</p>
             </div>
           </a>
 
           <a
             href="/admin/payments?status=failed"
-            className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 hover:border-red-500 hover:bg-red-50 transition-all"
+            className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
           >
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Review Failed Payments</p>
-              <p className="text-xs text-gray-500 mt-1">{failedPayments} failed transactions</p>
+              <p className="text-sm font-medium text-[var(--ink)]">Review failed payments</p>
+              <p className="text-xs text-[var(--ink-70)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>{failedPayments} failed transactions</p>
             </div>
           </a>
 
           <a
             href="/admin/products?filter=low-stock"
-            className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 hover:border-yellow-500 hover:bg-yellow-50 transition-all"
+            className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
           >
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Low Stock Alerts</p>
-              <p className="text-xs text-gray-500 mt-1">{lowStockCount} products low</p>
+              <p className="text-sm font-medium text-[var(--ink)]">Low stock alerts</p>
+              <p className="text-xs text-[var(--ink-70)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>{lowStockCount} products low</p>
             </div>
           </a>
 
           <a
             href="/admin/system"
-            className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all"
+            className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
           >
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">System Health</p>
-              <p className="text-xs text-gray-500 mt-1">Check status</p>
+              <p className="text-sm font-medium text-[var(--ink)]">System health</p>
+              <p className="text-xs text-[var(--ink-70)] mt-1">Check status</p>
             </div>
           </a>
         </div>

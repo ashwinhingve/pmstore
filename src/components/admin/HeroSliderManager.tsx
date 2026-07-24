@@ -183,18 +183,18 @@ export default function HeroSliderManager({ initialSlides }: Props) {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
+    <div className="bg-[var(--paper-card)] rounded-xl border border-[var(--foil-soft)] p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">Hero Slider</h2>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h2 className="text-lg font-bold text-[var(--ink)]">Hero Slider</h2>
+          <p className="text-sm text-[var(--ink-40)] mt-0.5">
             Manage homepage banner slides — images, text &amp; buttons
           </p>
         </div>
         <Button
           onClick={() => setShowAdd(true)}
-          className="bg-gradient-to-r from-amber-600 to-red-700 hover:from-amber-700 hover:to-red-800 text-white"
+          className="bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)]"
           disabled={showAdd || processing}
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -220,10 +220,10 @@ export default function HeroSliderManager({ initialSlides }: Props) {
 
       {/* Slides List */}
       {slides.length === 0 && !showAdd ? (
-        <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-xl">
-          <ImageIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500 font-medium">No slides yet</p>
-          <p className="text-sm text-gray-400 mt-1">Click &quot;Add Slide&quot; to create your first banner</p>
+        <div className="text-center py-16 border-2 border-dashed border-[var(--foil-soft)] rounded-xl">
+          <ImageIcon className="w-12 h-12 text-[var(--ink-40)] mx-auto mb-3" />
+          <p className="text-[var(--ink-40)] font-medium">No slides yet</p>
+          <p className="text-sm text-[var(--ink-40)] mt-1">Click &quot;Add Slide&quot; to create your first banner</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -283,27 +283,27 @@ function SlideRow({
   saving: boolean;
 }) {
   return (
-    <div className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${slide.isActive ? 'border-gray-200 bg-white hover:border-amber-200' : 'border-gray-100 bg-gray-50 opacity-60'}`}>
+    <div className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${slide.isActive ? 'border-[var(--foil-soft)] bg-[var(--paper-card)] hover:border-[var(--mint)]' : 'border-[var(--foil-soft)] bg-[var(--foil-soft)] opacity-60'}`}>
       {/* Thumbnail */}
-      <div className="relative w-24 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+      <div className="relative w-24 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--foil-soft)]">
         {slide.image ? (
           <Image src={slide.image} alt={slide.title} fill className="object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <ImageIcon className="w-6 h-6 text-gray-300" />
+            <ImageIcon className="w-6 h-6 text-[var(--ink-40)]" />
           </div>
         )}
       </div>
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-gray-900 truncate">{slide.title || '(No title)'}</p>
-        <p className="text-sm text-amber-600 truncate">{slide.subtitle}</p>
-        <p className="text-xs text-gray-400 mt-0.5 truncate">{slide.ctaText} → {slide.ctaLink}</p>
+        <p className="font-semibold text-[var(--ink)] truncate">{slide.title || '(No title)'}</p>
+        <p className="text-sm text-[var(--ink-70)] truncate">{slide.subtitle}</p>
+        <p className="text-xs text-[var(--ink-40)] mt-0.5 truncate">{slide.ctaText} → {slide.ctaLink}</p>
       </div>
 
       {/* Slide number */}
-      <span className="text-xs font-medium text-gray-400 w-6 text-center flex-shrink-0">#{index + 1}</span>
+      <span className="text-xs font-medium text-[var(--ink-40)] w-6 text-center flex-shrink-0">#{index + 1}</span>
 
       {/* Actions */}
       <div className="flex items-center gap-1 flex-shrink-0">
@@ -312,18 +312,18 @@ function SlideRow({
           <button
             onClick={() => onMove(-1)}
             disabled={index === 0 || saving}
-            className="p-1 rounded hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1 rounded hover:bg-[var(--foil-soft)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             title="Move up"
           >
-            <ChevronUp className="w-3.5 h-3.5 text-gray-500" />
+            <ChevronUp className="w-3.5 h-3.5 text-[var(--ink-40)]" />
           </button>
           <button
             onClick={() => onMove(1)}
             disabled={index === total - 1 || saving}
-            className="p-1 rounded hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1 rounded hover:bg-[var(--foil-soft)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             title="Move down"
           >
-            <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
+            <ChevronDown className="w-3.5 h-3.5 text-[var(--ink-40)]" />
           </button>
         </div>
 
@@ -331,7 +331,7 @@ function SlideRow({
         <button
           onClick={onToggle}
           disabled={saving}
-          className={`p-2 rounded-lg transition-colors ${slide.isActive ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:bg-gray-100'}`}
+          className={`p-2 rounded-lg transition-colors ${slide.isActive ? 'text-[var(--mint)] hover:bg-[var(--mint-soft)]' : 'text-[var(--ink-40)] hover:bg-[var(--foil-soft)]'}`}
           title={slide.isActive ? 'Hide slide' : 'Show slide'}
         >
           {slide.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
@@ -341,7 +341,7 @@ function SlideRow({
         <button
           onClick={onEdit}
           disabled={saving}
-          className="p-2 rounded-lg hover:bg-amber-50 text-amber-700 transition-colors disabled:opacity-50"
+          className="p-2 rounded-lg hover:bg-[var(--foil-soft)] text-[var(--ink-70)] transition-colors disabled:opacity-50"
           title="Edit slide"
         >
           <Pencil className="w-4 h-4" />
@@ -351,7 +351,7 @@ function SlideRow({
         <button
           onClick={onDelete}
           disabled={saving}
-          className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors disabled:opacity-50"
+          className="p-2 rounded-lg hover:bg-[var(--foil-soft)] text-[var(--ink-70)] transition-colors disabled:opacity-50"
           title="Delete slide"
         >
           <Trash2 className="w-4 h-4" />
@@ -388,16 +388,16 @@ function SlideForm({
   const f = (key: keyof HeroSlide) => (form[key] as string) ?? '';
 
   return (
-    <div className="border-2 border-amber-300 rounded-xl p-5 bg-amber-50/50">
-      <h3 className="font-semibold text-gray-800 mb-4">{title}</h3>
+    <div className="border-2 border-[var(--foil-soft)] rounded-xl p-5 bg-[var(--foil-soft)]">
+      <h3 className="font-semibold text-[var(--ink)] mb-4">{title}</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Left: Image */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Slide Image</label>
+          <label className="block text-sm font-medium text-[var(--ink)] mb-2">Slide Image</label>
           <div
             onClick={onImageClick}
-            className="relative w-full aspect-[16/7] rounded-lg overflow-hidden border-2 border-dashed border-gray-300 hover:border-amber-400 cursor-pointer bg-white transition-colors group"
+            className="relative w-full aspect-[16/7] rounded-lg overflow-hidden border-2 border-dashed border-[var(--foil-soft)] hover:border-[var(--mint)] cursor-pointer bg-white transition-colors group"
           >
             {form.image ? (
               <>
@@ -410,9 +410,9 @@ function SlideForm({
                 </div>
               </>
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 group-hover:text-amber-500 transition-colors">
+              <div className="w-full h-full flex flex-col items-center justify-center text-[var(--ink-40)] group-hover:text-[var(--mint)] transition-colors">
                 {uploading ? (
-                  <Loader2 className="w-8 h-8 animate-spin text-amber-600" />
+                  <Loader2 className="w-8 h-8 animate-spin text-[var(--ink-70)]" />
                 ) : (
                   <>
                     <Upload className="w-8 h-8 mb-2" />
@@ -432,9 +432,9 @@ function SlideForm({
 
           {/* OR divider + URL input */}
           <div className="flex items-center gap-2 mt-3 mb-2">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs text-gray-400 font-medium px-1">or paste URL</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-[var(--foil-soft)]" />
+            <span className="text-xs text-[var(--ink-40)] font-medium px-1">or paste URL</span>
+            <div className="flex-1 h-px bg-[var(--foil-soft)]" />
           </div>
           <div className="flex items-center gap-2">
             <Input
@@ -447,7 +447,7 @@ function SlideForm({
               <button
                 type="button"
                 onClick={() => onChange({ ...form, image: '', imagePublicId: '' })}
-                className="p-1.5 rounded-md hover:bg-red-50 text-red-400 hover:text-red-600 transition-colors flex-shrink-0"
+                className="p-1.5 rounded-md hover:bg-[var(--foil-soft)] text-[var(--ink-70)] hover:text-[var(--ink)] transition-colors flex-shrink-0"
                 title="Clear image"
               >
                 <X className="w-4 h-4" />
@@ -459,7 +459,7 @@ function SlideForm({
         {/* Right: Text fields */}
         <div className="space-y-3">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Title *</label>
+            <label className="block text-xs font-medium text-[var(--ink-70)] mb-1">Title *</label>
             <Input
               value={f('title')}
               onChange={(e) => onChange({ ...form, title: e.target.value })}
@@ -467,7 +467,7 @@ function SlideForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Subtitle / Badge text</label>
+            <label className="block text-xs font-medium text-[var(--ink-70)] mb-1">Subtitle / Badge text</label>
             <Input
               value={f('subtitle')}
               onChange={(e) => onChange({ ...form, subtitle: e.target.value })}
@@ -475,13 +475,13 @@ function SlideForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+            <label className="block text-xs font-medium text-[var(--ink-70)] mb-1">Description</label>
             <textarea
               value={f('description')}
               onChange={(e) => onChange({ ...form, description: e.target.value })}
               placeholder="Short description displayed on the slide..."
               rows={3}
-              className="w-full text-sm rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent resize-none"
+              className="w-full text-sm rounded-md border border-[var(--foil-soft)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--ink)] focus:border-transparent resize-none"
             />
           </div>
         </div>
@@ -489,8 +489,8 @@ function SlideForm({
 
       {/* CTA Buttons row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-        <div className="space-y-2 p-3 bg-white rounded-lg border border-gray-200">
-          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Primary Button</p>
+        <div className="space-y-2 p-3 bg-white rounded-lg border border-[var(--foil-soft)]">
+          <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Primary Button</p>
           <Input
             value={f('ctaText')}
             onChange={(e) => onChange({ ...form, ctaText: e.target.value })}
@@ -502,8 +502,8 @@ function SlideForm({
             placeholder="Link e.g. /products"
           />
         </div>
-        <div className="space-y-2 p-3 bg-white rounded-lg border border-gray-200">
-          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Secondary Button (optional)</p>
+        <div className="space-y-2 p-3 bg-white rounded-lg border border-[var(--foil-soft)]">
+          <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Secondary Button (optional)</p>
           <Input
             value={f('ctaSecondaryText')}
             onChange={(e) => onChange({ ...form, ctaSecondaryText: e.target.value })}
@@ -525,9 +525,9 @@ function SlideForm({
             type="checkbox"
             checked={form.isActive !== false}
             onChange={(e) => onChange({ ...form, isActive: e.target.checked })}
-            className="w-4 h-4 accent-amber-600"
+            className="w-4 h-4 accent-[var(--mint)]"
           />
-          <span className="text-sm text-gray-700">Active (visible on homepage)</span>
+          <span className="text-sm text-[var(--ink)]">Active (visible on homepage)</span>
         </label>
 
         <div className="flex items-center gap-2">
@@ -538,7 +538,7 @@ function SlideForm({
             size="sm"
             onClick={onSave}
             disabled={saving || uploading}
-            className="bg-gradient-to-r from-amber-600 to-red-700 hover:from-amber-700 hover:to-red-800 text-white"
+            className="bg-[var(--ink)] hover:opacity-90 text-[var(--paper-card)]"
           >
             {saving ? (
               <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Saving...</>

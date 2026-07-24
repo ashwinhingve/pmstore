@@ -45,23 +45,23 @@ export default function CreateShipmentButton({ orderId, orderNumber, paymentMeth
 
   if (result) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-green-200 p-6">
+      <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-8 h-8 rounded-full bg-[var(--mint-soft)] flex items-center justify-center">
+            <svg className="w-4 h-4 text-[var(--mint)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 className="text-sm font-semibold text-green-800">Shipment Created</h3>
+          <h3 className="text-sm font-semibold text-[var(--mint)]">Shipment created</h3>
         </div>
-        <p className="text-sm text-gray-600 mb-1">Waybill</p>
-        <p className="text-sm font-mono font-semibold text-gray-900 mb-3">{result.waybill}</p>
+        <p className="text-sm text-[var(--ink-70)] mb-1">Waybill</p>
+        <p className="text-sm font-mono font-semibold text-[var(--ink)] mb-3" style={{ fontFamily: 'var(--font-data)' }}>{result.waybill}</p>
         {result.trackingUrl && (
           <a
             href={result.trackingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 hover:text-amber-700"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
           >
             Track shipment
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,14 +76,14 @@ export default function CreateShipmentButton({ orderId, orderNumber, paymentMeth
   const isCod = paymentMethod === 'cod';
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-amber-200 p-6">
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
       <div className="flex items-center gap-2 mb-1">
-        <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 text-[var(--ink)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
-        <h3 className="text-sm font-semibold text-gray-900">Create Shipment</h3>
+        <h3 className="text-sm font-semibold text-[var(--ink)]">Create shipment</h3>
       </div>
-      <p className="text-xs text-gray-500 mb-4">
+      <p className="text-xs text-[var(--ink-70)] mb-4">
         {isCod ? 'COD order — select courier to dispatch' : 'Select courier to create shipment'}
       </p>
 
@@ -98,9 +98,9 @@ export default function CreateShipmentButton({ orderId, orderNumber, paymentMeth
             className={`relative flex flex-col items-center gap-1 p-3 rounded-lg border-2 text-xs font-medium transition-all ${
               provider === p
                 ? p === 'shiprocket'
-                  ? 'border-orange-400 bg-orange-50 text-orange-700'
-                  : 'border-blue-400 bg-blue-50 text-blue-700'
-                : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
+                  ? 'border-[var(--ink)] bg-[var(--foil-soft)] text-[var(--ink)]'
+                  : 'border-[var(--ink)] bg-[var(--foil-soft)] text-[var(--ink)]'
+                : 'border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)] hover:border-[var(--ink)]'
             }`}
           >
             <span className="text-lg">
@@ -118,13 +118,13 @@ export default function CreateShipmentButton({ orderId, orderNumber, paymentMeth
         type="button"
         onClick={handleCreate}
         disabled={loading}
-        className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-red-700 text-white text-sm font-semibold rounded-lg hover:from-amber-700 hover:to-red-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        className="w-full py-2.5 bg-[var(--ink)] text-[var(--paper-card)] text-sm font-semibold rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
         {loading ? 'Creating shipment...' : `Ship with ${provider === 'delhivery' ? 'Delhivery' : 'Shiprocket'}`}
       </button>
 
       {error && (
-        <p className="mt-2 text-xs text-red-600">{error}</p>
+        <p className="mt-2 text-xs text-[var(--ink)]">{error}</p>
       )}
     </div>
   );

@@ -228,7 +228,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Product Name *
                 </label>
                 <Input
@@ -241,7 +241,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Slug *
                 </label>
                 <Input
@@ -251,7 +251,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   placeholder="organic-chia-seeds"
                   required
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-[var(--ink-40)]">
                   URL: /products/{formData.slug || 'product-slug'}
                 </p>
               </div>
@@ -259,7 +259,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   SKU *
                 </label>
                 <Input
@@ -272,14 +272,14 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Category *
                 </label>
                 {categoryOptions.length > 0 ? (
                   <select
                     value={formData.category}
                     onChange={(e) => updateField('category', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm bg-[var(--paper-card)] text-[var(--ink)]"
                     required
                   >
                     <option value="">Select a category</option>
@@ -288,7 +288,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     ))}
                   </select>
                 ) : (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-[var(--ink-40)]">
                     No categories yet. Create one under Categories first.
                   </p>
                 )}
@@ -296,7 +296,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                 Subcategory
               </label>
               <Input
@@ -308,7 +308,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                 Short Description *
               </label>
               <textarea
@@ -316,17 +316,17 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 onChange={(e) => updateField('description', e.target.value)}
                 placeholder="Brief description (1-2 sentences)..."
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+                className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md resize-none bg-[var(--paper-card)] text-[var(--ink)]"
                 maxLength={200}
                 required
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-[var(--ink-40)]">
                 {formData.description?.length || 0}/200 characters
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                 Long Description
               </label>
               <RichTextEditor
@@ -336,7 +336,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                 Tags (comma-separated)
               </label>
               <Input
@@ -358,9 +358,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => updateField('isActive', e.target.checked)}
-                  className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
                 />
-                <span className="text-sm font-medium text-gray-700">Active (visible in shop)</span>
+                <span className="text-sm font-medium text-[var(--ink)]">Active (visible in shop)</span>
               </label>
 
               <label className="flex items-center gap-2 cursor-pointer">
@@ -368,9 +368,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isFeatured}
                   onChange={(e) => updateField('isFeatured', e.target.checked)}
-                  className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
                 />
-                <span className="text-sm font-medium text-gray-700">Featured product</span>
+                <span className="text-sm font-medium text-[var(--ink)]">Featured product</span>
               </label>
 
               <label className="flex items-center gap-2 cursor-pointer">
@@ -378,9 +378,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isBestseller}
                   onChange={(e) => updateField('isBestseller', e.target.checked)}
-                  className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
                 />
-                <span className="text-sm font-medium text-gray-700">Bestseller</span>
+                <span className="text-sm font-medium text-[var(--ink)]">Bestseller</span>
               </label>
 
               <label className="flex items-center gap-2 cursor-pointer">
@@ -388,9 +388,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isTrending}
                   onChange={(e) => updateField('isTrending', e.target.checked)}
-                  className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
                 />
-                <span className="text-sm font-medium text-gray-700">Trending</span>
+                <span className="text-sm font-medium text-[var(--ink)]">Trending</span>
               </label>
 
               <label className="flex items-center gap-2 cursor-pointer">
@@ -398,9 +398,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isValueBuy}
                   onChange={(e) => updateField('isValueBuy', e.target.checked)}
-                  className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
                 />
-                <span className="text-sm font-medium text-gray-700">Value Buy</span>
+                <span className="text-sm font-medium text-[var(--ink)]">Value Buy</span>
               </label>
             </div>
           </div>
@@ -412,18 +412,18 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
             {/* Salts / composition */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-[var(--ink)]">
                   Composition (salts) *
                 </label>
                 <button
                   type="button"
                   onClick={addSalt}
-                  className="text-sm font-medium text-amber-700 hover:text-amber-800"
+                  className="text-sm font-medium text-[var(--mint)] hover:text-[var(--mint)]"
                 >
                   + Add salt
                 </button>
               </div>
-              <p className="text-xs text-gray-500 mb-3">
+              <p className="text-xs text-[var(--ink-40)] mb-3">
                 Composition key and price-per-unit are derived automatically from these
                 values and the pack size — they are not entered by hand.
               </p>
@@ -457,7 +457,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                         value={salt.unit}
                         onChange={(e) => updateSalt(i, { unit: e.target.value })}
                         aria-label={`Salt ${i + 1} unit`}
-                        className="w-full px-2 py-2 border border-gray-300 rounded-md text-sm"
+                        className="w-full px-2 py-2 border border-[var(--foil-soft)] rounded-md text-sm"
                       >
                         {SALT_UNITS.map((u) => (
                           <option key={u} value={u}>{u}</option>
@@ -470,7 +470,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                           type="button"
                           onClick={() => removeSalt(i)}
                           aria-label={`Remove salt ${i + 1}`}
-                          className="h-9 w-9 flex items-center justify-center text-gray-400 hover:text-red-600"
+                          className="h-9 w-9 flex items-center justify-center text-[var(--ink-40)] hover:text-[var(--ink)]"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -483,13 +483,13 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Dosage form *
                 </label>
                 <select
                   value={formData.form}
                   onChange={(e) => updateField('form', e.target.value as ProductFormData['form'])}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm"
                   required
                 >
                   {DOSAGE_FORMS.map((f) => (
@@ -499,7 +499,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Manufacturer *
                 </label>
                 <Input
@@ -514,7 +514,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Pack size *
                 </label>
                 <Input
@@ -525,17 +525,17 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   placeholder="15"
                   required
                 />
-                <p className="mt-1 text-xs text-gray-500">Tablets / ml per pack</p>
+                <p className="mt-1 text-xs text-[var(--ink-40)]">Tablets / ml per pack</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Pack unit *
                 </label>
                 <select
                   value={formData.packUnit}
                   onChange={(e) => updateField('packUnit', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm"
                   required
                 >
                   {PACK_UNITS.map((u) => (
@@ -545,7 +545,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   MRP (₹)
                 </label>
                 <Input
@@ -561,13 +561,13 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Schedule class *
                 </label>
                 <select
                   value={formData.scheduleClass}
                   onChange={(e) => updateField('scheduleClass', e.target.value as ProductFormData['scheduleClass'])}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm"
                 >
                   {SCHEDULE_CLASSES.map((s) => (
                     <option key={s} value={s}>{s}</option>
@@ -576,7 +576,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   HSN code
                 </label>
                 <Input
@@ -593,37 +593,37 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     type="checkbox"
                     checked={formData.prescriptionRequired}
                     onChange={(e) => updateField('prescriptionRequired', e.target.checked)}
-                    className="w-4 h-4 border-gray-300 rounded"
+                    className="w-4 h-4 border-[var(--foil-soft)] rounded"
                     style={{ accentColor: 'var(--rx, #c1121f)' }}
                   />
-                  <span className="text-sm font-medium text-gray-700">Prescription required</span>
+                  <span className="text-sm font-medium text-[var(--ink)]">Prescription required</span>
                 </label>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Storage instructions
                 </label>
                 <textarea
                   value={formData.storageInstructions || ''}
                   onChange={(e) => updateField('storageInstructions', e.target.value)}
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md resize-none bg-[var(--paper-card)] text-[var(--ink)]"
                   placeholder="Store below 25°C, away from light"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Usage instructions
                 </label>
                 <textarea
                   value={formData.usageInstructions || ''}
                   onChange={(e) => updateField('usageInstructions', e.target.value)}
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md resize-none bg-[var(--paper-card)] text-[var(--ink)]"
                   placeholder="As directed by the physician"
                 />
               </div>
@@ -631,7 +631,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Side effects (comma-separated)
                 </label>
                 <Input
@@ -648,7 +648,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Contraindications (comma-separated)
                 </label>
                 <Input
@@ -670,9 +670,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 type="checkbox"
                 checked={formData.isDiscontinued}
                 onChange={(e) => updateField('isDiscontinued', e.target.checked)}
-                className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
               />
-              <span className="text-sm font-medium text-gray-700">Discontinued</span>
+              <span className="text-sm font-medium text-[var(--ink)]">Discontinued</span>
             </label>
           </div>
         );
@@ -681,7 +681,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
         return (
           <div className="space-y-8">
             <div>
-              <h3 className="text-base font-semibold text-gray-800 mb-4">
+              <h3 className="text-base font-semibold text-[var(--ink)] mb-4">
                 Product Images (up to 4)
               </h3>
               <ImageUploader
@@ -691,11 +691,11 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               />
             </div>
 
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-base font-semibold text-gray-800 mb-2">
+            <div className="border-t border-[var(--foil-soft)] pt-6">
+              <h3 className="text-base font-semibold text-[var(--ink)] mb-2">
                 Product Video (optional)
               </h3>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-[var(--ink-40)] mb-4">
                 Upload a video file or paste a YouTube URL
               </p>
 
@@ -706,8 +706,8 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     onClick={() => !videoUploading && videoInputRef.current?.click()}
                     className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
                       videoUploading
-                        ? 'border-amber-400 bg-amber-50 cursor-wait'
-                        : 'border-gray-300 hover:border-amber-400 bg-gray-50'
+                        ? 'border-[var(--mint)] bg-[var(--mint-soft)] cursor-wait'
+                        : 'border-[var(--foil-soft)] hover:border-[var(--mint)] bg-[var(--foil-soft)]'
                     }`}
                   >
                     <input
@@ -737,26 +737,26 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     />
                     {videoUploading ? (
                       <div>
-                        <div className="w-8 h-8 mx-auto mb-2 border-[3px] border-amber-600 border-t-transparent rounded-full animate-spin" />
-                        <p className="text-sm text-amber-700 font-medium">Uploading video...</p>
+                        <div className="w-8 h-8 mx-auto mb-2 border-[3px] border-[var(--mint)] border-t-transparent rounded-full animate-spin" />
+                        <p className="text-sm text-[var(--mint)] font-medium">Uploading video...</p>
                       </div>
                     ) : (
                       <div>
-                        <Upload className="w-10 h-10 mx-auto mb-2 text-gray-400" />
-                        <p className="text-sm text-gray-700 font-medium">Click to upload video</p>
-                        <p className="text-xs text-gray-500 mt-1">MP4, WebM, MOV (max 50MB)</p>
+                        <Upload className="w-10 h-10 mx-auto mb-2 text-[var(--ink-40)]" />
+                        <p className="text-sm text-[var(--ink)] font-medium">Click to upload video</p>
+                        <p className="text-xs text-[var(--ink-40)] mt-1">MP4, WebM, MOV (max 50MB)</p>
                       </div>
                     )}
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="flex-1 border-t border-gray-200" />
-                    <span className="text-xs text-gray-400 font-medium">OR</span>
-                    <div className="flex-1 border-t border-gray-200" />
+                    <div className="flex-1 border-t border-[var(--foil-soft)]" />
+                    <span className="text-xs text-[var(--ink-40)] font-medium">OR</span>
+                    <div className="flex-1 border-t border-[var(--foil-soft)]" />
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <LinkIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    <LinkIcon className="w-4 h-4 text-[var(--ink-40)] flex-shrink-0" />
                     <Input
                       type="url"
                       value=""
@@ -773,7 +773,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   {/* Preview */}
                   <div className="relative w-full max-w-md">
                     {formData.videoUrl.includes('youtube.com') || formData.videoUrl.includes('youtu.be') ? (
-                      <div className="aspect-video rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                      <div className="aspect-video rounded-xl overflow-hidden border border-[var(--foil-soft)] shadow-sm">
                         <iframe
                           src={getYouTubeEmbedUrl(formData.videoUrl)}
                           className="w-full h-full"
@@ -782,7 +782,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                         />
                       </div>
                     ) : (
-                      <div className="aspect-video rounded-xl overflow-hidden border border-gray-200 bg-black shadow-sm">
+                      <div className="aspect-video rounded-xl overflow-hidden border border-[var(--foil-soft)] bg-black shadow-sm">
                         <video src={formData.videoUrl} controls className="w-full h-full object-contain" />
                       </div>
                     )}
@@ -798,7 +798,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     <button
                       type="button"
                       onClick={() => setShowReplaceVideo(true)}
-                      className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-blue-300 text-blue-600 hover:bg-blue-50 font-medium transition-colors"
+                      className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-[var(--foil-soft)] text-[var(--mint)] hover:bg-[var(--mint-soft)] font-medium transition-colors"
                     >
                       <RefreshCw className="w-4 h-4" />
                       Replace Video
@@ -806,7 +806,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     <button
                       type="button"
                       onClick={() => updateField('videoUrl', '')}
-                      className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 font-medium transition-colors"
+                      className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-[var(--foil-soft)] text-[var(--ink-70)] hover:bg-[var(--foil-soft)] font-medium transition-colors"
                     >
                       <X className="w-4 h-4" />
                       Remove Video
@@ -817,13 +817,13 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
               {/* ── Replace mode ── */}
               {showReplaceVideo && (
-                <div className="space-y-4 border-2 border-blue-200 rounded-xl p-4 bg-blue-50/40">
+                <div className="space-y-4 border-2 border-[var(--mint-soft)] rounded-xl p-4 bg-[var(--mint-soft)]/40">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-blue-800">Upload replacement video</p>
+                    <p className="text-sm font-semibold text-[var(--mint)]">Upload replacement video</p>
                     <button
                       type="button"
                       onClick={() => setShowReplaceVideo(false)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-[var(--ink-40)] hover:text-[var(--ink)]"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -832,7 +832,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   <div
                     onClick={() => !videoUploading && replaceVideoInputRef.current?.click()}
                     className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
-                      videoUploading ? 'border-blue-400 bg-blue-50 cursor-wait' : 'border-blue-300 hover:border-blue-500 bg-white'
+                      videoUploading ? 'border-[var(--mint)] bg-[var(--mint-soft)] cursor-wait' : 'border-[var(--foil-soft)] hover:border-[var(--mint)] bg-[var(--paper-card)]'
                     }`}
                   >
                     <input
@@ -863,26 +863,26 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     />
                     {videoUploading ? (
                       <div>
-                        <div className="w-8 h-8 mx-auto mb-2 border-[3px] border-blue-600 border-t-transparent rounded-full animate-spin" />
-                        <p className="text-sm text-blue-700 font-medium">Uploading replacement...</p>
+                        <div className="w-8 h-8 mx-auto mb-2 border-[3px] border-[var(--mint)] border-t-transparent rounded-full animate-spin" />
+                        <p className="text-sm text-[var(--mint)] font-medium">Uploading replacement...</p>
                       </div>
                     ) : (
                       <div>
-                        <RefreshCw className="w-10 h-10 mx-auto mb-2 text-blue-400" />
-                        <p className="text-sm text-blue-700 font-medium">Click to upload new video</p>
-                        <p className="text-xs text-gray-500 mt-1">Replaces the current video · MP4, WebM, MOV (max 50MB)</p>
+                        <RefreshCw className="w-10 h-10 mx-auto mb-2 text-[var(--mint)]" />
+                        <p className="text-sm text-[var(--ink)] font-medium">Click to upload new video</p>
+                        <p className="text-xs text-[var(--ink-40)] mt-1">Replaces the current video · MP4, WebM, MOV (max 50MB)</p>
                       </div>
                     )}
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="flex-1 border-t border-blue-200" />
-                    <span className="text-xs text-gray-400 font-medium">OR paste URL</span>
-                    <div className="flex-1 border-t border-blue-200" />
+                    <div className="flex-1 border-t border-[var(--mint-soft)]" />
+                    <span className="text-xs text-[var(--ink-40)] font-medium">OR paste URL</span>
+                    <div className="flex-1 border-t border-[var(--mint-soft)]" />
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <LinkIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    <LinkIcon className="w-4 h-4 text-[var(--ink-40)] flex-shrink-0" />
                     <Input
                       type="url"
                       value=""
@@ -906,8 +906,8 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Price (₹) * <span className="text-gray-400 font-normal">(GST-inclusive/MRP)</span>
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
+                  Price (₹) * <span className="text-[var(--ink-40)] font-normal">(GST-inclusive/MRP)</span>
                 </label>
                 <Input
                   type="number"
@@ -920,7 +920,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Original Price (₹)
                 </label>
                 <Input
@@ -932,17 +932,17 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     updateField('originalPrice', parseFloat(e.target.value) || undefined)
                   }
                 />
-                <p className="mt-1 text-xs text-gray-500">For showing discounts</p>
+                <p className="mt-1 text-xs text-[var(--ink-40)]">For showing discounts</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   GST Rate *
                 </label>
                 <select
                   value={formData.gstRate ?? 5}
                   onChange={(e) => updateField('gstRate', parseInt(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--mint)] bg-[var(--paper-card)] text-[var(--ink)]"
                 >
                   <option value={0}>0% — GST Exempt</option>
                   <option value={5}>5% — Standard Food</option>
@@ -950,13 +950,13 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   <option value={18}>18%</option>
                   <option value={28}>28%</option>
                 </select>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-[var(--ink-40)]">
                   Intra-state (MP): CGST+SGST &nbsp;|&nbsp; Inter-state: IGST
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Stock Quantity *
                 </label>
                 <Input
@@ -971,7 +971,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Weight
                 </label>
                 <Input
@@ -983,13 +983,13 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Weight Unit
                 </label>
                 <select
                   value={formData.weightUnit}
                   onChange={(e) => updateField('weightUnit', e.target.value as 'g' | 'kg' | 'L' | 'ml')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md bg-[var(--paper-card)] text-[var(--ink)]"
                 >
                   <option value="g">Grams (g)</option>
                   <option value="kg">Kilograms (kg)</option>
@@ -1009,9 +1009,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 type="checkbox"
                 checked={formData.hasVariants}
                 onChange={(e) => updateField('hasVariants', e.target.checked)}
-                className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-[var(--ink)]">
                 This product has variants (different sizes, weights, etc.)
               </span>
             </label>
@@ -1038,7 +1038,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                 Meta Title
               </label>
               <Input
@@ -1050,13 +1050,13 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 placeholder={formData.name || 'Product name'}
                 maxLength={60}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-[var(--ink-40)]">
                 {(formData.seo?.metaTitle?.length || 0)}/60 characters
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                 Meta Description
               </label>
               <textarea
@@ -1066,16 +1066,16 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 }
                 placeholder={formData.description || 'Product description'}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+                className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md resize-none bg-[var(--paper-card)] text-[var(--ink)]"
                 maxLength={160}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-[var(--ink-40)]">
                 {(formData.seo?.metaDescription?.length || 0)}/160 characters
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                 Keywords (comma-separated)
               </label>
               <Input
@@ -1092,9 +1092,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                 OG Image URL
-                <span className="ml-1 text-xs font-normal text-gray-400">
+                <span className="ml-1 text-xs font-normal text-[var(--ink-40)]">
                   (optional — used for social sharing previews, 1200×630px recommended)
                 </span>
               </label>
@@ -1114,27 +1114,27 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <img
                   src={formData.seo.ogImage}
                   alt="OG image preview"
-                  className="mt-2 h-20 rounded border border-gray-200 object-cover"
+                  className="mt-2 h-20 rounded border border-[var(--foil-soft)] object-cover"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
               )}
             </div>
 
             {/* Google Search Preview */}
-            <div className="border border-gray-200 rounded-xl overflow-hidden">
-              <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <div className="border border-[var(--foil-soft)] rounded-xl overflow-hidden">
+              <div className="px-4 py-2.5 bg-[var(--foil-soft)] border-b border-[var(--foil-soft)] flex items-center justify-between">
+                <span className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                   Google Search Preview
                 </span>
-                <span className="text-[10px] text-gray-400">Approximate — actual appearance varies</span>
+                <span className="text-[10px] text-[var(--ink-40)]">Approximate — actual appearance varies</span>
               </div>
-              <div className="p-4 bg-white">
+              <div className="p-4 bg-[var(--paper-card)]">
                 {/* URL breadcrumb */}
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="w-5 h-5 rounded-full bg-gray-100 border border-gray-200 flex-shrink-0" />
+                  <div className="w-5 h-5 rounded-full bg-[var(--foil-soft)] border border-[var(--foil-soft)] flex-shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-600 leading-none font-medium">pmstore.in</p>
-                    <p className="text-[11px] text-gray-400 leading-none mt-0.5">
+                    <p className="text-xs text-[var(--ink-70)] leading-none font-medium">pmstore.in</p>
+                    <p className="text-[11px] text-[var(--ink-40)] leading-none mt-0.5">
                       pmstore.in &rsaquo; products &rsaquo; {formData.slug || 'product-slug'}
                     </p>
                   </div>
@@ -1145,12 +1145,12 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   const tooLong = titleText.length > 60;
                   return (
                     <p
-                      className={`text-lg font-normal leading-snug mb-0.5 ${tooLong ? 'text-orange-600' : ''}`}
+                      className={`text-lg font-normal leading-snug mb-0.5 ${tooLong ? 'text-[var(--ink-70)]' : ''}`}
                       style={{ color: tooLong ? undefined : '#1a0dab', fontFamily: 'arial, sans-serif' }}
                     >
                       {titleText}
                       {tooLong && (
-                        <span className="ml-2 text-xs text-orange-500 font-medium">
+                        <span className="ml-2 text-xs text-[var(--ink-70)] font-medium">
                           ({titleText.length}/60 — too long)
                         </span>
                       )}
@@ -1164,12 +1164,12 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   const display = tooLong ? raw.substring(0, 157) + '…' : raw;
                   return (
                     <p
-                      className={`text-sm leading-snug ${tooLong ? 'text-orange-600' : 'text-gray-600'}`}
+                      className={`text-sm leading-snug ${tooLong ? 'text-[var(--ink-70)]' : 'text-[var(--ink-70)]'}`}
                       style={{ fontFamily: 'arial, sans-serif' }}
                     >
                       {display}
                       {tooLong && (
-                        <span className="ml-1 text-xs text-orange-500 font-medium">
+                        <span className="ml-1 text-xs text-[var(--ink-70)] font-medium">
                           ({raw.length}/160 — too long)
                         </span>
                       )}
@@ -1188,13 +1188,13 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     <form onSubmit={handleSubmit} className="max-w-5xl">
       {/* Error Message */}
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-sm text-red-700">{error}</p>
+        <div className="mb-6 bg-[var(--foil-soft)] border border-[var(--foil)] rounded-lg p-4">
+          <p className="text-sm text-[var(--ink-70)]">{error}</p>
         </div>
       )}
 
       {/* Tabs */}
-      <div className="mb-6 border-b border-gray-200">
+      <div className="mb-6 border-b border-[var(--foil-soft)]">
         <nav className="flex gap-6 overflow-x-auto">
           {TABS.map((tab) => (
             <button
@@ -1203,8 +1203,8 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               onClick={() => setActiveTab(tab.id)}
               className={`pb-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
                 activeTab === tab.id
-                  ? 'border-amber-600 text-amber-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-[var(--mint)] text-[var(--mint)]'
+                  : 'border-transparent text-[var(--ink-40)] hover:text-[var(--ink)] hover:border-[var(--foil-soft)]'
               }`}
             >
               {tab.label}
@@ -1214,12 +1214,12 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       </div>
 
       {/* Tab Content */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+      <div className="bg-[var(--paper-card)] rounded-lg border border-[var(--foil-soft)] p-6 mb-6">
         {renderTabContent()}
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between gap-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+      <div className="flex items-center justify-between gap-4 bg-[var(--foil-soft)] border border-[var(--foil-soft)] rounded-lg p-4">
         <Button
           type="button"
           variant="outline"
@@ -1244,7 +1244,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
           <Button
             type="submit"
             disabled={submitting}
-            className="bg-gradient-to-r from-amber-600 to-red-700 hover:from-amber-700 hover:to-red-800"
+            className="bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)]"
           >
             {submitting
               ? mode === 'create'

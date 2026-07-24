@@ -150,19 +150,19 @@ export default async function AdminProductsPage({
   const serializedProducts = JSON.parse(JSON.stringify(products));
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-[var(--paper)]">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold text-[var(--ink)]">
           Product Management
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="text-[var(--ink-70)] mt-2">
           Manage your product catalog, inventory, and pricing
         </p>
       </div>
 
       {dbError && (
-        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-sm text-red-700 font-medium">
+        <div className="mb-6 bg-[var(--foil-soft)] border border-[var(--foil)] rounded-lg p-4">
+          <p className="text-sm text-[var(--ink-70)] font-medium">
             Could not connect to the database. Please check your internet connection and try again.
           </p>
         </div>

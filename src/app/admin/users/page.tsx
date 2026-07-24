@@ -125,15 +125,15 @@ export default async function AdminUsersPage({
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-[var(--ink)]">User management</h1>
+          <p className="text-sm text-[var(--ink-70)] mt-1">
             Manage all users and their permissions ({totalUsers.toLocaleString()} total)
           </p>
         </div>
 
         {/* Export Button */}
         <div
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--paper-card)] border border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink)] hover:bg-[var(--foil-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--ink)]"
         >
           <svg
             className="w-4 h-4"
@@ -154,12 +154,12 @@ export default async function AdminUsersPage({
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600">Total Users</p>
-            <div className="p-2 bg-blue-100 rounded-lg">
+            <p className="text-sm text-[var(--ink-70)]">Total users</p>
+            <div className="p-2 bg-[var(--foil-soft)] rounded-lg">
               <svg
-                className="w-5 h-5 text-blue-600"
+                className="w-5 h-5 text-[var(--ink)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -173,15 +173,15 @@ export default async function AdminUsersPage({
               </svg>
             </div>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{totalUsers}</p>
+          <p className="text-2xl font-bold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>{totalUsers}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600">Clients</p>
-            <div className="p-2 bg-green-100 rounded-lg">
+            <p className="text-sm text-[var(--ink-70)]">Clients</p>
+            <div className="p-2 bg-[var(--mint-soft)] rounded-lg">
               <svg
-                className="w-5 h-5 text-green-600"
+                className="w-5 h-5 text-[var(--mint)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -195,15 +195,15 @@ export default async function AdminUsersPage({
               </svg>
             </div>
           </div>
-          <p className="text-2xl font-bold text-green-600">{totalClients}</p>
+          <p className="text-2xl font-bold text-[var(--mint)] data" style={{ fontFamily: 'var(--font-data)' }}>{totalClients}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600">Admins</p>
-            <div className="p-2 bg-purple-100 rounded-lg">
+            <p className="text-sm text-[var(--ink-70)]">Admins</p>
+            <div className="p-2 bg-[var(--foil-soft)] rounded-lg">
               <svg
-                className="w-5 h-5 text-purple-600"
+                className="w-5 h-5 text-[var(--ink)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -217,15 +217,15 @@ export default async function AdminUsersPage({
               </svg>
             </div>
           </div>
-          <p className="text-2xl font-bold text-purple-600">{totalAdmins}</p>
+          <p className="text-2xl font-bold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>{totalAdmins}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600">New (30 Days)</p>
-            <div className="p-2 bg-amber-100 rounded-lg">
+            <p className="text-sm text-[var(--ink-70)]">New (30 days)</p>
+            <div className="p-2 bg-[var(--mint-soft)] rounded-lg">
               <svg
-                className="w-5 h-5 text-amber-600"
+                className="w-5 h-5 text-[var(--mint)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -239,7 +239,7 @@ export default async function AdminUsersPage({
               </svg>
             </div>
           </div>
-          <p className="text-2xl font-bold text-amber-600">{recentSignups}</p>
+          <p className="text-2xl font-bold text-[var(--mint)] data" style={{ fontFamily: 'var(--font-data)' }}>{recentSignups}</p>
         </div>
       </div>
 

@@ -44,25 +44,25 @@ export default function GtmSection({ initialGtmId, initialGtmEnabled }: Props) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="p-6 border-b border-gray-200">
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
+      <div className="p-6 border-b border-[var(--foil-soft)]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Tag className="w-5 h-5 text-blue-600" />
+            <div className="p-2 bg-[var(--foil-soft)] rounded-lg">
+              <Tag className="w-5 h-5 text-[var(--ink)]" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Google Tag Manager</h3>
-              <p className="text-sm text-gray-500">Central hub for all tracking scripts</p>
+              <h3 className="text-lg font-semibold text-[var(--ink)]">Google Tag Manager</h3>
+              <p className="text-sm text-[var(--ink-40)]">Central hub for all tracking scripts</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             {connected ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--mint-soft)] text-[var(--mint)] border border-[var(--mint)]">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Connected
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--foil-soft)] text-[var(--ink-40)] border border-[var(--foil-soft)]">
                 <XCircle className="w-3.5 h-3.5" /> Not Connected
               </span>
             )}
@@ -72,7 +72,7 @@ export default function GtmSection({ initialGtmId, initialGtmEnabled }: Props) {
 
       <div className="p-6 space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm font-medium text-[var(--ink)] mb-1.5">
             GTM Container ID
           </label>
           <input
@@ -80,15 +80,15 @@ export default function GtmSection({ initialGtmId, initialGtmEnabled }: Props) {
             value={gtmId}
             onChange={(e) => setGtmId(e.target.value)}
             placeholder="GTM-XXXXXXX"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink)] focus:border-transparent"
           />
-          <p className="mt-1 text-xs text-gray-400">Found in your GTM account dashboard.</p>
+          <p className="mt-1 text-xs text-[var(--ink-40)]">Found in your GTM account dashboard.</p>
         </div>
 
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex items-center justify-between p-4 bg-[var(--paper)] rounded-lg border border-[var(--foil-soft)]">
           <div>
-            <p className="text-sm font-medium text-gray-900">Use GTM as primary tracking hub</p>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-sm font-medium text-[var(--ink)]">Use GTM as primary tracking hub</p>
+            <p className="text-xs text-[var(--ink-40)] mt-0.5">
               When enabled, GA, Ads & Pixel scripts are disabled — GTM manages them instead.
             </p>
           </div>
@@ -96,7 +96,7 @@ export default function GtmSection({ initialGtmId, initialGtmEnabled }: Props) {
             type="button"
             onClick={() => setEnabled(!enabled)}
             className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
-              enabled ? 'bg-green-500' : 'bg-gray-300'
+              enabled ? 'bg-[var(--mint)]' : 'bg-[var(--foil-soft)]'
             }`}
           >
             <span
@@ -108,16 +108,16 @@ export default function GtmSection({ initialGtmId, initialGtmEnabled }: Props) {
         </div>
 
         {enabled && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-700">
+          <div className="bg-[var(--mint-soft)] border border-[var(--mint)] rounded-lg p-4 text-sm text-[var(--mint)]">
             <strong>GTM is active.</strong> All tracking is routed through GTM. Direct GA, Google
             Ads, and Meta Pixel script injection is disabled.
           </div>
         )}
       </div>
 
-      <div className="p-6 border-t border-gray-200 flex items-center justify-between">
+      <div className="p-6 border-t border-[var(--foil-soft)] flex items-center justify-between">
         {message ? (
-          <p className={`text-sm font-medium ${message.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+          <p className={`text-sm font-medium ${message.type === 'success' ? 'text-[var(--mint)]' : 'text-[var(--ink-70)]'}`}>
             {message.text}
           </p>
         ) : (
@@ -127,7 +127,7 @@ export default function GtmSection({ initialGtmId, initialGtmEnabled }: Props) {
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-amber-600 to-red-700 text-white font-medium rounded-lg hover:from-amber-700 hover:to-red-800 disabled:opacity-50 transition-all"
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--ink)] text-white font-medium rounded-lg hover:opacity-90 disabled:opacity-50 transition-all"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           {saving ? 'Saving...' : 'Save Changes'}

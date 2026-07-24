@@ -84,16 +84,16 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
   return (
     <div className="space-y-6">
       {/* Announcement Banner Section */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="p-6 border-b border-gray-200">
+      <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
+        <div className="p-6 border-b border-[var(--foil-soft)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-amber-100 rounded-lg">
-                <Megaphone className="w-5 h-5 text-amber-600" />
+              <div className="p-2 bg-[var(--foil-soft)] rounded-lg">
+                <Megaphone className="w-5 h-5 text-[var(--ink-70)]" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Announcement Banner</h3>
-                <p className="text-sm text-gray-500">
+                <h3 className="text-lg font-semibold text-[var(--ink)]">Announcement Banner</h3>
+                <p className="text-sm text-[var(--ink-40)]">
                   Scrolling banner displayed at the top of your site
                 </p>
               </div>
@@ -104,11 +104,11 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
               type="button"
               onClick={() => setEnabled(!enabled)}
               className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
-                enabled ? 'bg-green-500' : 'bg-gray-300'
+                enabled ? 'bg-[var(--mint)]' : 'bg-[var(--foil)]'
               }`}
             >
               <span
-                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform ${
+                className={`inline-block h-5 w-5 transform rounded-full bg-[var(--paper-card)] shadow-md transition-transform ${
                   enabled ? 'translate-x-6' : 'translate-x-1'
                 }`}
               />
@@ -119,14 +119,14 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
         {/* Announcements List */}
         <div className="p-6 space-y-4">
           {!enabled && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-700">
+            <div className="bg-[var(--foil-soft)] border border-[var(--foil-soft)] rounded-lg p-4 text-sm text-[var(--ink-70)]">
               Banner is currently disabled. Enable it to show announcements on your site.
             </div>
           )}
 
           {announcements.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              <Megaphone className="w-10 h-10 mx-auto mb-2 text-gray-300" />
+            <div className="text-center py-8 text-[var(--ink-40)]">
+              <Megaphone className="w-10 h-10 mx-auto mb-2 text-[var(--ink-40)]" />
               <p className="font-medium">No announcements yet</p>
               <p className="text-sm">Add your first announcement below</p>
             </div>
@@ -136,29 +136,29 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
             <div
               key={a.id}
               className={`border rounded-lg p-4 transition-colors ${
-                a.isActive ? 'border-gray-200 bg-white' : 'border-gray-100 bg-gray-50'
+                a.isActive ? 'border-[var(--foil-soft)] bg-[var(--paper-card)]' : 'border-[var(--foil-soft)] bg-[var(--foil-soft)]'
               }`}
             >
               <div className="flex items-start gap-3">
-                <GripVertical className="w-5 h-5 text-gray-300 mt-2.5 flex-shrink-0" />
+                <GripVertical className="w-5 h-5 text-[var(--ink-40)] mt-2.5 flex-shrink-0" />
 
                 {/* Emoji Input */}
                 <div className="flex-shrink-0">
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label className="block text-xs font-medium text-[var(--ink-40)] mb-1">
                     Emoji
                   </label>
                   <input
                     type="text"
                     value={a.emoji}
                     onChange={(e) => updateAnnouncement(a.id, 'emoji', e.target.value)}
-                    className="w-14 h-10 text-center text-xl border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    className="w-14 h-10 text-center text-xl border border-[var(--foil-soft)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--ink)] focus:border-transparent"
                     placeholder="🎉"
                   />
                 </div>
 
                 {/* Text Input */}
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-500 mb-1">
+                  <label className="block text-xs font-medium text-[var(--ink-40)] mb-1">
                     Message #{index + 1}
                   </label>
                   <input
@@ -166,7 +166,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
                     value={a.text}
                     onChange={(e) => updateAnnouncement(a.id, 'text', e.target.value)}
                     placeholder="Enter announcement text..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink)] focus:border-transparent"
                   />
                 </div>
 
@@ -176,8 +176,8 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
                   onClick={() => updateAnnouncement(a.id, 'isActive', !a.isActive)}
                   className={`mt-6 p-2 rounded-lg transition-colors ${
                     a.isActive
-                      ? 'text-green-600 hover:bg-green-50'
-                      : 'text-gray-400 hover:bg-gray-100'
+                      ? 'text-[var(--mint)] hover:bg-[var(--mint-soft)]'
+                      : 'text-[var(--ink-40)] hover:bg-[var(--foil-soft)]'
                   }`}
                   title={a.isActive ? 'Visible' : 'Hidden'}
                 >
@@ -188,7 +188,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
                 <button
                   type="button"
                   onClick={() => removeAnnouncement(a.id)}
-                  className="mt-6 p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="mt-6 p-2 text-[var(--ink-70)] hover:text-[var(--ink)] hover:bg-[var(--foil-soft)] rounded-lg transition-colors"
                   title="Remove"
                 >
                   <Trash2 className="w-5 h-5" />
@@ -197,7 +197,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
 
               {/* Preview */}
               {a.text && (
-                <div className="mt-3 ml-8 bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg inline-flex items-center gap-2">
+                <div className="mt-3 ml-8 bg-[var(--ink)] text-[var(--paper-card)] text-sm font-medium px-4 py-2 rounded-lg inline-flex items-center gap-2">
                   {a.emoji && <span>{a.emoji}</span>}
                   <span>{a.text}</span>
                 </div>
@@ -209,7 +209,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
           <button
             type="button"
             onClick={addAnnouncement}
-            className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-amber-400 hover:text-amber-600 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 border-2 border-dashed border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink-40)] hover:border-[var(--mint)] hover:text-[var(--mint)] transition-colors flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Add Announcement
@@ -217,11 +217,11 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
         </div>
 
         {/* Save */}
-        <div className="p-6 border-t border-gray-200 flex items-center justify-between">
+        <div className="p-6 border-t border-[var(--foil-soft)] flex items-center justify-between">
           {message && (
             <p
               className={`text-sm font-medium ${
-                message.type === 'success' ? 'text-green-600' : 'text-red-600'
+                message.type === 'success' ? 'text-[var(--mint)]' : 'text-[var(--ink-70)]'
               }`}
             >
               {message.text}
@@ -232,7 +232,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-amber-600 to-red-700 text-white font-medium rounded-lg hover:from-amber-700 hover:to-red-800 disabled:opacity-50 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--ink)] text-[var(--paper-card)] font-medium rounded-lg hover:opacity-90 disabled:opacity-50 transition-all"
             >
               {saving ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

@@ -43,24 +43,24 @@ export default function AnalyticsSection({ initialId, gtmEnabled }: Props) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="p-6 border-b border-gray-200">
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
+      <div className="p-6 border-b border-[var(--foil-soft)]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <BarChart2 className="w-5 h-5 text-orange-600" />
+            <div className="p-2 bg-[var(--foil-soft)] rounded-lg">
+              <BarChart2 className="w-5 h-5 text-[var(--ink)]" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Google Analytics 4</h3>
-              <p className="text-sm text-gray-500">Track visitors, sessions, and conversions</p>
+              <h3 className="text-lg font-semibold text-[var(--ink)]">Google Analytics 4</h3>
+              <p className="text-sm text-[var(--ink-40)]">Track visitors, sessions, and conversions</p>
             </div>
           </div>
           {connected ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--mint-soft)] text-[var(--mint)] border border-[var(--mint)]">
               <CheckCircle2 className="w-3.5 h-3.5" /> Connected
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--foil-soft)] text-[var(--ink-40)] border border-[var(--foil-soft)]">
               <XCircle className="w-3.5 h-3.5" /> Not Connected
             </span>
           )}
@@ -69,13 +69,13 @@ export default function AnalyticsSection({ initialId, gtmEnabled }: Props) {
 
       <div className="p-6 space-y-5">
         {gtmEnabled && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-700">
+          <div className="bg-[var(--foil-soft)] border border-[var(--foil)] rounded-lg p-4 text-sm text-[var(--ink-70)]">
             GTM is active — GA4 is managed through your GTM container. The ID below is stored for
             reference but no direct script is injected.
           </div>
         )}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm font-medium text-[var(--ink)] mb-1.5">
             Measurement ID
           </label>
           <input
@@ -83,17 +83,17 @@ export default function AnalyticsSection({ initialId, gtmEnabled }: Props) {
             value={gaId}
             onChange={(e) => setGaId(e.target.value)}
             placeholder="G-XXXXXXXXXX"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink)] focus:border-transparent"
           />
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-[var(--ink-40)]">
             Found in GA4 → Admin → Data Streams → your stream.
           </p>
         </div>
       </div>
 
-      <div className="p-6 border-t border-gray-200 flex items-center justify-between">
+      <div className="p-6 border-t border-[var(--foil-soft)] flex items-center justify-between">
         {message ? (
-          <p className={`text-sm font-medium ${message.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+          <p className={`text-sm font-medium ${message.type === 'success' ? 'text-[var(--mint)]' : 'text-[var(--ink-70)]'}`}>
             {message.text}
           </p>
         ) : (
@@ -103,7 +103,7 @@ export default function AnalyticsSection({ initialId, gtmEnabled }: Props) {
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-amber-600 to-red-700 text-white font-medium rounded-lg hover:from-amber-700 hover:to-red-800 disabled:opacity-50 transition-all"
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--ink)] text-white font-medium rounded-lg hover:opacity-90 disabled:opacity-50 transition-all"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           {saving ? 'Saving...' : 'Save Changes'}

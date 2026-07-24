@@ -5,12 +5,12 @@ export default async function NewProductPage() {
   await requireAdmin();
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-[var(--paper)]">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold text-[var(--ink)]">
           Create New Product
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="text-[var(--ink-70)] mt-2">
           Add a new product to your catalog
         </p>
       </div>

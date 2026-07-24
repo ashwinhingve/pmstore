@@ -36,7 +36,7 @@ export default function RichTextEditor({
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-amber-600 underline',
+          class: 'text-[var(--mint)] underline',
         },
       }),
     ],
@@ -76,8 +76,8 @@ export default function RichTextEditor({
     <button
       type="button"
       onClick={onClick}
-      className={`p-2 rounded hover:bg-gray-100 transition-colors ${
-        active ? 'bg-amber-100 text-amber-700' : 'text-gray-700'
+      className={`p-2 rounded hover:bg-[var(--foil-soft)] transition-colors ${
+        active ? 'bg-[var(--mint-soft)] text-[var(--mint)]' : 'text-[var(--ink)]'
       }`}
     >
       {children}
@@ -85,9 +85,9 @@ export default function RichTextEditor({
   );
 
   return (
-    <div className="border border-gray-300 rounded-lg overflow-hidden">
+    <div className="border border-[var(--foil-soft)] rounded-lg overflow-hidden">
       {/* Toolbar */}
-      <div className="bg-gray-50 border-b border-gray-300 p-2 flex flex-wrap gap-1">
+      <div className="bg-[var(--foil-soft)] border-b border-[var(--foil-soft)] p-2 flex flex-wrap gap-1">
         <MenuButton
           onClick={() => editor.chain().focus().toggleBold().run()}
           active={editor.isActive('bold')}
@@ -102,7 +102,7 @@ export default function RichTextEditor({
           <Italic className="w-4 h-4" />
         </MenuButton>
 
-        <div className="w-px bg-gray-300 mx-1" />
+        <div className="w-px bg-[var(--foil-soft)] mx-1" />
 
         <MenuButton
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
@@ -118,7 +118,7 @@ export default function RichTextEditor({
           <Heading3 className="w-4 h-4" />
         </MenuButton>
 
-        <div className="w-px bg-gray-300 mx-1" />
+        <div className="w-px bg-[var(--foil-soft)] mx-1" />
 
         <MenuButton
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -134,13 +134,13 @@ export default function RichTextEditor({
           <ListOrdered className="w-4 h-4" />
         </MenuButton>
 
-        <div className="w-px bg-gray-300 mx-1" />
+        <div className="w-px bg-[var(--foil-soft)] mx-1" />
 
         <MenuButton onClick={addLink} active={editor.isActive('link')}>
           <LinkIcon className="w-4 h-4" />
         </MenuButton>
 
-        <div className="w-px bg-gray-300 mx-1" />
+        <div className="w-px bg-[var(--foil-soft)] mx-1" />
 
         <MenuButton onClick={() => editor.chain().focus().undo().run()}>
           <Undo className="w-4 h-4" />
@@ -155,7 +155,7 @@ export default function RichTextEditor({
       <EditorContent editor={editor} />
 
       {editor.isEmpty && (
-        <div className="absolute top-14 left-4 text-gray-400 pointer-events-none">
+        <div className="absolute top-14 left-4 text-[var(--ink-40)] pointer-events-none">
           {placeholder}
         </div>
       )}

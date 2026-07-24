@@ -137,15 +137,15 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
         <div className="flex items-center gap-4">
           <Link
             href="/admin/orders"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-[var(--foil-soft)] rounded-lg transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
+            <ArrowLeft className="w-5 h-5 text-[var(--ink-70)]" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Order {orderData.orderNumber}
+            <h1 className="text-2xl font-bold text-[var(--ink)]">
+              Order <span style={{ fontFamily: 'var(--font-data)' }}>{orderData.orderNumber}</span>
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-[var(--ink-70)] mt-1">
               Placed on {new Date(orderData.createdAt).toLocaleDateString('en-IN', {
                 day: 'numeric',
                 month: 'long',
@@ -161,17 +161,17 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 border border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink)] hover:bg-[var(--foil-soft)]"
           >
-            Print Order
+            Print order
           </button>
           <a
             href={`/api/orders/${orderId}/invoice`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 bg-[var(--paper-card)] border border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink)] hover:bg-[var(--foil-soft)]"
           >
-            Download Invoice
+            Download invoice
           </a>
         </div>
       </div>
@@ -192,54 +192,54 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
           />
 
           {/* Shipping Information */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Shipping Information
+          <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
+            <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">
+              Shipping information
             </h3>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">Name</p>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm text-[var(--ink-70)]">Name</p>
+                  <p className="text-sm font-medium text-[var(--ink)]">
                     {orderData.shippingAddress.name}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Phone</p>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm text-[var(--ink-70)]">Phone</p>
+                  <p className="text-sm font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                     {orderData.shippingAddress.phone}
                   </p>
                 </div>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Address</p>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm text-[var(--ink-70)]">Address</p>
+                <p className="text-sm font-medium text-[var(--ink)]">
                   {orderData.shippingAddress.addressLine1}
                   {orderData.shippingAddress.addressLine2 && (
                     <>, {orderData.shippingAddress.addressLine2}</>
                   )}
                 </p>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-[var(--ink)]">
                   {orderData.shippingAddress.city}, {orderData.shippingAddress.state}{' '}
-                  {orderData.shippingAddress.postalCode}
+                  <span style={{ fontFamily: 'var(--font-data)' }}>{orderData.shippingAddress.postalCode}</span>
                 </p>
               </div>
 
               {orderData.waybill && (
                 <>
-                  <div className="border-t border-gray-200 pt-3 mt-3">
+                  <div className="border-t border-[var(--foil-soft)] pt-3 mt-3">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-gray-600">Waybill Number</p>
-                        <p className="text-sm font-medium text-gray-900 font-mono">
+                        <p className="text-sm text-[var(--ink-70)]">Waybill number</p>
+                        <p className="text-sm font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                           {orderData.waybill}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Courier</p>
+                        <p className="text-sm text-[var(--ink-70)]">Courier</p>
                         <div className="flex items-center gap-2">
                           {orderData.courier && (
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm font-medium text-[var(--ink)]">
                               {orderData.courier}
                             </p>
                           )}
@@ -247,8 +247,8 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
                             <span
                               className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${
                                 orderData.provider === 'shiprocket'
-                                  ? 'bg-orange-100 text-orange-700'
-                                  : 'bg-blue-100 text-blue-700'
+                                  ? 'bg-[var(--foil-soft)] text-[var(--ink)]'
+                                  : 'bg-[var(--foil-soft)] text-[var(--ink)]'
                               }`}
                             >
                               {orderData.provider === 'shiprocket' ? 'Shiprocket' : 'Delhivery'}
@@ -263,9 +263,9 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
                       href={orderData.trackingUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-amber-600 hover:text-amber-700"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
                     >
-                      Track Shipment
+                      Track shipment
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -296,29 +296,29 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
           )}
 
           {/* Payment Information */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Payment Information
+          <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
+            <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">
+              Payment information
             </h3>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">Payment Method</p>
-                  <p className="text-sm font-medium text-gray-900 uppercase">
+                  <p className="text-sm text-[var(--ink-70)]">Payment method</p>
+                  <p className="text-sm font-medium text-[var(--ink)] uppercase data" style={{ fontFamily: 'var(--font-data)' }}>
                     {orderData.paymentMethod}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Payment Status</p>
+                  <p className="text-sm text-[var(--ink-70)]">Payment status</p>
                   <span
                     className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                       orderData.paymentStatus === 'paid' || orderData.paymentStatus === 'success'
-                        ? 'bg-green-100 text-green-700'
+                        ? 'bg-[var(--mint-soft)] text-[var(--mint)]'
                         : orderData.paymentStatus === 'refunded'
-                        ? 'bg-blue-100 text-blue-700'
+                        ? 'bg-[var(--foil-soft)] text-[var(--ink)]'
                         : orderData.paymentStatus === 'pending'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-red-100 text-red-700'
+                        ? 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
+                        : 'bg-[var(--foil-soft)] text-[var(--ink)]'
                     }`}
                   >
                     {orderData.paymentStatus}
@@ -327,34 +327,34 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
               </div>
               {orderData.transactionId && (
                 <div>
-                  <p className="text-sm text-gray-600">Transaction ID</p>
-                  <p className="text-sm font-medium text-gray-900 font-mono">
+                  <p className="text-sm text-[var(--ink-70)]">Transaction ID</p>
+                  <p className="text-sm font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                     {orderData.transactionId}
                   </p>
                 </div>
               )}
               {orderData.bankTransactionId && (
                 <div>
-                  <p className="text-sm text-gray-600">Bank Transaction ID</p>
-                  <p className="text-sm font-medium text-gray-900 font-mono">
+                  <p className="text-sm text-[var(--ink-70)]">Bank transaction ID</p>
+                  <p className="text-sm font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                     {orderData.bankTransactionId}
                   </p>
                 </div>
               )}
               {/* Refund information */}
               {orderData.refundAmount > 0 && (
-                <div className="border-t border-gray-200 pt-3 mt-3">
+                <div className="border-t border-[var(--foil-soft)] pt-3 mt-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600">Refund Amount</p>
-                      <p className="text-sm font-semibold text-blue-700">
+                      <p className="text-sm text-[var(--ink-70)]">Refund amount</p>
+                      <p className="text-sm font-semibold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                         ₹{orderData.refundAmount.toLocaleString()}
                       </p>
                     </div>
                     {orderData.refundedAt && (
                       <div>
-                        <p className="text-sm text-gray-600">Refund Initiated</p>
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm text-[var(--ink-70)]">Refund initiated</p>
+                        <p className="text-sm font-medium text-[var(--ink)]">
                           {new Date(orderData.refundedAt).toLocaleDateString('en-IN', {
                             day: 'numeric', month: 'short', year: 'numeric',
                           })}
@@ -363,8 +363,8 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
                     )}
                   </div>
                   <div className="mt-2 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                    <p className="text-xs text-blue-600 font-medium">Refund processing — typically 5–7 business days</p>
+                    <span className="w-2 h-2 rounded-full bg-[var(--ink-70)] animate-pulse"></span>
+                    <p className="text-xs text-[var(--ink-70)] font-medium">Refund processing — typically 5–7 business days</p>
                   </div>
                 </div>
               )}
@@ -397,27 +397,27 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
           <OrderDetailsCard orderData={orderData} />
 
           {/* Customer Details */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Customer</h3>
+          <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
+            <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Customer</h3>
             <div className="space-y-3">
               <div>
-                <p className="text-sm text-gray-600">Name</p>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm text-[var(--ink-70)]">Name</p>
+                <p className="text-sm font-medium text-[var(--ink)]">
                   {orderData.customer.name}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Email</p>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm text-[var(--ink-70)]">Email</p>
+                <p className="text-sm font-medium text-[var(--ink)]">
                   {orderData.customer.email}
                 </p>
               </div>
               {orderData.customer.id && (
                 <Link
                   href={`/admin/users/${orderData.customer.id}`}
-                  className="inline-flex items-center gap-1 text-sm font-medium text-amber-600 hover:text-amber-700"
+                  className="inline-flex items-center gap-1 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
                 >
-                  View Customer Profile
+                  View customer profile
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -438,11 +438,11 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
 
           {/* Internal Notes */}
           {orderData.internalNotes && (
-            <div className="bg-yellow-50 rounded-lg border border-yellow-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Internal Notes
+            <div className="bg-[var(--foil-soft)] rounded-lg border border-[var(--foil)] p-6">
+              <h3 className="text-lg font-semibold text-[var(--ink)] mb-2">
+                Internal notes
               </h3>
-              <p className="text-sm text-gray-700">{orderData.internalNotes}</p>
+              <p className="text-sm text-[var(--ink-70)]">{orderData.internalNotes}</p>
             </div>
           )}
         </div>

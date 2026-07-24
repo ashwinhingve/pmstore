@@ -53,8 +53,8 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-8 max-w-5xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Site Settings</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-2xl font-bold text-[var(--ink)]">Site Settings</h1>
+        <p className="text-sm text-[var(--ink-40)] mt-1">
           Manage homepage content, announcement banner, and slider.
         </p>
       </div>

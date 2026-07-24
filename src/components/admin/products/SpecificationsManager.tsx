@@ -78,7 +78,7 @@ export default function SpecificationsManager({
           {specifications.map((spec, index) => (
             <div
               key={index}
-              className="flex items-start gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200"
+              className="flex items-start gap-2 p-3 bg-[var(--foil-soft)] rounded-lg border border-[var(--foil-soft)]"
             >
               {/* Drag Handle */}
               <div className="flex flex-col gap-1 pt-2">
@@ -86,7 +86,7 @@ export default function SpecificationsManager({
                   type="button"
                   onClick={() => moveSpecification(index, 'up')}
                   disabled={index === 0}
-                  className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                  className="text-[var(--ink-40)] hover:text-[var(--ink-70)] disabled:opacity-30"
                 >
                   <GripVertical className="w-4 h-4" />
                 </button>
@@ -94,7 +94,7 @@ export default function SpecificationsManager({
                   type="button"
                   onClick={() => moveSpecification(index, 'down')}
                   disabled={index === specifications.length - 1}
-                  className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                  className="text-[var(--ink-40)] hover:text-[var(--ink-70)] disabled:opacity-30"
                 >
                   <GripVertical className="w-4 h-4 rotate-180" />
                 </button>
@@ -127,7 +127,7 @@ export default function SpecificationsManager({
                 size="sm"
                 variant="ghost"
                 onClick={() => removeSpecification(index)}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50 mt-1"
+                className="text-[var(--ink-70)] hover:text-[var(--ink)] hover:bg-[var(--foil-soft)] mt-1"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -150,9 +150,9 @@ export default function SpecificationsManager({
 
         {/* Common Specifications Dropdown */}
         {showSuggestions && (
-          <div className="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          <div className="absolute z-10 mt-2 w-full bg-[var(--paper-card)] border border-[var(--foil-soft)] rounded-lg shadow-lg max-h-60 overflow-y-auto">
             <div className="p-2">
-              <p className="text-xs text-gray-500 font-medium mb-2 px-2">
+              <p className="text-xs text-[var(--ink-40)] font-medium mb-2 px-2">
                 Common Specifications
               </p>
               {COMMON_SPECS.map((spec) => (
@@ -160,16 +160,16 @@ export default function SpecificationsManager({
                   key={spec}
                   type="button"
                   onClick={() => addSpecification(spec, '')}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded transition-colors"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-[var(--foil-soft)] rounded transition-colors"
                 >
                   {spec}
                 </button>
               ))}
-              <div className="border-t border-gray-200 mt-2 pt-2">
+              <div className="border-t border-[var(--foil-soft)] mt-2 pt-2">
                 <button
                   type="button"
                   onClick={() => addSpecification('', '')}
-                  className="w-full text-left px-3 py-2 text-sm text-amber-600 hover:bg-amber-50 rounded transition-colors font-medium"
+                  className="w-full text-left px-3 py-2 text-sm text-[var(--mint)] hover:bg-[var(--mint-soft)] rounded transition-colors font-medium"
                 >
                   + Custom Specification
                 </button>
@@ -181,7 +181,7 @@ export default function SpecificationsManager({
 
       {/* Empty State */}
       {specifications.length === 0 && (
-        <p className="text-sm text-gray-500 text-center py-4">
+        <p className="text-sm text-[var(--ink-40)] text-center py-4">
           No specifications added yet. Click the button above to add product specifications.
         </p>
       )}

@@ -14,9 +14,9 @@ export default function RevenueChart({ data }: RevenueChartProps) {
   // If no data, show empty state
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue (Last 30 Days)</h3>
-        <div className="h-64 flex items-center justify-center text-gray-500">
+      <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
+        <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Revenue (last 30 days)</h3>
+        <div className="h-64 flex items-center justify-center text-[var(--ink-70)]">
           No revenue data available
         </div>
       </div>
@@ -41,23 +41,23 @@ export default function RevenueChart({ data }: RevenueChartProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">Revenue (Last 30 Days)</h3>
+        <h3 className="text-lg font-semibold text-[var(--ink)]">Revenue (last 30 days)</h3>
         <div className="mt-2 flex items-center gap-6">
           <div>
-            <p className="text-xs text-gray-500">Total Revenue</p>
-            <p className="text-xl font-bold text-gray-900">
+            <p className="text-xs text-[var(--ink-70)]">Total revenue</p>
+            <p className="text-xl font-bold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
               ₹{totalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Total Orders</p>
-            <p className="text-xl font-bold text-gray-900">{totalOrders}</p>
+            <p className="text-xs text-[var(--ink-70)]">Total orders</p>
+            <p className="text-xl font-bold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>{totalOrders}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Avg. Order Value</p>
-            <p className="text-xl font-bold text-gray-900">
+            <p className="text-xs text-[var(--ink-70)]">Average order value</p>
+            <p className="text-xl font-bold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
               ₹
               {totalOrders > 0
                 ? (totalRevenue / totalOrders).toLocaleString('en-IN', {
@@ -80,25 +80,25 @@ export default function RevenueChart({ data }: RevenueChartProps) {
                 {/* Bar */}
                 <div className="relative w-full flex flex-col justify-end h-full">
                   <div
-                    className="w-full bg-gradient-to-t from-amber-600 to-amber-400 rounded-t-md transition-all hover:from-amber-700 hover:to-amber-500 cursor-pointer"
+                    className="w-full bg-[var(--mint)] rounded-t-md transition-all hover:opacity-80 cursor-pointer"
                     style={{ height: `${heightPercentage}%` }}
                   >
                     {/* Tooltip */}
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
-                      <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 whitespace-nowrap">
-                        <p className="font-semibold">
+                      <div className="bg-[var(--ink)] text-[var(--paper-card)] text-xs rounded-lg py-2 px-3 whitespace-nowrap">
+                        <p className="font-semibold data" style={{ fontFamily: 'var(--font-data)' }}>
                           ₹{item.revenue.toLocaleString('en-IN')}
                         </p>
-                        <p className="text-gray-300">{item.count} orders</p>
-                        <p className="text-gray-400">{formatDate(item._id)}</p>
+                        <p className="text-[var(--ink-70)]" style={{ fontFamily: 'var(--font-data)' }}>{item.count} orders</p>
+                        <p className="text-[var(--ink-70)]">{formatDate(item._id)}</p>
                       </div>
-                      <div className="w-2 h-2 bg-gray-900 rotate-45 absolute left-1/2 -translate-x-1/2 -bottom-1" />
+                      <div className="w-2 h-2 bg-[var(--ink)] rotate-45 absolute left-1/2 -translate-x-1/2 -bottom-1" />
                     </div>
                   </div>
                 </div>
 
                 {/* Date label */}
-                <div className="text-xs text-gray-500 -rotate-45 origin-top-left mt-6">
+                <div className="text-xs text-[var(--ink-70)] -rotate-45 origin-top-left mt-6">
                   {formatDate(item._id)}
                 </div>
               </div>
@@ -108,13 +108,13 @@ export default function RevenueChart({ data }: RevenueChartProps) {
       </div>
 
       {/* Legend */}
-      <div className="mt-8 pt-4 border-t border-gray-200">
-        <div className="flex items-center gap-4 text-xs text-gray-600">
+      <div className="mt-8 pt-4 border-t border-[var(--foil-soft)]">
+        <div className="flex items-center gap-4 text-xs text-[var(--ink-70)]">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-gradient-to-t from-amber-600 to-amber-400 rounded" />
-            <span>Daily Revenue</span>
+            <div className="w-3 h-3 bg-[var(--mint)] rounded" />
+            <span>Daily revenue</span>
           </div>
-          <p className="text-gray-500">Showing last 14 days</p>
+          <p className="text-[var(--ink-70)]">Showing last 14 days</p>
         </div>
       </div>
     </div>

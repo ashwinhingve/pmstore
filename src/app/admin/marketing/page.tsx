@@ -33,8 +33,8 @@ export default async function MarketingPage() {
   return (
     <div className="space-y-8 max-w-5xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Marketing & Analytics</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-2xl font-bold text-[var(--ink)]">Marketing & Analytics</h1>
+        <p className="text-sm text-[var(--ink-40)] mt-1">
           Manage tracking scripts and marketing integrations. Changes take effect on next page load.
         </p>
       </div>

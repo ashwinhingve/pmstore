@@ -62,18 +62,18 @@ interface ShipmentsTableProps {
 
 // Keys must match Delhivery's actual shipmentStatus strings stored in the DB
 const statusConfig: Record<string, { color: string; label: string }> = {
-  'Pending': { color: 'bg-yellow-100 text-yellow-700', label: 'Pending' },
-  'Manifested': { color: 'bg-blue-50 text-blue-600', label: 'Manifested' },
-  'Dispatched': { color: 'bg-indigo-100 text-indigo-700', label: 'Dispatched' },
-  'In Transit': { color: 'bg-purple-100 text-purple-700', label: 'In Transit' },
-  'Out for Delivery': { color: 'bg-cyan-100 text-cyan-700', label: 'Out for Delivery' },
-  'Delivered': { color: 'bg-green-100 text-green-700', label: 'Delivered' },
-  'Cancelled': { color: 'bg-red-100 text-red-700', label: 'Cancelled' },
-  'RTO': { color: 'bg-orange-100 text-orange-700', label: 'RTO' },
-  'RTO Delivered': { color: 'bg-orange-100 text-orange-700', label: 'RTO Delivered' },
-  'Lost': { color: 'bg-red-200 text-red-800', label: 'Lost' },
-  'Damaged': { color: 'bg-red-100 text-red-700', label: 'Damaged' },
-  'Shipment Created': { color: 'bg-blue-100 text-blue-700', label: 'Created' },
+  'Pending': { color: 'bg-[var(--foil-soft)] text-[var(--ink-70)]', label: 'Pending' },
+  'Manifested': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Manifested' },
+  'Dispatched': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Dispatched' },
+  'In Transit': { color: 'bg-[var(--foil-soft)] text-[var(--ink-70)]', label: 'In transit' },
+  'Out for Delivery': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Out for delivery' },
+  'Delivered': { color: 'bg-[var(--mint-soft)] text-[var(--mint)]', label: 'Delivered' },
+  'Cancelled': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Cancelled' },
+  'RTO': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'RTO' },
+  'RTO Delivered': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'RTO delivered' },
+  'Lost': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Lost' },
+  'Damaged': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Damaged' },
+  'Shipment Created': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Created' },
 };
 
 export default function ShipmentsTable({
@@ -205,14 +205,14 @@ export default function ShipmentsTable({
     <div className="space-y-6">
       {/* Pending COD orders — awaiting shipment creation */}
       {pendingOrders.length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm border border-amber-200">
-          <div className="px-6 py-4 border-b border-amber-100 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-            <h3 className="text-sm font-semibold text-amber-800">
-              Orders Awaiting Shipment ({pendingOrders.length})
+        <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
+          <div className="px-6 py-4 border-b border-[var(--foil-soft)] flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[var(--mint)] animate-pulse" />
+            <h3 className="text-sm font-semibold text-[var(--ink)]">
+              Orders awaiting shipment ({pendingOrders.length})
             </h3>
           </div>
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-[var(--foil-soft)]">
             {pendingOrders.map((order) => {
               const result = pendingResults[order.id];
               const isCreating = creatingFor === order.id;
@@ -224,17 +224,17 @@ export default function ShipmentsTable({
                     <div className="flex items-center gap-2 flex-wrap">
                       <Link
                         href={`/admin/orders/${order.id}`}
-                        className="text-sm font-semibold text-amber-700 hover:text-amber-800"
+                        className="text-sm font-semibold text-[var(--ink)] hover:text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}
                       >
                         {order.orderNumber}
                       </Link>
-                      <span className="inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">
+                      <span className="inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-[var(--foil-soft)] text-[var(--ink)]">
                         COD
                       </span>
                     </div>
-                    <p className="text-sm text-gray-700 mt-0.5">{order.customerName}</p>
-                    <p className="text-xs text-gray-500">{order.customerEmail}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-sm text-[var(--ink)] mt-0.5">{order.customerName}</p>
+                    <p className="text-xs text-[var(--ink-70)]">{order.customerEmail}</p>
+                    <p className="text-xs text-[var(--ink-70)] mt-0.5" style={{ fontFamily: 'var(--font-data)' }}>
                       ₹{order.totalAmount.toLocaleString('en-IN')} &middot;{' '}
                       {formatDate(order.createdAt)}
                     </p>
@@ -243,8 +243,8 @@ export default function ShipmentsTable({
                   {result ? (
                     <div className={`text-xs font-medium px-3 py-1.5 rounded-md ${
                       result.startsWith('Error')
-                        ? 'bg-red-50 text-red-700'
-                        : 'bg-green-50 text-green-700'
+                        ? 'bg-[var(--foil-soft)] text-[var(--ink)]'
+                        : 'bg-[var(--mint-soft)] text-[var(--mint)]'
                     }`}>
                       {result.startsWith('Error') ? result : `Waybill: ${result}`}
                     </div>
@@ -259,7 +259,7 @@ export default function ShipmentsTable({
                           }))
                         }
                         disabled={isCreating}
-                        className="text-xs border border-gray-300 rounded px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-amber-500"
+                        className="text-xs border border-[var(--foil-soft)] rounded px-2 py-1.5 bg-[var(--paper-card)] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--ink)]"
                       >
                         <option value="delhivery">Delhivery</option>
                         <option value="shiprocket">Shiprocket</option>
@@ -268,9 +268,9 @@ export default function ShipmentsTable({
                         type="button"
                         onClick={() => handleCreateShipment(order.id)}
                         disabled={isCreating}
-                        className="px-3 py-1.5 bg-amber-600 text-white text-xs font-semibold rounded hover:bg-amber-700 disabled:opacity-50 whitespace-nowrap"
+                        className="px-3 py-1.5 bg-[var(--ink)] text-[var(--paper-card)] text-xs font-semibold rounded hover:opacity-90 disabled:opacity-50 whitespace-nowrap"
                       >
-                        {isCreating ? 'Creating...' : 'Create Shipment'}
+                        {isCreating ? 'Creating...' : 'Create shipment'}
                       </button>
                     </div>
                   )}
@@ -281,20 +281,20 @@ export default function ShipmentsTable({
         </div>
       )}
 
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
       {/* Search and Filter Bar */}
-      <div className="p-4 border-b border-gray-200 space-y-4">
+      <div className="p-4 border-b border-[var(--foil-soft)] space-y-4">
         <div className="flex items-center gap-4">
           {/* Search */}
           <form onSubmit={handleSearch} className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--ink-40)]" />
               <input
                 type="text"
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
                 placeholder="Search by waybill or order number..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-[var(--foil-soft)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink)] focus:border-transparent"
               />
             </div>
           </form>
@@ -304,10 +304,10 @@ export default function ShipmentsTable({
             type="button"
             onClick={handlePollTracking}
             disabled={isPolling}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-green-500 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--mint)] bg-[var(--mint-soft)] text-[var(--mint)] rounded-lg text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${isPolling ? 'animate-spin' : ''}`} />
-            {isPolling ? 'Updating...' : 'Refresh Tracking'}
+            {isPolling ? 'Updating...' : 'Refresh tracking'}
           </button>
 
           {/* Filter Button */}
@@ -316,14 +316,14 @@ export default function ShipmentsTable({
             onClick={() => setShowFilters(!showFilters)}
             className={`inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
               hasActiveFilters
-                ? 'bg-amber-50 border-amber-500 text-amber-700'
-                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'bg-[var(--foil-soft)] border-[var(--ink)] text-[var(--ink)]'
+                : 'bg-[var(--paper-card)] border-[var(--foil-soft)] text-[var(--ink)] hover:bg-[var(--foil-soft)]'
             }`}
           >
             <Filter className="w-4 h-4" />
             Filters
             {hasActiveFilters && (
-              <span className="bg-amber-600 text-white text-xs rounded-full px-2 py-0.5">
+              <span className="bg-[var(--ink)] text-[var(--paper-card)] text-xs rounded-full px-2 py-0.5">
                 Active
               </span>
             )}
@@ -340,40 +340,40 @@ export default function ShipmentsTable({
               className={`px-3 py-1 text-xs font-medium rounded-full border transition-colors ${
                 providerFilter === p
                   ? p === 'shiprocket'
-                    ? 'bg-orange-100 border-orange-400 text-orange-700'
+                    ? 'bg-[var(--foil-soft)] border-[var(--ink)] text-[var(--ink)]'
                     : p === 'delhivery'
-                    ? 'bg-blue-100 border-blue-400 text-blue-700'
-                    : 'bg-gray-200 border-gray-400 text-gray-700'
-                  : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                    ? 'bg-[var(--foil-soft)] border-[var(--ink)] text-[var(--ink)]'
+                    : 'bg-[var(--foil-soft)] border-[var(--ink)] text-[var(--ink)]'
+                  : 'bg-[var(--paper-card)] border-[var(--foil-soft)] text-[var(--ink-70)] hover:bg-[var(--foil-soft)]'
               }`}
             >
-              {p === 'all' ? 'All Providers' : p === 'shiprocket' ? 'Shiprocket' : 'Delhivery'}
+              {p === 'all' ? 'All providers' : p === 'shiprocket' ? 'Shiprocket' : 'Delhivery'}
             </button>
           ))}
         </div>
 
         {/* Poll Result Message */}
         {pollResult && (
-          <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+          <div className="text-sm text-[var(--mint)] bg-[var(--mint-soft)] px-3 py-2 rounded-lg">
             {pollResult}
           </div>
         )}
 
         {/* Filter Panel */}
         {showFilters && (
-          <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+          <div className="p-4 bg-[var(--foil-soft)] rounded-lg space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Status */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Shipment Status
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
+                  Shipment status
                 </label>
                 <select
                   value={localFilters.status}
                   onChange={(e) => handleFilterChange('status', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink)]"
                 >
-                  <option value="">All Statuses</option>
+                  <option value="">All statuses</option>
                   {Object.entries(statusConfig).map(([key, config]) => (
                     <option key={key} value={key}>
                       {config.label}
@@ -384,27 +384,27 @@ export default function ShipmentsTable({
 
               {/* Date From */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date From
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
+                  Date from
                 </label>
                 <input
                   type="date"
                   value={localFilters.dateFrom}
                   onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink)]"
                 />
               </div>
 
               {/* Date To */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date To
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
+                  Date to
                 </label>
                 <input
                   type="date"
                   value={localFilters.dateTo}
                   onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink)]"
                 />
               </div>
             </div>
@@ -414,16 +414,16 @@ export default function ShipmentsTable({
               <button
                 type="button"
                 onClick={clearFilters}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+                className="px-4 py-2 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
               >
-                Clear All
+                Clear all
               </button>
               <button
                 type="button"
                 onClick={applyFilters}
-                className="px-4 py-2 bg-gradient-to-r from-amber-600 to-red-700 text-white text-sm font-medium rounded-lg hover:from-amber-700 hover:to-red-800"
+                className="px-4 py-2 bg-[var(--ink)] text-[var(--paper-card)] text-sm font-medium rounded-lg hover:opacity-90"
               >
-                Apply Filters
+                Apply filters
               </button>
             </div>
           </div>
@@ -433,52 +433,52 @@ export default function ShipmentsTable({
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-[var(--foil-soft)] border-b border-[var(--foil-soft)]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Waybill
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Order
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Customer
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Courier
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Created
               </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-[var(--foil-soft)]">
             {visibleShipments.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-8 text-center text-sm text-gray-500">
+                <td colSpan={7} className="px-6 py-8 text-center text-sm text-[var(--ink-70)]">
                   No shipments found
                 </td>
               </tr>
             ) : (
               visibleShipments.map((shipment) => {
                 const statusInfo = statusConfig[shipment.status] || {
-                  color: 'bg-gray-100 text-gray-700',
+                  color: 'bg-[var(--foil-soft)] text-[var(--ink)]',
                   label: shipment.status,
                 };
                 const provider = shipment.provider || 'delhivery';
 
                 return (
-                  <tr key={shipment.id} className="hover:bg-gray-50">
+                  <tr key={shipment.id} className="hover:bg-[var(--foil-soft)]">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <Truck className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm font-medium text-gray-900 font-mono">
+                        <Truck className="w-4 h-4 text-[var(--ink-70)]" />
+                        <span className="text-sm font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                           {shipment.waybill}
                         </span>
                       </div>
@@ -487,17 +487,17 @@ export default function ShipmentsTable({
                       {shipment.orderId ? (
                         <Link
                           href={`/admin/orders/${shipment.orderId}`}
-                          className="text-sm text-amber-600 hover:text-amber-700 font-medium"
+                          className="text-sm text-[var(--ink)] hover:text-[var(--ink-70)] font-medium data" style={{ fontFamily: 'var(--font-data)' }}
                         >
                           {shipment.orderNumber}
                         </Link>
                       ) : (
-                        <span className="text-sm text-gray-500">{shipment.orderNumber}</span>
+                        <span className="text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>{shipment.orderNumber}</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">{shipment.customerName}</div>
-                      <div className="text-xs text-gray-500">{shipment.customerEmail}</div>
+                      <div className="text-sm text-[var(--ink)]">{shipment.customerName}</div>
+                      <div className="text-xs text-[var(--ink-70)]">{shipment.customerEmail}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
@@ -507,18 +507,18 @@ export default function ShipmentsTable({
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-700">{shipment.courier}</div>
+                      <div className="text-sm text-[var(--ink)]">{shipment.courier}</div>
                       <span
                         className={`inline-flex mt-1 px-1.5 py-0.5 text-xs font-medium rounded-full ${
                           provider === 'shiprocket'
-                            ? 'bg-orange-100 text-orange-700'
-                            : 'bg-blue-100 text-blue-700'
+                            ? 'bg-[var(--foil-soft)] text-[var(--ink)]'
+                            : 'bg-[var(--foil-soft)] text-[var(--ink)]'
                         }`}
                       >
                         {provider === 'shiprocket' ? 'Shiprocket' : 'Delhivery'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
                       {formatDate(shipment.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -526,7 +526,7 @@ export default function ShipmentsTable({
                         {shipment.orderId && (
                           <Link
                             href={`/admin/orders/${shipment.orderId}`}
-                            className="inline-flex items-center gap-1 text-sm font-medium text-amber-600 hover:text-amber-700"
+                            className="inline-flex items-center gap-1 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
@@ -535,7 +535,7 @@ export default function ShipmentsTable({
                           href={getTrackingUrl(shipment)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+                          className="inline-flex items-center gap-1 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
                         >
                           <ExternalLink className="w-4 h-4" />
                         </a>
@@ -551,8 +551,8 @@ export default function ShipmentsTable({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="p-4 border-t border-gray-200 flex items-center justify-between">
-          <div className="text-sm text-gray-700">
+        <div className="p-4 border-t border-[var(--foil-soft)] flex items-center justify-between">
+          <div className="text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
             Page {currentPage} of {totalPages}
           </div>
 
@@ -561,7 +561,7 @@ export default function ShipmentsTable({
               type="button"
               disabled={currentPage === 1}
               onClick={() => updateURL(filters, currentPage - 1)}
-              className="inline-flex items-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-1 px-3 py-2 border border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink)] hover:bg-[var(--foil-soft)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -571,7 +571,7 @@ export default function ShipmentsTable({
               type="button"
               disabled={currentPage === totalPages}
               onClick={() => updateURL(filters, currentPage + 1)}
-              className="inline-flex items-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-1 px-3 py-2 border border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink)] hover:bg-[var(--foil-soft)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
               <ChevronRight className="w-4 h-4" />

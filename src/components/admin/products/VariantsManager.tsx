@@ -85,8 +85,8 @@ export default function VariantsManager({
               key={variant.id}
               className={`p-4 rounded-lg border-2 transition-colors ${
                 editingIndex === index
-                  ? 'border-amber-500 bg-amber-50'
-                  : 'border-gray-200 bg-gray-50'
+                  ? 'border-[var(--mint)] bg-[var(--mint-soft)]'
+                  : 'border-[var(--foil-soft)] bg-[var(--foil-soft)]'
               }`}
             >
               {editingIndex === index ? (
@@ -94,7 +94,7 @@ export default function VariantsManager({
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--ink)] mb-1">
                         Variant Name *
                       </label>
                       <Input
@@ -107,7 +107,7 @@ export default function VariantsManager({
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--ink)] mb-1">
                         SKU *
                       </label>
                       <Input
@@ -123,7 +123,7 @@ export default function VariantsManager({
 
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--ink)] mb-1">
                         Price (₹) *
                       </label>
                       <Input
@@ -137,7 +137,7 @@ export default function VariantsManager({
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--ink)] mb-1">
                         Original Price (₹)
                       </label>
                       <Input
@@ -154,7 +154,7 @@ export default function VariantsManager({
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--ink)] mb-1">
                         Stock *
                       </label>
                       <Input
@@ -170,7 +170,7 @@ export default function VariantsManager({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--ink)] mb-1">
                         Weight
                       </label>
                       <Input
@@ -184,7 +184,7 @@ export default function VariantsManager({
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--ink)] mb-1">
                         Weight Unit
                       </label>
                       <select
@@ -192,7 +192,7 @@ export default function VariantsManager({
                         onChange={(e) =>
                           setEditForm({ ...editForm, weightUnit: e.target.value as 'g' | 'kg' })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md"
                       >
                         <option value="g">Grams (g)</option>
                         <option value="kg">Kilograms (kg)</option>
@@ -200,7 +200,7 @@ export default function VariantsManager({
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--foil-soft)]">
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
@@ -208,9 +208,9 @@ export default function VariantsManager({
                         onChange={(e) =>
                           setEditForm({ ...editForm, isActive: e.target.checked })
                         }
-                        className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
+                        className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
                       />
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium text-[var(--ink)]">
                         Active variant
                       </span>
                     </label>
@@ -229,7 +229,7 @@ export default function VariantsManager({
                         size="sm"
                         onClick={saveEdit}
                         disabled={!editForm.name || !editForm.sku}
-                        className="bg-gradient-to-r from-amber-600 to-red-700"
+                        className="bg-[var(--ink)] text-[var(--paper-card)] hover:opacity-90"
                       >
                         <Check className="w-4 h-4 mr-1" />
                         Save
@@ -242,35 +242,35 @@ export default function VariantsManager({
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h4 className="font-medium text-gray-900">{variant.name}</h4>
-                      <span className="text-xs font-mono text-gray-500 bg-gray-200 px-2 py-0.5 rounded">
+                      <h4 className="font-medium text-[var(--ink)]">{variant.name}</h4>
+                      <span className="text-xs font-mono text-[var(--ink-40)] bg-[var(--foil-soft)] px-2 py-0.5 rounded">
                         {variant.sku}
                       </span>
                       <span
                         className={`px-2 py-0.5 text-xs rounded ${
                           variant.isActive
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-200 text-gray-600'
+                            ? 'bg-[var(--mint-soft)] text-[var(--mint)]'
+                            : 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
                         }`}
                       >
                         {variant.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
-                    <div className="flex gap-4 text-sm text-gray-600">
+                    <div className="flex gap-4 text-sm text-[var(--ink-70)]">
                       <span>
-                        Price: <span className="font-medium text-gray-900">₹{variant.price}</span>
+                        Price: <span className="font-medium text-[var(--ink)]">₹{variant.price}</span>
                         {variant.originalPrice && variant.originalPrice > variant.price && (
-                          <span className="ml-2 line-through text-gray-400">
+                          <span className="ml-2 line-through text-[var(--ink-40)]">
                             ₹{variant.originalPrice}
                           </span>
                         )}
                       </span>
                       <span>
-                        Stock: <span className="font-medium text-gray-900">{variant.stock}</span>
+                        Stock: <span className="font-medium text-[var(--ink)]">{variant.stock}</span>
                       </span>
                       {variant.weight && (
                         <span>
-                          Weight: <span className="font-medium text-gray-900">
+                          Weight: <span className="font-medium text-[var(--ink)]">
                             {variant.weight}{variant.weightUnit || 'g'}
                           </span>
                         </span>
@@ -300,7 +300,7 @@ export default function VariantsManager({
                       size="sm"
                       variant="outline"
                       onClick={() => removeVariant(index)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="text-[var(--ink-70)] hover:text-[var(--ink)] hover:bg-[var(--foil-soft)]"
                     >
                       <X className="w-4 h-4" />
                     </Button>
@@ -327,7 +327,7 @@ export default function VariantsManager({
 
       {/* Empty State */}
       {variants.length === 0 && (
-        <p className="text-sm text-gray-500 text-center py-4">
+        <p className="text-sm text-[var(--ink-40)] text-center py-4">
           No variants added yet. Click the button above to add product variants.
         </p>
       )}
