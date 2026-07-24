@@ -18,3 +18,4 @@ export { default as SaltSynonym, type ISaltSynonym } from './SaltSynonym';
 export { default as SavedMedicine, type ISavedMedicine } from './SavedMedicine';
 export { default as RefillReminder, type IRefillReminder } from './RefillReminder';
 export { default as Newsletter, type INewsletter } from './Newsletter';
+export { default as WholesaleEnquiry, type IWholesaleEnquiry } from './WholesaleEnquiry';

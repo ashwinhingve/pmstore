@@ -4,6 +4,16 @@ import type { IShipment } from '@/models/Shipment';
 import Discount from '@/models/Discount';
 import { SITE_NAME, CONTACT_EMAIL } from '@/lib/constants';
 
+/** Escape user-supplied text before embedding it in email HTML. */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 interface EmailConfig {
   host: string;
   port: number;
@@ -882,6 +892,93 @@ class EmailService {
       </html>`;
 
     return this.sendEmail(email, subject, html);
+  }
+
+  /**
+   * Wholesale enquiry notification — a B2B lead-capture form (not a portal).
+   * Sends to WHOLESALE_ENQUIRY_EMAIL, falling back to ADMIN_EMAIL / CONTACT_EMAIL.
+   * The caller stores the enquiry and must NOT log phone/address (PII).
+   */
+  async sendWholesaleEnquiry(enquiry: {
+    businessName: string;
+    contactPerson: string;
+    phone: string;
+    email: string;
+    gstNumber?: string;
+    drugLicenseNumber?: string;
+    addressLine?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
+    productRequirements?: string;
+    quantity?: string;
+    preferredBrands?: string;
+    monthlyVolume?: string;
+    notes?: string;
+  }) {
+    const to =
+      process.env.WHOLESALE_ENQUIRY_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      CONTACT_EMAIL;
+
+    const volumeLabels: Record<string, string> = {
+      'under-50k': 'Under Rs.50,000',
+      '50k-1L': 'Rs.50,000 - Rs.1 lakh',
+      '1L-5L': 'Rs.1 lakh - Rs.5 lakh',
+      '5L-plus': 'Over Rs.5 lakh',
+    };
+
+    const row = (label: string, value?: string) =>
+      value && value.trim()
+        ? `<p class="label">${escapeHtml(label)}</p><p class="value">${escapeHtml(value)}</p>`
+        : '';
+
+    const location = [enquiry.city, enquiry.state, enquiry.pincode]
+      .filter(Boolean)
+      .join(', ');
+
+    const subject = `Wholesale enquiry - ${enquiry.businessName}`;
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body{font-family:Arial,sans-serif;line-height:1.6;color:#16233A}
+          .container{max-width:600px;margin:0 auto;padding:20px}
+          .header{background-color:#0E8F6E;color:#fff;padding:20px;text-align:center;border-radius:8px 8px 0 0}
+          .content{padding:20px;background-color:#FBFAF7}
+          .box{background-color:#fff;padding:16px;margin:14px 0;border-radius:8px;border-left:4px solid #0E8F6E}
+          .label{color:#56607A;font-size:12px;margin:8px 0 0;text-transform:uppercase;letter-spacing:.04em}
+          .value{font-size:15px;font-weight:600;margin:2px 0 8px;color:#16233A}
+          .footer{text-align:center;padding:16px;font-size:12px;color:#9AA2B4}
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header"><h1 style="margin:0;font-size:20px;">New wholesale enquiry</h1></div>
+            <div class="content">
+              <div class="box">
+                ${row('Business', enquiry.businessName)}
+                ${row('Contact person', enquiry.contactPerson)}
+                ${row('Phone', enquiry.phone)}
+                ${row('Email', enquiry.email)}
+                ${row('GSTIN', enquiry.gstNumber)}
+                ${row('Drug licence', enquiry.drugLicenseNumber)}
+                ${row('Address', enquiry.addressLine)}
+                ${row('Location', location)}
+              </div>
+              <div class="box">
+                ${row('Products needed', enquiry.productRequirements)}
+                ${row('Quantity', enquiry.quantity)}
+                ${row('Preferred brands', enquiry.preferredBrands)}
+                ${row('Monthly volume', enquiry.monthlyVolume ? (volumeLabels[enquiry.monthlyVolume] || enquiry.monthlyVolume) : undefined)}
+                ${row('Notes', enquiry.notes)}
+              </div>
+            </div>
+            <div class="footer"><p>${SITE_NAME} - wholesale lead</p></div>
+          </div>
+        </body>
+      </html>`;
+
+    return this.sendEmail(to, subject, html);
   }
 }
 
