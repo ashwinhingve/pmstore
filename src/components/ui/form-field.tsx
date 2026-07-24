@@ -15,9 +15,9 @@ const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
     return (
       <div ref={ref} className={cn("w-full", className)}>
         <label htmlFor={htmlFor} className="block mb-2">
-          <span className="text-sm font-semibold text-gray-700">
+          <span className="text-sm font-semibold text-[var(--ink)]">
             {label}
-            {required && <span className="text-red-600 ml-1">*</span>}
+            {required && <span className="text-[var(--ink)] ml-1">*</span>}
           </span>
         </label>
         {children}

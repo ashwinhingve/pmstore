@@ -17,31 +17,31 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             <input
               type="checkbox"
               className="peer sr-only"
+              aria-invalid={!!error}
               ref={ref}
               {...props}
             />
             <div
               className={cn(
                 "w-5 h-5 rounded border-2 transition-all duration-200 flex items-center justify-center",
-                "peer-focus:ring-2 peer-focus:ring-amber-200 peer-focus:ring-offset-0",
-                "peer-checked:bg-gradient-to-r peer-checked:from-amber-600 peer-checked:to-red-700 peer-checked:border-transparent",
+                "peer-checked:bg-[var(--mint)] peer-checked:border-[var(--mint)]",
                 error
-                  ? "border-red-500"
-                  : "border-gray-300 group-hover:border-amber-600",
+                  ? "border-[var(--ink)]"
+                  : "border-[var(--foil-soft)] group-hover:border-[var(--ink)]",
                 className
               )}
             >
-              <Check className="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
+              <Check className="w-3.5 h-3.5 text-[var(--paper-card)] opacity-0 peer-checked:opacity-100 transition-opacity" />
             </div>
           </div>
           {label && (
-            <span className="text-sm text-gray-700 leading-tight select-none">
+            <span className="text-sm text-[var(--ink-70)] leading-tight select-none">
               {label}
             </span>
           )}
         </label>
         {error && (
-          <p className="mt-1.5 text-sm text-red-600 font-medium">{error}</p>
+          <p className="mt-1.5 text-sm text-[var(--ink)] font-medium">{error}</p>
         )}
       </div>
     )

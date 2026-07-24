@@ -13,20 +13,21 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            "flex h-12 w-full rounded-md border-2 bg-white px-4 py-3 text-base transition-all duration-200",
-            "placeholder:text-gray-400",
-            "focus:outline-none focus:ring-2 focus:ring-offset-0",
+            "flex h-12 w-full rounded-[var(--radius-sm)] border-2 bg-[var(--paper-card)] px-4 py-3 text-base transition-all duration-200",
+            "placeholder:text-[var(--ink-40)]",
+            "focus:outline-none",
             "disabled:cursor-not-allowed disabled:opacity-50",
             error
-              ? "border-red-500 focus:border-red-500 focus:ring-red-200"
-              : "border-gray-300 focus:border-amber-600 focus:ring-amber-200",
+              ? "border-[var(--ink)] aria-invalid:border-[var(--ink)]"
+              : "border-[var(--foil-soft)]",
             className
           )}
+          aria-invalid={!!error}
           ref={ref}
           {...props}
         />
         {error && (
-          <p className="mt-1.5 text-sm text-red-600 font-medium">{error}</p>
+          <p className="mt-1.5 text-sm text-[var(--ink)] font-medium">{error}</p>
         )}
       </div>
     )
