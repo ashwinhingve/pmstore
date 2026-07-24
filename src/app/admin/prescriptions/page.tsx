@@ -1,6 +1,7 @@
 import { requireStaff } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
 import Prescription from '@/models/Prescription';
+import { PrescriptionActions } from '@/components/admin/PrescriptionActions';
 
 interface PrescriptionQueueItem {
   _id: string;
@@ -40,27 +41,28 @@ export default async function AdminPrescriptionsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-2 text-3xl font-bold">Prescription Queue</h1>
-      <p className="mb-6 text-muted-foreground">
+      <h1 className="mb-2 text-3xl font-bold text-[var(--ink)]">Prescription Queue</h1>
+      <p className="mb-6 text-[var(--ink-70)]">
         Review and verify pending prescriptions. Oldest submissions appear first.
       </p>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
+      <div className="overflow-x-auto rounded-lg border border-[var(--foil-soft)]">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border bg-muted">
-              <th className="px-4 py-3 text-left font-semibold">Patient Name</th>
-              <th className="px-4 py-3 text-left font-semibold">Doctor Name</th>
-              <th className="px-4 py-3 text-left font-semibold">Submitted</th>
-              <th className="px-4 py-3 text-center font-semibold">Images</th>
-              <th className="px-4 py-3 text-center font-semibold">Build Cart</th>
-              <th className="px-4 py-3 text-left font-semibold">Customer</th>
+            <tr className="border-b border-[var(--foil-soft)] bg-[var(--foil-soft)]">
+              <th className="px-4 py-3 text-left font-semibold text-[var(--ink)]">Patient Name</th>
+              <th className="px-4 py-3 text-left font-semibold text-[var(--ink)]">Doctor Name</th>
+              <th className="px-4 py-3 text-left font-semibold text-[var(--ink)]">Submitted</th>
+              <th className="px-4 py-3 text-center font-semibold text-[var(--ink)]">Images</th>
+              <th className="px-4 py-3 text-center font-semibold text-[var(--ink)]">Build Cart</th>
+              <th className="px-4 py-3 text-left font-semibold text-[var(--ink)]">Customer</th>
+              <th className="px-4 py-3 text-left font-semibold text-[var(--ink)]">Actions</th>
             </tr>
           </thead>
           <tbody>
             {serialized.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                <td colSpan={7} className="px-4 py-8 text-center text-[var(--ink-70)]">
                   No pending prescriptions.
                 </td>
               </tr>
@@ -68,11 +70,11 @@ export default async function AdminPrescriptionsPage() {
               serialized.map((rx) => (
                 <tr
                   key={rx._id}
-                  className="border-b border-border hover:bg-muted/50"
+                  className="border-b border-[var(--foil-soft)] hover:bg-[var(--foil-soft)]/50"
                 >
-                  <td className="px-4 py-3">{rx.patientName || '—'}</td>
-                  <td className="px-4 py-3">{rx.doctorName || '—'}</td>
-                  <td className="px-4 py-3 text-xs text-muted-foreground">
+                  <td className="px-4 py-3 text-[var(--ink)]">{rx.patientName || '—'}</td>
+                  <td className="px-4 py-3 text-[var(--ink)]">{rx.doctorName || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-[var(--ink-70)]">
                     {new Date(rx.createdAt).toLocaleDateString('en-IN', {
                       year: 'numeric',
                       month: 'short',
@@ -81,37 +83,34 @@ export default async function AdminPrescriptionsPage() {
                       minute: '2-digit',
                     })}
                   </td>
-                  <td className="px-4 py-3 text-center">{rx.images.length}</td>
+                  <td className="px-4 py-3 text-center text-[var(--ink)]">{rx.images.length}</td>
                   <td className="px-4 py-3 text-center">
                     {rx.buildCartRequested ? (
-                      <span className="inline-block rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800">
+                      <span className="inline-block rounded bg-[var(--mint-soft)] px-2 py-1 text-xs font-semibold text-[var(--mint)]">
                         Yes
                       </span>
                     ) : (
-                      <span className="text-muted-foreground">—</span>
+                      <span className="text-[var(--ink-70)]">—</span>
                     )}
                   </td>
                   <td className="px-4 py-3">
                     {rx.userId ? (
                       <div className="text-xs">
-                        <div className="font-medium">{rx.userId.name || 'No name'}</div>
-                        <div className="text-muted-foreground">{rx.userId.email || 'No email'}</div>
+                        <div className="font-medium text-[var(--ink)]">{rx.userId.name || 'No name'}</div>
+                        <div className="text-[var(--ink-70)]">{rx.userId.email || 'No email'}</div>
                       </div>
                     ) : (
-                      <span className="text-muted-foreground">Unknown</span>
+                      <span className="text-[var(--ink-70)]">Unknown</span>
                     )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <PrescriptionActions prescriptionId={rx._id} />
                   </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
-      </div>
-
-      {/* TODO: wire verify/reject buttons to /api/admin/prescriptions/[id]/verify|reject */}
-      <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
-        <strong>Note:</strong> Action buttons (Verify / Reject) to be wired in the next iteration.
-        Use API routes directly or add a client component to this page.
       </div>
     </div>
   );
