@@ -8,6 +8,7 @@ import { AddressStep } from '@/components/checkout/AddressStep';
 import PaymentStep from '@/components/checkout/PaymentStep';
 import { PrescriptionUpload } from '@/components/prescriptions/PrescriptionUpload';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
+import { Lock, Truck, BadgeCheck } from 'lucide-react';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -32,10 +33,13 @@ export default function CheckoutPage() {
   // Redirect to login if not authenticated
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
-        <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-[var(--ink)] border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-[var(--ink-70)]">Loading...</p>
+      <div className="min-h-screen bg-[var(--paper)] py-12">
+        <div className="mx-auto max-w-6xl px-4" aria-hidden="true">
+          <div className="animate-shimmer mx-auto mb-8 h-10 w-56 rounded-[var(--radius-sm)]" />
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <div className="animate-shimmer h-96 rounded-[var(--radius-lg)] lg:col-span-2" />
+            <div className="animate-shimmer h-80 rounded-[var(--radius-lg)]" />
+          </div>
         </div>
       </div>
     );
@@ -138,10 +142,8 @@ export default function CheckoutPage() {
       <div className="container mx-auto px-4">
         <AnimatedSection direction="up">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-[var(--ink)]">
-              Checkout
-            </h1>
+          <div className="mb-8 text-center">
+            <h1 className="mb-2 text-[length:var(--step-2)] text-[var(--ink)]">Checkout</h1>
             <p className="text-[var(--ink-70)]">Complete your order</p>
           </div>
 
@@ -149,34 +151,48 @@ export default function CheckoutPage() {
             {/* Main Content */}
             <div className="lg:col-span-2">
               {/* Progress Steps */}
-              <div className="mb-8">
-                <div className="flex items-center justify-center gap-4">
-                  <div className="flex items-center">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+              <ol className="mb-8 flex items-center justify-center gap-4" aria-label="Checkout steps">
+                <li className="flex items-center" aria-current={currentStep === 'address' ? 'step' : undefined}>
+                  <span
+                    className={`data flex h-10 w-10 items-center justify-center rounded-full font-semibold shadow-[var(--shadow-xs)] transition-colors duration-[var(--dur-base)] ${
                       currentStep === 'address'
                         ? 'bg-[var(--ink)] text-[var(--paper-card)]'
                         : 'bg-[var(--mint)] text-[var(--paper-card)]'
-                    }`}>
-                      {currentStep === 'payment' ? '✓' : '1'}
-                    </div>
-                    <span className="ml-2 font-medium text-[var(--ink)]">Address</span>
-                  </div>
-                  <div className="w-16 h-1 bg-[var(--foil-soft)]"></div>
-                  <div className="flex items-center">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                    }`}
+                  >
+                    {currentStep === 'payment' ? '✓' : '1'}
+                  </span>
+                  <span className="ml-2 font-medium text-[var(--ink)]">Address</span>
+                </li>
+                <li aria-hidden="true">
+                  <span
+                    className={`block h-1 w-16 rounded-full transition-colors duration-[var(--dur-base)] ${
+                      currentStep === 'payment' ? 'bg-[var(--mint)]' : 'bg-[var(--foil-soft)]'
+                    }`}
+                  />
+                </li>
+                <li className="flex items-center" aria-current={currentStep === 'payment' ? 'step' : undefined}>
+                  <span
+                    className={`data flex h-10 w-10 items-center justify-center rounded-full font-semibold transition-colors duration-[var(--dur-base)] ${
                       currentStep === 'payment'
-                        ? 'bg-[var(--ink)] text-[var(--paper-card)]'
+                        ? 'bg-[var(--ink)] text-[var(--paper-card)] shadow-[var(--shadow-xs)]'
                         : 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
-                    }`}>
-                      2
-                    </div>
-                    <span className="ml-2 font-medium text-[var(--ink)]">Payment</span>
-                  </div>
-                </div>
-              </div>
+                    }`}
+                  >
+                    2
+                  </span>
+                  <span
+                    className={`ml-2 font-medium ${
+                      currentStep === 'payment' ? 'text-[var(--ink)]' : 'text-[var(--ink-70)]'
+                    }`}
+                  >
+                    Payment
+                  </span>
+                </li>
+              </ol>
 
               {/* Step Content */}
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-card p-6 md:p-8">
+              <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)] md:p-8">
                 {currentStep === 'address' && (
                   <>
                     {orderError && (
@@ -219,13 +235,14 @@ export default function CheckoutPage() {
                   <>
                     <button
                       onClick={() => setCurrentStep('address')}
-                      className="mb-4 text-[var(--ink)] hover:text-[var(--ink-70)] flex items-center gap-2"
+                      className="mb-4 flex min-h-11 items-center gap-2 text-[var(--ink)] transition-colors duration-[var(--dur-fast)] hover:text-[var(--ink-70)]"
                     >
                       <svg
-                        className="w-5 h-5"
+                        className="h-5 w-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
+                        aria-hidden="true"
                       >
                         <path
                           strokeLinecap="round"
@@ -234,7 +251,7 @@ export default function CheckoutPage() {
                           d="M15 19l-7-7 7-7"
                         />
                       </svg>
-                      Back to Address
+                      Back to address
                     </button>
                     <PaymentStep
                       orderId={orderDetails.orderId}
@@ -248,18 +265,18 @@ export default function CheckoutPage() {
 
             {/* Order Summary Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-card p-6 sticky top-24">
-                <h3 className="text-xl font-bold text-[var(--ink)] mb-4">Order Summary</h3>
+              <div className="sticky top-24 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-md)]">
+                <h3 className="mb-4 text-[length:var(--step-1)] text-[var(--ink)]">Order summary</h3>
 
                 {/* Cart Items */}
                 <div className="space-y-3 mb-6 max-h-60 overflow-y-auto">
                   {items.map((item) => (
                     <div key={cartItemKey(item.product.id, item.product.variantId)} className="flex gap-3 pb-3 border-b border-[var(--foil-soft)]">
                       <div className="flex-1">
-                        <p className="font-medium text-sm text-[var(--ink)]">{item.product.name}</p>
-                        <p className="text-xs text-[var(--ink-40)]">Qty: {item.quantity}</p>
+                        <p className="text-sm font-medium text-[var(--ink)]">{item.product.name}</p>
+                        <p className="data text-xs text-[var(--ink-40)]">Qty: {item.quantity}</p>
                       </div>
-                      <p className="font-semibold text-[var(--ink)]">
+                      <p className="data font-semibold text-[var(--ink)]">
                         ₹{(item.product.price * item.quantity).toLocaleString()}
                       </p>
                     </div>
@@ -270,13 +287,13 @@ export default function CheckoutPage() {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-[var(--ink-70)]">
                     <span>Subtotal ({items.length} items)</span>
-                    <span className="font-medium">₹{subtotal.toLocaleString()}</span>
+                    <span className="data font-medium">₹{subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-[var(--ink-70)]">
                     <span>Shipping</span>
-                    <span className="font-medium">
+                    <span className="data font-medium">
                       {shipping === 0 ? (
-                        <span className="text-[var(--mint)]">FREE</span>
+                        <span className="font-sans text-[var(--mint)]">Free</span>
                       ) : (
                         `₹${shipping}`
                       )}
@@ -291,9 +308,9 @@ export default function CheckoutPage() {
                     </div>
                   )}
                   <div className="border-t-2 border-[var(--foil-soft)] pt-3">
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <span className="text-lg font-bold text-[var(--ink)]">Total</span>
-                      <span className="text-2xl font-bold text-[var(--ink)]">
+                      <span className="data text-2xl font-bold text-[var(--ink)]">
                         ₹{total.toLocaleString()}
                       </span>
                     </div>
@@ -302,27 +319,27 @@ export default function CheckoutPage() {
 
                 {/* Free Shipping Banner */}
                 {shipping > 0 && (
-                  <div className="bg-[var(--foil-soft)] border border-[var(--foil)] rounded-lg p-3 text-sm text-center">
+                  <div className="rounded-[var(--radius-sm)] border border-[var(--foil)] bg-[var(--foil-soft)] p-3 text-center text-sm">
                     <p className="text-[var(--ink-70)]">
-                      Add ₹{(500 - subtotal).toLocaleString()} more for FREE shipping!
+                      Add <span className="data">₹{(500 - subtotal).toLocaleString()}</span> more for free shipping
                     </p>
                   </div>
                 )}
 
                 {/* Trust Badges */}
-                <div className="mt-6 pt-6 border-t border-[var(--foil-soft)]">
+                <div className="mt-6 border-t border-[var(--foil-soft)] pt-6">
                   <div className="flex items-center justify-around text-xs text-[var(--ink-70)]">
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">🔒</div>
-                      <span>Secure Payment</span>
+                    <div className="flex flex-col items-center gap-1.5 text-center">
+                      <Lock className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                      <span>Secure payment</span>
                     </div>
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">📦</div>
-                      <span>Fast Delivery</span>
+                    <div className="flex flex-col items-center gap-1.5 text-center">
+                      <Truck className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                      <span>Fast delivery</span>
                     </div>
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">✓</div>
-                      <span>100% Authentic</span>
+                    <div className="flex flex-col items-center gap-1.5 text-center">
+                      <BadgeCheck className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                      <span>100% authentic</span>
                     </div>
                   </div>
                 </div>

@@ -165,14 +165,13 @@ export default function ReturnRequestPage({
           <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-10 h-10 text-[var(--mint)]" />
           </div>
-          <h2 className="text-2xl font-bold text-[var(--ink)] mb-2">
-            Return Request Submitted!
+          <h2 className="mb-2 text-2xl font-bold text-[var(--ink)]">
+            Return request submitted
           </h2>
-          <p className="text-[var(--ink-70)] mb-6">
-            Your return request has been submitted successfully. Our team will review it
-            shortly.
+          <p className="mb-6 text-[var(--ink-70)]">
+            Our team will review your request and message you with the next steps.
           </p>
-          <p className="text-sm text-[var(--ink-40)]">Redirecting to order details...</p>
+          <p className="text-sm text-[var(--ink-40)]">Taking you back to the order…</p>
         </div>
       </div>
     );
@@ -188,12 +187,12 @@ export default function ReturnRequestPage({
               href={`/orders/${orderNumber}`}
               className="inline-flex items-center gap-2 text-[var(--ink)] hover:opacity-70 mb-4"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Order
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+              Back to order
             </Link>
 
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 text-[var(--ink)]">
-              Request Return/Refund
+            <h1 className="mb-2 text-[length:var(--step-2)] text-[var(--ink)]">
+              Request a return or refund
             </h1>
             <p className="text-[var(--ink-70)]">Order <span className="pack">#{orderNumber}</span></p>
           </div>
@@ -207,13 +206,13 @@ export default function ReturnRequestPage({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Return Type */}
-            <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
-              <h3 className="text-lg font-bold text-[var(--ink)] mb-4">Return Type</h3>
+            <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+              <h3 className="text-lg font-bold text-[var(--ink)] mb-4">Return type</h3>
               <div className="grid grid-cols-2 gap-4">
                 <button
                   type="button"
                   onClick={() => setReturnType('refund')}
-                  className={`p-4 rounded-xl border-2 text-left transition-all ${
+                  className={`p-4 rounded-[var(--radius-md)] border-2 text-left transition-colors duration-[var(--dur-fast)] ${
                     returnType === 'refund'
                       ? 'border-[var(--ink)] bg-[var(--foil-soft)]'
                       : 'border-[var(--foil-soft)] hover:border-[var(--foil)]'
@@ -225,7 +224,7 @@ export default function ReturnRequestPage({
                 <button
                   type="button"
                   onClick={() => setReturnType('exchange')}
-                  className={`p-4 rounded-xl border-2 text-left transition-all ${
+                  className={`p-4 rounded-[var(--radius-md)] border-2 text-left transition-colors duration-[var(--dur-fast)] ${
                     returnType === 'exchange'
                       ? 'border-[var(--ink)] bg-[var(--foil-soft)]'
                       : 'border-[var(--foil-soft)] hover:border-[var(--foil)]'
@@ -238,8 +237,8 @@ export default function ReturnRequestPage({
             </div>
 
             {/* Select Items */}
-            <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
-              <h3 className="text-lg font-bold text-[var(--ink)] mb-4">Select Items</h3>
+            <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+              <h3 className="text-lg font-bold text-[var(--ink)] mb-4">Select items</h3>
               <div className="space-y-3">
                 {orderItems.map((item) => {
                   const isSelected = selectedItems.some(
@@ -284,8 +283,8 @@ export default function ReturnRequestPage({
             </div>
 
             {/* Return Reason */}
-            <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
-              <h3 className="text-lg font-bold text-[var(--ink)] mb-4">Return Reason</h3>
+            <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+              <h3 className="text-lg font-bold text-[var(--ink)] mb-4">Return reason</h3>
               <div className="space-y-4">
                 <select
                   value={reason}
@@ -316,18 +315,18 @@ export default function ReturnRequestPage({
             {selectedItems.length > 0 && (
               <div className="bg-[var(--foil-soft)] rounded-2xl border-2 border-[var(--foil)] shadow-[var(--shadow-card)] p-6">
                 <h3 className="text-lg font-bold text-[var(--ink)] mb-3">
-                  {returnType === 'refund' ? 'Refund' : 'Exchange'} Summary
+                  {returnType === 'refund' ? 'Refund' : 'Exchange'} summary
                 </h3>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-[var(--ink-70)]">Items Selected:</span>
-                    <span className="font-semibold text-[var(--ink)]">
+                    <span className="text-[var(--ink-70)]">Items selected:</span>
+                    <span className="data font-semibold text-[var(--ink)]">
                       {selectedItems.length}
                     </span>
                   </div>
                   {returnType === 'refund' && (
                     <div className="flex justify-between text-lg font-bold border-t border-[var(--foil)] pt-2">
-                      <span className="text-[var(--ink)]">Refund Amount:</span>
+                      <span className="text-[var(--ink)]">Refund amount:</span>
                       <span className="text-[var(--ink)] price">
                         ₹{calculateRefundAmount().toLocaleString('en-IN')}
                       </span>
@@ -359,15 +358,15 @@ export default function ReturnRequestPage({
                     Submitting...
                   </>
                 ) : (
-                  `Submit ${returnType === 'refund' ? 'Refund' : 'Exchange'} Request`
+                  `Submit ${returnType} request`
                 )}
               </Button>
             </div>
           </form>
 
           {/* Policy Info */}
-          <div className="mt-6 bg-[var(--foil-soft)] border-2 border-[var(--foil)] rounded-xl p-6">
-            <h4 className="font-semibold text-[var(--ink)] mb-2">Return Policy</h4>
+          <div className="mt-6 rounded-[var(--radius-md)] border-2 border-[var(--foil)] bg-[var(--foil-soft)] p-6">
+            <h4 className="font-semibold text-[var(--ink)] mb-2">Return policy</h4>
             <ul className="space-y-1 text-sm text-[var(--ink-70)]">
               <li>• Returns are accepted within 7 days of delivery</li>
               <li>• Items must be unused and in original packaging</li>

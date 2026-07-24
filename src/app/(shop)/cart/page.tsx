@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { RxBadge } from "@/components/shared/RxBadge"
+import { EmptyCartArt } from "@/components/illustrations"
 import { extractGST } from "@/lib/gst"
 import { perUnitLabel, formatINR } from "@/lib/pharma/format"
 
@@ -121,23 +122,20 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-[var(--paper)] py-16">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto max-w-2xl px-4">
           <AnimatedSection direction="up">
-            <div className="max-w-2xl mx-auto text-center py-20 bg-[var(--paper-card)] rounded-2xl shadow-card">
-              <div className="w-32 h-32 mx-auto mb-6 bg-[var(--mint-soft)] rounded-full flex items-center justify-center">
-                <ShoppingBag className="w-16 h-16 text-[var(--mint)]" />
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-[var(--ink)]">Your Cart is Empty</h1>
-              <p className="text-[var(--ink-70)] mb-8 text-lg">
-                Looks like you haven&apos;t added any items to your cart yet. Start shopping to fill it up!
+            <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-6 py-16 text-center shadow-[var(--shadow-sm)]">
+              <EmptyCartArt className="mx-auto mb-6 w-48" />
+              <h1 className="mb-3 text-[length:var(--step-2)] text-[var(--ink)]">
+                Your cart is empty
+              </h1>
+              <p className="mb-8 text-[var(--ink-70)]">
+                Add the medicines you need and they&apos;ll show up here.
               </p>
               <Link href="/products">
-                <Button
-                  size="lg"
-                  className="bg-[var(--mint)] hover:opacity-90 text-[var(--paper-card)] px-10 py-6 text-lg"
-                >
-                  <ShoppingBag className="w-5 h-5 mr-2" />
-                  Browse Products
+                <Button size="lg" className="bg-[var(--mint)] px-10 text-base hover:bg-[var(--mint-deep)]">
+                  <ShoppingBag className="mr-2 h-5 w-5" aria-hidden="true" />
+                  Browse medicines
                 </Button>
               </Link>
             </div>
@@ -149,39 +147,34 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-[var(--paper)]">
-      {/* Hero Section */}
-      <section className="bg-[var(--paper)] py-12 md:py-16 border-b border-[var(--foil-soft)]">
-        <div className="container mx-auto px-4">
-          <AnimatedSection direction="up" className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-[var(--ink)]">
-              Shopping
-              <span className="block text-[var(--ink)]">
-                Cart
-              </span>
-            </h1>
-            <p className="text-lg md:text-xl text-[var(--ink-70)]">
-              You have {totalItems} {totalItems === 1 ? "item" : "items"} in your cart
+      {/* Page header */}
+      <section className="border-b border-[var(--foil-soft)] bg-[var(--paper)] py-8 md:py-10">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+          <AnimatedSection direction="up">
+            <h1 className="text-[length:var(--step-2)] text-[var(--ink)]">Your cart</h1>
+            <p className="data mt-1 text-[var(--ink-70)]">
+              {totalItems} {totalItems === 1 ? "item" : "items"}
             </p>
           </AnimatedSection>
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2">
             <AnimatedSection direction="left">
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-card p-6 mb-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-[var(--ink)]">Cart Items</h2>
+              <div className="mb-6 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+                <div className="mb-6 flex items-center justify-between">
+                  <h2 className="text-[length:var(--step-1)] text-[var(--ink)]">Cart items</h2>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={clearCart}
-                    className="text-[var(--ink-70)] border-[var(--foil-soft)] hover:bg-[var(--foil-soft)]"
+                    className="border-[var(--foil-soft)] text-[var(--ink-70)] hover:bg-[var(--foil-soft)]"
                   >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Clear Cart
+                    <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                    Clear cart
                   </Button>
                 </div>
 
@@ -190,7 +183,7 @@ export default function CartPage() {
                     <StaggerItem key={cartItemKey(item.product.id, item.product.variantId)}>
                       <motion.div
                         layout
-                        className="flex flex-col sm:flex-row gap-4 p-4 bg-[var(--foil-soft)] rounded-xl hover:shadow-md transition-shadow"
+                        className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper)] p-4 transition-shadow duration-[var(--dur-fast)] hover:shadow-[var(--shadow-sm)] sm:flex-row"
                       >
                         {/* Product Image */}
                         <div className="w-full sm:w-32 h-32 flex-shrink-0 bg-[var(--paper-card)] rounded-lg overflow-hidden">
@@ -243,9 +236,10 @@ export default function CartPage() {
                             </div>
                             <button
                               onClick={() => removeItem(cartItemKey(item.product.id, item.product.variantId))}
-                              className="p-2 text-[var(--ink-70)] hover:bg-[var(--foil)] rounded-lg transition-colors"
+                              aria-label={`Remove ${item.product.name} from cart`}
+                              className="rounded-[var(--radius-sm)] p-2 text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--foil-soft)]"
                             >
-                              <Trash2 className="w-5 h-5" />
+                              <Trash2 className="h-5 w-5" aria-hidden="true" />
                             </button>
                           </div>
 
@@ -277,7 +271,7 @@ export default function CartPage() {
                                   {perUnitLabel(item.product.unitPrice, item.product.packUnit)}
                                 </div>
                               )}
-                              <div className="data text-xl font-bold text-[var(--mint)]">
+                              <div className="data text-xl font-bold text-[var(--ink)]">
                                 ₹{(item.product.price * item.quantity).toLocaleString()}
                               </div>
                             </div>
@@ -290,10 +284,10 @@ export default function CartPage() {
               </div>
 
               {/* ── Discounts Section ──────────────────────────────── */}
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-card p-6 mb-6">
-                <h2 className="text-lg font-bold text-[var(--ink)] mb-4 flex items-center gap-2">
-                  <Tag className="w-5 h-5 text-[var(--mint)]" />
-                  Discounts &amp; Coupons
+              <div className="mb-6 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+                <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-[var(--ink)]">
+                  <Tag className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                  Discounts &amp; coupons
                 </h2>
 
                 {/* Auto-applied discount banner */}
@@ -386,10 +380,10 @@ export default function CartPage() {
                 )}
               </div>
 
-              {/* Continue Shopping */}
+              {/* Continue shopping */}
               <Link href="/products">
                 <Button variant="outline" className="w-full border-2 border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--foil-soft)]">
-                  Continue Shopping
+                  Continue shopping
                 </Button>
               </Link>
             </AnimatedSection>
@@ -398,21 +392,21 @@ export default function CartPage() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <AnimatedSection direction="right">
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-card p-6 sticky top-24">
-                <h2 className="text-2xl font-bold text-[var(--ink)] mb-6">Order Summary</h2>
+              <div className="sticky top-24 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-md)]">
+                <h2 className="mb-6 text-[length:var(--step-1)] text-[var(--ink)]">Order summary</h2>
 
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-[var(--ink-70)]">
                     <span>Subtotal ({totalItems} items)</span>
-                    <span className="font-semibold">₹{totalPrice.toLocaleString()}</span>
+                    <span className="data font-semibold">₹{totalPrice.toLocaleString()}</span>
                   </div>
 
                   <div className="flex justify-between text-[var(--ink-70)]">
                     <span>Shipping</span>
                     {shipping === 0 ? (
-                      <span className="font-semibold text-[var(--mint)]">FREE</span>
+                      <span className="font-semibold text-[var(--mint)]">Free</span>
                     ) : (
-                      <span className="font-semibold">₹{shipping}</span>
+                      <span className="data font-semibold">₹{shipping}</span>
                     )}
                   </div>
 
@@ -433,15 +427,15 @@ export default function CartPage() {
                     </div>
                   )}
 
-                  <div className="border-t-2 border-[var(--foil-soft)] pt-4 flex justify-between items-center">
+                  <div className="flex items-center justify-between border-t-2 border-[var(--foil-soft)] pt-4">
                     <span className="text-lg font-bold text-[var(--ink)]">Total</span>
                     <div className="text-right">
                       {discountAmt > 0 && (
-                        <p className="text-xs text-[var(--ink-40)] line-through">
+                        <p className="data text-xs text-[var(--ink-40)] line-through">
                           ₹{(totalPrice + shipping).toLocaleString()}
                         </p>
                       )}
-                      <span className="text-2xl font-bold text-[var(--ink)]">
+                      <span className="data text-2xl font-bold text-[var(--ink)]">
                         ₹{finalTotal.toLocaleString()}
                       </span>
                     </div>
@@ -464,8 +458,8 @@ export default function CartPage() {
                     <div className="flex items-start gap-3">
                       <Package className="w-5 h-5 text-[var(--ink)] flex-shrink-0 mt-0.5" />
                       <div className="text-sm">
-                        <p className="font-semibold text-[var(--ink)] mb-1">
-                          Add ₹{(500 - totalPrice).toLocaleString()} more for FREE shipping!
+                        <p className="mb-1 font-semibold text-[var(--ink)]">
+                          Add <span className="data">₹{(500 - totalPrice).toLocaleString()}</span> more for free shipping
                         </p>
                         <p className="text-[var(--ink-70)]">Orders above ₹500 get free delivery</p>
                       </div>
@@ -483,9 +477,9 @@ export default function CartPage() {
                 )}
 
                 <Link href="/checkout">
-                  <Button className="w-full bg-[var(--mint)] hover:opacity-90 text-[var(--paper-card)] py-6 text-lg font-semibold shadow-card mb-4">
-                    Proceed to Checkout
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                  <Button className="mb-4 w-full bg-[var(--mint)] py-6 text-lg font-semibold text-[var(--paper-card)] shadow-[var(--shadow-sm)] hover:bg-[var(--mint-deep)] hover:shadow-[var(--shadow-md)]">
+                    Proceed to checkout
+                    <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
                   </Button>
                 </Link>
 

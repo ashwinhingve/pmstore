@@ -5,6 +5,7 @@ import Shipment from '@/models/Shipment';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Package, MapPin, Clock, CheckCircle, Truck, AlertCircle } from 'lucide-react';
+import { ShippingArt } from '@/components/illustrations';
 
 function getCourierTrackingUrl(provider: string, waybill: string, storedUrl?: string): string {
   if (storedUrl) return storedUrl;
@@ -80,37 +81,35 @@ export default async function OrderTrackPage({ params }: PageProps) {
         {/* Back link */}
         <Link
           href={`/orders/${orderNumber}`}
-          className="inline-flex items-center gap-2 text-[var(--mint)] hover:opacity-90 mb-6"
+          className="mb-6 inline-flex min-h-11 items-center gap-2 text-[var(--mint)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Order Details
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to order details
         </Link>
 
-        <h1 className="text-3xl font-bold mb-2">
-          <span className="text-[var(--ink)]">
-            Track Order #{orderNumber}
-          </span>
+        <h1 className="data mb-2 text-[length:var(--step-2)] font-bold text-[var(--ink)]">
+          Track order #{orderNumber}
         </h1>
 
         {!o.trackingNumber ? (
-          <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-8 mt-6 text-center">
-            <Package className="w-16 h-16 text-[var(--ink-40)] mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-[var(--ink)] mb-2">Not Yet Shipped</h2>
+          <div className="mt-6 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-8 text-center shadow-[var(--shadow-sm)]">
+            <ShippingArt className="mx-auto mb-4 w-44" />
+            <h2 className="mb-2 text-xl font-bold text-[var(--ink)]">Not shipped yet</h2>
             <p className="text-[var(--ink-70)]">
               Your order is being prepared. Tracking details will appear here once it ships.
             </p>
             <p className="mt-2 text-sm text-[var(--ink-70)]">
-              Order Status: <span className="capitalize font-semibold text-[var(--mint)]">{o.orderStatus}</span>
+              Order status: <span className="font-semibold capitalize text-[var(--mint)]">{o.orderStatus}</span>
             </p>
           </div>
         ) : (
           <div className="space-y-6 mt-6">
             {/* Tracking Summary Card */}
-            <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
+            <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <p className="text-sm text-[var(--ink-70)] mb-1">Tracking Number</p>
-                  <p className="font-mono text-lg font-bold text-[var(--ink)]">{o.trackingNumber}</p>
+                  <p className="mb-1 text-sm text-[var(--ink-70)]">Tracking number</p>
+                  <p className="data text-lg font-bold text-[var(--ink)]">{o.trackingNumber}</p>
                 </div>
                 {s?.courierName && (
                   <div>
@@ -181,10 +180,10 @@ export default async function OrderTrackPage({ params }: PageProps) {
 
             {/* Scan Timeline */}
             {sortedScans.length > 0 ? (
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
-                <h2 className="text-xl font-bold text-[var(--ink)] mb-6 flex items-center gap-2">
-                  <Package className="w-5 h-5 text-[var(--mint)]" />
-                  Shipment Timeline
+              <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+                <h2 className="mb-6 flex items-center gap-2 text-xl font-bold text-[var(--ink)]">
+                  <Package className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                  Shipment timeline
                 </h2>
 
                 <div className="relative">
@@ -237,7 +236,7 @@ export default async function OrderTrackPage({ params }: PageProps) {
                 </div>
               </div>
             ) : (
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6 text-center">
+              <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)] text-center">
                 <Clock className="w-12 h-12 text-[var(--ink-40)] mx-auto mb-3" />
                 <p className="text-[var(--ink-70)]">Tracking events will appear here once the shipment is picked up.</p>
               </div>

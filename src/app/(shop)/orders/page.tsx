@@ -12,13 +12,12 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  ShoppingBag,
   Search,
   Filter,
-  Download,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import { ShippingArt } from '@/components/illustrations';
 import { format } from 'date-fns';
 
 interface Order {
@@ -117,12 +116,15 @@ export default function OrdersPage() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
-        <div className="text-center">
-          <div className="animate-pulse">
-            <div className="w-12 h-12 mx-auto rounded-full bg-[var(--foil-soft)] mb-4"></div>
+      <div className="min-h-screen bg-[var(--paper)] py-12">
+        <div className="mx-auto max-w-5xl px-4" aria-hidden="true">
+          <div className="animate-shimmer mb-2 h-9 w-48 rounded-[var(--radius-sm)]" />
+          <div className="animate-shimmer mb-8 h-5 w-64 rounded-[var(--radius-sm)]" />
+          <div className="space-y-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="animate-shimmer h-36 rounded-[var(--radius-md)]" />
+            ))}
           </div>
-          <p className="mt-4 text-[var(--ink-70)]">Loading your orders...</p>
         </div>
       </div>
     );
@@ -170,15 +172,13 @@ export default function OrdersPage() {
       <div className="container mx-auto px-4">
         <AnimatedSection direction="up">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2">
-              <span className="text-[var(--ink)]">
-                My Orders
-              </span>
-            </h1>
+          <div className="mx-auto mb-8 max-w-5xl">
+            <h1 className="mb-1 text-[length:var(--step-2)] text-[var(--ink)]">Your orders</h1>
             <p className="text-[var(--ink-70)]">
               Track and manage your orders
-              {pagination.totalOrders > 0 && ` (${pagination.totalOrders} total)`}
+              {pagination.totalOrders > 0 && (
+                <span className="data"> ({pagination.totalOrders} total)</span>
+              )}
             </p>
           </div>
 
@@ -219,14 +219,6 @@ export default function OrdersPage() {
                   )}
                 </button>
 
-                {/* Export Button */}
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-4 py-3 bg-[var(--paper-card)] border-2 border-[var(--foil-soft)] rounded-xl text-[var(--ink-70)] font-medium hover:bg-[var(--foil-soft)]"
-                >
-                  <Download className="w-5 h-5" />
-                  <span className="hidden sm:inline">Export</span>
-                </button>
               </div>
 
               {/* Expanded Filters */}
@@ -244,7 +236,7 @@ export default function OrdersPage() {
                         size="sm"
                         className={filter === 'all' ? 'bg-[var(--mint)] hover:bg-opacity-90' : ''}
                       >
-                        All Orders
+                        All orders
                       </Button>
                       <Button
                         variant={filter === 'confirmed' ? 'default' : 'outline'}
@@ -285,7 +277,7 @@ export default function OrdersPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-[var(--ink)] mb-2">
-                        From Date
+                        From date
                       </label>
                       <input
                         type="date"
@@ -296,7 +288,7 @@ export default function OrdersPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-[var(--ink)] mb-2">
-                        To Date
+                        To date
                       </label>
                       <input
                         type="date"
@@ -312,16 +304,16 @@ export default function OrdersPage() {
                     <button
                       type="button"
                       onClick={handleClearFilters}
-                      className="px-4 py-2 text-sm font-medium text-[var(--ink-70)] hover:text-[var(--ink)]"
+                      className="min-h-11 px-4 py-2 text-sm font-medium text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:text-[var(--ink)]"
                     >
-                      Clear All
+                      Clear all
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowFilters(false)}
-                      className="px-4 py-2 bg-[var(--mint)] text-white text-sm font-medium rounded-lg hover:opacity-90"
+                      className="min-h-11 rounded-[var(--radius-sm)] bg-[var(--mint)] px-4 py-2 text-sm font-medium text-[var(--paper-card)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--mint-deep)]"
                     >
-                      Apply Filters
+                      Apply filters
                     </button>
                   </div>
                 </div>
@@ -330,24 +322,24 @@ export default function OrdersPage() {
 
             {/* Orders List */}
             {orders.length === 0 ? (
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-12 text-center">
-                <div className="w-24 h-24 mx-auto mb-6 bg-[var(--mint-soft)] rounded-full flex items-center justify-center">
-                  <ShoppingBag className="w-12 h-12 text-[var(--mint)]" />
-                </div>
-                <h2 className="text-2xl font-bold text-[var(--ink)] mb-2">No Orders Found</h2>
-                <p className="text-[var(--ink-70)] mb-6">
+              <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-12 text-center shadow-[var(--shadow-sm)]">
+                <ShippingArt className="mx-auto mb-6 w-52" />
+                <h2 className="mb-2 text-[length:var(--step-1)] text-[var(--ink)]">
+                  {hasActiveFilters ? 'No orders match these filters' : 'No orders yet'}
+                </h2>
+                <p className="mb-6 text-[var(--ink-70)]">
                   {hasActiveFilters
-                    ? "No orders match your filters"
-                    : "You haven't placed any orders yet"}
+                    ? 'Try a different status or date range.'
+                    : 'Order the medicines you need and track them here.'}
                 </p>
                 {hasActiveFilters ? (
-                  <Button onClick={handleClearFilters} className="bg-[var(--mint)] hover:opacity-90">
-                    Clear Filters
+                  <Button onClick={handleClearFilters} className="bg-[var(--mint)] hover:bg-[var(--mint-deep)]">
+                    Clear filters
                   </Button>
                 ) : (
                   <Link href="/products">
-                    <Button className="bg-[var(--mint)] hover:opacity-90">
-                      Start Shopping
+                    <Button className="bg-[var(--mint)] hover:bg-[var(--mint-deep)]">
+                      Browse medicines
                     </Button>
                   </Link>
                 )}
@@ -358,7 +350,7 @@ export default function OrdersPage() {
                   {orders.map((order) => (
                     <div
                       key={order._id}
-                      className="bg-[var(--paper-card)] rounded-xl shadow-lg hover:shadow-2xl transition-shadow p-6"
+                      className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] hover:shadow-[var(--shadow-md)]"
                     >
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         {/* Order Info */}
@@ -366,10 +358,10 @@ export default function OrdersPage() {
                           <div className="flex items-center gap-3 mb-3">
                             {getStatusIcon(order.orderStatus)}
                             <div>
-                              <h3 className="font-bold text-lg text-[var(--ink)]">
+                              <h3 className="data text-lg font-bold text-[var(--ink)]">
                                 Order #{order.orderNumber}
                               </h3>
-                              <p className="text-sm text-[var(--ink-70)]">
+                              <p className="data text-sm text-[var(--ink-70)]">
                                 Placed on {format(new Date(order.createdAt), 'MMM dd, yyyy')}
                               </p>
                             </div>
@@ -378,11 +370,11 @@ export default function OrdersPage() {
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                             <div>
                               <p className="text-[var(--ink-70)]">Items</p>
-                              <p className="font-semibold text-[var(--ink)]">{order.items.length}</p>
+                              <p className="data font-semibold text-[var(--ink)]">{order.items.length}</p>
                             </div>
                             <div>
                               <p className="text-[var(--ink-70)]">Total</p>
-                              <p className="font-bold text-[var(--ink)]">₹{order.totalAmount.toLocaleString()}</p>
+                              <p className="data font-bold text-[var(--ink)]">₹{order.totalAmount.toLocaleString()}</p>
                             </div>
                             <div>
                               <p className="text-[var(--ink-70)]">Status</p>
@@ -405,7 +397,7 @@ export default function OrdersPage() {
                           {(order.trackingNumber || order.waybill) && (
                             <div className="mt-3 text-sm">
                               <span className="text-[var(--ink-70)]">Tracking: </span>
-                              <span className="font-mono font-semibold text-[var(--ink)]">
+                              <span className="data font-semibold text-[var(--ink)]">
                                 {order.waybill || order.trackingNumber}
                               </span>
                             </div>
@@ -416,19 +408,19 @@ export default function OrdersPage() {
                         <div className="flex flex-col gap-2 md:w-40">
                           <Link href={`/orders/${order.orderNumber}`}>
                             <Button variant="outline" className="w-full">
-                              View Details
+                              View details
                             </Button>
                           </Link>
                           {(order.waybill || order.trackingNumber) && (
                             <Link href={`/orders/${order.orderNumber}/track`}>
                               <Button variant="outline" className="w-full">
-                                Track Order
+                                Track order
                               </Button>
                             </Link>
                           )}
                           {order.paymentStatus === 'failed' && (
-                            <Button className="w-full bg-[var(--ink)] hover:opacity-90 text-[var(--paper-card)]">
-                              Retry Payment
+                            <Button className="w-full bg-[var(--ink)] text-[var(--paper-card)] hover:bg-[var(--ink-deep)]">
+                              Retry payment
                             </Button>
                           )}
                         </div>
@@ -439,8 +431,8 @@ export default function OrdersPage() {
 
                 {/* Pagination */}
                 {pagination.totalPages > 1 && (
-                  <div className="mt-8 flex items-center justify-between bg-[var(--paper-card)] rounded-xl shadow-lg p-4">
-                    <div className="text-sm text-[var(--ink-70)]">
+                  <div className="mt-8 flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)]">
+                    <div className="data text-sm text-[var(--ink-70)]">
                       Page {pagination.currentPage} of {pagination.totalPages}
                     </div>
 

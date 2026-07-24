@@ -7,7 +7,7 @@ import OrderTimeline from '@/components/orders/OrderTimeline';
 import OrderItemsDisplay from '@/components/orders/OrderItemsDisplay';
 import OrderSummaryCard from '@/components/orders/OrderSummaryCard';
 import OrderActions from '@/components/orders/OrderActions';
-import { ArrowLeft, Download, Package, Truck } from 'lucide-react';
+import { ArrowLeft, Download, Mail, Package, Phone, Truck } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { CONTACT } from '@/lib/constants';
@@ -143,20 +143,18 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
           <div className="mb-8">
             <Link
               href="/orders"
-              className="inline-flex items-center gap-2 text-[var(--mint)] hover:opacity-90 mb-4"
+              className="mb-4 inline-flex min-h-11 items-center gap-2 text-[var(--mint)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Orders
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              Back to orders
             </Link>
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold mb-2">
-                  <span className="text-[var(--ink)]">
-                    Order #{orderData.orderNumber}
-                  </span>
+                <h1 className="data mb-2 text-[length:var(--step-2)] font-bold text-[var(--ink)]">
+                  Order #{orderData.orderNumber}
                 </h1>
-                <p className="text-[var(--ink-70)]">
+                <p className="data text-[var(--ink-70)]">
                   Placed on{' '}
                   {new Date(orderData.createdAt).toLocaleDateString('en-IN', {
                     day: 'numeric',
@@ -174,10 +172,10 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                   href={`/api/orders/${orderData.orderNumber}/invoice`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--paper-card)] border-2 border-[var(--foil)] rounded-xl text-[var(--ink-70)] font-medium hover:bg-[var(--foil-soft)]"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] border-2 border-[var(--foil)] bg-[var(--paper-card)] px-4 py-2 font-medium text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--foil-soft)]"
                 >
-                  <Download className="w-4 h-4" />
-                  Download Invoice
+                  <Download className="h-4 w-4" aria-hidden="true" />
+                  Download invoice
                 </a>
 
                 {orderData.trackingUrl && (
@@ -185,17 +183,17 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                     href={orderData.trackingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--paper-card)] border-2 border-[var(--foil)] rounded-xl text-[var(--ink-70)] font-medium hover:bg-[var(--foil-soft)]"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] border-2 border-[var(--foil)] bg-[var(--paper-card)] px-4 py-2 font-medium text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--foil-soft)]"
                   >
-                    <Truck className="w-4 h-4" />
-                    Track on {orderData.courier || 'Courier'}
+                    <Truck className="h-4 w-4" aria-hidden="true" />
+                    Track on {orderData.courier || 'courier'}
                   </a>
                 )}
 
                 {canReturn && (
                   <Link href={`/orders/${orderData.orderNumber}/return`}>
-                    <Button className="bg-[var(--mint)] hover:opacity-90">
-                      Request Return
+                    <Button className="bg-[var(--mint)] hover:bg-[var(--mint-deep)]">
+                      Request return
                     </Button>
                   </Link>
                 )}
@@ -205,9 +203,9 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
           {/* Cancellation / Refund Banner */}
           {orderData.orderStatus === 'cancelled' && (
-            <div className="mb-6 bg-[var(--foil-soft)] border border-[var(--foil)] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="mb-6 flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--foil)] bg-[var(--foil-soft)] p-4 sm:flex-row sm:items-center">
               <div className="flex-1">
-                <p className="font-semibold text-[var(--ink-70)]">Order Cancelled</p>
+                <p className="font-semibold text-[var(--ink-70)]">Order cancelled</p>
                 {orderData.cancelledAt && (
                   <p className="text-sm text-[var(--ink-70)] mt-0.5">
                     Cancelled on{' '}
@@ -220,9 +218,9 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                 )}
               </div>
               {orderData.refundAmount > 0 && (
-                <div className="bg-[var(--paper-card)] rounded-xl border border-[var(--foil)] px-5 py-3 text-center shrink-0">
-                  <p className="text-xs text-[var(--ink-70)] mb-0.5">Refund Initiated</p>
-                  <p className="text-xl font-bold text-[var(--mint)]">
+                <div className="shrink-0 rounded-[var(--radius-md)] border border-[var(--foil)] bg-[var(--paper-card)] px-5 py-3 text-center">
+                  <p className="mb-0.5 text-xs text-[var(--ink-70)]">Refund initiated</p>
+                  <p className="data text-xl font-bold text-[var(--mint)]">
                     ₹{orderData.refundAmount.toLocaleString()}
                   </p>
                   <p className="text-xs text-[var(--ink-70)] mt-0.5">Processing (5–7 business days)</p>
@@ -247,10 +245,10 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
               <OrderItemsDisplay items={orderData.items} />
 
               {/* Shipping Information */}
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
-                <h3 className="text-xl font-bold text-[var(--ink)] mb-4 flex items-center gap-2">
-                  <Package className="w-5 h-5 text-[var(--mint)]" />
-                  Shipping Information
+              <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+                <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-[var(--ink)]">
+                  <Package className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                  Shipping information
                 </h3>
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-4">
@@ -269,7 +267,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                   </div>
 
                   <div>
-                    <p className="text-sm text-[var(--ink-70)]">Delivery Address</p>
+                    <p className="text-sm text-[var(--ink-70)]">Delivery address</p>
                     <p className="text-sm font-medium text-[var(--ink)]">
                       {orderData.shippingAddress.addressLine1}
                       {orderData.shippingAddress.addressLine2 && (
@@ -286,8 +284,8 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                     <div className="border-t border-[var(--foil-soft)] pt-3 mt-3">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-[var(--ink-70)]">Tracking Number</p>
-                          <p className="text-sm font-medium text-[var(--ink)] font-mono">
+                          <p className="text-sm text-[var(--ink-70)]">Tracking number</p>
+                          <p className="data text-sm font-medium text-[var(--ink)]">
                             {orderData.waybill}
                           </p>
                         </div>
@@ -303,7 +301,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
                       {orderData.estimatedDelivery && (
                         <div className="mt-3">
-                          <p className="text-sm text-[var(--ink-70)]">Estimated Delivery</p>
+                          <p className="text-sm text-[var(--ink-70)]">Estimated delivery</p>
                           <p className="text-sm font-medium text-[var(--ink)]">
                             {new Date(orderData.estimatedDelivery).toLocaleDateString('en-IN', {
                               day: 'numeric',
@@ -319,20 +317,20 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
               </div>
 
               {/* Payment Information */}
-              <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
-                <h3 className="text-xl font-bold text-[var(--ink)] mb-4">
-                  Payment Information
+              <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+                <h3 className="mb-4 text-xl font-bold text-[var(--ink)]">
+                  Payment information
                 </h3>
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-[var(--ink-70)]">Payment Method</p>
+                      <p className="text-sm text-[var(--ink-70)]">Payment method</p>
                       <p className="text-sm font-medium text-[var(--ink)] capitalize">
                         {orderData.paymentMethod}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-[var(--ink-70)]">Payment Status</p>
+                      <p className="text-sm text-[var(--ink-70)]">Payment status</p>
                       <span
                         className={`inline-flex px-3 py-1 text-xs font-medium rounded-full capitalize ${
                           orderData.paymentStatus === 'paid' ||
@@ -355,14 +353,14 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                     <div className="border-t border-[var(--foil-soft)] pt-3 mt-1">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-[var(--ink-70)]">Refund Amount</p>
-                          <p className="text-sm font-semibold text-[var(--mint)]">
+                          <p className="text-sm text-[var(--ink-70)]">Refund amount</p>
+                          <p className="data text-sm font-semibold text-[var(--mint)]">
                             ₹{orderData.refundAmount.toLocaleString()}
                           </p>
                         </div>
                         {orderData.refundedAt && (
                           <div>
-                            <p className="text-sm text-[var(--ink-70)]">Refund Initiated</p>
+                            <p className="text-sm text-[var(--ink-70)]">Refund initiated</p>
                             <p className="text-sm font-medium text-[var(--ink)]">
                               {new Date(orderData.refundedAt).toLocaleDateString('en-IN', {
                                 day: 'numeric',
@@ -392,8 +390,8 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
               {/* Cancel Order */}
               {canCancel && (
-                <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
-                  <h3 className="text-lg font-bold text-[var(--ink)] mb-3">Order Actions</h3>
+                <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+                  <h3 className="mb-3 text-lg font-bold text-[var(--ink)]">Order actions</h3>
                   <OrderActions
                     orderId={orderData.id}
                     orderStatus={orderData.orderStatus}
@@ -403,32 +401,34 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                 </div>
               )}
 
-              {/* Need Help? */}
-              <div className="bg-gradient-to-br from-[var(--mint)] to-[var(--ink)] rounded-2xl shadow-xl p-6 border-2 border-[var(--mint)]">
-                <h3 className="text-lg font-bold text-white mb-3">Need Help?</h3>
-                <p className="text-sm text-white mb-4">
+              {/* Need help? */}
+              <div className="rounded-[var(--radius-lg)] bg-[image:var(--surface-hero)] p-6 shadow-[var(--shadow-md)]">
+                <h3 className="mb-3 text-lg font-bold text-[var(--paper)]">Need help?</h3>
+                <p className="mb-4 text-sm text-[var(--ink-10)]">
                   Have questions about your order? Our customer support team is here to help.
                 </p>
                 <div className="space-y-2">
                   <a
                     href={CONTACT.emailHref}
-                    className="block text-sm font-medium text-white hover:opacity-90"
+                    className="flex items-center gap-2 text-sm font-medium text-[var(--paper)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
                   >
-                    📧 {CONTACT.email}
+                    <Mail className="h-4 w-4 text-[var(--mint-soft)]" aria-hidden="true" />
+                    {CONTACT.email}
                   </a>
                   <a
                     href={CONTACT.phoneHref}
-                    className="block text-sm font-medium text-white hover:opacity-90"
+                    className="data flex items-center gap-2 text-sm font-medium text-[var(--paper)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
                   >
-                    📞 {CONTACT.phone}
+                    <Phone className="h-4 w-4 text-[var(--mint-soft)]" aria-hidden="true" />
+                    {CONTACT.phone}
                   </a>
                 </div>
               </div>
 
               {/* Return Policy Info */}
               {isDelivered && (
-                <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
-                  <h3 className="text-lg font-bold text-[var(--ink)] mb-3">Return Policy</h3>
+                <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
+                  <h3 className="mb-3 text-lg font-bold text-[var(--ink)]">Return policy</h3>
                   <p className="text-sm text-[var(--ink)] mb-2">
                     {canReturn ? (
                       <>
