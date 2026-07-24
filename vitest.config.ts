@@ -7,7 +7,7 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      include: ['src/lib/pharma/**', 'src/lib/gst.ts'],
+      include: ['src/lib/pharma/**', 'src/lib/gst.ts', 'src/lib/checkout/**'],
     },
   },
   resolve: {
