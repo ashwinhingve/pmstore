@@ -136,14 +136,14 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
   const canReturn = isDelivered && daysSinceDelivery <= 7;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-red-50 py-12">
+    <div className="min-h-screen bg-[var(--paper)] py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-8">
             <Link
               href="/orders"
-              className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-700 mb-4"
+              className="inline-flex items-center gap-2 text-[var(--mint)] hover:opacity-90 mb-4"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Orders
@@ -152,11 +152,11 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold mb-2">
-                  <span className="bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
+                  <span className="text-[var(--ink)]">
                     Order #{orderData.orderNumber}
                   </span>
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-[var(--ink-70)]">
                   Placed on{' '}
                   {new Date(orderData.createdAt).toLocaleDateString('en-IN', {
                     day: 'numeric',
@@ -174,7 +174,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                   href={`/api/orders/${orderData.orderNumber}/invoice`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--paper-card)] border-2 border-[var(--foil)] rounded-xl text-[var(--ink-70)] font-medium hover:bg-[var(--foil-soft)]"
                 >
                   <Download className="w-4 h-4" />
                   Download Invoice
@@ -185,7 +185,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                     href={orderData.trackingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--paper-card)] border-2 border-[var(--foil)] rounded-xl text-[var(--ink-70)] font-medium hover:bg-[var(--foil-soft)]"
                   >
                     <Truck className="w-4 h-4" />
                     Track on {orderData.courier || 'Courier'}
@@ -194,7 +194,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
                 {canReturn && (
                   <Link href={`/orders/${orderData.orderNumber}/return`}>
-                    <Button className="bg-gradient-to-r from-amber-600 to-red-700">
+                    <Button className="bg-[var(--mint)] hover:opacity-90">
                       Request Return
                     </Button>
                   </Link>
@@ -205,11 +205,11 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
           {/* Cancellation / Refund Banner */}
           {orderData.orderStatus === 'cancelled' && (
-            <div className="mb-6 bg-red-50 border border-red-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="mb-6 bg-[var(--foil-soft)] border border-[var(--foil)] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1">
-                <p className="font-semibold text-red-700">Order Cancelled</p>
+                <p className="font-semibold text-[var(--ink-70)]">Order Cancelled</p>
                 {orderData.cancelledAt && (
-                  <p className="text-sm text-red-600 mt-0.5">
+                  <p className="text-sm text-[var(--ink-70)] mt-0.5">
                     Cancelled on{' '}
                     {new Date(orderData.cancelledAt).toLocaleDateString('en-IN', {
                       day: 'numeric',
@@ -220,12 +220,12 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                 )}
               </div>
               {orderData.refundAmount > 0 && (
-                <div className="bg-white rounded-xl border border-blue-200 px-5 py-3 text-center shrink-0">
-                  <p className="text-xs text-gray-500 mb-0.5">Refund Initiated</p>
-                  <p className="text-xl font-bold text-blue-700">
+                <div className="bg-[var(--paper-card)] rounded-xl border border-[var(--foil)] px-5 py-3 text-center shrink-0">
+                  <p className="text-xs text-[var(--ink-70)] mb-0.5">Refund Initiated</p>
+                  <p className="text-xl font-bold text-[var(--mint)]">
                     ₹{orderData.refundAmount.toLocaleString()}
                   </p>
-                  <p className="text-xs text-blue-600 mt-0.5">Processing (5–7 business days)</p>
+                  <p className="text-xs text-[var(--ink-70)] mt-0.5">Processing (5–7 business days)</p>
                 </div>
               )}
             </div>
@@ -247,54 +247,54 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
               <OrderItemsDisplay items={orderData.items} />
 
               {/* Shipping Information */}
-              <div className="bg-white rounded-2xl shadow-xl p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Package className="w-5 h-5 text-amber-600" />
+              <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
+                <h3 className="text-xl font-bold text-[var(--ink)] mb-4 flex items-center gap-2">
+                  <Package className="w-5 h-5 text-[var(--mint)]" />
                   Shipping Information
                 </h3>
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600">Name</p>
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm text-[var(--ink-70)]">Name</p>
+                      <p className="text-sm font-medium text-[var(--ink)]">
                         {orderData.shippingAddress.name}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Phone</p>
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm text-[var(--ink-70)]">Phone</p>
+                      <p className="text-sm font-medium text-[var(--ink)]">
                         {orderData.shippingAddress.phone}
                       </p>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-600">Delivery Address</p>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm text-[var(--ink-70)]">Delivery Address</p>
+                    <p className="text-sm font-medium text-[var(--ink)]">
                       {orderData.shippingAddress.addressLine1}
                       {orderData.shippingAddress.addressLine2 && (
                         <>, {orderData.shippingAddress.addressLine2}</>
                       )}
                     </p>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-[var(--ink)]">
                       {orderData.shippingAddress.city}, {orderData.shippingAddress.state}{' '}
                       {orderData.shippingAddress.postalCode}
                     </p>
                   </div>
 
                   {orderData.waybill && (
-                    <div className="border-t border-gray-200 pt-3 mt-3">
+                    <div className="border-t border-[var(--foil-soft)] pt-3 mt-3">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-gray-600">Tracking Number</p>
-                          <p className="text-sm font-medium text-gray-900 font-mono">
+                          <p className="text-sm text-[var(--ink-70)]">Tracking Number</p>
+                          <p className="text-sm font-medium text-[var(--ink)] font-mono">
                             {orderData.waybill}
                           </p>
                         </div>
                         {orderData.courier && (
                           <div>
-                            <p className="text-sm text-gray-600">Courier</p>
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm text-[var(--ink-70)]">Courier</p>
+                            <p className="text-sm font-medium text-[var(--ink)]">
                               {orderData.courier}
                             </p>
                           </div>
@@ -303,8 +303,8 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
                       {orderData.estimatedDelivery && (
                         <div className="mt-3">
-                          <p className="text-sm text-gray-600">Estimated Delivery</p>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm text-[var(--ink-70)]">Estimated Delivery</p>
+                          <p className="text-sm font-medium text-[var(--ink)]">
                             {new Date(orderData.estimatedDelivery).toLocaleDateString('en-IN', {
                               day: 'numeric',
                               month: 'long',
@@ -319,30 +319,30 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
               </div>
 
               {/* Payment Information */}
-              <div className="bg-white rounded-2xl shadow-xl p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
+              <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
+                <h3 className="text-xl font-bold text-[var(--ink)] mb-4">
                   Payment Information
                 </h3>
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600">Payment Method</p>
-                      <p className="text-sm font-medium text-gray-900 capitalize">
+                      <p className="text-sm text-[var(--ink-70)]">Payment Method</p>
+                      <p className="text-sm font-medium text-[var(--ink)] capitalize">
                         {orderData.paymentMethod}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Payment Status</p>
+                      <p className="text-sm text-[var(--ink-70)]">Payment Status</p>
                       <span
                         className={`inline-flex px-3 py-1 text-xs font-medium rounded-full capitalize ${
                           orderData.paymentStatus === 'paid' ||
                           orderData.paymentStatus === 'success'
-                            ? 'bg-green-100 text-green-700'
+                            ? 'bg-[var(--mint-soft)] text-[var(--mint)]'
                             : orderData.paymentStatus === 'refunded'
-                            ? 'bg-blue-100 text-blue-700'
+                            ? 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
                             : orderData.paymentStatus === 'pending'
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-red-100 text-red-700'
+                            ? 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
+                            : 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
                         }`}
                       >
                         {orderData.paymentStatus}
@@ -352,18 +352,18 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
                   {/* Refund details */}
                   {orderData.refundAmount > 0 && (
-                    <div className="border-t border-gray-200 pt-3 mt-1">
+                    <div className="border-t border-[var(--foil-soft)] pt-3 mt-1">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-gray-600">Refund Amount</p>
-                          <p className="text-sm font-semibold text-blue-700">
+                          <p className="text-sm text-[var(--ink-70)]">Refund Amount</p>
+                          <p className="text-sm font-semibold text-[var(--mint)]">
                             ₹{orderData.refundAmount.toLocaleString()}
                           </p>
                         </div>
                         {orderData.refundedAt && (
                           <div>
-                            <p className="text-sm text-gray-600">Refund Initiated</p>
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm text-[var(--ink-70)]">Refund Initiated</p>
+                            <p className="text-sm font-medium text-[var(--ink)]">
                               {new Date(orderData.refundedAt).toLocaleDateString('en-IN', {
                                 day: 'numeric',
                                 month: 'short',
@@ -374,8 +374,8 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                         )}
                       </div>
                       <div className="mt-2 flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        <p className="text-xs text-blue-600">
+                        <span className="w-2 h-2 rounded-full bg-[var(--mint)] animate-pulse"></span>
+                        <p className="text-xs text-[var(--ink-70)]">
                           Refund processing — typically 5–7 business days
                         </p>
                       </div>
@@ -392,8 +392,8 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
               {/* Cancel Order */}
               {canCancel && (
-                <div className="bg-white rounded-2xl shadow-xl p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">Order Actions</h3>
+                <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
+                  <h3 className="text-lg font-bold text-[var(--ink)] mb-3">Order Actions</h3>
                   <OrderActions
                     orderId={orderData.id}
                     orderStatus={orderData.orderStatus}
@@ -427,9 +427,9 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
               {/* Return Policy Info */}
               {isDelivered && (
-                <div className="bg-white rounded-2xl shadow-xl p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">Return Policy</h3>
-                  <p className="text-sm text-gray-700 mb-2">
+                <div className="bg-[var(--paper-card)] rounded-2xl shadow-xl p-6">
+                  <h3 className="text-lg font-bold text-[var(--ink)] mb-3">Return Policy</h3>
+                  <p className="text-sm text-[var(--ink)] mb-2">
                     {canReturn ? (
                       <>
                         You have <strong>{7 - daysSinceDelivery} days</strong> left to request a
@@ -439,7 +439,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                       <>The 7-day return window for this order has expired.</>
                     )}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-[var(--ink-70)]">
                     Items must be unused and in original packaging.
                   </p>
                 </div>

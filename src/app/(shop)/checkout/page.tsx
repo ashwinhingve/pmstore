@@ -302,16 +302,16 @@ export default function CheckoutPage() {
 
                 {/* Free Shipping Banner */}
                 {shipping > 0 && (
-                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-center">
-                    <p className="text-amber-800">
+                  <div className="bg-[var(--foil-soft)] border border-[var(--foil)] rounded-lg p-3 text-sm text-center">
+                    <p className="text-[var(--ink-70)]">
                       Add ₹{(500 - subtotal).toLocaleString()} more for FREE shipping!
                     </p>
                   </div>
                 )}
 
                 {/* Trust Badges */}
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <div className="flex items-center justify-around text-xs text-gray-600">
+                <div className="mt-6 pt-6 border-t border-[var(--foil-soft)]">
+                  <div className="flex items-center justify-around text-xs text-[var(--ink-70)]">
                     <div className="text-center">
                       <div className="text-2xl mb-1">🔒</div>
                       <span>Secure Payment</span>

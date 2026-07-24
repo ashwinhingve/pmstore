@@ -195,18 +195,18 @@ export default function ProductsPage() {
   const showSaleBadge = selectedSection === "value-buys"
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--foil-soft)]">
       {/* Horizontal Category Bar */}
-      <div className="bg-white border-b border-gray-200 sticky top-[80px] z-30">
+      <div className="bg-[var(--paper-card)] border-b border-[var(--foil-soft)] sticky top-[80px] z-30">
         <div className="container mx-auto px-4">
           <div className="relative flex items-center">
             {/* Left Arrow */}
             <button
               onClick={() => scrollCategories("left")}
-              className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-md border border-gray-200 hover:bg-gray-50 flex-shrink-0 z-10"
+              className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-[var(--paper-card)] shadow-md border border-[var(--foil-soft)] hover:bg-[var(--foil-soft)] flex-shrink-0 z-10"
               aria-label="Scroll categories left"
             >
-              <ChevronLeft className="w-4 h-4 text-gray-600" />
+              <ChevronLeft className="w-4 h-4 text-[var(--ink-70)]" />
             </button>
 
             {/* Scrollable Category Pills */}
@@ -220,8 +220,8 @@ export default function ProductsPage() {
                 onClick={() => setSelectedCategory("all")}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                   selectedCategory === "all"
-                    ? "bg-amber-600 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "bg-[var(--mint)] text-white shadow-md"
+                    : "bg-[var(--foil-soft)] text-[var(--ink-70)] hover:bg-[var(--foil)]"
                 }`}
               >
                 <span className="text-base">🛒</span>
@@ -234,13 +234,13 @@ export default function ProductsPage() {
                   onClick={() => setSelectedCategory(category.name)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                     selectedCategory === category.name
-                      ? "bg-amber-600 text-white shadow-md"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      ? "bg-[var(--mint)] text-white shadow-md"
+                      : "bg-[var(--foil-soft)] text-[var(--ink-70)] hover:bg-[var(--foil)]"
                   }`}
                 >
                   <span className="text-base">{category.icon || fallbackIcons[category.name] || "📦"}</span>
                   <span>{category.name}</span>
-                  <span className={`text-xs ${selectedCategory === category.name ? "text-amber-100" : "text-gray-400"}`}>
+                  <span className={`text-xs ${selectedCategory === category.name ? "text-[var(--mint-soft)]" : "text-[var(--ink-40)]"}`}>
                     ({categoryCounts[category.name] || 0})
                   </span>
                 </button>
@@ -250,10 +250,10 @@ export default function ProductsPage() {
             {/* Right Arrow */}
             <button
               onClick={() => scrollCategories("right")}
-              className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-md border border-gray-200 hover:bg-gray-50 flex-shrink-0 z-10"
+              className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-[var(--paper-card)] shadow-md border border-[var(--foil-soft)] hover:bg-[var(--foil-soft)] flex-shrink-0 z-10"
               aria-label="Scroll categories right"
             >
-              <ChevronRight className="w-4 h-4 text-gray-600" />
+              <ChevronRight className="w-4 h-4 text-[var(--ink-70)]" />
             </button>
           </div>
         </div>
@@ -265,8 +265,8 @@ export default function ProductsPage() {
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-[160px] space-y-4">
               {/* Section Navigation */}
-              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <div className="px-4 py-3 bg-gradient-to-r from-amber-600 to-red-700">
+              <div className="bg-[var(--paper-card)] rounded-xl border border-[var(--foil-soft)] overflow-hidden">
+                <div className="px-4 py-3 bg-[var(--mint)]">
                   <h3 className="font-bold text-white text-sm">Browse By</h3>
                 </div>
                 <div className="p-2">
@@ -276,14 +276,14 @@ export default function ProductsPage() {
                       onClick={() => setSelectedSection(section.id)}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                         selectedSection === section.id
-                          ? "bg-amber-50 text-amber-700 border border-amber-200"
-                          : "text-gray-700 hover:bg-gray-50"
+                          ? "bg-[var(--mint-soft)] text-[var(--mint)] border border-[var(--mint-soft)]"
+                          : "text-[var(--ink-70)] hover:bg-[var(--foil-soft)]"
                       }`}
                     >
                       <span className="text-lg">{section.icon}</span>
                       <span>{section.label}</span>
                       {section.id === "all" && (
-                        <span className="ml-auto text-xs text-gray-400">({activeProducts.length})</span>
+                        <span className="ml-auto text-xs text-[var(--ink-40)]">({activeProducts.length})</span>
                       )}
                     </button>
                   ))}
@@ -291,23 +291,23 @@ export default function ProductsPage() {
               </div>
 
               {/* Search */}
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="bg-[var(--paper-card)] rounded-xl border border-[var(--foil-soft)] p-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-40)]" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search products..."
-                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:border-amber-500 focus:outline-none transition-colors"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-[var(--foil-soft)] text-sm focus:border-[var(--mint)] focus:outline-none transition-colors"
                   />
                 </div>
               </div>
 
               {/* Price Range */}
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
-                <h3 className="font-semibold text-sm text-gray-800 mb-3">Price Range</h3>
-                <div className="flex items-center justify-between text-sm font-medium text-gray-600 mb-2">
+              <div className="bg-[var(--paper-card)] rounded-xl border border-[var(--foil-soft)] p-4">
+                <h3 className="font-semibold text-sm text-[var(--ink)] mb-3">Price Range</h3>
+                <div className="flex items-center justify-between text-sm font-medium text-[var(--ink-70)] mb-2">
                   <span>₹{priceRange[0]}</span>
                   <span>₹{priceRange[1]}</span>
                 </div>
@@ -318,7 +318,7 @@ export default function ProductsPage() {
                   step="50"
                   value={priceRange[1]}
                   onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                  className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                  className="w-full h-1.5 bg-[var(--foil-soft)] rounded-lg appearance-none cursor-pointer accent-[var(--mint)]"
                 />
                 <div className="grid grid-cols-2 gap-1.5 mt-3">
                   {[
@@ -332,8 +332,8 @@ export default function ProductsPage() {
                       onClick={() => setPriceRange([0, range.max])}
                       className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
                         priceRange[1] === range.max
-                          ? "bg-amber-100 text-amber-700 border border-amber-200"
-                          : "bg-gray-50 hover:bg-gray-100 text-gray-600"
+                          ? "bg-[var(--mint-soft)] text-[var(--mint)] border border-[var(--mint-soft)]"
+                          : "bg-[var(--foil-soft)] hover:bg-[var(--foil)] text-[var(--ink-70)]"
                       }`}
                     >
                       {range.label}
@@ -345,7 +345,7 @@ export default function ProductsPage() {
               {/* Reset */}
               <button
                 onClick={resetFilters}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 bg-white rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-[var(--ink-70)] bg-[var(--paper-card)] rounded-xl border border-[var(--foil-soft)] hover:bg-[var(--foil-soft)] transition-colors"
               >
                 <SlidersHorizontal className="w-4 h-4" />
                 Reset All Filters
@@ -367,7 +367,7 @@ export default function ProductsPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="flex-1 px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm font-medium focus:border-amber-500 focus:outline-none"
+              className="flex-1 px-3 py-2 rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] text-sm font-medium focus:border-[var(--mint)] focus:outline-none"
             >
               <option value="featured">Sort: Featured</option>
               <option value="name">Sort: Name</option>
@@ -385,8 +385,8 @@ export default function ProductsPage() {
                 onClick={() => setSelectedSection(section.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                   selectedSection === section.id
-                    ? "bg-amber-600 text-white"
-                    : "bg-white text-gray-600 border border-gray-200"
+                    ? "bg-[var(--mint)] text-white"
+                    : "bg-[var(--paper-card)] text-[var(--ink-70)] border border-[var(--foil-soft)]"
                 }`}
               >
                 <span>{section.icon}</span>
@@ -398,25 +398,25 @@ export default function ProductsPage() {
           {/* Main Content */}
           <main className="flex-1">
             {/* Sort Bar (Desktop) */}
-            <div className="hidden lg:flex items-center justify-between mb-4 bg-white px-4 py-3 rounded-xl border border-gray-200">
-              <div className="text-sm text-gray-600">
-                Showing <span className="font-semibold text-gray-900">{filteredProducts.length}</span> products
+            <div className="hidden lg:flex items-center justify-between mb-4 bg-[var(--paper-card)] px-4 py-3 rounded-xl border border-[var(--foil-soft)]">
+              <div className="text-sm text-[var(--ink-70)]">
+                Showing <span className="font-semibold text-[var(--ink)]">{filteredProducts.length}</span> products
                 {selectedSection !== "all" && (
-                  <span className="ml-1 text-amber-600">
+                  <span className="ml-1 text-[var(--mint)]">
                     in {sidebarSections.find(s => s.id === selectedSection)?.label}
                   </span>
                 )}
                 {selectedCategory !== "all" && (
-                  <span className="ml-1 text-amber-600">/ {selectedCategory}</span>
+                  <span className="ml-1 text-[var(--mint)]">/ {selectedCategory}</span>
                 )}
               </div>
               <div className="flex items-center gap-2">
-                <label htmlFor="sort" className="text-sm text-gray-600">Sort by:</label>
+                <label htmlFor="sort" className="text-sm text-[var(--ink-70)]">Sort by:</label>
                 <select
                   id="sort"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-sm font-medium focus:border-amber-500 focus:outline-none"
+                  className="px-3 py-1.5 rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] text-sm font-medium focus:border-[var(--mint)] focus:outline-none"
                 >
                   <option value="featured">Featured</option>
                   <option value="name">Name (A-Z)</option>
@@ -429,9 +429,18 @@ export default function ProductsPage() {
 
             {/* Products Grid */}
             {loading ? (
-              <div className="text-center py-20 bg-white rounded-xl border border-gray-200">
-                <div className="w-12 h-12 mx-auto mb-4 border-3 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-gray-500 text-sm">Loading products...</p>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="bg-[var(--paper-card)] rounded-lg overflow-hidden">
+                    <div className="aspect-square bg-[var(--foil-soft)] animate-pulse mb-3" />
+                    <div className="px-3 py-2">
+                      <div className="h-4 bg-[var(--foil-soft)] animate-pulse rounded mb-2" />
+                      <div className="h-3 bg-[var(--foil-soft)] animate-pulse rounded w-2/3 mb-3" />
+                      <div className="h-5 bg-[var(--foil-soft)] animate-pulse rounded mb-2" />
+                      <div className="h-3 bg-[var(--foil-soft)] animate-pulse rounded w-1/2" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
@@ -444,18 +453,18 @@ export default function ProductsPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-                <div className="w-20 h-20 mx-auto mb-4 bg-amber-50 rounded-full flex items-center justify-center">
-                  <Search className="w-10 h-10 text-amber-400" />
+              <div className="text-center py-16 bg-[var(--paper-card)] rounded-xl border border-[var(--foil-soft)]">
+                <div className="w-20 h-20 mx-auto mb-4 bg-[var(--mint-soft)] rounded-full flex items-center justify-center">
+                  <Search className="w-10 h-10 text-[var(--mint)]" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-800">No products found</h3>
-                <p className="text-gray-500 text-sm mb-4 max-w-md mx-auto">
+                <h3 className="text-lg font-bold mb-2 text-[var(--ink)]">No products found</h3>
+                <p className="text-[var(--ink-70)] text-sm mb-4 max-w-md mx-auto">
                   Try adjusting your filters or search query.
                 </p>
                 <Button
                   onClick={resetFilters}
                   size="sm"
-                  className="bg-amber-600 hover:bg-amber-700 text-white"
+                  className="bg-[var(--mint)] hover:opacity-90 text-white"
                 >
                   Clear All Filters
                 </Button>
@@ -481,13 +490,13 @@ export default function ProductsPage() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed left-0 top-0 bottom-0 w-80 bg-white z-50 overflow-y-auto lg:hidden shadow-2xl"
+              className="fixed left-0 top-0 bottom-0 w-80 bg-[var(--paper-card)] z-50 overflow-y-auto lg:hidden shadow-2xl"
             >
-              <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                <h2 className="text-lg font-bold text-gray-800">Filters</h2>
+              <div className="flex items-center justify-between p-4 border-b border-[var(--foil-soft)]">
+                <h2 className="text-lg font-bold text-[var(--ink)]">Filters</h2>
                 <button
                   onClick={() => setShowMobileFilters(false)}
-                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                  className="w-8 h-8 rounded-full bg-[var(--foil-soft)] hover:bg-[var(--foil)] flex items-center justify-center"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -496,7 +505,7 @@ export default function ProductsPage() {
               <div className="p-4 space-y-4">
                 {/* Browse By */}
                 <div>
-                  <h3 className="font-semibold text-sm text-gray-800 mb-2">Browse By</h3>
+                  <h3 className="font-semibold text-sm text-[var(--ink)] mb-2">Browse By</h3>
                   <div className="space-y-1">
                     {sidebarSections.map((section) => (
                       <button
@@ -507,8 +516,8 @@ export default function ProductsPage() {
                         }}
                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                           selectedSection === section.id
-                            ? "bg-amber-50 text-amber-700 border border-amber-200"
-                            : "text-gray-700 hover:bg-gray-50"
+                            ? "bg-[var(--mint-soft)] text-[var(--mint)] border border-[var(--mint-soft)]"
+                            : "text-[var(--ink-70)] hover:bg-[var(--foil-soft)]"
                         }`}
                       >
                         <span className="text-lg">{section.icon}</span>
@@ -520,22 +529,22 @@ export default function ProductsPage() {
 
                 {/* Search */}
                 <div>
-                  <h3 className="font-semibold text-sm text-gray-800 mb-2">Search</h3>
+                  <h3 className="font-semibold text-sm text-[var(--ink)] mb-2">Search</h3>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-40)]" />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search products..."
-                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-gray-200 text-sm focus:border-amber-500 focus:outline-none"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-[var(--foil-soft)] text-sm focus:border-[var(--mint)] focus:outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Categories */}
                 <div>
-                  <h3 className="font-semibold text-sm text-gray-800 mb-2">Categories</h3>
+                  <h3 className="font-semibold text-sm text-[var(--ink)] mb-2">Categories</h3>
                   <div className="space-y-1">
                     <button
                       onClick={() => {
@@ -544,12 +553,12 @@ export default function ProductsPage() {
                       }}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                         selectedCategory === "all"
-                          ? "bg-amber-50 text-amber-700 border border-amber-200"
-                          : "text-gray-700 hover:bg-gray-50"
+                          ? "bg-[var(--mint-soft)] text-[var(--mint)] border border-[var(--mint-soft)]"
+                          : "text-[var(--ink-70)] hover:bg-[var(--foil-soft)]"
                       }`}
                     >
                       <span>All Categories</span>
-                      <span className="text-xs text-gray-400">({activeProducts.length})</span>
+                      <span className="text-xs text-[var(--ink-40)]">({activeProducts.length})</span>
                     </button>
                     {categories.map((category) => (
                       <button
@@ -560,15 +569,15 @@ export default function ProductsPage() {
                         }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                           selectedCategory === category.name
-                            ? "bg-amber-50 text-amber-700 border border-amber-200"
-                            : "text-gray-700 hover:bg-gray-50"
+                            ? "bg-[var(--mint-soft)] text-[var(--mint)] border border-[var(--mint-soft)]"
+                            : "text-[var(--ink-70)] hover:bg-[var(--foil-soft)]"
                         }`}
                       >
                         <span className="flex items-center gap-2">
                           <span>{category.icon || fallbackIcons[category.name] || "📦"}</span>
                           <span>{category.name}</span>
                         </span>
-                        <span className="text-xs text-gray-400">({categoryCounts[category.name] || 0})</span>
+                        <span className="text-xs text-[var(--ink-40)]">({categoryCounts[category.name] || 0})</span>
                       </button>
                     ))}
                   </div>
@@ -576,8 +585,8 @@ export default function ProductsPage() {
 
                 {/* Price Range */}
                 <div>
-                  <h3 className="font-semibold text-sm text-gray-800 mb-2">Price Range</h3>
-                  <div className="flex items-center justify-between text-sm font-medium text-gray-600 mb-2">
+                  <h3 className="font-semibold text-sm text-[var(--ink)] mb-2">Price Range</h3>
+                  <div className="flex items-center justify-between text-sm font-medium text-[var(--ink-70)] mb-2">
                     <span>₹{priceRange[0]}</span>
                     <span>₹{priceRange[1]}</span>
                   </div>
@@ -588,7 +597,7 @@ export default function ProductsPage() {
                     step="50"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                    className="w-full h-1.5 bg-[var(--foil-soft)] rounded-lg appearance-none cursor-pointer accent-[var(--mint)]"
                   />
                 </div>
 
@@ -598,7 +607,7 @@ export default function ProductsPage() {
                     resetFilters()
                     setShowMobileFilters(false)
                   }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-[var(--ink-70)] bg-[var(--foil-soft)] rounded-lg border border-[var(--foil-soft)] hover:bg-[var(--foil)]"
                 >
                   <SlidersHorizontal className="w-4 h-4" />
                   Reset All Filters

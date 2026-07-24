@@ -88,14 +88,14 @@ export default async function SearchPage({
   return (
     <div className="container mx-auto px-4 py-6">
       <header className="mb-4">
-        <h1 className="text-xl font-bold text-gray-900">
-          Results for <span className="text-amber-700">“{q}”</span>
+        <h1 className="text-xl font-bold text-[var(--ink)]">
+          Results for <span className="text-[var(--mint)]">“{q}”</span>
         </h1>
-        <p className="mt-1 font-mono text-sm tabular-nums text-gray-500">
+        <p className="mt-1 font-mono text-sm tabular-nums text-[var(--ink-70)]">
           {meta.total} {meta.total === 1 ? 'medicine' : 'medicines'}
         </p>
         {data.degraded && (
-          <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          <p className="mt-2 rounded-md bg-[var(--mint-soft)] px-3 py-2 text-sm text-[var(--mint)]">
             Showing basic results. Full typo-tolerant search comes online once the catalogue index
             is built.
           </p>
@@ -208,7 +208,7 @@ function FacetSidebar({
 function FacetGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-5">
-      <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{title}</h2>
+      <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-70)]">{title}</h2>
       <ul className="space-y-1">{children}</ul>
     </section>
   );
@@ -230,12 +230,12 @@ function FacetLink({
       <Link
         href={href}
         aria-pressed={active}
-        className={`flex min-h-11 items-center justify-between rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 ${
-          active ? 'bg-amber-100 font-medium text-amber-900' : 'text-gray-700 hover:bg-gray-100'
+        className={`flex min-h-11 items-center justify-between rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--mint)]/40 ${
+          active ? 'bg-[var(--mint-soft)] font-medium text-[var(--mint)]' : 'text-[var(--ink-70)] hover:bg-[var(--foil-soft)]'
         }`}
       >
         <span>{children}</span>
-        {count != null && <span className="font-mono text-xs tabular-nums text-gray-400">{count}</span>}
+        {count != null && <span className="font-mono text-xs tabular-nums text-[var(--ink-40)]">{count}</span>}
       </Link>
     </li>
   );
@@ -255,7 +255,7 @@ function Pagination({
       <PageLink disabled={current <= 1} href={hrefWith(params, { page: String(current - 1) })}>
         Previous
       </PageLink>
-      <span className="font-mono text-sm tabular-nums text-gray-600">
+      <span className="font-mono text-sm tabular-nums text-[var(--ink-70)]">
         Page {current} of {totalPages}
       </span>
       <PageLink disabled={current >= totalPages} href={hrefWith(params, { page: String(current + 1) })}>
@@ -276,13 +276,13 @@ function PageLink({
 }) {
   if (disabled) {
     return (
-      <span className="cursor-not-allowed rounded-md px-4 py-2 text-sm text-gray-300">{children}</span>
+      <span className="cursor-not-allowed rounded-md px-4 py-2 text-sm text-[var(--ink-40)]">{children}</span>
     );
   }
   return (
     <Link
       href={href}
-      className="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+      className="rounded-md border border-[var(--foil)] px-4 py-2 text-sm text-[var(--ink-70)] hover:bg-[var(--foil-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--mint)]/40"
     >
       {children}
     </Link>
@@ -291,9 +291,9 @@ function PageLink({
 
 function NoResults({ q }: { q: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-gray-300 px-6 py-16 text-center">
-      <h2 className="text-lg font-semibold text-gray-900">No medicines match “{q}”</h2>
-      <p className="mx-auto mt-2 max-w-sm text-sm text-gray-500">
+    <div className="rounded-lg border border-dashed border-[var(--foil)] px-6 py-16 text-center">
+      <h2 className="text-lg font-semibold text-[var(--ink)]">No medicines match “{q}”</h2>
+      <p className="mx-auto mt-2 max-w-sm text-sm text-[var(--ink-70)]">
         Check the spelling, or try the salt name — for example “paracetamol” instead of a brand.
       </p>
     </div>
@@ -303,10 +303,10 @@ function NoResults({ q }: { q: string }) {
 function EmptyPrompt({ invalid = false }: { invalid?: boolean }) {
   return (
     <div className="container mx-auto px-4 py-20 text-center">
-      <h1 className="text-xl font-semibold text-gray-900">
+      <h1 className="text-xl font-semibold text-[var(--ink)]">
         {invalid ? 'Try a different search' : 'Search for a medicine'}
       </h1>
-      <p className="mx-auto mt-2 max-w-md text-sm text-gray-500">
+      <p className="mx-auto mt-2 max-w-md text-sm text-[var(--ink-70)]">
         Search by brand or salt — Dolo 650, paracetamol, or a condition like blood pressure.
       </p>
     </div>
