@@ -1,0 +1,71 @@
+{
+  "expo": {
+    "name": "PMStore",
+    "slug": "pmstore",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FBFAF7"
+    },
+    "scheme": "pmstore",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "ios": {
+      "supportsTabletMode": true,
+      "bundleIdentifier": "com.pratigyamedicalstore.app",
+      "deploymentTarget": "14.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "We need camera access to capture prescriptions.",
+        "NSPhotoLibraryUsageDescription": "We need access to your photos to upload prescriptions.",
+        "NSPhotoLibraryAddOnlyUsageDescription": "We need access to save images to your photos."
+      }
+    },
+    "android": {
+      "package": "com.pratigyamedicalstore.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FBFAF7"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "com.google.android.c2dm.permission.RECEIVE"
+      ],
+      "googleServicesFile": "./google-services.json",
+      "targetApiLevel": 34,
+      "minSdkVersion": 21
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#16233A",
+          "sounds": ["./assets/notification.wav"],
+          "modes": "default"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app needs access to your photos to upload prescriptions.",
+          "cameraPermission": "The app needs camera access to capture prescriptions."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "TODO-set-eas-project-id"
+      }
+    }
+  }
+}
