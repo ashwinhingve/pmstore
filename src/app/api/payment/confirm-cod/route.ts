@@ -9,6 +9,7 @@ import Discount from '@/models/Discount';
 import { emailService } from '@/lib/notifications/email';
 import { smsService } from '@/lib/notifications/sms';
 import { whatsappService } from '@/lib/notifications/whatsapp';
+import { buildStockDecrement } from '@/lib/checkout/stock';
 
 /**
  * POST /api/payment/confirm-cod
@@ -55,23 +56,11 @@ export async function POST(req: NextRequest) {
       await Discount.findByIdAndUpdate(order.discountId, { $inc: { totalUsed: 1 } });
     }
 
-    // Reduce product stock (variant-aware)
+    // Reduce product stock and bump orderCount (variant-aware)
     const orderItems = await OrderItem.find({ orderId: order._id });
     for (const item of orderItems) {
-      if (item.variantId) {
-        await Product.findOneAndUpdate(
-          {
-            _id: item.productId,
-            variants: { $elemMatch: { id: item.variantId, stock: { $gte: item.quantity } } },
-          },
-          { $inc: { 'variants.$.stock': -item.quantity, stock: -item.quantity } }
-        );
-      } else {
-        await Product.findOneAndUpdate(
-          { _id: item.productId, stock: { $gte: item.quantity } },
-          { $inc: { stock: -item.quantity } }
-        );
-      }
+      const { filter, update } = buildStockDecrement(item);
+      await Product.findOneAndUpdate(filter, update);
     }
 
     // Send notifications (non-blocking)

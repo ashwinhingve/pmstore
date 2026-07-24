@@ -14,6 +14,7 @@ import Discount from '@/models/Discount';
 import { applyRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimit';
 import { generatePaymentIdempotencyKey, idempotencyService } from '@/lib/utils/idempotency';
 import { createRequestLogger, LogMessages, MetricNames } from '@/lib/utils/logger';
+import { buildStockDecrement } from '@/lib/checkout/stock';
 
 // Cashfree redirects here via GET with ?order_id=xxx after payment
 export async function GET(request: NextRequest) {
@@ -167,32 +168,13 @@ export async function GET(request: NextRequest) {
         const orderItems = await OrderItem.find({ orderId: order._id }).session(session);
 
         for (const item of orderItems) {
-          let updatedProduct;
-
-          if (item.variantId) {
-            // Reduce variant-level stock (and root stock for display consistency)
-            updatedProduct = await Product.findOneAndUpdate(
-              {
-                _id: item.productId,
-                variants: { $elemMatch: { id: item.variantId, stock: { $gte: item.quantity } } },
-              },
-              {
-                $inc: { 'variants.$.stock': -item.quantity, stock: -item.quantity },
-              },
-              { new: true, session }
-            );
-          } else {
-            updatedProduct = await Product.findOneAndUpdate(
-              {
-                _id: item.productId,
-                stock: { $gte: item.quantity },
-              },
-              {
-                $inc: { stock: -item.quantity },
-              },
-              { new: true, session }
-            );
-          }
+          // Decrement stock and bump orderCount atomically; a null result means
+          // a concurrent order took the last unit, which aborts the transaction.
+          const { filter, update } = buildStockDecrement(item);
+          const updatedProduct = await Product.findOneAndUpdate(filter, update, {
+            new: true,
+            session,
+          });
 
           if (!updatedProduct) {
             const currentProduct = await Product.findById(item.productId).session(session);
@@ -489,21 +471,14 @@ export async function POST(request: NextRequest) {
           order.lastStatusUpdate = new Date();
           await order.save();
 
-          // Reduce product stock (mirrors the GET handler transaction logic)
+          // Reduce product stock + bump orderCount (mirrors the GET handler).
+          // The `order.paymentStatus !== 'paid'` guard above keeps this from
+          // double-running when the browser GET callback already processed it.
           try {
             const webhookOrderItems = await OrderItem.find({ orderId: order._id });
             for (const item of webhookOrderItems) {
-              if (item.variantId) {
-                await Product.findOneAndUpdate(
-                  { _id: item.productId, variants: { $elemMatch: { id: item.variantId, stock: { $gte: item.quantity } } } },
-                  { $inc: { 'variants.$.stock': -item.quantity, stock: -item.quantity } }
-                );
-              } else {
-                await Product.findOneAndUpdate(
-                  { _id: item.productId, stock: { $gte: item.quantity } },
-                  { $inc: { stock: -item.quantity } }
-                );
-              }
+              const { filter, update } = buildStockDecrement(item);
+              await Product.findOneAndUpdate(filter, update);
             }
           } catch (stockErr) {
             logger.error('Webhook: stock deduction failed', stockErr as Error, { orderNumber });
