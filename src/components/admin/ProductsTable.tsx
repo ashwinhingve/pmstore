@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import {
   Search,
   Plus,
+  Upload,
   Edit,
   Trash2,
   Eye,
@@ -152,6 +153,13 @@ export default function ProductsTable({
               />
             </div>
           </form>
+
+          <Link href="/admin/products/import">
+            <Button variant="outline">
+              <Upload className="w-4 h-4 mr-2" />
+              Import
+            </Button>
+          </Link>
 
           <Link href="/admin/products/new">
             <Button className="bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)]">
