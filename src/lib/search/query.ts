@@ -36,11 +36,29 @@ export interface SearchFilters {
   maxPrice?: number;
 }
 
+/** Sort options the API accepts (mirrors searchSortEnum in validations/search). */
+export type SortKey = 'relevance' | 'price_asc' | 'price_desc' | 'unit_price_asc';
+
 export interface SearchParams {
   q: string;
   page?: number;
   limit?: number;
   filters?: SearchFilters;
+  sort?: SortKey;
+}
+
+/**
+ * Explicit sort spec for a non-relevance sort, or null to keep the engine's
+ * relevance order (Atlas searchScore / Mongo textScore). Shared by the Atlas
+ * pipeline and the $text fallback so both honour the `sort` param.
+ */
+export function sortSpec(sort: SortKey | undefined): Record<string, 1 | -1> | null {
+  switch (sort) {
+    case 'price_asc': return { price: 1 };
+    case 'price_desc': return { price: -1 };
+    case 'unit_price_asc': return { unitPrice: 1 };
+    default: return null; // 'relevance' or undefined
+  }
 }
 
 export interface SuggestParams {
@@ -147,6 +165,7 @@ export function buildSearchPipeline(params: SearchParams): Record<string, unknow
   const { q, filters } = params;
   const page = params.page && params.page > 0 ? Math.floor(params.page) : 1;
   const limit = clampLimit(params.limit, DEFAULT_LIMIT, MAX_LIMIT);
+  const sort = sortSpec(params.sort);
 
   return [
     {
@@ -159,6 +178,8 @@ export function buildSearchPipeline(params: SearchParams): Record<string, unknow
         },
       },
     },
+    // A non-relevance sort overrides Atlas score order; omit for 'relevance'.
+    ...(sort ? [{ $sort: sort }] : []),
     { $skip: (page - 1) * limit },
     { $limit: limit },
     { $project: CARD_PROJECTION },

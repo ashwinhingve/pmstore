@@ -4,6 +4,7 @@ import {
   buildSuggestPipeline,
   buildFacetPipeline,
   fuzzyForTerm,
+  sortSpec,
   SEARCH_INDEX,
 } from './query';
 
@@ -102,6 +103,33 @@ describe('buildSearchPipeline', () => {
     expect(project.name).toBe(1);
     expect(project.unitPrice).toBe(1);
     expect(project.score).toEqual({ $meta: 'searchScore' });
+  });
+
+  it('adds no $sort for relevance (keeps Atlas score order)', () => {
+    expect(buildSearchPipeline({ q: 'dolo' }).some((s) => '$sort' in s)).toBe(false);
+    expect(buildSearchPipeline({ q: 'dolo', sort: 'relevance' }).some((s) => '$sort' in s)).toBe(false);
+  });
+
+  it('inserts a $sort before $skip for an explicit sort', () => {
+    const pipeline = buildSearchPipeline({ q: 'dolo', sort: 'price_asc', page: 2, limit: 20 });
+    const sortIdx = pipeline.findIndex((s) => '$sort' in s);
+    const skipIdx = pipeline.findIndex((s) => '$skip' in s);
+    expect(sortIdx).toBeGreaterThanOrEqual(0);
+    expect(sortIdx).toBeLessThan(skipIdx);
+    expect((pipeline[sortIdx] as any).$sort).toEqual({ price: 1 });
+  });
+});
+
+describe('sortSpec', () => {
+  it('maps price and unit-price sorts to field specs', () => {
+    expect(sortSpec('price_asc')).toEqual({ price: 1 });
+    expect(sortSpec('price_desc')).toEqual({ price: -1 });
+    expect(sortSpec('unit_price_asc')).toEqual({ unitPrice: 1 });
+  });
+
+  it('returns null for relevance / undefined (engine keeps score order)', () => {
+    expect(sortSpec('relevance')).toBeNull();
+    expect(sortSpec(undefined)).toBeNull();
   });
 });
 

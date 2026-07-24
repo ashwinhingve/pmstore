@@ -13,7 +13,7 @@
  */
 import mongoose, { type PipelineStage } from 'mongoose';
 import Product from '@/models/Product';
-import { buildSearchPipeline, buildSuggestPipeline, buildFacetPipeline, type SearchFilters } from './query';
+import { buildSearchPipeline, buildSuggestPipeline, buildFacetPipeline, sortSpec, type SearchFilters } from './query';
 import type { SearchQuery, SearchSuggestQuery } from '@/lib/validations/search';
 
 /**
@@ -61,11 +61,11 @@ function totalFromFacets(facets: SearchFacets): number {
 
 export async function executeSearch(params: SearchQuery): Promise<SearchResponse> {
   const filters = toFilters(params);
-  const { q, page, limit } = params;
+  const { q, page, limit, sort } = params;
 
   try {
     const [results, facetRes] = await Promise.all([
-      Product.aggregate(asPipeline(buildSearchPipeline({ q, page, limit, filters }))),
+      Product.aggregate(asPipeline(buildSearchPipeline({ q, page, limit, filters, sort }))),
       Product.aggregate(asPipeline(buildFacetPipeline({ q, filters }))),
     ]);
     const facets: SearchFacets = { ...EMPTY_FACETS, ...(facetRes[0] ?? {}) };
@@ -92,12 +92,14 @@ async function textFallback(params: SearchQuery, filters: SearchFilters): Promis
     query.price = price;
   }
 
+  // Honour the sort param; 'relevance' (null spec) keeps the textScore order.
+  const explicitSort = sortSpec(params.sort);
+  const finder = explicitSort
+    ? Product.find(query).sort(explicitSort)
+    : Product.find(query, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } });
+
   const [results, total] = await Promise.all([
-    Product.find(query, { score: { $meta: 'textScore' } })
-      .sort({ score: { $meta: 'textScore' } })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean(),
+    finder.skip((page - 1) * limit).limit(limit).lean(),
     Product.countDocuments(query),
   ]);
 

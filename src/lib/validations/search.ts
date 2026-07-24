@@ -40,5 +40,6 @@ export const searchSuggestSchema = z.object({
   limit: z.coerce.number().int().min(1).max(8).catch(8).default(8),
 });
 
+export type SortKey = z.infer<typeof searchSortEnum>;
 export type SearchQuery = z.infer<typeof searchQuerySchema>;
 export type SearchSuggestQuery = z.infer<typeof searchSuggestSchema>;

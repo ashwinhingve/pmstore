@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import Product from '../src/models/Product';
 import Category from '../src/models/Category';
 import { parseProductRow, type ParsedProductRow } from '../src/lib/import/product-row';
+import { parseCsv } from '../src/lib/import/csv';
 
 // Load environment variables from .env.local
 const __filename = fileURLToPath(import.meta.url);
@@ -28,47 +29,6 @@ dotenv.config({ path: join(__dirname, '..', '.env.local') });
  * templates/product-import-template.csv is the contract. If the client's export
  * doesn't match, add a mapping layer in scripts/mappers/ — do not edit the template.
  */
-
-// --- Minimal RFC4180-ish CSV parser (quoted fields, embedded commas/newlines) ---
-function parseCsv(text: string): Record<string, string>[] {
-  const rows: string[][] = [];
-  let field = '';
-  let record: string[] = [];
-  let inQuotes = false;
-
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (inQuotes) {
-      if (c === '"') {
-        if (text[i + 1] === '"') { field += '"'; i++; }
-        else inQuotes = false;
-      } else field += c;
-    } else if (c === '"') {
-      inQuotes = true;
-    } else if (c === ',') {
-      record.push(field); field = '';
-    } else if (c === '\n' || c === '\r') {
-      if (c === '\r' && text[i + 1] === '\n') i++;
-      record.push(field); field = '';
-      if (record.some((f) => f !== '')) rows.push(record);
-      record = [];
-    } else {
-      field += c;
-    }
-  }
-  if (field !== '' || record.length) {
-    record.push(field);
-    if (record.some((f) => f !== '')) rows.push(record);
-  }
-
-  if (!rows.length) return [];
-  const header = rows[0].map((h) => h.trim());
-  return rows.slice(1).map((r) => {
-    const obj: Record<string, string> = {};
-    header.forEach((h, i) => (obj[h] = r[i] ?? ''));
-    return obj;
-  });
-}
 
 function slugify(s: string): string {
   return s
