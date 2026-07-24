@@ -10,18 +10,36 @@ import { MobileMenu } from "./MobileMenu";
 import { SearchBar } from "@/components/search/SearchBar";
 import { Logo } from "@/components/shared/Logo";
 import { useCartStore } from "@/store/useCartStore";
-import { User, ShoppingCart, Menu, X, LogOut, LayoutDashboard, Package } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  User,
+  ShoppingCart,
+  Menu,
+  LogOut,
+  LayoutDashboard,
+  Package,
+  Bookmark,
+} from "lucide-react";
 import { SITE_NAME } from "@/lib/constants";
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const totalItems = useCartStore((state) => state.getTotalItems());
   const { data: session, status } = useSession();
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Elevation appears only once content scrolls under the bar.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -36,45 +54,55 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showUserMenu]);
 
+  const menuLinkClass =
+    "flex min-h-11 items-center gap-3 px-4 text-sm text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--mint-soft)] hover:text-[var(--ink)]";
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4">
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full border-b border-[var(--foil-soft)] bg-[var(--paper)]/90 backdrop-blur transition-shadow duration-[var(--dur-fast)]",
+        scrolled && "shadow-[var(--shadow-sm)]"
+      )}
+    >
+      <div className="mx-auto flex h-18 max-w-[1200px] items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo and Brand */}
         <Link
           href="/"
-          className="flex items-center gap-3 group transition-opacity hover:opacity-80"
+          className="group flex items-center gap-3 transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
           aria-label={`${SITE_NAME} - Home`}
         >
           <div className="shrink-0 text-[var(--ink)]">
-            <Logo size={48} variant="mark" />
+            <Logo size={44} variant="mark" />
           </div>
-          <div className="hidden sm:flex lg:hidden xl:flex flex-col">
-            <span className="text-lg md:text-xl font-bold text-[var(--ink)] leading-tight">
+          <div className="hidden flex-col sm:flex lg:hidden xl:flex">
+            <span className="text-lg font-bold leading-tight text-[var(--ink)] md:text-xl">
               {SITE_NAME}
             </span>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex lg:items-center" aria-label="Main navigation">
+        <div className="hidden lg:flex lg:items-center" aria-label="Main navigation">
           <Navigation />
-        </nav>
+        </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center space-x-2 md:space-x-3">
+        <div className="flex items-center gap-1 md:gap-2">
           {/* Search — primary navigation (docs/03-DESIGN-SYSTEM.md) */}
-          <div className="hidden md:block w-56 lg:w-72">
+          <div className="hidden w-56 md:block lg:w-72">
             <SearchBar />
           </div>
 
           {/* User Account */}
           {mounted && status === 'authenticated' && session?.user ? (
-            <div className="relative user-menu-container">
+            <div className="user-menu-container relative">
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:bg-[var(--mint-soft)] hover:text-[var(--mint)] transition-colors"
+                className="transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)]"
                 aria-label="User account"
+                aria-expanded={showUserMenu}
+                aria-haspopup="menu"
                 onClick={() => setShowUserMenu(!showUserMenu)}
               >
                 {session.user.image ? (
@@ -91,44 +119,55 @@ export function Header() {
               </Button>
 
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-64 bg-[var(--paper-card)] rounded-lg shadow-xl border border-[var(--foil-soft)] overflow-hidden z-50">
-                  <div className="px-4 py-3 bg-[var(--mint-soft)] border-b border-[var(--foil-soft)]">
-                    <p className="text-sm font-semibold text-[var(--ink)] truncate">
+                <div className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-md)]">
+                  <div className="border-b border-[var(--foil-soft)] bg-[var(--mint-soft)] px-4 py-3">
+                    <p className="truncate text-sm font-semibold text-[var(--ink)]">
                       {session.user.name || 'User'}
                     </p>
-                    <p className="text-xs text-[var(--ink-70)] truncate">
+                    <p className="truncate text-xs text-[var(--ink-70)]">
                       {session.user.email}
                     </p>
-                    <p className="text-xs text-[var(--ink-40)] mt-1">
-                      ID: {session.user.id}
-                    </p>
-                    <span className={`inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full ${
-                      session.user.role === 'admin'
-                        ? 'bg-[var(--ink)] text-[var(--paper-card)]'
-                        : 'bg-[var(--mint-soft)] text-[var(--mint)]'
-                    }`}>
-                      {session.user.role === 'admin' ? 'Admin' : 'Customer'}
-                    </span>
+                    {session.user.role === 'admin' && (
+                      <span className="mt-1.5 inline-block rounded-full bg-[var(--ink)] px-2 py-0.5 text-xs font-semibold text-[var(--paper-card)]">
+                        Admin
+                      </span>
+                    )}
                   </div>
 
                   <div className="py-2">
                     {session.user.role === 'admin' && (
                       <Link
                         href="/admin/dashboard"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--ink-70)] hover:bg-[var(--mint-soft)] hover:text-[var(--ink)] transition-colors"
+                        className={menuLinkClass}
                         onClick={() => setShowUserMenu(false)}
                       >
-                        <LayoutDashboard className="h-4 w-4" />
-                        Admin Dashboard
+                        <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
+                        Admin dashboard
                       </Link>
                     )}
                     <Link
                       href="/orders"
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--ink-70)] hover:bg-[var(--mint-soft)] hover:text-[var(--ink)] transition-colors"
+                      className={menuLinkClass}
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <ShoppingCart className="h-4 w-4" />
-                      My Orders
+                      <Package className="h-4 w-4" aria-hidden="true" />
+                      Your orders
+                    </Link>
+                    <Link
+                      href="/saved"
+                      className={menuLinkClass}
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      <Bookmark className="h-4 w-4" aria-hidden="true" />
+                      Saved medicines
+                    </Link>
+                    <Link
+                      href="/profile"
+                      className={menuLinkClass}
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      <User className="h-4 w-4" aria-hidden="true" />
+                      Profile
                     </Link>
 
                     <button
@@ -136,10 +175,10 @@ export function Header() {
                         setShowUserMenu(false);
                         signOut({ callbackUrl: '/' });
                       }}
-                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-[var(--ink-70)] hover:bg-[var(--foil-soft)] hover:text-[var(--ink)] transition-colors"
+                      className={cn(menuLinkClass, "w-full hover:bg-[var(--foil-soft)]")}
                     >
-                      <LogOut className="h-4 w-4" />
-                      Sign Out
+                      <LogOut className="h-4 w-4" aria-hidden="true" />
+                      Sign out
                     </button>
                   </div>
                 </div>
@@ -150,8 +189,8 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:bg-[var(--mint-soft)] hover:text-[var(--mint)] transition-colors"
-                aria-label="User account"
+                className="transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)]"
+                aria-label="Sign in"
               >
                 <User className="h-5 w-5" />
               </Button>
@@ -164,8 +203,8 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="hidden sm:flex hover:bg-[var(--mint-soft)] hover:text-[var(--mint)] transition-colors"
-                aria-label="My Orders"
+                className="hidden transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)] sm:flex"
+                aria-label="Your orders"
               >
                 <Package className="h-5 w-5" />
               </Button>
@@ -177,12 +216,12 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="relative hover:bg-[var(--mint-soft)] hover:text-[var(--mint)] transition-colors"
+              className="relative transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)]"
               aria-label={`Shopping cart${mounted && totalItems > 0 ? ` with ${totalItems} items` : ''}`}
             >
               <ShoppingCart className="h-5 w-5" />
               {mounted && totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-[var(--ink)] text-xs text-[var(--paper-card)] flex items-center justify-center font-bold shadow-md">
+                <span className="data absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--ink)] text-xs font-bold text-[var(--paper-card)] shadow-[var(--shadow-xs)]">
                   {totalItems}
                 </span>
               )}
@@ -193,22 +232,18 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden hover:bg-[var(--mint-soft)] hover:text-[var(--mint)] transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            className="transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)] lg:hidden"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Open menu"
             aria-expanded={isMobileMenuOpen}
           >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
+            <Menu className="h-6 w-6" />
           </Button>
         </div>
       </div>
 
       {/* Mobile search — full width under the bar; search is the primary action */}
-      <div className="border-t px-4 py-2 md:hidden">
+      <div className="border-t border-[var(--foil-soft)] px-4 py-2 md:hidden">
         <SearchBar />
       </div>
 

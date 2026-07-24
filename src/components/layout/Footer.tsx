@@ -4,191 +4,175 @@ import { Logo } from "@/components/shared/Logo";
 import { NewsletterForm } from "./NewsletterForm";
 import { SITE_NAME, SITE_DESCRIPTION, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
 
+const shopLinks = [
+  { href: "/products", label: "All medicines" },
+  { href: "/prescriptions", label: "Upload prescription" },
+  { href: "/orders", label: "Your orders" },
+  { href: "/saved", label: "Saved medicines" },
+];
+
+const companyLinks = [
+  { href: "/about", label: "About us" },
+  { href: "/wholesale", label: "Wholesale" },
+  { href: "/contact", label: "Contact" },
+  { href: "/faq", label: "FAQs" },
+];
+
+const legalLinks = [
+  { href: "/privacy-policy", label: "Privacy policy" },
+  { href: "/terms-and-conditions", label: "Terms & conditions" },
+  { href: "/refund-policy", label: "Refund policy" },
+  { href: "/shipping-policy", label: "Shipping policy" },
+  { href: "/drug-licence", label: "Drug licence" },
+];
+
+const linkClass =
+  "text-sm text-[var(--foil)] transition-colors duration-[var(--dur-fast)] hover:text-[var(--paper)] hover:underline";
+
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full border-t border-[var(--foil-soft)] bg-[var(--paper)]">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="w-full bg-[image:var(--surface-hero)] text-[var(--paper)]">
+      <div className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="mb-10 grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           {/* Company Info */}
           <div className="space-y-4">
-            <Link href="/" className="inline-block group transition-opacity hover:opacity-80">
-              <div className="text-[var(--ink)] mb-2">
+            <Link href="/" className="inline-block transition-opacity duration-[var(--dur-fast)] hover:opacity-80">
+              <div className="mb-2 text-[var(--paper)]">
                 <Logo size={40} variant="mark" />
               </div>
-              <h3 className="text-lg font-bold text-[var(--ink)]">
-                {SITE_NAME}
-              </h3>
-              <p className="text-xs font-medium text-muted-foreground">Trusted Pharmacy</p>
+              <h3 className="text-lg font-bold text-[var(--paper)]">{SITE_NAME}</h3>
+              <p className="text-xs font-medium text-[var(--foil)]">Trusted pharmacy</p>
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="max-w-sm text-sm leading-relaxed text-[var(--foil)]">
               {SITE_DESCRIPTION}
             </p>
 
-            {/* Social Media Links */}
-            <div className="flex space-x-3">
+            <div className="flex gap-3">
               <Link
                 href={SOCIAL_LINKS.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-[var(--mint)] hover:opacity-80 text-white transition-opacity"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--mint)] text-[var(--paper-card)] transition-opacity duration-[var(--dur-fast)] hover:opacity-85"
                 aria-label="Contact us on WhatsApp"
               >
-                <MessageCircle className="h-4 w-4" />
+                <MessageCircle className="h-5 w-5" aria-hidden="true" />
               </Link>
             </div>
           </div>
 
-          {/* Shop Links */}
+          {/* Link columns */}
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-[var(--ink)]">Shop</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link href="/products" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  All medicines
-                </Link>
-              </li>
-              <li>
-                <Link href="/prescriptions" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Upload prescription
-                </Link>
-              </li>
-              <li>
-                <Link href="/orders" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Your orders
-                </Link>
-              </li>
-              <li>
-                <Link href="/saved" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Saved medicines
-                </Link>
-              </li>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--ink-10)]">
+              Shop
+            </h3>
+            <ul className="space-y-2.5">
+              {shopLinks.map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className={linkClass}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Company Links */}
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-[var(--ink)]">Company</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link href="/about" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Our Story
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Careers
-                </Link>
-              </li>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--ink-10)]">
+              Company
+            </h3>
+            <ul className="space-y-2.5">
+              {companyLinks.map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className={linkClass}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Legal & Support Links */}
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-[var(--ink)]">Legal &amp; Support</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link href="/privacy-policy" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms-and-conditions" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Terms &amp; Conditions
-                </Link>
-              </li>
-              <li>
-                <Link href="/refund-policy" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Refund Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/shipping-policy" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  Shipping Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-[var(--mint)] hover:underline transition-colors">
-                  FAQ
-                </Link>
-              </li>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--ink-10)]">
+              Legal &amp; support
+            </h3>
+            <ul className="space-y-2.5">
+              {legalLinks.map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className={linkClass}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        {/* Newsletter Section */}
-        <div className="border-t my-8 pt-8">
-          <div className="max-w-md">
-            <h3 className="text-lg font-bold text-[var(--ink)] mb-2">
-              Stay updated
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Get news about new medicines and special offers.
-            </p>
+        {/* Newsletter — light card floating on the navy band */}
+        <div className="mb-10 rounded-[var(--radius-lg)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-md)] sm:p-8">
+          <div className="grid items-center gap-6 md:grid-cols-2">
+            <div>
+              <h3 className="text-[length:var(--step-1)] text-[var(--ink)]">Stay updated</h3>
+              <p className="mt-1 text-sm text-[var(--ink-70)]">
+                Get news about new medicines and offers.
+              </p>
+            </div>
             <NewsletterForm />
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t my-8"></div>
-
         {/* Compliance */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center md:text-left">
+        <div className="mb-10 grid grid-cols-1 gap-6 border-t border-[var(--paper)]/15 pt-10 text-center md:grid-cols-3 md:text-left">
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Government approved</p>
-            <p className="text-sm text-muted-foreground">Generic-brand medicines</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-10)]">
+              Government approved
+            </p>
+            <p className="text-sm text-[var(--foil)]">Generic-brand medicines</p>
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Licensed pharmacy</p>
-            <Link href="/drug-licence" className="text-sm text-muted-foreground hover:text-[var(--mint)] hover:underline transition-colors">
+            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-10)]">
+              Licensed pharmacy
+            </p>
+            <Link href="/drug-licence" className={linkClass}>
               View drug licence
             </Link>
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Trained pharmacists</p>
-            <p className="text-sm text-muted-foreground">20+ years of trusted service</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-10)]">
+              Trained pharmacists
+            </p>
+            <p className="text-sm text-[var(--foil)]">20+ years of trusted service</p>
           </div>
         </div>
 
         {/* Contact Information */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="flex items-start space-x-3">
-            <MapPin className="h-5 w-5 text-[var(--mint)] flex-shrink-0 mt-0.5" />
+        <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="flex items-start gap-3">
+            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[var(--mint-soft)]" aria-hidden="true" />
             <div>
-              <p className="text-sm font-semibold text-[var(--ink)]">Location</p>
-              <p className="text-sm text-muted-foreground">{CONTACT.address.line1}</p>
-              <p className="text-sm text-muted-foreground">{CONTACT.address.city}, {CONTACT.address.state} — {CONTACT.address.postalCode}</p>
+              <p className="text-sm font-semibold text-[var(--paper)]">Location</p>
+              <p className="text-sm text-[var(--foil)]">{CONTACT.address.line1}</p>
+              <p className="text-sm text-[var(--foil)]">
+                {CONTACT.address.city}, {CONTACT.address.state} — {CONTACT.address.postalCode}
+              </p>
             </div>
           </div>
-          <div className="flex items-start space-x-3">
-            <Mail className="h-5 w-5 text-[var(--mint)] flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3">
+            <Mail className="mt-0.5 h-5 w-5 shrink-0 text-[var(--mint-soft)]" aria-hidden="true" />
             <div>
-              <p className="text-sm font-semibold text-[var(--ink)]">Email Us</p>
-              <a
-                href={CONTACT.emailHref}
-                className="text-sm text-muted-foreground hover:text-[var(--mint)] hover:underline transition-colors"
-              >
+              <p className="text-sm font-semibold text-[var(--paper)]">Email us</p>
+              <a href={CONTACT.emailHref} className={linkClass}>
                 {CONTACT.email}
               </a>
             </div>
           </div>
-          <div className="flex items-start space-x-3">
-            <Phone className="h-5 w-5 text-[var(--mint)] flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3">
+            <Phone className="mt-0.5 h-5 w-5 shrink-0 text-[var(--mint-soft)]" aria-hidden="true" />
             <div>
-              <p className="text-sm font-semibold text-[var(--ink)]">Call Us</p>
-              <a href={CONTACT.phoneHref} className="text-sm text-muted-foreground hover:text-[var(--mint)] hover:underline transition-colors">
+              <p className="text-sm font-semibold text-[var(--paper)]">Call us</p>
+              <a href={CONTACT.phoneHref} className={`data ${linkClass}`}>
                 {CONTACT.phone}
               </a>
             </div>
@@ -196,14 +180,12 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-sm text-muted-foreground text-center md:text-left">
+        <div className="border-t border-[var(--paper)]/15 pt-8">
+          <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
+            <p className="text-center text-sm text-[var(--foil)] md:text-left">
               &copy; {currentYear} {SITE_NAME}. All rights reserved.
             </p>
-            <p className="text-sm text-muted-foreground text-center md:text-right">
-              {CONTACT.hours}
-            </p>
+            <p className="text-center text-sm text-[var(--foil)] md:text-right">{CONTACT.hours}</p>
           </div>
         </div>
       </div>
