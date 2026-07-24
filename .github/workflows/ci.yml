@@ -18,6 +18,9 @@ jobs:
       # `next lint` was removed in Next 16; typecheck is the gate until the
       # ESLint flat-config migration lands.
       - run: npm run typecheck
+      # Fail the build if any component uses a hardcoded Tailwind palette color
+      # instead of a design token (docs/03-DESIGN-SYSTEM.md).
+      - run: npm run check:tokens
       - run: npm run test
       - run: npm run build
         env:
