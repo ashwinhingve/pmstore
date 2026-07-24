@@ -235,7 +235,7 @@ export default function ProductsTable({
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-[var(--foil-soft)] border-b border-[var(--foil-soft)]">
+          <thead className="sticky top-0 z-10 border-b border-[var(--foil)] bg-[var(--paper-tint)]">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-[var(--ink-70)] uppercase tracking-wider">
                 Product

@@ -8,6 +8,7 @@ import Product from '@/models/Product';
 import DashboardStats from '@/components/admin/DashboardStats';
 import RecentOrders from '@/components/admin/RecentOrders';
 import RevenueChart from '@/components/admin/RevenueChart';
+import OrdersStatusDonut from '@/components/admin/OrdersStatusDonut';
 
 /**
  * Admin Dashboard Overview
@@ -203,34 +204,9 @@ export default async function AdminDashboard() {
         <RevenueChart data={revenueByDay} />
 
         {/* Orders by Status */}
-        <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
-          <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Orders by status</h3>
-          <div className="space-y-3">
-            {ordersByStatus.map((status) => (
-              <div key={status._id} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-3 h-3 rounded-full ${
-                      status._id === 'confirmed' || status._id === 'processing'
-                        ? 'bg-[var(--ink)]'
-                        : status._id === 'shipped'
-                        ? 'bg-[var(--mint)]'
-                        : status._id === 'delivered'
-                        ? 'bg-[var(--mint)]'
-                        : status._id === 'cancelled'
-                        ? 'bg-[var(--ink-70)]'
-                        : 'bg-[var(--foil)]'
-                    }`}
-                  />
-                  <span className="text-sm font-medium text-[var(--ink-70)] capitalize">
-                    {status._id}
-                  </span>
-                </div>
-                <span className="text-sm font-semibold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>{status.count}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <OrdersStatusDonut
+          data={ordersByStatus.map((s) => ({ _id: String(s._id), count: s.count }))}
+        />
       </div>
 
       {/* Recent Orders */}

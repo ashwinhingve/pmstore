@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Drawer } from '@/components/ui/drawer';
+import { AdminNavLinks } from '@/components/admin/AdminSidebar';
 import {
   Bell,
   ChevronDown,
@@ -39,14 +40,15 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
           <div className="flex items-center">
             <button
               type="button"
-              className="lg:hidden -ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-[var(--ink-40)] hover:text-[var(--ink)]"
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-[var(--radius-sm)] text-[var(--ink-40)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--foil-soft)] hover:text-[var(--ink)] lg:hidden"
+              onClick={() => setShowMobileMenu(true)}
+              aria-expanded={showMobileMenu}
             >
-              <span className="sr-only">Open sidebar</span>
-              <Menu className="h-6 w-6" />
+              <span className="sr-only">Open admin navigation</span>
+              <Menu className="h-6 w-6" aria-hidden="true" />
             </button>
             <div className="ml-4 lg:ml-0">
-              <h1 className="text-lg font-semibold text-[var(--ink)]">Admin Dashboard</h1>
+              <h1 className="text-lg font-semibold text-[var(--ink)]">Admin panel</h1>
             </div>
           </div>
 
@@ -119,7 +121,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                         }}
                       >
                         <User className="h-4 w-4" />
-                        View Profile
+                        View profile
                       </button>
 
                       <div className="my-2 border-t border-[var(--foil-soft)]" />
@@ -129,7 +131,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                         onClick={handleSignOut}
                       >
                         <LogOut className="h-4 w-4" />
-                        Sign Out
+                        Sign out
                       </button>
                     </div>
                   </div>
@@ -140,21 +142,18 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
         </div>
       </div>
 
-      {/* Mobile navigation menu */}
-      {showMobileMenu && (
-        <div className="lg:hidden border-t border-[var(--foil-soft)]">
-          <div className="px-2 py-3 space-y-1">
-            {/* Add mobile navigation items here if needed */}
-            <p className="px-3 text-xs font-semibold text-[var(--ink-40)] uppercase tracking-wider">
-              Navigation
-            </p>
-            {/* Mobile nav items would go here - for now directing to desktop view */}
-            <p className="px-3 py-2 text-sm text-[var(--ink-70)]">
-              Please use desktop view for full admin functionality
-            </p>
-          </div>
+      {/* Mobile navigation drawer */}
+      <Drawer
+        open={showMobileMenu}
+        onClose={() => setShowMobileMenu(false)}
+        title="Admin navigation"
+        side="left"
+        className="lg:hidden"
+      >
+        <div className="py-4">
+          <AdminNavLinks onNavigate={() => setShowMobileMenu(false)} />
         </div>
-      )}
+      </Drawer>
     </header>
   );
 }

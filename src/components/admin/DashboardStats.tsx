@@ -84,7 +84,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
         return (
           <div
             key={key}
-            className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6 hover:shadow-md transition-shadow"
+            className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-xs)] transition-shadow duration-[var(--dur-fast)] hover:shadow-[var(--shadow-md)]"
           >
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-lg ${colorClass}`}>

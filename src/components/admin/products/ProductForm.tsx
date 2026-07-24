@@ -1195,16 +1195,18 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
       {/* Tabs */}
       <div className="mb-6 border-b border-[var(--foil-soft)]">
-        <nav className="flex gap-6 overflow-x-auto">
+        <nav className="flex gap-6 overflow-x-auto" role="tablist" aria-label="Product sections">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               type="button"
+              role="tab"
+              aria-selected={activeTab === tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`pb-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
+              className={`min-h-11 whitespace-nowrap border-b-2 px-1 pb-3 text-sm font-medium transition-colors duration-[var(--dur-fast)] ${
                 activeTab === tab.id
                   ? 'border-[var(--mint)] text-[var(--mint)]'
-                  : 'border-transparent text-[var(--ink-40)] hover:text-[var(--ink)] hover:border-[var(--foil-soft)]'
+                  : 'border-transparent text-[var(--ink-40)] hover:border-[var(--foil-soft)] hover:text-[var(--ink)]'
               }`}
             >
               {tab.label}
@@ -1214,7 +1216,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       </div>
 
       {/* Tab Content */}
-      <div className="bg-[var(--paper-card)] rounded-lg border border-[var(--foil-soft)] p-6 mb-6">
+      <div className="mb-6 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-xs)]">
         {renderTabContent()}
       </div>
 
