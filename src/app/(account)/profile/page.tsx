@@ -124,7 +124,7 @@ export default function ProfilePage() {
               </span>
             )}
             {status === 'error' && (
-              <span className="text-[length:var(--step--1)] text-[var(--rx)]" role="alert">
+              <span className="text-[length:var(--step--1)] font-semibold text-[var(--ink)]" role="alert">
                 Could not save. Try again.
               </span>
             )}

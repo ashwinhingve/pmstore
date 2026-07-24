@@ -3,13 +3,10 @@
 import React from "react"
 import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/shared/AnimatedSection"
 import { CountUpStat } from "@/components/shared/CountUpStat"
-import { Timeline } from "@/components/shared/Timeline"
-import { TeamMemberCard } from "@/components/shared/TeamMemberCard"
-import type { TeamMember } from "@/components/shared/TeamMemberCard"
 import { CertificationBadge } from "@/components/shared/CertificationBadge"
-import { ClientsPartners } from "@/components/shared/ClientsPartners"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { SITE_NAME, CONTACT, VALUE_PROPS } from "@/lib/constants"
 import {
   Heart,
   Leaf,
@@ -22,163 +19,50 @@ import {
   CheckCircle,
   Package,
   Globe,
-  Sparkles,
 } from "lucide-react"
 
-const FALLBACK_TEAM: TeamMember[] = [
-  {
-    name: "Mr. Akhilesh Deshmukh",
-    role: "Founder & Proprietor",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-    bio: "B.Com (Economics), MBA (Business Analyst). Expertise in finance, business strategy, supply chain & quality management. Leads the overall growth, innovation, and vision of the company.",
-    linkedin: "https://linkedin.com",
-    email: "pmstoremedicine@gmail.com",
-  },
-  {
-    name: "Mr. Bhavesh Deshmukh",
-    role: "Product Partnership & Marketing Head",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-    bio: "B.Com, LLB. Expertise in business partnerships, sales & offline distribution. Handles product collaborations, retail sales & marketing strategies.",
-    linkedin: "https://linkedin.com",
-    email: "pmstoremedicine@gmail.com",
-  },
-  {
-    name: "Mr. Ayush Deshmukh",
-    role: "Co-Founder & Procurement Head",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-    bio: "B.Sc. Agriculture. Expertise in farming, agri-markets, vendor management. Manages raw material procurement, farmer connect & product quality.",
-    linkedin: "https://linkedin.com",
-    email: "pmstoremedicine@gmail.com",
-  },
-  {
-    name: "Mr. Dipanshu Deshmukh",
-    role: "Sales & Market Expansion Head",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop",
-    bio: "B.Sc. Agriculture. Expertise in sales, customer relations, market expansion. Focuses on retail growth, distribution channels & regional markets.",
-    linkedin: "https://linkedin.com",
-    email: "pmstoremedicine@gmail.com",
-  },
-  {
-    name: "Ms. Pravina Sakre",
-    role: "Social Media & Creative Marketing Lead",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
-    bio: "B.Tech. Expertise in social media, branding, packaging design & eCommerce. Drives online presence, digital campaigns & creative strategies.",
-    linkedin: "https://linkedin.com",
-    email: "pmstoremedicine@gmail.com",
-  },
-]
-
 export default function AboutPage() {
-  // Team is served from static data. The staff-managed team API was cut from v1.
-  const teamMembers = FALLBACK_TEAM
-
-  const timelineItems = [
-    {
-      year: "2019",
-      title: "The Beginning",
-      description: "PMSTORE was founded with a mission to make premium superfoods accessible to everyone. Started with a small team and big dreams.",
-      icon: <Sparkles className="w-8 h-8 text-white" />,
-    },
-    {
-      year: "2020",
-      title: "First Milestone",
-      description: "Reached 10,000 happy customers and expanded our product line to include organic spices and seeds from around the world.",
-      icon: <Users className="w-8 h-8 text-white" />,
-    },
-    {
-      year: "2021",
-      title: "Quality Certified",
-      description: "Received ISO 22000 certification and FSSAI approval, ensuring the highest quality standards for all our products.",
-      icon: <Award className="w-8 h-8 text-white" />,
-    },
-    {
-      year: "2022",
-      title: "Going Global",
-      description: "Expanded operations to serve customers across 50+ cities in India with plans for international expansion.",
-      icon: <Globe className="w-8 h-8 text-white" />,
-    },
-    {
-      year: "2023",
-      title: "Innovation Hub",
-      description: "Launched our research facility to develop new superfood blends and innovative healthy snack options.",
-      icon: <Lightbulb className="w-8 h-8 text-white" />,
-    },
-    {
-      year: "2024",
-      title: "Sustainability Focus",
-      description: "Committed to 100% sustainable packaging and partnered with local farmers to support organic farming practices.",
-      icon: <Leaf className="w-8 h-8 text-white" />,
-    },
-  ]
-
-  const certifications = [
-    {
-      name: "FSSAI Licensed",
-      description: "Licensed by Food Safety and Standards Authority of India (License No. 21425150001179) for quality assurance and food safety.",
-      icon: <CheckCircle className="w-12 h-12 text-white" />,
-    },
-    {
-      name: "GST Registered",
-      description: "Registered under GST (No. 23GGLPD7346M1ZZ) ensuring transparency and compliance with Indian tax regulations.",
-      icon: <Shield className="w-12 h-12 text-white" />,
-    },
-    {
-      name: "Organic Certified",
-      description: "Working with certified organic suppliers like Almighty Organics Pvt. Ltd. to ensure 100% organic authenticity.",
-      icon: <Leaf className="w-12 h-12 text-white" />,
-    },
-    {
-      name: "Quality Assured",
-      description: "Hygienic processing and premium packaging with certified organic raw materials from trusted partners.",
-      icon: <Package className="w-12 h-12 text-white" />,
-    },
-  ]
-
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-white to-red-50 py-20 md:py-32">
+      <section className="relative overflow-hidden bg-[var(--paper)] py-20 md:py-32">
         <div className="container mx-auto px-4">
           <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-gray-900">
-              Our
-              <span className="block bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
-                Story
-              </span>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 font-display text-[var(--ink)]">
+              Our Story
             </h1>
-            <p className="text-xl md:text-2xl text-gray-700 mb-8">
-              A trusted food brand committed to delivering pure, authentic, and high-quality products.
-              Sourced directly from our farms and trusted farmers, hygienically packed, and delivered with care.
-              Now available on Amazon, Flipkart, Meesho, and expanding to retail stores across India.
+            <p className="text-xl md:text-2xl text-[var(--ink-70)] mb-8">
+              {SITE_NAME} has been your trusted pharmacy for over 20 years, dispensing genuine medicines at affordable prices.
+              Our mission: help every Indian family save 60–70% on medicines with government-approved generic brands, backed by trained pharmacists and free home delivery.
             </p>
           </AnimatedSection>
         </div>
       </section>
 
       {/* Mission & Vision */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-[var(--paper-card)]">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             <AnimatedSection direction="left">
-              <div className="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-10 shadow-xl hover:shadow-2xl transition-all duration-300 h-full group">
-                <div className="w-20 h-20 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Target className="w-10 h-10 text-white" />
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 h-full group border border-[var(--foil-soft)]">
+                <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Target className="w-10 h-10 text-[var(--ink)]" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">Our Mission</h2>
-                <p className="text-lg text-gray-600 leading-relaxed">
-                  To deliver pure, natural, and healthy food products to every home—combining taste, health, and authenticity. We source directly from our own farms and trusted farmers, ensuring 100% adulteration-free products that bring traditional taste with modern trust.
+                <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our Mission</h2>
+                <p className="text-lg text-[var(--ink-70)] leading-relaxed">
+                  Make genuine prescription and OTC medicines accessible at affordable prices. We partner with trusted suppliers to dispense government-approved generic brands at 60–70% savings, backed by trained pharmacists and free home delivery.
                 </p>
               </div>
             </AnimatedSection>
 
             <AnimatedSection direction="right">
-              <div className="bg-gradient-to-br from-red-50 to-white rounded-2xl p-10 shadow-xl hover:shadow-2xl transition-all duration-300 h-full group">
-                <div className="w-20 h-20 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Lightbulb className="w-10 h-10 text-white" />
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 h-full group border border-[var(--foil-soft)]">
+                <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Lightbulb className="w-10 h-10 text-[var(--ink)]" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">Our Vision</h2>
-                <p className="text-lg text-gray-600 leading-relaxed">
-                  "The Taste of Purity" - To become a household name synonymous with pure, authentic, and high-quality food products. We are committed to expanding from online marketplaces to retail stores, making premium quality food accessible to every Indian household.
+                <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our Vision</h2>
+                <p className="text-lg text-[var(--ink-70)] leading-relaxed">
+                  Bridge every doctor and patient with trust. Expand from Bhopal to serve all of India, making affordable genuine medicines a reality and establishing healthcare affordability as a standard, not a luxury.
                 </p>
               </div>
             </AnimatedSection>
@@ -187,222 +71,227 @@ export default function AboutPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 md:py-24 bg-gray-50">
+      <section className="py-16 md:py-24 bg-[var(--paper)]">
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-2 text-gray-800">
+            <h2 className="text-4xl md:text-5xl font-bold font-display mb-2 text-[var(--ink)]">
               Our Impact
             </h2>
-            <div className="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
+            <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
           </AnimatedSection>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <CountUpStat
-              end={6}
+              end={20}
               suffix="+"
-              label="Years of Excellence"
-              icon={<Award className="w-12 h-12" />}
+              label="Years Serving Bhopal"
+              icon={<Award className="w-12 h-12 text-[var(--ink)]" />}
             />
             <CountUpStat
-              end={50000}
+              end={10000}
               suffix="+"
-              label="Happy Customers"
-              icon={<Users className="w-12 h-12" />}
+              label="Satisfied Customers"
+              icon={<Users className="w-12 h-12 text-[var(--ink)]" />}
             />
             <CountUpStat
-              end={100}
+              end={5000}
               suffix="+"
-              label="Premium Products"
-              icon={<Package className="w-12 h-12" />}
+              label="Genuine Medicines"
+              icon={<Package className="w-12 h-12 text-[var(--ink)]" />}
             />
             <CountUpStat
-              end={50}
-              suffix="+"
-              label="Cities Served"
-              icon={<Globe className="w-12 h-12" />}
+              end={60}
+              suffix="%"
+              label="Average Savings"
+              icon={<TrendingUp className="w-12 h-12 text-[var(--ink)]" />}
             />
           </div>
         </div>
       </section>
 
-      {/* Our Journey Timeline */}
-      <section className="py-16 md:py-24 bg-white">
+      {/* Why Choose Us */}
+      <section className="py-16 md:py-24 bg-[var(--paper-card)]">
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-2 text-gray-800">
-              Our Journey
+            <h2 className="text-4xl md:text-5xl font-bold font-display mb-2 text-[var(--ink)]">
+              Why Choose Us
             </h2>
-            <div className="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
-            <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
-              From humble beginnings to becoming a trusted name in superfoods
+            <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
+            <p className="text-[var(--ink-70)] mt-6 max-w-2xl mx-auto">
+              We bring affordable, genuine medicines to every household
             </p>
           </AnimatedSection>
 
-          <Timeline items={timelineItems} />
-        </div>
-      </section>
-
-      {/* Core Values */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-amber-50 via-white to-red-50">
-        <div className="container mx-auto px-4">
-          <AnimatedSection className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-2 text-gray-800">
-              Our Values
-            </h2>
-            <div className="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
-          </AnimatedSection>
-
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <StaggerItem>
-              <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Heart className="w-8 h-8 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {VALUE_PROPS.map((prop, idx) => (
+              <AnimatedSection key={idx} direction="up" delay={idx * 0.05}>
+                <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-6 border border-[var(--foil-soft)] h-full">
+                  <p className="text-[var(--ink)] font-semibold leading-relaxed">{prop}</p>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3">Customer First</h3>
-                <p className="text-gray-600">
-                  Every decision we make starts with our customers' health and satisfaction in mind.
-                </p>
-              </div>
-            </StaggerItem>
-
-            <StaggerItem>
-              <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Shield className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3">Quality Assurance</h3>
-                <p className="text-gray-600">
-                  We never compromise on quality. Every product is rigorously tested and certified.
-                </p>
-              </div>
-            </StaggerItem>
-
-            <StaggerItem>
-              <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Leaf className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3">Sustainability</h3>
-                <p className="text-gray-600">
-                  Committed to eco-friendly practices and supporting sustainable farming communities.
-                </p>
-              </div>
-            </StaggerItem>
-
-            <StaggerItem>
-              <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <TrendingUp className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3">Innovation</h3>
-                <p className="text-gray-600">
-                  Constantly researching and developing new products to meet evolving health needs.
-                </p>
-              </div>
-            </StaggerItem>
-
-            <StaggerItem>
-              <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Users className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3">Community</h3>
-                <p className="text-gray-600">
-                  Building a community of health-conscious individuals supporting each other's wellness journey.
-                </p>
-              </div>
-            </StaggerItem>
-
-            <StaggerItem>
-              <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <CheckCircle className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3">Transparency</h3>
-                <p className="text-gray-600">
-                  Complete transparency in sourcing, pricing, and production processes.
-                </p>
-              </div>
-            </StaggerItem>
-          </StaggerContainer>
-        </div>
-      </section>
-
-      {/* Meet Our Team */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="container mx-auto px-4">
-          <AnimatedSection className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-2 text-gray-800">
-              Meet Our Team
-            </h2>
-            <div className="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
-            <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
-              The passionate people behind PMSTORE, dedicated to bringing you the finest superfoods
-            </p>
-          </AnimatedSection>
-
-          <div
-            className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${
-              teamMembers.length <= 3
-                ? 'lg:grid-cols-3'
-                : teamMembers.length === 4
-                ? 'lg:grid-cols-4'
-                : 'lg:grid-cols-5'
-            }`}
-          >
-            {teamMembers.map((member, index) => (
-              <AnimatedSection key={index} delay={index * 0.1} direction="up">
-                <TeamMemberCard member={member} />
               </AnimatedSection>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Clients & Partners */}
-      <ClientsPartners />
-
-      {/* Certifications */}
-      <section className="py-16 md:py-24 bg-white">
+      {/* Core Values */}
+      <section className="py-16 md:py-24 bg-[var(--paper)]">
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-2 text-gray-800">
-              Quality Certifications
+            <h2 className="text-4xl md:text-5xl font-bold font-display mb-2 text-[var(--ink)]">
+              Our Values
             </h2>
-            <div className="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
-            <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
-              Certified excellence you can trust
+            <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
+          </AnimatedSection>
+
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <StaggerItem>
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <Heart className="w-8 h-8 text-[var(--ink)]" />
+                </div>
+                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Patient First</h3>
+                <p className="text-[var(--ink-70)]">
+                  Your health and medication access guide every decision we make.
+                </p>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem>
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <Shield className="w-8 h-8 text-[var(--ink)]" />
+                </div>
+                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Genuine Medicines</h3>
+                <p className="text-[var(--ink-70)]">
+                  We dispense only government-approved medicines from trusted suppliers.
+                </p>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem>
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <Leaf className="w-8 h-8 text-[var(--ink)]" />
+                </div>
+                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Affordability</h3>
+                <p className="text-[var(--ink-70)]">
+                  Generic brands deliver the same active salts at 60–70% lower prices.
+                </p>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem>
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <TrendingUp className="w-8 h-8 text-[var(--ink)]" />
+                </div>
+                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Expertise</h3>
+                <p className="text-[var(--ink-70)]">
+                  Our trained pharmacists verify prescriptions and answer your questions.
+                </p>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem>
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <Users className="w-8 h-8 text-[var(--ink)]" />
+                </div>
+                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Convenience</h3>
+                <p className="text-[var(--ink-70)]">
+                  Free home delivery and order by WhatsApp for busy lives.
+                </p>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem>
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <CheckCircle className="w-8 h-8 text-[var(--ink)]" />
+                </div>
+                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Trust</h3>
+                <p className="text-[var(--ink-70)]">
+                  Transparent pricing and verified medicines build lasting patient relationships.
+                </p>
+              </div>
+            </StaggerItem>
+          </StaggerContainer>
+        </div>
+      </section>
+
+
+      {/* Compliance & License */}
+      <section className="py-16 md:py-24 bg-[var(--paper-card)]">
+        <div className="container mx-auto px-4">
+          <AnimatedSection className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold font-display mb-2 text-[var(--ink)]">
+              Government Approved
+            </h2>
+            <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
+            <p className="text-[var(--ink-70)] mt-6 max-w-2xl mx-auto">
+              Licensed pharmacy under the Drugs & Cosmetics Act, 1940
             </p>
           </AnimatedSection>
 
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {certifications.map((cert, index) => (
-              <StaggerItem key={index}>
-                <CertificationBadge certification={cert} />
-              </StaggerItem>
-            ))}
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <StaggerItem>
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] text-center h-full">
+                <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shield className="w-8 h-8 text-[var(--mint)]" />
+                </div>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Registered Pharmacy</h3>
+                <p className="text-[var(--ink-70)] text-sm">
+                  Licensed under Food & Drug Administration, Madhya Pradesh
+                </p>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem>
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] text-center h-full">
+                <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-8 h-8 text-[var(--mint)]" />
+                </div>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Verified Medicines</h3>
+                <p className="text-[var(--ink-70)] text-sm">
+                  All products sourced from licensed distributors
+                </p>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem>
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] text-center h-full">
+                <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Award className="w-8 h-8 text-[var(--mint)]" />
+                </div>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">20+ Years Trust</h3>
+                <p className="text-[var(--ink-70)] text-sm">
+                  Serving Bhopal with pharmacy care and affordability
+                </p>
+              </div>
+            </StaggerItem>
           </StaggerContainer>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-amber-50 via-white to-red-50">
+      <section className="py-16 md:py-24 bg-[var(--paper)]">
         <div className="container mx-auto px-4">
           <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800">
-              Ready to Start Your Health Journey?
+            <h2 className="text-4xl md:text-5xl font-bold font-display mb-6 text-[var(--ink)]">
+              Start Saving on Medicines Today
             </h2>
-            <p className="text-xl text-gray-700 mb-8">
-              Join thousands of satisfied customers who have transformed their lives with PMSTORE superfoods
+            <p className="text-xl text-[var(--ink-70)] mb-8">
+              Order genuine medicines at 60–70% savings, with free home delivery and pharmacist verification
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products">
-                <Button size="lg" className="bg-gradient-to-r from-amber-600 to-red-700 hover:from-amber-700 hover:to-red-800 text-white px-10 py-6 text-lg shadow-xl hover:shadow-2xl">
-                  Shop Products
+                <Button size="lg" className="bg-[var(--ink)] hover:bg-[var(--ink-70)] text-white px-10 py-6 text-lg shadow-[var(--shadow-card)] hover:shadow-lg">
+                  Browse Medicines
                 </Button>
               </Link>
               <Link href="/contact">
-                <Button size="lg" variant="outline" className="border-2 border-amber-600 text-amber-700 hover:bg-amber-600 hover:text-white px-10 py-6 text-lg">
+                <Button size="lg" variant="outline" className="border-2 border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--ink)] hover:text-white px-10 py-6 text-lg">
                   Contact Us
                 </Button>
               </Link>

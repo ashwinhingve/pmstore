@@ -86,7 +86,7 @@ export function ReorderButton({ orderId }: { orderId: string }) {
       </button>
 
       {status === 'error' && (
-        <p className="text-[length:var(--step--1)] text-[var(--rx)]" role="alert">
+        <p className="text-[length:var(--step--1)] font-semibold text-[var(--ink)]" role="alert">
           {message}
         </p>
       )}
@@ -121,7 +121,7 @@ export function ReorderButton({ orderId }: { orderId: string }) {
           {skipped.length > 0 && (
             <div className="mt-2">
               <p className="flex items-center gap-2 font-medium text-[var(--ink)]">
-                <AlertTriangle className="h-4 w-4 text-[var(--rx)]" aria-hidden="true" />
+                <AlertTriangle className="h-4 w-4 text-[var(--ink-70)]" aria-hidden="true" />
                 Left out:
               </p>
               <ul className="mt-1 space-y-1 text-[var(--ink-soft,var(--ink))]">

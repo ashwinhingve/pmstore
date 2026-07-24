@@ -51,7 +51,7 @@ export default function DrugLicencePage() {
         </p>
       </div>
 
-      <p className="mt-8 text-[length:var(--step--1)] text-[var(--ink-soft,var(--ink))]">
+      <p className="mt-8 text-[length:var(--step--1)] text-[var(--ink-70)]">
         For any compliance query, contact us at{' '}
         <a href="mailto:support@pratigyamedicalstore.com" className="underline">
           support@pratigyamedicalstore.com
@@ -65,7 +65,7 @@ export default function DrugLicencePage() {
 function Detail({ label, value, placeholder }: { label: string; value: string; placeholder?: boolean }) {
   return (
     <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:gap-4">
-      <span className="text-[length:var(--step--1)] font-medium text-[var(--ink-soft,var(--ink))]">{label}</span>
+      <span className="text-[length:var(--step--1)] font-medium text-[var(--ink-70)]">{label}</span>
       <span className={`text-[var(--ink)] ${placeholder ? 'italic opacity-70' : 'font-semibold'}`}>{value}</span>
     </div>
   );

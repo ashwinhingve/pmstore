@@ -25,7 +25,7 @@ export default async function PrescriptionsPage() {
     return (
       <main className="mx-auto max-w-2xl px-4 py-12">
         <h1 className="text-2xl font-bold text-[var(--ink)]">Upload a prescription</h1>
-        <p className="mt-3 text-[var(--ink-soft,#666)]">
+        <p className="mt-3 text-[var(--ink-70)]">
           Sign in to upload a prescription and track its review.
         </p>
         <Link
@@ -46,7 +46,7 @@ export default async function PrescriptionsPage() {
   return (
     <main className="mx-auto max-w-2xl px-4 py-12">
       <h1 className="text-2xl font-bold text-[var(--ink)]">Upload a prescription</h1>
-      <p className="mt-2 text-[var(--ink-soft,#666)]">
+      <p className="mt-2 text-[var(--ink-70)]">
         Add clear photos of your prescription. A pharmacist reviews every one before dispatch.
       </p>
 
@@ -79,7 +79,7 @@ export default async function PrescriptionsPage() {
                         year: 'numeric',
                       })}
                     </p>
-                    <p className="text-sm text-[var(--ink-soft,#666)]">
+                    <p className="text-sm text-[var(--ink-70)]">
                       {p.images?.length ?? 0} image{(p.images?.length ?? 0) === 1 ? '' : 's'}
                       {p.rejectionReason ? ` · ${p.rejectionReason}` : ''}
                     </p>

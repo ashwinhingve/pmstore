@@ -11,15 +11,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { FormField } from "@/components/ui/form-field"
 import { Button } from "@/components/ui/button"
+import { CONTACT } from "@/lib/constants"
 import {
   MapPin,
   Phone,
   Mail,
   Clock,
-  Facebook,
-  Instagram,
-  Twitter,
-  Linkedin,
   MessageCircle,
   CheckCircle2,
 } from "lucide-react"
@@ -106,82 +103,69 @@ export default function ContactPage() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-white to-red-50 py-20 md:py-32">
+      <section className="relative overflow-hidden bg-[var(--paper)] py-20 md:py-32">
         <div className="container mx-auto px-4">
           <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-gray-900">
-              Get In
-              <span className="block bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
-                Touch
-              </span>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-display mb-6 text-[var(--ink)]">
+              Get In Touch
             </h1>
-            <p className="text-xl md:text-2xl text-gray-700 mb-8">
-              Have questions? We're here to help! Reach out to us through any of the channels below.
+            <p className="text-xl md:text-2xl text-[var(--ink-70)] mb-8">
+              Have questions about medicines, delivery, or prescriptions? We're here to help!
             </p>
           </AnimatedSection>
         </div>
       </section>
 
       {/* Contact Info Cards */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-[var(--paper-card)]">
         <div className="container mx-auto px-4">
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             <StaggerItem>
-              <div className="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <MapPin className="w-8 h-8 text-white" />
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <MapPin className="w-8 h-8 text-[var(--ink)]" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Visit Us</h3>
-                <p className="text-sm text-gray-600">
-                  Multai | Betul | Bhopal | Indore<br />
-                  Madhya Pradesh<br />
-                  India
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Visit Us</h3>
+                <p className="text-sm text-[var(--ink-70)]">
+                  {CONTACT.address.line1}<br />
+                  {CONTACT.address.city}, {CONTACT.address.state}<br />
+                  {CONTACT.address.postalCode}
                 </p>
               </div>
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Phone className="w-8 h-8 text-white" />
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <Phone className="w-8 h-8 text-[var(--ink)]" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Call Us</h3>
-                <a href="tel:+919329216544" className="text-sm text-gray-600 hover:text-amber-600 transition-colors block">
-                  +91 93292 16544
-                </a>
-                <a href="tel:+919770355137" className="text-sm text-gray-600 hover:text-amber-600 transition-colors block">
-                  +91 97703 55137
-                </a>
-                <a href="tel:+918349920943" className="text-sm text-gray-600 hover:text-amber-600 transition-colors block">
-                  +91 83499 20943
-                </a>
-                <a href="tel:+917697661798" className="text-sm text-gray-600 hover:text-amber-600 transition-colors block">
-                  +91 76976 61798
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Call Us</h3>
+                <a href={CONTACT.phoneHref} className="text-sm text-[var(--ink-70)] hover:text-[var(--mint)] transition-colors block">
+                  {CONTACT.phone}
                 </a>
               </div>
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Mail className="w-8 h-8 text-white" />
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <Mail className="w-8 h-8 text-[var(--ink)]" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Email Us</h3>
-                <a href="mailto:info@pratigyamedicalstore.com" className="text-sm text-gray-600 hover:text-amber-600 transition-colors block">
-                  info@pratigyamedicalstore.com
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Email Us</h3>
+                <a href={CONTACT.emailHref} className="text-sm text-[var(--ink-70)] hover:text-[var(--mint)] transition-colors block">
+                  {CONTACT.email}
                 </a>
               </div>
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105 text-center h-full">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Clock className="w-8 h-8 text-white" />
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                  <Clock className="w-8 h-8 text-[var(--ink)]" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Business Hours</h3>
-                <p className="text-sm text-gray-600">
-                  Mon - Sat: 9:00 AM - 6:00 PM<br />
-                  Sunday: Closed
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Business Hours</h3>
+                <p className="text-sm text-[var(--ink-70)]">
+                  {CONTACT.hours}
                 </p>
               </div>
             </StaggerItem>
@@ -191,9 +175,9 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <AnimatedSection direction="left">
-              <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">Send Us a Message</h2>
-                <p className="text-gray-600 mb-8">Fill out the form and we'll get back to you within 24 hours.</p>
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] shadow-[var(--shadow-card)] p-8 md:p-10 border border-[var(--foil-soft)]">
+                <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-2">Send Us a Message</h2>
+                <p className="text-[var(--ink-70)] mb-8">Fill out the form and we'll get back to you within 24 hours.</p>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <FormField label="Your Name" required error={errors.name?.message}>
@@ -222,17 +206,17 @@ export default function ContactPage() {
                   </FormField>
 
                   {submitStatus === "success" && (
-                    <div className="bg-green-50 border-2 border-green-500 text-green-800 p-4 rounded-lg flex items-start gap-3">
+                    <div className="bg-[var(--mint-soft)] border-2 border-[var(--mint)] text-[var(--mint)] p-4 rounded-[var(--radius-md)] flex items-start gap-3">
                       <CheckCircle2 className="w-6 h-6 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-semibold">Message sent successfully!</p>
+                        <p className="font-semibold">Message sent!</p>
                         <p className="text-sm">We'll get back to you within 24 hours.</p>
                       </div>
                     </div>
                   )}
 
                   {submitStatus === "error" && (
-                    <div className="bg-red-50 border-2 border-red-500 text-red-800 p-4 rounded-lg">
+                    <div className="bg-[var(--foil-soft)] border-2 border-[var(--ink)] text-[var(--ink)] p-4 rounded-[var(--radius-md)]">
                       <p className="font-semibold">Error sending message</p>
                       <p className="text-sm">Please try again or contact us directly.</p>
                     </div>
@@ -241,7 +225,7 @@ export default function ContactPage() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-amber-600 to-red-700 hover:from-amber-700 hover:to-red-800 text-white py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="w-full bg-[var(--ink)] hover:bg-[var(--ink-70)] text-white py-6 text-lg font-semibold shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300"
                   >
                     {isSubmitting ? "Sending..." : "Send Message"}
                   </Button>
@@ -252,61 +236,61 @@ export default function ContactPage() {
             {/* Map and Additional Info */}
             <AnimatedSection direction="right" className="space-y-8">
               {/* Map */}
-              <div className="bg-white rounded-2xl shadow-xl overflow-hidden h-[400px]">
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] shadow-[var(--shadow-card)] overflow-hidden h-[400px] border border-[var(--foil-soft)]">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14406.4072885761!2d78.02322538364692!3d21.697417993691133!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd5dbf06129a6b3%3A0xdccc4f57b964f5b5!2sDESHMUKH%20FARM%20HOUSE%20%F0%9F%8F%A0!5e0!3m2!1sen!2sin!4v1762940168403!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7216.297745776706!2d77.4063272!3d23.1859041!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x397c5cae0000001%3A0xbe6d4e7d7d7d7d7d!2sBhopal%2C%20Madhya%20Pradesh%20462041!5e0!3m2!1sen!2sin!4v1762940168403"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="PMSTORE Location"
+                  title="Pratigya Medical Store Location — Bhopal"
                 ></iframe>
               </div>
 
               {/* Quick Contact Options */}
-              <div className="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-8 shadow-lg">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">Quick Contact</h3>
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] border border-[var(--foil-soft)]">
+                <h3 className="text-2xl font-bold font-display text-[var(--ink)] mb-6">Quick Contact</h3>
                 <div className="space-y-4">
                   <a
-                    href="https://wa.me/919329216544"
+                    href={CONTACT.whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-4 p-4 bg-white rounded-lg hover:shadow-md transition-all duration-300 group"
+                    className="flex items-center gap-4 p-4 bg-[var(--paper-card)] rounded-[var(--radius-md)] hover:shadow-md transition-all duration-300 group border border-[var(--foil-soft)]"
                   >
-                    <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <MessageCircle className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-[var(--mint)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <MessageCircle className="w-6 h-6 text-[var(--ink)]" />
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800">WhatsApp</p>
-                      <p className="text-sm text-gray-600">Chat with us instantly</p>
+                      <p className="font-semibold font-display text-[var(--ink)]">WhatsApp</p>
+                      <p className="text-sm text-[var(--ink-70)]">Chat with us instantly</p>
                     </div>
                   </a>
 
                   <a
-                    href="tel:+919329216544"
-                    className="flex items-center gap-4 p-4 bg-white rounded-lg hover:shadow-md transition-all duration-300 group"
+                    href={CONTACT.phoneHref}
+                    className="flex items-center gap-4 p-4 bg-[var(--paper-card)] rounded-[var(--radius-md)] hover:shadow-md transition-all duration-300 group border border-[var(--foil-soft)]"
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Phone className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-[var(--mint)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Phone className="w-6 h-6 text-[var(--ink)]" />
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800">Call Now</p>
-                      <p className="text-sm text-gray-600">+91 93292 16544</p>
+                      <p className="font-semibold font-display text-[var(--ink)]">Call Now</p>
+                      <p className="text-sm text-[var(--ink-70)]">{CONTACT.phone}</p>
                     </div>
                   </a>
 
                   <a
-                    href="mailto:info@pratigyamedicalstore.com"
-                    className="flex items-center gap-4 p-4 bg-white rounded-lg hover:shadow-md transition-all duration-300 group"
+                    href={CONTACT.emailHref}
+                    className="flex items-center gap-4 p-4 bg-[var(--paper-card)] rounded-[var(--radius-md)] hover:shadow-md transition-all duration-300 group border border-[var(--foil-soft)]"
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Mail className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-[var(--mint)] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Mail className="w-6 h-6 text-[var(--ink)]" />
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800">Email Us</p>
-                      <p className="text-sm text-gray-600">info@pratigyamedicalstore.com</p>
+                      <p className="font-semibold font-display text-[var(--ink)]">Email Us</p>
+                      <p className="text-sm text-[var(--ink-70)]">{CONTACT.email}</p>
                     </div>
                   </a>
                 </div>
@@ -316,71 +300,15 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Social Media Section */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <AnimatedSection className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-2 text-gray-800">
-              Follow Us
-            </h2>
-            <div className="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
-            <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
-              Stay connected with us on social media for updates, recipes, and health tips
-            </p>
-          </AnimatedSection>
-
-          <AnimatedSection direction="up">
-            <div className="flex flex-wrap justify-center gap-6">
-              <a
-                href="https://www.facebook.com/share/1ALNnyV4yz/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group"
-              >
-                <Facebook className="w-8 h-8 text-gray-600 group-hover:text-blue-600 transition-colors" />
-              </a>
-              {/* TODO: replace with the PMStore Instagram handle once it exists */}
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group"
-              >
-                <Instagram className="w-8 h-8 text-gray-600 group-hover:text-pink-600 transition-colors" />
-              </a>
-              <a
-                href="https://x.com/PMStore_food"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group"
-              >
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-              <a
-                href="https://wa.me/919329216544"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group"
-              >
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                </svg>
-              </a>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
 
       {/* FAQ Section */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-[var(--paper-card)]">
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-2 text-gray-800">
+            <h2 className="text-4xl md:text-5xl font-bold font-display mb-2 text-[var(--ink)]">
               Frequently Asked Questions
             </h2>
-            <div className="w-24 h-1 bg-red-600 mx-auto mt-4"></div>
+            <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
           </AnimatedSection>
 
           <AnimatedSection direction="up" className="max-w-4xl mx-auto">
