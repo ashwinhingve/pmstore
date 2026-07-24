@@ -11,6 +11,7 @@ export function EmptyState({
   action,
   icon,
   illustration,
+  children,
   className,
 }: {
   title: string;
@@ -19,6 +20,8 @@ export function EmptyState({
   icon?: React.ReactNode;
   /** A component from src/components/illustrations — preferred over icon. */
   illustration?: React.ReactNode;
+  /** Extra content below the action — e.g. a client-side clear-filters button. */
+  children?: React.ReactNode;
   className?: string;
 }) {
   return (
@@ -40,6 +43,7 @@ export function EmptyState({
           {action.label}
         </Link>
       )}
+      {children && <div className="mt-5">{children}</div>}
     </div>
   );
 }

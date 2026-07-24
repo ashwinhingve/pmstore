@@ -4,8 +4,9 @@ import connectDB from '@/lib/mongodb/connection';
 import Category from '@/models/Category';
 import { searchQuerySchema } from '@/lib/validations/search';
 import { executeSearch, type SearchFacets } from '@/lib/search/execute';
-import { ProductCard } from '@/components/products/ProductCard';
+import { ProductCard, type ProductCardData } from '@/components/products/ProductCard';
 import { SearchComparison } from '@/components/search/SearchComparison';
+import { EmptySearchArt } from '@/components/illustrations';
 
 /**
  * Search results — a Server Component. It calls executeSearch directly (no HTTP
@@ -87,12 +88,12 @@ export default async function SearchPage({
   const totalPages = Math.max(1, Math.ceil(meta.total / meta.limit));
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <header className="mb-4">
-        <h1 className="text-xl font-bold text-[var(--ink)]">
+    <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
+      <header className="mb-6">
+        <h1 className="text-[length:var(--step-2)] text-[var(--ink)]">
           Results for <span className="text-[var(--mint)]">“{q}”</span>
         </h1>
-        <p className="mt-1 font-mono text-sm tabular-nums text-[var(--ink-70)]">
+        <p className="data mt-1 text-sm text-[var(--ink-70)]">
           {meta.total} {meta.total === 1 ? 'medicine' : 'medicines'}
         </p>
         {data.degraded && (
@@ -115,7 +116,7 @@ export default async function SearchPage({
             <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {results.map((product) => (
                 <li key={String(product._id)}>
-                  <ProductCard product={product} />
+                  <ProductCard product={product as unknown as ProductCardData} />
                 </li>
               ))}
             </ul>
@@ -144,7 +145,10 @@ function FacetSidebar({
   const activeMin = firstString(params.minPrice);
 
   return (
-    <aside className="w-full shrink-0 md:w-56" aria-label="Filter results">
+    <aside
+      className="h-fit w-full shrink-0 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)] md:w-60"
+      aria-label="Filter results"
+    >
       {/* Prescription */}
       {facets.prescriptionRequired.length > 0 && (
         <FacetGroup title="Prescription">
@@ -238,7 +242,7 @@ function FacetLink({
         }`}
       >
         <span>{children}</span>
-        {count != null && <span className="font-mono text-xs tabular-nums text-[var(--ink-40)]">{count}</span>}
+        {count != null && <span className="data text-xs text-[var(--ink-40)]">{count}</span>}
       </Link>
     </li>
   );
@@ -258,7 +262,7 @@ function Pagination({
       <PageLink disabled={current <= 1} href={hrefWith(params, { page: String(current - 1) })}>
         Previous
       </PageLink>
-      <span className="font-mono text-sm tabular-nums text-[var(--ink-70)]">
+      <span className="data text-sm text-[var(--ink-70)]">
         Page {current} of {totalPages}
       </span>
       <PageLink disabled={current >= totalPages} href={hrefWith(params, { page: String(current + 1) })}>
@@ -285,7 +289,7 @@ function PageLink({
   return (
     <Link
       href={href}
-      className="rounded-md border border-[var(--foil)] px-4 py-2 text-sm text-[var(--ink-70)] hover:bg-[var(--foil-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--mint)]/40"
+      className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[var(--foil)] bg-[var(--paper-card)] px-4 py-2 text-sm text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--foil-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--mint)]/40"
     >
       {children}
     </Link>
@@ -294,8 +298,11 @@ function PageLink({
 
 function NoResults({ q }: { q: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-[var(--foil)] px-6 py-16 text-center">
-      <h2 className="text-lg font-semibold text-[var(--ink)]">No medicines match “{q}”</h2>
+    <div className="rounded-[var(--radius-md)] border border-dashed border-[var(--foil)] px-6 py-16 text-center">
+      <EmptySearchArt className="mx-auto mb-5 w-44 sm:w-52" />
+      <h2 className="text-[length:var(--step-1)] font-semibold text-[var(--ink)]">
+        No medicines match “{q}”
+      </h2>
       <p className="mx-auto mt-2 max-w-sm text-sm text-[var(--ink-70)]">
         Check the spelling, or try the salt name — for example “paracetamol” instead of a brand.
       </p>
@@ -305,11 +312,12 @@ function NoResults({ q }: { q: string }) {
 
 function EmptyPrompt({ invalid = false }: { invalid?: boolean }) {
   return (
-    <div className="container mx-auto px-4 py-20 text-center">
-      <h1 className="text-xl font-semibold text-[var(--ink)]">
+    <div className="mx-auto max-w-[1200px] px-4 py-20 text-center">
+      <EmptySearchArt className="mx-auto mb-6 w-48" />
+      <h1 className="text-[length:var(--step-2)] text-[var(--ink)]">
         {invalid ? 'Try a different search' : 'Search for a medicine'}
       </h1>
-      <p className="mx-auto mt-2 max-w-md text-sm text-[var(--ink-70)]">
+      <p className="mx-auto mt-3 max-w-md text-[var(--ink-70)]">
         Search by brand or salt — Dolo 650, paracetamol, or a condition like blood pressure.
       </p>
     </div>

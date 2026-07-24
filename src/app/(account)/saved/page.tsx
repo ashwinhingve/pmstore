@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Heart } from 'lucide-react';
-import { ProductCard } from '@/components/products/ProductCard';
+import { ProductCard, type ProductCardData } from '@/components/products/ProductCard';
 import { EmptyState } from '@/components/shared/EmptyState';
 
 interface SavedRow {
@@ -58,7 +58,7 @@ export default function SavedPage() {
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {rows.map((r) => (
             <li key={r._id}>
-              <ProductCard product={r.product} />
+              <ProductCard product={r.product as unknown as ProductCardData} />
             </li>
           ))}
         </ul>

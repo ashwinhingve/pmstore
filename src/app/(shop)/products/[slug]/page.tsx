@@ -198,7 +198,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
         dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd) }}
       />
 
-      <div className="container mx-auto px-4">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
@@ -223,7 +223,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
         </div>
 
         {/* Pharma details + the Strip (price per unit is the headline) */}
-        <section className="mt-10 grid gap-8 rounded-[var(--radius-md)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-card)] lg:grid-cols-3">
+        <section className="mt-10 grid gap-8 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)] sm:p-6 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-1">
             {serializedProduct.scheduleClass && (
               <RxBadge scheduleClass={serializedProduct.scheduleClass} />
@@ -272,6 +272,10 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
           serializedProduct.sideEffects?.length > 0 ||
           serializedProduct.contraindications?.length > 0) && (
           <div className="mt-10 max-w-3xl">
+            <h2 className="mb-4 text-[length:var(--step-1)] text-[var(--ink)]">
+              Medical information
+            </h2>
+            <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 shadow-[var(--shadow-xs)]">
             {serializedProduct.usageInstructions && (
               <Accordion title="How to take it" defaultOpen>
                 <p>{serializedProduct.usageInstructions}</p>
@@ -300,6 +304,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
                 </ul>
               </Accordion>
             )}
+            </div>
           </div>
         )}
 
@@ -314,8 +319,8 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
         {/* Related Products */}
         {serializedRelated.length > 0 && (
           <div className="mt-16">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-[var(--ink)]">
-              Related products
+            <h2 className="mb-6 text-[length:var(--step-2)] text-[var(--ink)]">
+              Related medicines
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {serializedRelated.map((relatedProduct: any) => (

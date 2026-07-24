@@ -31,7 +31,7 @@ export function Strip({ strip }: { strip: StripViewModel }) {
   return (
     <section
       aria-label={`Cheaper equivalents of ${strip.composition}`}
-      className="rounded-[var(--radius-md)] border border-[var(--foil)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-card)]"
+      className="rounded-[var(--radius-lg)] border border-[var(--foil)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-md)] sm:p-5"
     >
       <header className="mb-3 flex items-baseline justify-between gap-3">
         <h2 className="text-[length:var(--step-1)] font-semibold text-[var(--ink)]">
@@ -70,8 +70,10 @@ function Pill({ alt }: { alt: RankedAlternative }) {
         outOfStock ? ', out of stock' : ''
       }`}
       className={cn(
-        'flex h-full w-32 flex-col gap-1 rounded-[var(--radius-sm)] border p-2.5 transition-opacity',
-        isCurrent ? 'border-2 border-[var(--ink)]' : 'border border-[var(--foil-soft)]',
+        'flex h-full w-32 flex-col gap-1 rounded-[var(--radius-sm)] border bg-[var(--paper-card)] p-2.5 transition-[border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)]',
+        isCurrent
+          ? 'border-2 border-[var(--ink)] shadow-[var(--shadow-xs)]'
+          : 'border border-[var(--foil-soft)] hover:border-[var(--foil)] hover:shadow-[var(--shadow-sm)]',
         outOfStock && 'opacity-60'
       )}
     >
