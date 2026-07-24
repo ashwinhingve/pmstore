@@ -7,8 +7,14 @@ import OrderItem from '@/models/OrderItem';
 import Product from '@/models/Product';
 import Address from '@/models/Address';
 import Discount from '@/models/Discount';
+import Prescription from '@/models/Prescription';
 import { calculateShipping } from '@/lib/shipping/calculateShipping';
 import { calculateOrderGST } from '@/lib/gst';
+import {
+  assertPrescriptionForCart,
+  cartRequiresPrescription,
+  PrescriptionRequiredError,
+} from '@/lib/checkout/prescription-guard';
 
 /**
  * POST /api/checkout/create-order
@@ -67,6 +73,25 @@ export async function POST(req: NextRequest) {
         { error: 'Some products not found' },
         { status: 404 }
       );
+    }
+
+    // ── Prescription enforcement (root CLAUDE.md rule #3, non-negotiable) ──
+    // Schedule H/H1/X items need a valid prescription attached. Enforced here,
+    // server-side, before any order exists — the UI gate is not access control.
+    let prescriptionId: string | undefined;
+    if (cartRequiresPrescription(products)) {
+      const prescription = body.prescriptionId
+        ? await Prescription.findOne({ _id: body.prescriptionId, userId: session.user.id })
+        : null;
+      try {
+        assertPrescriptionForCart(products, prescription, session.user.id);
+      } catch (err) {
+        if (err instanceof PrescriptionRequiredError) {
+          return NextResponse.json({ error: err.message }, { status: err.status });
+        }
+        throw err;
+      }
+      prescriptionId = String(prescription!._id);
     }
 
     // Check stock availability
@@ -275,6 +300,7 @@ export async function POST(req: NextRequest) {
       discountAmount,
       discountCode,
       discountId,
+      prescriptionId,
       totalAmount,
       orderStatus: 'pending',
       paymentMethod: 'card',
@@ -297,6 +323,11 @@ export async function POST(req: NextRequest) {
     // Update order with item IDs
     order.items = createdOrderItems.map((item) => item._id);
     await order.save();
+
+    // Link the prescription back to this order for the Rx audit trail.
+    if (prescriptionId) {
+      await Prescription.findByIdAndUpdate(prescriptionId, { orderId: order._id });
+    }
 
     // Note: discount totalUsed is incremented in confirm-cod/payment-success,
     // not here, so abandoned orders don't consume discount quota.

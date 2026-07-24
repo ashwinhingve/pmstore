@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useCartStore, cartItemKey } from '@/store/useCartStore';
 import { AddressStep } from '@/components/checkout/AddressStep';
 import PaymentStep from '@/components/checkout/PaymentStep';
+import { PrescriptionUpload } from '@/components/prescriptions/PrescriptionUpload';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
 
 export default function CheckoutPage() {
@@ -14,6 +15,8 @@ export default function CheckoutPage() {
   const { items, getTotalPrice, discount, getDiscountAmount } = useCartStore();
   const [currentStep, setCurrentStep] = useState<'address' | 'payment'>('address');
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
+  const [prescriptionId, setPrescriptionId] = useState<string | null>(null);
+  const hasRxItems = items.some((item) => item.product.prescriptionRequired);
   const [orderDetails, setOrderDetails] = useState<{
     orderId: string;
     orderNumber: string;
@@ -50,6 +53,11 @@ export default function CheckoutPage() {
   }
 
   const handleAddressNext = async (addressId: string) => {
+    // Server enforces this too; this is the fast, friendly guard.
+    if (hasRxItems && !prescriptionId) {
+      setOrderError('Attach a prescription for the prescription-only items before continuing.');
+      return;
+    }
     setSelectedAddressId(addressId);
     setCreatingOrder(true);
     setOrderError(null);
@@ -82,6 +90,7 @@ export default function CheckoutPage() {
           items: cartItems,
           shippingAddressId: addressId,
           discountId: discount?.id || undefined,
+          prescriptionId: prescriptionId || undefined,
         }),
       });
 
@@ -184,6 +193,18 @@ export default function CheckoutPage() {
                           </svg>
                           <p className="text-sm text-red-700">{orderError}</p>
                         </div>
+                      </div>
+                    )}
+                    {hasRxItems && (
+                      <div className="mb-6 border-b border-gray-200 pb-6">
+                        <h2 className="mb-1 text-lg font-semibold text-[var(--ink,#1a1a1a)]">
+                          Prescription
+                        </h2>
+                        <p className="mb-4 text-sm text-gray-600">
+                          Your cart includes prescription-only medicines. Attach a clear photo of the
+                          prescription — our pharmacist verifies it before dispatch.
+                        </p>
+                        <PrescriptionUpload onUploaded={setPrescriptionId} />
                       </div>
                     )}
                     <AddressStep onNext={handleAddressNext} disabled={creatingOrder} />

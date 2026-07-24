@@ -15,6 +15,8 @@ export interface IOrder extends Document {
   discountAmount: number;
   discountCode?: string;
   discountId?: mongoose.Types.ObjectId;
+  /** Prescription that authorised any Schedule H/H1/X items in this order. */
+  prescriptionId?: mongoose.Types.ObjectId;
   totalAmount: number;
   orderStatus:
     | 'pending'
@@ -99,6 +101,7 @@ const OrderSchema = new Schema<IOrder>(
     },
     discountCode: { type: String },
     discountId: { type: Schema.Types.ObjectId, ref: 'Discount' },
+    prescriptionId: { type: Schema.Types.ObjectId, ref: 'Prescription' },
     totalAmount: {
       type: Number,
       required: true,
