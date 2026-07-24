@@ -14,7 +14,7 @@ export function AuthShell({
   className?: string
 }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--paper)] px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--paper-tint)] px-4 py-12">
       <div className={cn("w-full max-w-md", className)}>{children}</div>
     </div>
   )
@@ -30,7 +30,7 @@ export function AuthCard({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-card)]",
+        "overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-md)]",
         className
       )}
     >

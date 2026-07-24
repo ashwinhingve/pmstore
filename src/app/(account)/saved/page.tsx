@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Heart } from 'lucide-react';
 import { ProductCard, type ProductCardData } from '@/components/products/ProductCard';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { EmptySearchArt } from '@/components/illustrations';
+import { AccountShell } from '@/components/account/AccountShell';
 
 interface SavedRow {
   _id: string;
@@ -33,26 +34,25 @@ export default function SavedPage() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-6 text-[length:var(--step-2)] font-extrabold text-[var(--ink)]">
-        Saved medicines
-      </h1>
-
+    <AccountShell
+      title="Saved medicines"
+      description="The medicines you buy often, ready to reorder."
+    >
       {rows === null ? (
         <SkeletonGrid />
       ) : needsAuth ? (
         <EmptyState
           title="Sign in to see your saved medicines"
           description="Save the medicines you buy often and reorder them in one tap."
-          action={{ label: 'Sign in', href: '/login' }}
-          icon={<Heart className="h-8 w-8" aria-hidden="true" />}
+          action={{ label: 'Sign in', href: '/login?redirect=/saved' }}
+          illustration={<EmptySearchArt />}
         />
       ) : rows.length === 0 ? (
         <EmptyState
           title="No saved medicines yet"
           description="Save the ones you buy often and reorder in one tap."
           action={{ label: 'Browse medicines', href: '/products' }}
-          icon={<Heart className="h-8 w-8" aria-hidden="true" />}
+          illustration={<EmptySearchArt />}
         />
       ) : (
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -63,7 +63,7 @@ export default function SavedPage() {
           ))}
         </ul>
       )}
-    </div>
+    </AccountShell>
   );
 }
 

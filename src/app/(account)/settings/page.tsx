@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react';
 import { SavingsCounter } from '@/components/account/SavingsCounter';
+import { AccountShell } from '@/components/account/AccountShell';
 
 /**
  * Account settings — the retention hub. Shows the savings counter and lets the
@@ -48,32 +49,28 @@ export default function AccountSettingsPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-[length:var(--step-2)] font-extrabold text-[var(--ink)]">
-        Account settings
-      </h1>
-
+    <AccountShell title="Account settings" description="Savings, reminders and preferences.">
       {needsAuth ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 text-center">
+        <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-8 text-center shadow-[var(--shadow-sm)]">
           <p className="text-[var(--ink)]">Sign in to manage your account.</p>
           <a
-            href="/login"
-            className="mt-3 inline-block rounded-[var(--radius-sm)] bg-[var(--mint)] px-4 py-2 font-semibold text-[var(--ink)]"
+            href="/login?redirect=/settings"
+            className="mt-4 inline-flex min-h-11 items-center rounded-[var(--radius-sm)] bg-[var(--ink)] px-5 font-semibold text-[var(--paper-card)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--ink-deep)]"
           >
             Sign in
           </a>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="max-w-2xl space-y-6">
           <SavingsCounter />
 
-          <section className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5">
+          <section className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)]">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-3">
                 <Bell className="mt-0.5 h-5 w-5 shrink-0 text-[var(--ink)]" aria-hidden="true" />
                 <div>
                   <p className="font-semibold text-[var(--ink)]">Refill reminders</p>
-                  <p className="mt-1 text-[length:var(--step--1)] text-[var(--ink-soft,var(--ink))]">
+                  <p className="mt-1 text-[length:var(--step--1)] text-[var(--ink-70)]">
                     We'll email you before your regular medicines run out, based on your last order.
                   </p>
                 </div>
@@ -85,37 +82,21 @@ export default function AccountSettingsPage() {
                 aria-checked={optOut === false}
                 disabled={optOut === null || saving}
                 onClick={() => toggle(!optOut)}
-                className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition disabled:opacity-50 ${
-                  optOut === false ? 'bg-[var(--mint)]' : 'bg-[var(--foil-soft)]'
+                className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-[var(--dur-fast)] disabled:opacity-50 ${
+                  optOut === false ? 'bg-[var(--mint)]' : 'bg-[var(--foil)]'
                 }`}
               >
                 <span className="sr-only">Toggle refill reminders</span>
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                  className={`inline-block h-5 w-5 transform rounded-full bg-[var(--paper-card)] shadow-[var(--shadow-xs)] transition-transform duration-[var(--dur-fast)] ${
                     optOut === false ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
               </button>
             </div>
           </section>
-
-          <nav className="grid gap-2 sm:grid-cols-2">
-            <AccountLink href="/orders" label="Order history" />
-            <AccountLink href="/saved" label="Saved medicines" />
-          </nav>
         </div>
       )}
-    </div>
-  );
-}
-
-function AccountLink({ href, label }: { href: string; label: string }) {
-  return (
-    <a
-      href={href}
-      className="rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 py-3 font-medium text-[var(--ink)] transition hover:border-[var(--mint)]"
-    >
-      {label}
-    </a>
+    </AccountShell>
   );
 }
