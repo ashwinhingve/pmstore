@@ -16,6 +16,7 @@ export const CLOUDINARY_FOLDERS = {
   HERO_SLIDES: 'pmstore/hero-slides',
   TEAM: 'pmstore/team',
   REVIEWS: 'pmstore/reviews',
+  PRESCRIPTIONS: 'pmstore/prescriptions',
 };
 
 // Upload configuration

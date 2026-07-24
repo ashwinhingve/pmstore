@@ -237,6 +237,13 @@ export const RateLimitPresets = {
     keyPrefix: 'order:create',
   } as RateLimitConfig,
 
+  // Prescription upload - image uploads, keep modest
+  PRESCRIPTION_UPLOAD: {
+    windowMs: 60000, // 1 minute
+    maxRequests: 10,
+    keyPrefix: 'prescription:upload',
+  } as RateLimitConfig,
+
   // Admin endpoints - strict limits
   ADMIN_SETUP: {
     windowMs: 300000, // 5 minutes
