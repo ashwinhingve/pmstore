@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Star, ShoppingCart, Package, Check, Share2, Shield, Truck, BadgeCheck, Link2, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/store/useCartStore';
+import type { ScheduleClass } from '@/lib/pharma/format';
 import VariantSelector from './VariantSelector';
 import ProductReviews from './ProductReviews';
 
@@ -34,6 +35,14 @@ interface Product {
     stock: number;
     isActive: boolean;
   }>;
+  // Pharma context forwarded into the cart snapshot.
+  prescriptionRequired?: boolean;
+  scheduleClass?: ScheduleClass;
+  packSize?: number;
+  packUnit?: string;
+  unitPrice?: number;
+  mrp?: number;
+  gstRate?: number;
 }
 
 interface ProductInfoProps {
@@ -78,6 +87,13 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
       originalPrice: currentOriginalPrice,
       images: product.images,
       category: categoryName,
+      prescriptionRequired: product.prescriptionRequired,
+      scheduleClass: product.scheduleClass,
+      packSize: product.packSize,
+      packUnit: product.packUnit,
+      unitPrice: product.unitPrice,
+      mrp: product.mrp,
+      gstRate: product.gstRate,
     }, quantity);
 
     setTimeout(() => {
@@ -96,6 +112,13 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
       originalPrice: currentOriginalPrice,
       images: product.images,
       category: categoryName,
+      prescriptionRequired: product.prescriptionRequired,
+      scheduleClass: product.scheduleClass,
+      packSize: product.packSize,
+      packUnit: product.packUnit,
+      unitPrice: product.unitPrice,
+      mrp: product.mrp,
+      gstRate: product.gstRate,
     }, quantity);
     router.push('/checkout');
   };

@@ -10,9 +10,12 @@ import { Button } from "@/components/ui/button"
 import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/shared/AnimatedSection"
 import {
   Trash2, Plus, Minus, ShoppingBag, ArrowRight, Package,
-  Tag, X, CheckCircle, Loader2, Gift,
+  Tag, X, CheckCircle, Loader2, Gift, Pill,
 } from "lucide-react"
 import { motion } from "framer-motion"
+import { RxBadge } from "@/components/shared/RxBadge"
+import { extractGST } from "@/lib/gst"
+import { perUnitLabel, formatINR } from "@/lib/pharma/format"
 
 export default function CartPage() {
   const { data: session } = useSession()
@@ -33,6 +36,17 @@ export default function CartPage() {
   const discountAmt = getDiscountAmount()
   // Prices are GST-inclusive (MRP) — no separate tax added
   const finalTotal = Math.max(0, totalPrice + shipping - discountAmt)
+
+  const hasRxItems = items.some((i) => i.product.prescriptionRequired)
+  // GST already sits inside the inclusive prices; show how much, for clarity.
+  // The CGST/SGST vs IGST split needs the delivery state, so that's shown at
+  // checkout — here we surface the state-independent total only.
+  const gstIncluded = Math.round(
+    items.reduce(
+      (sum, i) => sum + extractGST(i.product.price, i.product.gstRate ?? 5).gst * i.quantity,
+      0,
+    ) * 100,
+  ) / 100
 
   // ── Auto-check for applicable discounts on mount ─────────────
   useEffect(() => {
@@ -211,6 +225,21 @@ export default function CartPage() {
                                   ? item.product.category
                                   : (item.product.category as any)?.name}
                               </p>
+                              {item.product.prescriptionRequired && (
+                                item.product.scheduleClass ? (
+                                  <RxBadge scheduleClass={item.product.scheduleClass} className="mt-1.5" />
+                                ) : (
+                                  <span className="mt-1.5 inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--rx-soft)] px-2.5 py-1 text-[0.8125rem] font-semibold text-[var(--rx)]">
+                                    <Pill className="h-3.5 w-3.5" aria-hidden="true" />
+                                    Prescription required
+                                  </span>
+                                )
+                              )}
+                              {item.product.packSize && item.product.packUnit && (
+                                <p className="data mt-1 text-xs text-gray-500">
+                                  Pack of {item.product.packSize} {item.product.packUnit}
+                                </p>
+                              )}
                             </div>
                             <button
                               onClick={() => removeItem(cartItemKey(item.product.id, item.product.variantId))}
@@ -242,8 +271,13 @@ export default function CartPage() {
                             </div>
 
                             <div className="text-right">
-                              <div className="text-sm text-gray-600 mb-1">₹{item.product.price} × {item.quantity}</div>
-                              <div className="text-xl font-bold text-amber-600">
+                              <div className="data text-sm text-gray-600 mb-1">₹{item.product.price} × {item.quantity}</div>
+                              {item.product.unitPrice && item.product.packUnit && (
+                                <div className="data text-xs text-gray-500">
+                                  {perUnitLabel(item.product.unitPrice, item.product.packUnit)}
+                                </div>
+                              )}
+                              <div className="data text-xl font-bold text-amber-600">
                                 ₹{(item.product.price * item.quantity).toLocaleString()}
                               </div>
                             </div>
@@ -382,6 +416,13 @@ export default function CartPage() {
                     )}
                   </div>
 
+                  {gstIncluded > 0 && (
+                    <div className="flex justify-between text-sm text-gray-500">
+                      <span>Includes GST</span>
+                      <span className="data">{formatINR(gstIncluded)}</span>
+                    </div>
+                  )}
+
                   {discountAmt > 0 && (
                     <div className="flex justify-between text-green-600">
                       <span className="font-medium flex items-center gap-1.5">
@@ -429,6 +470,15 @@ export default function CartPage() {
                         <p className="text-amber-700">Orders above ₹500 get free delivery</p>
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {hasRxItems && (
+                  <div className="mb-4 flex items-start gap-2 rounded-lg bg-[var(--rx-soft)] p-3">
+                    <Pill className="mt-0.5 h-4 w-4 flex-shrink-0 text-[var(--rx)]" aria-hidden="true" />
+                    <p className="text-sm text-[var(--ink,#1a1a1a)]">
+                      Some items need a prescription. You&apos;ll attach it at checkout before payment.
+                    </p>
                   </div>
                 )}
 

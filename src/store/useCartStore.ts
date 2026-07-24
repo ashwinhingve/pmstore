@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { ProductData } from '@/data/products';
+import type { ScheduleClass } from '@/lib/pharma/format';
 
 // Cart product supports both DB objects (with _id) and static data (with id)
 interface CartProduct {
@@ -12,6 +13,15 @@ interface CartProduct {
   originalPrice?: number;
   images: (string | { url: string })[];
   category: string;
+  // Pharma context, forwarded so the cart can flag Rx items, lead with the
+  // per-unit price, and show a GST breakdown without re-fetching the product.
+  prescriptionRequired?: boolean;
+  scheduleClass?: ScheduleClass;
+  packSize?: number;
+  packUnit?: string;
+  unitPrice?: number;
+  mrp?: number;
+  gstRate?: number;
 }
 
 interface CartItem {
@@ -59,6 +69,13 @@ function normalizeProduct(product: any): CartProduct {
     originalPrice: product.originalPrice,
     images: product.images || [],
     category: product.category || '',
+    prescriptionRequired: product.prescriptionRequired ?? false,
+    scheduleClass: product.scheduleClass,
+    packSize: product.packSize,
+    packUnit: product.packUnit,
+    unitPrice: product.unitPrice,
+    mrp: product.mrp,
+    gstRate: product.gstRate,
   };
 }
 
