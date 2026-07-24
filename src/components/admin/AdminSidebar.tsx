@@ -92,14 +92,14 @@ export default function AdminSidebar() {
   return (
     <aside className="hidden lg:flex lg:flex-shrink-0">
       <div className="flex flex-col w-64">
-        <div className="flex flex-col flex-grow bg-white border-r border-gray-200 pt-5 pb-4 overflow-y-auto">
+        <div className="flex flex-col flex-grow bg-[var(--paper-card)] border-r border-[var(--foil-soft)] pt-5 pb-4 overflow-y-auto">
           {/* Brand */}
           <div className="flex items-center flex-shrink-0 px-6 mb-6">
             <div>
-              <h2 className="text-xl font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
+              <h2 className="text-xl font-bold text-[var(--ink)]">
                 Admin Panel
               </h2>
-              <p className="text-sm text-gray-500">PMStore</p>
+              <p className="text-sm text-[var(--ink-40)]">PMStore</p>
             </div>
           </div>
 
@@ -117,15 +117,15 @@ export default function AdminSidebar() {
                     group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-150
                     ${
                       isActive
-                        ? 'bg-gradient-to-r from-amber-50 to-red-50 text-amber-700 border-l-4 border-amber-600'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-amber-700 border-l-4 border-transparent'
+                        ? 'bg-[var(--mint-soft)] text-[var(--mint)] border-l-4 border-[var(--mint)]'
+                        : 'text-[var(--ink)] hover:bg-[var(--foil-soft)] hover:text-[var(--mint)] border-l-4 border-transparent'
                     }
                   `}
                 >
                   <Icon
                     className={`
                       mr-3 h-5 w-5 flex-shrink-0 transition-colors
-                      ${isActive ? 'text-amber-600' : 'text-gray-400 group-hover:text-amber-600'}
+                      ${isActive ? 'text-[var(--mint)]' : 'text-[var(--ink-40)] group-hover:text-[var(--mint)]'}
                     `}
                   />
                   {item.label}
@@ -135,8 +135,8 @@ export default function AdminSidebar() {
           </nav>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-gray-200">
-            <p className="text-xs text-gray-500">
+          <div className="px-6 py-4 border-t border-[var(--foil-soft)]">
+            <p className="text-xs text-[var(--ink-40)]">
               Admin access only. All actions are logged.
             </p>
           </div>

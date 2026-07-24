@@ -70,10 +70,10 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
     : product.discountPercentage || 0;
 
   const stockStatus = currentStock === 0
-    ? { label: 'Out of Stock', color: 'text-red-600', available: false }
+    ? { label: 'Out of Stock', color: 'text-[var(--ink-70)]', available: false }
     : currentStock <= 10
-    ? { label: `Only ${currentStock} left!`, color: 'text-yellow-600', available: true }
-    : { label: 'In Stock', color: 'text-green-600', available: true };
+    ? { label: `Only ${currentStock} left!`, color: 'text-[var(--ink)]', available: true }
+    : { label: 'In Stock', color: 'text-[var(--mint)]', available: true };
 
   const handleAddToCart = () => {
     setIsAdding(true);
@@ -151,10 +151,10 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
     <div className="space-y-6">
       {/* Product Name */}
       <div>
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-[var(--ink)] mb-2">
           {product.name}
         </h1>
-        <p className="text-sm text-gray-500 font-mono">SKU: {product.sku}</p>
+        <p className="text-sm text-[var(--ink-40)] font-mono">SKU: {product.sku}</p>
       </div>
 
       {/* Rating */}
@@ -165,28 +165,28 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
               key={i}
               className={`w-5 h-5 ${
                 i < Math.floor(product.averageRating)
-                  ? 'fill-amber-500 text-amber-500'
-                  : 'text-gray-300'
+                  ? 'fill-[var(--mint)] text-[var(--mint)]'
+                  : 'text-[var(--foil-soft)]'
               }`}
             />
           ))}
         </div>
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-[var(--ink-70)]">
           {product.averageRating.toFixed(1)} ({product.totalReviews} reviews)
         </span>
       </div>
 
       {/* Price */}
       <div className="flex items-baseline gap-3">
-        <span className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-red-700 bg-clip-text text-transparent">
+        <span className="text-4xl font-bold text-[var(--ink)]">
           ₹{currentPrice.toLocaleString()}
         </span>
         {currentOriginalPrice && currentOriginalPrice > currentPrice && (
           <>
-            <span className="text-2xl text-gray-400 line-through">
+            <span className="text-2xl text-[var(--ink-40)] line-through">
               ₹{currentOriginalPrice.toLocaleString()}
             </span>
-            <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
+            <span className="px-3 py-1 bg-[var(--mint-soft)] text-[var(--mint)] rounded-full text-sm font-medium">
               {discount}% OFF
             </span>
           </>
@@ -202,8 +202,8 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
           </span>
         </div>
         {product.weight && product.weight > 0 && (
-          <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-            <span className="text-sm font-semibold text-amber-800">
+          <div className="flex items-center gap-1.5 bg-[var(--foil-soft)] border border-[var(--foil)] px-3 py-1 rounded-full">
+            <span className="text-sm font-semibold text-[var(--ink)]">
               {product.weightUnit === 'g' && product.weight >= 1000
                 ? `${product.weight / 1000} kg`
                 : product.weightUnit === 'ml' && product.weight >= 1000
@@ -215,8 +215,8 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
       </div>
 
       {/* Description */}
-      <div className="border-t border-b border-gray-200 py-4">
-        <p className="text-gray-700 leading-relaxed">{product.description}</p>
+      <div className="border-t border-b border-[var(--foil-soft)] py-4">
+        <p className="text-[var(--ink)] leading-relaxed">{product.description}</p>
       </div>
 
       {/* Variants */}
@@ -230,21 +230,21 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
 
       {/* Quantity Selector */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-[var(--ink)] mb-2">
           Quantity
         </label>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+            className="w-10 h-10 rounded-lg border border-[var(--foil-soft)] flex items-center justify-center hover:bg-[var(--foil-soft)] transition-colors text-[var(--ink)]"
             disabled={!stockStatus.available}
           >
             -
           </button>
-          <span className="w-16 text-center font-medium text-lg">{quantity}</span>
+          <span className="w-16 text-center font-medium text-lg text-[var(--ink)]">{quantity}</span>
           <button
             onClick={() => setQuantity(Math.min(currentStock, quantity + 1))}
-            className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+            className="w-10 h-10 rounded-lg border border-[var(--foil-soft)] flex items-center justify-center hover:bg-[var(--foil-soft)] transition-colors text-[var(--ink)]"
             disabled={!stockStatus.available || quantity >= currentStock}
           >
             +
@@ -257,7 +257,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
         <Button
           onClick={handleAddToCart}
           disabled={!stockStatus.available || isAdding}
-          className="flex-1 h-14 text-lg bg-gradient-to-r from-amber-600 to-red-700 hover:from-amber-700 hover:to-red-800"
+          className="flex-1 h-14 text-lg bg-[var(--ink)] hover:opacity-90"
         >
           {isAdding ? (
             <>
@@ -276,7 +276,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
           onClick={handleBuyNow}
           disabled={!stockStatus.available}
           variant="outline"
-          className="flex-1 h-14 text-lg border-2 border-amber-600 text-amber-700 hover:bg-amber-50"
+          className="flex-1 h-14 text-lg border-2 border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--foil-soft)]"
         >
           <Zap className="w-5 h-5 mr-2" />
           Buy Now
@@ -309,24 +309,24 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
       </div>
 
       {/* Trust Badges */}
-      <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
+      <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[var(--foil-soft)]">
         <div className="text-center">
-          <Shield className="w-8 h-8 mx-auto mb-2 text-green-600" />
-          <p className="text-xs text-gray-600">Secure Payment</p>
+          <Shield className="w-8 h-8 mx-auto mb-2 text-[var(--mint)]" />
+          <p className="text-xs text-[var(--ink-70)]">Secure Payment</p>
         </div>
         <div className="text-center">
-          <Truck className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-          <p className="text-xs text-gray-600">Fast Delivery</p>
+          <Truck className="w-8 h-8 mx-auto mb-2 text-[var(--ink)]" />
+          <p className="text-xs text-[var(--ink-70)]">Fast Delivery</p>
         </div>
         <div className="text-center">
-          <BadgeCheck className="w-8 h-8 mx-auto mb-2 text-amber-600" />
-          <p className="text-xs text-gray-600">100% Authentic</p>
+          <BadgeCheck className="w-8 h-8 mx-auto mb-2 text-[var(--mint)]" />
+          <p className="text-xs text-[var(--ink-70)]">100% Authentic</p>
         </div>
       </div>
 
       {/* Reviews Section */}
-      <div className="border-t border-gray-200 pt-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Customer Reviews</h2>
+      <div className="border-t border-[var(--foil-soft)] pt-6">
+        <h2 className="text-xl font-bold text-[var(--ink)] mb-4">Customer Reviews</h2>
         <ProductReviews productId={product._id} autoOpenReview={autoOpenReview} />
       </div>
     </div>

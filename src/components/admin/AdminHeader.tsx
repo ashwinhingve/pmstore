@@ -32,21 +32,21 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-[var(--paper-card)] border-b border-[var(--foil-soft)] sticky top-0 z-50">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Left side: Mobile menu button + Title */}
           <div className="flex items-center">
             <button
               type="button"
-              className="lg:hidden -ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-amber-500"
+              className="lg:hidden -ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-[var(--ink-40)] hover:text-[var(--ink)]"
               onClick={() => setShowMobileMenu(!showMobileMenu)}
             >
               <span className="sr-only">Open sidebar</span>
               <Menu className="h-6 w-6" />
             </button>
             <div className="ml-4 lg:ml-0">
-              <h1 className="text-lg font-semibold text-gray-900">Admin Dashboard</h1>
+              <h1 className="text-lg font-semibold text-[var(--ink)]">Admin Dashboard</h1>
             </div>
           </div>
 
@@ -55,33 +55,33 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
             {/* Notifications */}
             <button
               type="button"
-              className="relative rounded-full p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="relative rounded-full p-2 text-[var(--ink-40)] hover:text-[var(--ink)] hover:bg-[var(--foil-soft)]"
             >
               <span className="sr-only">View notifications</span>
               <Bell className="h-5 w-5" />
               {/* Notification badge */}
-              <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+              <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-[var(--mint)] ring-2 ring-[var(--paper-card)]" />
             </button>
 
             {/* User menu */}
             <div className="relative">
               <button
                 type="button"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-[var(--foil-soft)]"
                 onClick={() => setShowUserMenu(!showUserMenu)}
               >
                 {/* User avatar */}
-                <div className="h-8 w-8 rounded-full bg-gradient-to-r from-amber-600 to-red-700 flex items-center justify-center text-white font-semibold">
+                <div className="h-8 w-8 rounded-full bg-[var(--ink)] flex items-center justify-center text-[var(--paper-card)] font-semibold">
                   {user.name?.charAt(0).toUpperCase() || 'A'}
                 </div>
 
                 {/* User info */}
                 <div className="hidden sm:block text-left">
-                  <p className="text-sm font-medium text-gray-900">{user.name || 'Admin'}</p>
-                  <p className="text-xs text-gray-500">{user.email}</p>
+                  <p className="text-sm font-medium text-[var(--ink)]">{user.name || 'Admin'}</p>
+                  <p className="text-xs text-[var(--ink-40)]">{user.email}</p>
                 </div>
 
-                <ChevronDown className="h-4 w-4 text-gray-400" />
+                <ChevronDown className="h-4 w-4 text-[var(--ink-40)]" />
               </button>
 
               {/* Dropdown menu */}
@@ -91,17 +91,17 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                     className="fixed inset-0 z-10"
                     onClick={() => setShowUserMenu(false)}
                   />
-                  <div className="absolute right-0 z-20 mt-2 w-56 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="absolute right-0 z-20 mt-2 w-56 origin-top-right rounded-lg bg-[var(--paper-card)] shadow-card border border-[var(--foil-soft)]">
                     <div className="p-2">
                       {/* Profile info */}
-                      <div className="px-3 py-2 border-b border-gray-100 mb-2">
-                        <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      <div className="px-3 py-2 border-b border-[var(--foil-soft)] mb-2">
+                        <p className="text-sm font-medium text-[var(--ink)]">{user.name}</p>
+                        <p className="text-xs text-[var(--ink-40)] truncate">{user.email}</p>
                       </div>
 
                       {/* Menu items */}
                       <button
-                        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--ink)] hover:bg-[var(--foil-soft)]"
                         onClick={() => {
                           setShowUserMenu(false);
                           router.push('/admin/settings');
@@ -112,7 +112,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                       </button>
 
                       <button
-                        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--ink)] hover:bg-[var(--foil-soft)]"
                         onClick={() => {
                           setShowUserMenu(false);
                           router.push('/profile');
@@ -122,10 +122,10 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                         View Profile
                       </button>
 
-                      <div className="my-2 border-t border-gray-100" />
+                      <div className="my-2 border-t border-[var(--foil-soft)]" />
 
                       <button
-                        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--ink-70)] hover:bg-[var(--foil-soft)]"
                         onClick={handleSignOut}
                       >
                         <LogOut className="h-4 w-4" />
@@ -142,14 +142,14 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
 
       {/* Mobile navigation menu */}
       {showMobileMenu && (
-        <div className="lg:hidden border-t border-gray-200">
+        <div className="lg:hidden border-t border-[var(--foil-soft)]">
           <div className="px-2 py-3 space-y-1">
             {/* Add mobile navigation items here if needed */}
-            <p className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <p className="px-3 text-xs font-semibold text-[var(--ink-40)] uppercase tracking-wider">
               Navigation
             </p>
             {/* Mobile nav items would go here - for now directing to desktop view */}
-            <p className="px-3 py-2 text-sm text-gray-600">
+            <p className="px-3 py-2 text-sm text-[var(--ink-70)]">
               Please use desktop view for full admin functionality
             </p>
           </div>

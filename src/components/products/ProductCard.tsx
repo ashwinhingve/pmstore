@@ -81,9 +81,9 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
 
   return (
     <Link href={`/products/${product.slug}`}>
-      <div className="group bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+      <div className="group bg-[var(--paper-card)] rounded-xl border border-[var(--foil-soft)] overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
         {/* Product Image */}
-        <div className="relative aspect-square bg-gray-50 overflow-hidden">
+        <div className="relative aspect-square bg-[var(--foil-soft)] overflow-hidden">
           {imageUrl && !imageError ? (
             <Image
               src={imageUrl}
@@ -95,19 +95,19 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
               onError={() => setImageError(true)}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-50">
+            <div className="w-full h-full flex items-center justify-center bg-[var(--foil-soft)]">
               <div className="text-center p-6">
-                <svg className="w-16 h-16 mx-auto text-amber-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-16 h-16 mx-auto text-[var(--ink-40)] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
-                <p className="text-sm font-medium text-amber-600">{product.name}</p>
+                <p className="text-sm font-medium text-[var(--ink-70)]">{product.name}</p>
               </div>
             </div>
           )}
 
           {/* Weight/Size Badge */}
           {weightLabel && (
-            <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-bold px-2.5 py-1 rounded-full border border-gray-200 shadow-sm">
+            <div className="absolute bottom-2 left-2 bg-[var(--paper-card)]/90 backdrop-blur-sm text-[var(--ink)] text-xs font-bold px-2.5 py-1 rounded-full border border-[var(--foil-soft)] shadow-sm">
               {weightLabel}
             </div>
           )}
@@ -115,7 +115,7 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
           {/* Newly Added Tag */}
           {isNew && (
             <div className="absolute top-0 left-0">
-              <div className="bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-br-lg shadow-sm uppercase tracking-wider">
+              <div className="bg-[var(--mint)] text-[var(--paper-card)] text-[10px] font-bold px-3 py-1 rounded-br-lg shadow-sm uppercase tracking-wider">
                 New
               </div>
             </div>
@@ -123,14 +123,14 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
 
           {/* Featured Badge */}
           {isFeatured && !isNew && !showSaleBadge && (
-            <div className="absolute top-2 left-2 bg-amber-500 text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">
+            <div className="absolute top-2 left-2 bg-[var(--mint)] text-[var(--paper-card)] text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">
               Featured
             </div>
           )}
 
           {/* Discount Badge */}
           {discount > 0 && (
-            <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">
+            <div className="absolute top-2 right-2 bg-[var(--ink)] text-[var(--paper-card)] text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">
               {discount}% OFF
             </div>
           )}
@@ -139,12 +139,12 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
         {/* Product Info */}
         <div className="p-4 flex flex-col flex-1">
           {/* Category (populated to { name }; tolerate a legacy string) */}
-          <p className="text-xs text-amber-600 font-medium mb-1 uppercase tracking-wide">
+          <p className="text-xs text-[var(--mint)] font-medium mb-1 uppercase tracking-wide">
             {typeof product.category === 'string' ? product.category : product.category?.name}
           </p>
 
           {/* Product Name */}
-          <h3 className="font-semibold text-sm md:text-base text-gray-900 mb-2 line-clamp-2 group-hover:text-amber-700 transition-colors leading-snug">
+          <h3 className="font-semibold text-sm md:text-base text-[var(--ink)] mb-2 line-clamp-2 group-hover:text-[var(--ink-70)] transition-colors leading-snug">
             {product.name}
           </h3>
 
@@ -157,8 +157,8 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
                     key={i}
                     className={`w-3.5 h-3.5 ${
                       i < Math.floor(averageRating)
-                        ? "text-yellow-400 fill-current"
-                        : "text-gray-200 fill-current"
+                        ? "text-[var(--mint)] fill-current"
+                        : "text-[var(--foil-soft)] fill-current"
                     }`}
                     viewBox="0 0 20 20"
                   >
@@ -166,19 +166,19 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
                   </svg>
                 ))}
               </div>
-              <span className="text-xs text-gray-400">({totalReviews})</span>
+              <span className="text-xs text-[var(--ink-40)]">({totalReviews})</span>
             </div>
           )}
 
           {/* Price & Add to Cart */}
           <div className="mt-auto pt-2">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-lg font-bold text-gray-900">₹{product.price}</span>
+              <span className="text-lg font-bold text-[var(--ink)]">₹{product.price}</span>
               {product.originalPrice && (
-                <span className="text-sm text-gray-400 line-through">₹{product.originalPrice}</span>
+                <span className="text-sm text-[var(--ink-40)] line-through">₹{product.originalPrice}</span>
               )}
               {discount > 0 && (
-                <span className="text-xs font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                <span className="text-xs font-semibold text-[var(--mint)] bg-[var(--mint-soft)] px-1.5 py-0.5 rounded">
                   {discount}% Off
                 </span>
               )}
@@ -196,11 +196,11 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
                       updateQuantity(productId, itemQuantity - 1);
                     }
                   }}
-                  className="w-9 h-9 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center transition-colors font-bold text-lg"
+                  className="w-9 h-9 rounded-lg bg-[var(--foil-soft)] hover:bg-[var(--foil)] text-[var(--ink)] flex items-center justify-center transition-colors font-bold text-lg"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
-                <span className="flex-1 text-center font-bold text-gray-900 text-sm">
+                <span className="flex-1 text-center font-bold text-[var(--ink)] text-sm">
                   {itemQuantity} in cart
                 </span>
                 <button
@@ -209,7 +209,7 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
                     e.stopPropagation();
                     addItem(product, 1);
                   }}
-                  className="w-9 h-9 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 flex items-center justify-center transition-colors font-bold text-lg"
+                  className="w-9 h-9 rounded-lg bg-[var(--mint-soft)] hover:bg-[var(--mint)] text-[var(--mint)] hover:text-[var(--paper-card)] flex items-center justify-center transition-colors font-bold text-lg"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -219,7 +219,7 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
                 <Button
                   size="sm"
                   onClick={handleShopNow}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold text-sm h-9"
+                  className="w-full bg-[var(--mint)] hover:opacity-90 text-[var(--paper-card)] font-semibold text-sm h-9"
                 >
                   Shop Now
                 </Button>
@@ -228,7 +228,7 @@ export function ProductCard({ product, showSaleBadge = false }: ProductCardProps
                   variant="outline"
                   onClick={handleAddToCart}
                   disabled={isAdding}
-                  className="w-full border-amber-500 text-amber-700 hover:bg-amber-50 font-semibold text-sm h-9"
+                  className="w-full border-[var(--foil-soft)] text-[var(--ink)] hover:bg-[var(--foil-soft)] font-semibold text-sm h-9"
                 >
                   {isAdding ? "Added!" : "+ ADD"}
                 </Button>

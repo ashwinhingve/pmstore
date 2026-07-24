@@ -102,8 +102,8 @@ export function PrescriptionUpload({ onUploaded, className }: PrescriptionUpload
         className={className}
         role="status"
       >
-        <div className="flex items-center gap-2 rounded-[var(--radius-card)] bg-[var(--mint-soft,#e7f5ef)] px-4 py-3 text-[var(--ink)]">
-          <Check className="h-5 w-5 text-[var(--mint,#137a54)]" aria-hidden="true" />
+        <div className="flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--mint-soft)] px-4 py-3 text-[var(--ink)]">
+          <Check className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
           <p>Prescription received. Our pharmacist will review it.</p>
         </div>
       </div>
@@ -114,15 +114,15 @@ export function PrescriptionUpload({ onUploaded, className }: PrescriptionUpload
     <div className={className}>
       <div
         {...getRootProps()}
-        className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[var(--radius-card)] border-2 border-dashed border-[var(--line,#d9d9d9)] px-6 py-8 text-center transition-colors hover:border-[var(--ink)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+        className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[var(--radius-md)] border-2 border-dashed border-[var(--foil-soft)] px-6 py-8 text-center transition-colors hover:border-[var(--ink)]"
         aria-label="Add prescription images"
       >
         <input {...getInputProps()} />
-        <Upload className="h-6 w-6 text-[var(--ink-soft,#666)]" aria-hidden="true" />
+        <Upload className="h-6 w-6 text-[var(--ink-70)]" aria-hidden="true" />
         <p className="text-[var(--ink)]">
           {isDragActive ? 'Drop the images here' : 'Tap to add a photo, or drag images here'}
         </p>
-        <p className="text-sm text-[var(--ink-soft,#666)]">
+        <p className="text-sm text-[var(--ink-70)]">
           JPG, PNG or WebP · up to {MAX_IMAGES} images · {images.length} added
         </p>
       </div>
@@ -132,7 +132,7 @@ export function PrescriptionUpload({ onUploaded, className }: PrescriptionUpload
           {images.map((img, i) => (
             <li
               key={img.preview}
-              className="relative aspect-square overflow-hidden rounded-[var(--radius-card)] border border-[var(--line,#d9d9d9)]"
+              className="relative aspect-square overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)]"
             >
               <Image
                 src={img.preview}
@@ -163,7 +163,7 @@ export function PrescriptionUpload({ onUploaded, className }: PrescriptionUpload
             type="text"
             value={patientName}
             onChange={(e) => setPatientName(e.target.value)}
-            className="rounded-[var(--radius-input,0.5rem)] border border-[var(--line,#d9d9d9)] px-3 py-2 text-base"
+            className="rounded-[var(--radius-sm)] border border-[var(--foil-soft)] px-3 py-2 text-base text-[var(--ink)] placeholder:text-[var(--ink-40)]"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm text-[var(--ink)]">
@@ -172,7 +172,7 @@ export function PrescriptionUpload({ onUploaded, className }: PrescriptionUpload
             type="text"
             value={doctorName}
             onChange={(e) => setDoctorName(e.target.value)}
-            className="rounded-[var(--radius-input,0.5rem)] border border-[var(--line,#d9d9d9)] px-3 py-2 text-base"
+            className="rounded-[var(--radius-sm)] border border-[var(--foil-soft)] px-3 py-2 text-base text-[var(--ink)] placeholder:text-[var(--ink-40)]"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm text-[var(--ink)]">
@@ -181,7 +181,7 @@ export function PrescriptionUpload({ onUploaded, className }: PrescriptionUpload
             type="date"
             value={issueDate}
             onChange={(e) => setIssueDate(e.target.value)}
-            className="data rounded-[var(--radius-input,0.5rem)] border border-[var(--line,#d9d9d9)] px-3 py-2 text-base"
+            className="data rounded-[var(--radius-sm)] border border-[var(--foil-soft)] px-3 py-2 text-base text-[var(--ink)]"
           />
         </label>
       </div>

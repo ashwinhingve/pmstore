@@ -6,10 +6,6 @@
  * Debounced autocomplete over /api/search/suggest, ARIA combobox + listbox,
  * arrow-key navigation, Enter to select, Escape to close, recent searches on
  * empty focus. A real example placeholder, never "Search products".
- *
- * NOTE: styled with neutral Tailwind + the Header's amber accent because the
- * design tokens (src/styles/tokens.css) aren't wired until the Week 3 design
- * pass. Restyle to tokens then; behaviour and ARIA stay.
  */
 import { useEffect, useId, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -133,7 +129,7 @@ export function SearchBar({ className }: { className?: string }) {
       </label>
       <div className="relative">
         <Search
-          className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
+          className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--ink-40)]"
           aria-hidden="true"
         />
         <input
@@ -155,7 +151,7 @@ export function SearchBar({ className }: { className?: string }) {
           }}
           onFocus={openWithRecent}
           onKeyDown={onKeyDown}
-          className="h-12 w-full rounded-lg border border-gray-300 bg-white pl-11 pr-10 text-base text-gray-900 placeholder:text-gray-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+          className="h-12 w-full rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] pl-11 pr-10 text-base text-[var(--ink)] placeholder:text-[var(--ink-40)]"
         />
         {query && (
           <button
@@ -166,7 +162,7 @@ export function SearchBar({ className }: { className?: string }) {
               setActiveIndex(-1);
               inputRef.current?.focus();
             }}
-            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-[var(--ink-40)] hover:bg-[var(--foil-soft)] hover:text-[var(--ink)]"
           >
             <X className="h-4 w-4" />
           </button>
@@ -178,14 +174,14 @@ export function SearchBar({ className }: { className?: string }) {
           id={listboxId}
           role="listbox"
           aria-label={showingRecent ? 'Recent searches' : 'Search suggestions'}
-          className="absolute z-50 mt-2 max-h-96 w-full overflow-auto rounded-lg border border-gray-200 bg-white py-1 shadow-xl"
+          className="absolute z-50 mt-2 max-h-96 w-full overflow-auto rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] py-1 shadow-card"
         >
           {showingRecent && recent.length > 0 && (
-            <li className="flex items-center justify-between px-3 py-1.5 text-xs font-medium text-gray-500">
+            <li className="flex items-center justify-between px-3 py-1.5 text-xs font-medium text-[var(--ink-40)]">
               <span>Recent searches</span>
               <button
                 type="button"
-                className="rounded px-1.5 py-0.5 hover:bg-gray-100 hover:text-gray-700"
+                className="rounded px-1.5 py-0.5 hover:bg-[var(--foil-soft)] hover:text-[var(--ink)]"
                 onClick={() => {
                   clearRecent();
                   setRecent([]);
@@ -197,13 +193,13 @@ export function SearchBar({ className }: { className?: string }) {
           )}
 
           {!showingRecent && loading && items.length === 0 && (
-            <li className="px-4 py-3 text-sm text-gray-500" aria-live="polite">
+            <li className="px-4 py-3 text-sm text-[var(--ink-40)]" aria-live="polite">
               Searching…
             </li>
           )}
 
           {!showingRecent && !loading && items.length === 0 && (
-            <li className="px-4 py-3 text-sm text-gray-500" aria-live="polite">
+            <li className="px-4 py-3 text-sm text-[var(--ink-40)]" aria-live="polite">
               No matches. Press Enter to search anyway.
             </li>
           )}
@@ -223,17 +219,17 @@ export function SearchBar({ className }: { className?: string }) {
                 }}
                 className={cn(
                   'flex min-h-11 cursor-pointer items-center gap-3 px-4 py-2 text-sm',
-                  activeIndex === i ? 'bg-amber-50 text-amber-900' : 'text-gray-800'
+                  activeIndex === i ? 'bg-[var(--mint-soft)] text-[var(--ink)]' : 'text-[var(--ink)]'
                 )}
               >
                 {showingRecent ? (
-                  <Clock className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+                  <Clock className="h-4 w-4 shrink-0 text-[var(--ink-40)]" aria-hidden="true" />
                 ) : (
-                  <Search className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+                  <Search className="h-4 w-4 shrink-0 text-[var(--ink-40)]" aria-hidden="true" />
                 )}
                 <span className="flex-1 truncate">{label}</span>
                 {s?.unitPrice != null && (
-                  <span className="shrink-0 font-mono text-xs tabular-nums text-gray-500">
+                  <span className="shrink-0 font-mono text-xs tabular-nums text-[var(--ink-40)]">
                     ₹{s.unitPrice.toFixed(2)}/{s.packUnit ?? 'unit'}
                   </span>
                 )}
