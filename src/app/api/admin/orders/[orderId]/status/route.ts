@@ -6,6 +6,7 @@ import Shipment from '@/models/Shipment';
 import Transaction from '@/models/Transaction';
 import { emailService } from '@/lib/notifications/email';
 import { smsService } from '@/lib/notifications/sms';
+import { notifyOrderStatus } from '@/lib/notifications/fcm';
 import { createLogger, LogMessages } from '@/lib/utils/logger';
 
 /**
@@ -116,6 +117,13 @@ export async function PATCH(
           .populate('shippingAddressId')
           .populate('userId');
         if (!populatedOrder) return;
+
+        // Mobile push (additive to email/SMS; deep-links to the order screen).
+        if (['confirmed', 'shipped', 'delivered', 'cancelled'].includes(status)) {
+          notifyOrderStatus(String(order.userId), order.orderNumber, String(order._id), status).catch((err) => {
+            console.error('Admin status: error sending push notification:', err);
+          });
+        }
 
         const phone = (populatedOrder.shippingAddressId as any)?.phoneNumber;
         const customerName = (populatedOrder.userId as any)?.name || 'Customer';

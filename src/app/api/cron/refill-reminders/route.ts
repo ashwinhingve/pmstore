@@ -5,6 +5,7 @@ import RefillReminder from '@/models/RefillReminder';
 import User from '@/models/User';
 import Product from '@/models/Product';
 import { emailService } from '@/lib/notifications/email';
+import { notifyRefillReminder } from '@/lib/notifications/fcm';
 import { unsubscribeUrl } from '@/lib/notifications/unsubscribe';
 
 /**
@@ -73,6 +74,9 @@ export async function POST(req: NextRequest) {
           { _id: reminder._id },
           { $set: { status: 'sent', sentAt: new Date() } }
         );
+        // Mobile push, additive to email; respects the same opt-out (we only
+        // reach here for non-opted-out users). Never logs the medicine name.
+        notifyRefillReminder(String(reminder.userId), product.name ?? 'your medicine', product.slug).catch(() => {});
         sent++;
       } else {
         failed++; // leave 'scheduled' so the next run retries

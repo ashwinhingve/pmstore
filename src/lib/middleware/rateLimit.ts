@@ -237,6 +237,12 @@ export const RateLimitPresets = {
     keyPrefix: 'order:create',
   } as RateLimitConfig,
 
+  CREATE_ORDER: {
+    windowMs: 3600000, // 1 hour
+    maxRequests: 10,
+    keyPrefix: 'checkout:create-order',
+  } as RateLimitConfig,
+
   // Prescription upload - image uploads, keep modest
   PRESCRIPTION_UPLOAD: {
     windowMs: 60000, // 1 minute
