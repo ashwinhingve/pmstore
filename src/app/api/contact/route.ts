@@ -1,128 +1,116 @@
 import { NextRequest, NextResponse } from "next/server"
 import nodemailer from "nodemailer"
 import { SITE_SHORT_NAME, CONTACT_EMAIL } from "@/lib/constants"
+import { applyRateLimit } from "@/lib/middleware/rateLimit"
+import { createErrorResponse, Errors } from "@/lib/utils/errorHandler"
+import { contactSchema } from "@/lib/validations/contact"
 
-export async function POST(request: NextRequest) {
+export const runtime = "nodejs"
+
+// 5 messages per hour per IP — this endpoint sends mail.
+const CONTACT_RATE_LIMIT = {
+  windowMs: 3_600_000,
+  maxRequests: 5,
+  keyPrefix: "contact:submit",
+}
+
+/** Escape user input before embedding it in email HTML. */
+function esc(v: string): string {
+  return v
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
+
+/**
+ * POST /api/contact
+ * Public contact form. Validates with Zod, emails the shop and the sender, and
+ * NEVER logs the message, phone, email or any PII (CLAUDE.md rule #6).
+ */
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json()
-    const { name, email, phone, subject, message } = body
+    const limited = await applyRateLimit(req, CONTACT_RATE_LIMIT)
+    if (limited) return limited
 
-    // Validate required fields
-    if (!name || !email || !message) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
+    const parsed = contactSchema.safeParse(await req.json())
+    if (!parsed.success) {
+      throw Errors.validationError(
+        "Check the highlighted fields and try again",
+        parsed.error.flatten()
       )
     }
+    const { name, email, phone, subject, message } = parsed.data
 
-    // Create transporter (configure with your email service)
-    // For production, use environment variables for credentials
+    const smtpPass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD
+    if (!process.env.SMTP_USER || !smtpPass) {
+      // Mail isn't configured (a deploy issue, not a user error). Don't block the
+      // user and don't log the submission — that would leak PII.
+      console.warn("Contact form: SMTP not configured; message not sent.")
+      return NextResponse.json({ data: { sent: false } }, { status: 200 })
+    }
+
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || "smtp.gmail.com",
       port: parseInt(process.env.SMTP_PORT || "587"),
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
+      secure: process.env.SMTP_PORT === "465",
+      auth: { user: process.env.SMTP_USER, pass: smtpPass },
     })
 
-    // Email to admin - ALWAYS send to configured CONTACT_EMAIL
+    const from = process.env.SMTP_FROM || process.env.EMAIL_FROM || process.env.SMTP_USER
     const adminEmail = process.env.ADMIN_EMAIL || CONTACT_EMAIL
-    const adminMailOptions = {
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
-      to: adminEmail,
-      subject: `Contact Form: ${subject || "New Message"}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #0E8F6E; border-bottom: 3px solid #0E8F6E; padding-bottom: 10px;">
-            New Contact Form Submission
-          </h2>
-          <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
-            <p><strong>Subject:</strong> ${subject || "General Inquiry"}</p>
-          </div>
-          <div style="background: white; padding: 20px; border-left: 4px solid #0E8F6E; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #374151;">Message:</h3>
-            <p style="line-height: 1.6; color: #6b7280;">${message}</p>
-          </div>
-          <p style="color: #9ca3af; font-size: 12px; margin-top: 30px;">
-            This email was sent from the ${SITE_SHORT_NAME} contact form.
-          </p>
-        </div>
-      `,
-    }
+    const safeMessage = esc(message).replace(/\n/g, "<br>")
 
-    // Confirmation email to user
-    const userMailOptions = {
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    const adminHtml = `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#16233A;">
+        <h2 style="color:#0E8F6E;border-bottom:3px solid #0E8F6E;padding-bottom:10px;">
+          New contact form submission
+        </h2>
+        <div style="background:#FBFAF7;padding:20px;border-radius:8px;margin:20px 0;">
+          <p><strong>Name:</strong> ${esc(name)}</p>
+          <p><strong>Email:</strong> ${esc(email)}</p>
+          <p><strong>Phone:</strong> ${esc(phone || "Not provided")}</p>
+          <p><strong>Subject:</strong> ${esc(subject || "General enquiry")}</p>
+        </div>
+        <div style="background:#fff;padding:20px;border-left:4px solid #0E8F6E;margin:20px 0;">
+          <h3 style="margin-top:0;color:#16233A;">Message</h3>
+          <p style="line-height:1.6;color:#56607A;">${safeMessage}</p>
+        </div>
+        <p style="color:#9AA2B4;font-size:12px;margin-top:30px;">
+          Sent from the ${SITE_SHORT_NAME} contact form.
+        </p>
+      </div>`
+
+    const userHtml = `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#16233A;">
+        <h2 style="color:#0E8F6E;">Thanks for contacting us</h2>
+        <p>Dear ${esc(name)},</p>
+        <p>We have received your message and will get back to you as soon as we can.</p>
+        <div style="background:#FBFAF7;padding:20px;border-radius:8px;margin:20px 0;">
+          <p><strong>Your message:</strong></p>
+          <p style="line-height:1.6;color:#56607A;">${safeMessage}</p>
+        </div>
+        <p>Best regards,<br>The ${SITE_SHORT_NAME} team</p>
+      </div>`
+
+    // Send to the shop (reply-to the sender), then confirm to the sender.
+    await transporter.sendMail({
+      from,
+      to: adminEmail,
+      replyTo: email,
+      subject: `Contact form: ${esc(subject || "New message")}`,
+      html: adminHtml,
+    })
+    await transporter.sendMail({
+      from,
       to: email,
       subject: `Thank you for contacting ${SITE_SHORT_NAME}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #0E8F6E;">Thank You for Contacting Us!</h2>
-          <p>Dear ${name},</p>
-          <p>We have received your message and will get back to you as soon as possible.</p>
-          <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>Your message:</strong></p>
-            <p style="line-height: 1.6; color: #6b7280;">${message}</p>
-          </div>
-          <p>Best regards,<br>The ${SITE_SHORT_NAME} Team</p>
-        </div>
-      `,
-    }
-
-    // Send emails (only if SMTP is configured)
-    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
-      try {
-        // Always send to the store admin (ADMIN_EMAIL / CONTACT_EMAIL)
-        console.log(`Sending contact form to: ${adminEmail}`)
-        await transporter.sendMail(adminMailOptions)
-        console.log(`✓ Contact form sent successfully to ${adminEmail}`)
-
-        // Send confirmation email to user
-        await transporter.sendMail(userMailOptions)
-        console.log(`✓ Confirmation email sent to customer: ${email}`)
-      } catch (emailError) {
-        console.error("Error sending email:", emailError)
-        throw emailError
-      }
-    } else {
-      console.error("⚠️  SMTP NOT CONFIGURED - Emails cannot be sent!")
-      console.error("⚠️  Please configure SMTP settings in .env.local file:")
-      console.error("    SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS")
-      console.log("Contact form data (NOT SENT):", {
-        to: adminEmail,
-        from: name,
-        email,
-        phone,
-        subject,
-        message
-      })
-      // Don't throw error - still return success to user but log the issue
-    }
-
-    return NextResponse.json(
-      { message: "Message sent successfully" },
-      { status: 200 }
-    )
-  } catch (error: any) {
-    console.error("❌ Contact form error:", error)
-    console.error("Error details:", {
-      message: error?.message,
-      code: error?.code,
-      response: error?.response
+      html: userHtml,
     })
 
-    return NextResponse.json(
-      {
-        error: "Failed to send message",
-        details: error?.message || "Unknown error",
-        code: error?.code
-      },
-      { status: 500 }
-    )
+    return NextResponse.json({ data: { sent: true } }, { status: 200 })
+  } catch (err) {
+    return createErrorResponse(err)
   }
 }
