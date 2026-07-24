@@ -5,6 +5,7 @@ import Category from '@/models/Category';
 import { searchQuerySchema } from '@/lib/validations/search';
 import { executeSearch, type SearchFacets } from '@/lib/search/execute';
 import { ProductCard } from '@/components/products/ProductCard';
+import { SearchComparison } from '@/components/search/SearchComparison';
 
 /**
  * Search results — a Server Component. It calls executeSearch directly (no HTTP
@@ -101,6 +102,8 @@ export default async function SearchPage({
           </p>
         )}
       </header>
+
+      {results.length > 1 && <SearchComparison products={results} />}
 
       <div className="flex flex-col gap-6 md:flex-row">
         <FacetSidebar params={params} facets={data.facets} catName={catName} />
