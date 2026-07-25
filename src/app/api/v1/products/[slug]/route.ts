@@ -20,7 +20,7 @@ export async function GET(
     await connectDB();
     const { slug } = await params;
 
-    const product = await Product.findOne({ slug, isActive: true })
+    const product = await Product.findOne({ slug, isActive: true, isDiscontinued: { $ne: true } })
       .select(DETAIL_FIELDS)
       .lean<{ _id: unknown } | null>();
 

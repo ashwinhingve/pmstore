@@ -47,7 +47,7 @@ export const getCompareProducts = cache(async (idsCsv: string): Promise<CompareP
   if (ids.length === 0) return [];
 
   await connectDB();
-  const docs = await Product.find({ _id: { $in: ids }, isActive: true })
+  const docs = await Product.find({ _id: { $in: ids }, isActive: true, isDiscontinued: { $ne: true } })
     .select(COMPARE_FIELDS)
     .lean<LeanCompareDoc[]>();
 

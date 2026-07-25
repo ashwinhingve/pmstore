@@ -35,8 +35,8 @@ export async function GET(req: NextRequest) {
 
     await connectDB();
 
-    // Build query
-    const query: any = { isActive: true };
+    // Build query — active, non-discontinued products only
+    const query: any = { isActive: true, isDiscontinued: { $ne: true } };
 
     // category is an ObjectId ref — only filter on a well-formed id, else a raw
     // string would throw a CastError (500).

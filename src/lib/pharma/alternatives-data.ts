@@ -16,7 +16,7 @@ const STRIP_FIELDS =
 export async function getAlternatives(slug: string): Promise<StripViewModel | null> {
   await connectDB();
 
-  const current = await Product.findOne({ slug, isActive: true })
+  const current = await Product.findOne({ slug, isActive: true, isDiscontinued: { $ne: true } })
     .select(STRIP_FIELDS)
     .lean<(StripProductInput & { _id: unknown; compositionKey?: string }) | null>();
 
@@ -28,7 +28,7 @@ export async function getAlternatives(slug: string): Promise<StripViewModel | nu
     return buildStrip([current], String(current._id));
   }
 
-  const products = await Product.find({ compositionKey: current.compositionKey, isActive: true })
+  const products = await Product.find({ compositionKey: current.compositionKey, isActive: true, isDiscontinued: { $ne: true } })
     .select(STRIP_FIELDS)
     .lean<StripProductInput[]>();
 
