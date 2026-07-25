@@ -9,6 +9,7 @@ import RichTextEditor from './RichTextEditor';
 import SpecificationsManager from './SpecificationsManager';
 import VariantsManager from './VariantsManager';
 import { Upload, X, Video, RefreshCw, Link as LinkIcon } from 'lucide-react';
+import { toast } from '@/store/useToastStore';
 import type { ProductFormData } from '@/lib/validations/product';
 
 // Client-safe slugify function (no database dependencies)
@@ -718,7 +719,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
-                        if (file.size > 50 * 1024 * 1024) { alert('Video must be under 50MB'); return; }
+                        if (file.size > 50 * 1024 * 1024) { toast.error('Video must be under 50MB'); return; }
                         setVideoUploading(true);
                         try {
                           const fd = new FormData();
@@ -728,7 +729,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                           if (!res.ok) throw new Error(data.error);
                           updateField('videoUrl', data.video.url);
                         } catch (err: any) {
-                          alert(err.message || 'Failed to upload video');
+                          toast.error(err.message || "Couldn't upload the video. Try again.");
                         } finally {
                           setVideoUploading(false);
                           if (videoInputRef.current) videoInputRef.current.value = '';
@@ -843,7 +844,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
-                        if (file.size > 50 * 1024 * 1024) { alert('Video must be under 50MB'); return; }
+                        if (file.size > 50 * 1024 * 1024) { toast.error('Video must be under 50MB'); return; }
                         setVideoUploading(true);
                         try {
                           const fd = new FormData();
@@ -854,7 +855,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                           updateField('videoUrl', data.video.url);
                           setShowReplaceVideo(false);
                         } catch (err: any) {
-                          alert(err.message || 'Failed to upload video');
+                          toast.error(err.message || "Couldn't upload the video. Try again.");
                         } finally {
                           setVideoUploading(false);
                           if (replaceVideoInputRef.current) replaceVideoInputRef.current.value = '';

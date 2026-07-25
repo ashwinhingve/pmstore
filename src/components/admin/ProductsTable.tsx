@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from '@/store/useToastStore';
 import {
   Search,
   Plus,
@@ -102,10 +103,11 @@ export default function ProductsTable({
         throw new Error('Failed to delete product');
       }
 
+      toast.success('Product deleted');
       router.refresh();
     } catch (error) {
       console.error('Error deleting product:', error);
-      alert('Failed to delete product. Please try again.');
+      toast.error("Couldn't delete the product. Try again.");
     } finally {
       setIsDeleting(null);
     }
@@ -123,10 +125,11 @@ export default function ProductsTable({
         throw new Error('Failed to update product status');
       }
 
+      toast.success('Product status updated');
       router.refresh();
     } catch (error) {
       console.error('Error updating product:', error);
-      alert('Failed to update product status. Please try again.');
+      toast.error("Couldn't update the product status. Try again.");
     }
   };
 

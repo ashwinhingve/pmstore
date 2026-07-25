@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle } from 'lucide-react';
+import { toast } from '@/store/useToastStore';
 
 interface PrescriptionActionsProps {
   prescriptionId: string;
@@ -30,6 +31,7 @@ export function PrescriptionActions({ prescriptionId }: PrescriptionActionsProps
         const data = await res.json();
         throw new Error(data.error || 'Failed to verify prescription');
       }
+      toast.success('Prescription verified');
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to verify');
@@ -57,6 +59,7 @@ export function PrescriptionActions({ prescriptionId }: PrescriptionActionsProps
       }
       setShowRejectInput(false);
       setRejectReason('');
+      toast.info('Prescription rejected');
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to reject');

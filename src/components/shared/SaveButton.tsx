@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSavedStore } from '@/store/useSavedStore';
+import { toast } from '@/store/useToastStore';
 
 /**
  * Save/unsave toggle. The filled state uses --ink, NOT red — on this product red
@@ -30,10 +31,15 @@ export function SaveButton({
   return (
     <button
       type="button"
-      onClick={(e) => {
+      onClick={async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        toggle(productId);
+        const result = await toggle(productId);
+        if (!result.ok) {
+          toast.error("Couldn't update saved medicines. Try again.");
+        } else {
+          toast.success(result.nowSaved ? 'Saved to your medicines' : 'Removed from saved medicines');
+        }
       }}
       aria-pressed={isSaved}
       aria-label={isSaved ? 'Remove from saved medicines' : 'Save this medicine'}

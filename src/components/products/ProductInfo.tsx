@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Star, ShoppingCart, Package, Check, Share2, Shield, Truck, BadgeCheck, Link2, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/store/useCartStore';
+import { toast } from '@/store/useToastStore';
 import type { ScheduleClass } from '@/lib/pharma/format';
 import VariantSelector from './VariantSelector';
 import ProductReviews from './ProductReviews';
@@ -136,7 +137,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
+      toast.success('Link copied');
     }
   };
 

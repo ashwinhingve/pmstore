@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addressSchema, type AddressFormData } from '@/lib/validations/checkout';
+import { toast } from '@/store/useToastStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/ui/form-field';
@@ -109,11 +110,11 @@ export function AddressStep({ onNext, disabled }: AddressStepProps) {
         reset();
       } else {
         const error = await response.json();
-        alert((error.error || 'Failed to save address') + (error.details ? `\n\nDetails: ${error.details}` : ''));
+        toast.error(error.error || "Couldn't save the address. Check the details and try again.");
       }
     } catch (error) {
       console.error('Failed to save address:', error);
-      alert('Failed to save address. Please try again.');
+      toast.error("Couldn't save the address. Try again.");
     }
   }
 

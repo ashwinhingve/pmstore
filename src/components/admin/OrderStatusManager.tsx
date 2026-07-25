@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { toast } from '@/store/useToastStore';
 
 interface OrderStatusManagerProps {
   orderId: string;
@@ -73,7 +74,8 @@ export default function OrderStatusManager({
         setLiveCancelledAt(data.order.cancelledAt || null);
       }
 
-      setSuccess('Order status updated successfully');
+      setSuccess('Order status updated');
+      toast.success('Order status updated');
       router.refresh();
     } catch (err: any) {
       setError(err.message);

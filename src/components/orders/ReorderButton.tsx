@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { RotateCcw, Check, AlertTriangle } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+import { toast } from '@/store/useToastStore';
 
 interface AddedItem {
   productId: string;
@@ -67,6 +68,11 @@ export function ReorderButton({ orderId }: { orderId: string }) {
       setAdded(addedItems);
       setSkipped(skippedItems);
       setStatus('done');
+      if (addedItems.length > 0) {
+        toast.success(
+          addedItems.length === 1 ? '1 item added to cart' : `${addedItems.length} items added to cart`
+        );
+      }
     } catch {
       setStatus('error');
       setMessage('Could not reorder right now. Please try again.');

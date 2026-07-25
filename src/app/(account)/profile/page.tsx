@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PhoneInput } from '@/components/ui/phone-input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from '@/store/useToastStore';
 
 interface Profile {
   email: string | null;
@@ -58,8 +59,14 @@ export default function ProfilePage() {
         body: JSON.stringify({ fullName, phoneNumber }),
       });
       setStatus(res.ok ? 'saved' : 'error');
+      if (res.ok) {
+        toast.success('Profile updated');
+      } else {
+        toast.error("Couldn't save your profile. Try again.");
+      }
     } catch {
       setStatus('error');
+      toast.error("Couldn't save your profile. Try again.");
     }
   }
 

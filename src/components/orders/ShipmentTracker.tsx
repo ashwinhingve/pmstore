@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from '@/store/useToastStore';
 
 interface Scan {
   status: string;
@@ -79,7 +80,7 @@ export default function ShipmentTracker({
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(waybill);
-    alert('Tracking number copied to clipboard!');
+    toast.success('Tracking number copied');
   };
 
   if (loading && !tracking) {

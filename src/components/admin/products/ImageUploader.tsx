@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 import { X, Upload, MoveUp, MoveDown, RefreshCw, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/store/useToastStore';
 import type { ProductImageData } from '@/lib/validations/product';
 
 interface ImageUploaderProps {
@@ -52,7 +53,7 @@ export default function ImageUploader({
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       if (images.length >= maxImages) {
-        alert(`Maximum ${maxImages} images allowed`);
+        toast.error(`You can add up to ${maxImages} images`);
         return;
       }
       const remaining = maxImages - images.length;
@@ -70,7 +71,7 @@ export default function ImageUploader({
         }
         onChange([...images, ...uploaded]);
       } catch {
-        alert('Failed to upload images. Please try again.');
+        toast.error("Couldn't upload the images. Try again.");
       } finally {
         setUploading(false);
         setUploadProgress(0);
@@ -102,7 +103,7 @@ export default function ImageUploader({
       );
       onChange(updated);
     } catch {
-      alert('Failed to replace image');
+      toast.error("Couldn't replace the image. Try again.");
     } finally {
       setReplacingIndex(null);
     }

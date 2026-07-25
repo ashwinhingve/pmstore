@@ -8,6 +8,7 @@ import { RxBadge } from "@/components/shared/RxBadge";
 import { PriceBlock } from "@/components/shared/PriceBlock";
 import { formatINR, type ScheduleClass } from "@/lib/pharma/format";
 import { useCartStore } from "@/store/useCartStore";
+import { toast } from "@/store/useToastStore";
 import { useState, useEffect } from "react";
 import { Plus, Minus, Package } from "lucide-react";
 
@@ -60,6 +61,7 @@ export function ProductCard({ product }: ProductCardProps) {
     e.stopPropagation();
     setIsAdding(true);
     addItem(product, 1);
+    toast.success(`${product.name} added to cart`);
     setTimeout(() => setIsAdding(false), 1000);
   };
 

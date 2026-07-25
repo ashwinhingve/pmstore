@@ -22,7 +22,7 @@ interface SavedState {
   loaded: boolean;
   isSaved: (id: string) => boolean;
   load: () => Promise<void>;
-  toggle: (id: string) => Promise<void>;
+  toggle: (id: string) => Promise<{ ok: boolean; nowSaved: boolean }>;
 }
 
 export const useSavedStore = create<SavedState>((set, get) => ({
@@ -56,8 +56,10 @@ export const useSavedStore = create<SavedState>((set, get) => ({
           })
         : await fetch(`/api/saved/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('save failed');
+      return { ok: true, nowSaved };
     } catch {
       set({ ids: applyToggle(get().ids, id).ids }); // revert
+      return { ok: false, nowSaved };
     }
   },
 }));

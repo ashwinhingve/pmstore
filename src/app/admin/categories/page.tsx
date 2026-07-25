@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { toast } from '@/store/useToastStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -34,7 +35,7 @@ async function uploadCategoryImage(file: File): Promise<string | null> {
   const res = await fetch('/api/admin/products/upload-image', { method: 'POST', body: fd });
   const data = await res.json();
   if (!res.ok) {
-    alert(data.error || 'Image upload failed');
+    toast.error(data.error || "Couldn't upload the image. Try again.");
     return null;
   }
   return data.url;
@@ -148,7 +149,7 @@ export default function AdminCategoriesPage() {
       setAddForm({ name: '', icon: '', image: '' });
       setShowAdd(false);
     } catch (err: any) {
-      alert(err.message || 'Failed to add category');
+      toast.error(err.message || "Couldn't add the category. Try again.");
     } finally {
       setSaving(false);
     }
@@ -167,7 +168,7 @@ export default function AdminCategoriesPage() {
       setCategories(categories.map((c) => (c._id === id ? data.category : c)));
       setEditingId(null);
     } catch (err: any) {
-      alert(err.message || 'Failed to update category');
+      toast.error(err.message || "Couldn't update the category. Try again.");
     } finally {
       setSaving(false);
     }
@@ -180,7 +181,7 @@ export default function AdminCategoriesPage() {
       if (!res.ok) throw new Error('Failed to delete');
       setCategories(categories.filter((c) => c._id !== id));
     } catch (err: any) {
-      alert(err.message || 'Failed to delete category');
+      toast.error(err.message || "Couldn't delete the category. Try again.");
     }
   }
 
@@ -195,7 +196,7 @@ export default function AdminCategoriesPage() {
       if (!res.ok) throw new Error(data.error);
       setCategories(categories.map((c) => (c._id === cat._id ? data.category : c)));
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message || "Couldn't update the category status. Try again.");
     }
   }
 

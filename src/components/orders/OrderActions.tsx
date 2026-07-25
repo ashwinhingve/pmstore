@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from '@/store/useToastStore';
 
 interface OrderActionsProps {
   orderId: string;
@@ -45,11 +46,11 @@ export default function OrderActions({
         throw new Error(data.error || 'Failed to cancel order');
       }
 
-      alert('Order cancelled successfully!');
+      toast.success('Order cancelled');
       router.refresh();
     } catch (error: any) {
       console.error('Error cancelling order:', error);
-      alert(error.message || 'Failed to cancel order');
+      toast.error(error.message || "Couldn't cancel this order. Try again.");
     } finally {
       setCancelling(false);
       setShowCancelModal(false);

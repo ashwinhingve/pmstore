@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { toast } from '@/store/useToastStore';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -72,7 +73,7 @@ export default function HeroSliderManager({ initialSlides }: Props) {
     const res = await fetch('/api/admin/hero-slides/upload', { method: 'POST', body: fd });
     const data = await res.json();
     if (!res.ok) {
-      alert(data.error || 'Upload failed');
+      toast.error(data.error || "Couldn't upload the image. Try again.");
       return null;
     }
     return { url: data.url, publicId: data.publicId };
@@ -119,7 +120,7 @@ export default function HeroSliderManager({ initialSlides }: Props) {
       if (!res.ok) throw new Error(data.error || `${method} failed`);
       return data.slides as HeroSlide[];
     } catch (err: any) {
-      alert(err.message || 'Operation failed. Please try again.');
+      toast.error(err.message || "Couldn't save changes. Try again.");
       return null;
     } finally {
       setProcessing(false);
@@ -129,7 +130,7 @@ export default function HeroSliderManager({ initialSlides }: Props) {
   // ── Add slide ─────────────────────────────────────────────────
   async function handleAdd() {
     if (!addForm.title.trim()) {
-      alert('Title is required');
+      toast.error('Enter a title before saving.');
       return;
     }
     const updated = await apiCall('/api/admin/hero-slider', 'POST', addForm);
