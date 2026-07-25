@@ -48,6 +48,9 @@ const sidebarSections = [
 
 type SidebarSection = typeof sidebarSections[number]["id"]
 
+// Products shown per page in the grid (client-side pagination over the filtered set).
+const PAGE_SIZE = 24
+
 export default function ProductsPage() {
   const searchParams = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState<string>(
@@ -57,29 +60,41 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState<string>("featured")
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000])
   const [searchQuery, setSearchQuery] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [products, setProducts] = useState<ListingProduct[]>([])
+  const [searchResults, setSearchResults] = useState<ListingProduct[]>([])
+  const [searchLoading, setSearchLoading] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
   const [categories, setCategories] = useState<CategoryData[]>(
     staticCategories.map(c => ({ name: c.name, slug: c.slug }))
   )
   const categoryScrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Fetch products and categories in parallel
+    // Load the full active catalogue once, then filter/sort/paginate client-side.
+    // This suits a single-pharmacy catalogue of a few hundred SKUs; if it grows
+    // into the thousands, switch browse to server-side pagination.
     const fetchData = async () => {
       try {
         setLoading(true)
-        const [productsRes, categoriesRes] = await Promise.all([
-          fetch('/api/products?limit=50'),
-          fetch('/api/categories').catch(() => null),
-        ])
+        const categoriesPromise = fetch('/api/categories').catch(() => null)
 
-        if (productsRes.ok) {
-          const data = await productsRes.json()
-          setProducts(data.products || [])
-        }
+        const all: ListingProduct[] = []
+        let page = 1
+        let pages = 1
+        do {
+          const res = await fetch(`/api/products?limit=50&page=${page}`)
+          if (!res.ok) break
+          const data = await res.json()
+          all.push(...(data.products || []))
+          pages = data.pagination?.pages ?? 1
+          page++
+        } while (page <= pages && page <= 20) // hard cap: 1000 products
+        setProducts(all)
 
+        const categoriesRes = await categoriesPromise
         if (categoriesRes?.ok) {
           const catData = await categoriesRes.json()
           if (catData.categories && catData.categories.length > 0) {
@@ -95,25 +110,72 @@ export default function ProductsPage() {
     fetchData()
   }, [])
 
+  // Debounce the search box so we only hit the API when typing pauses.
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300)
+    return () => clearTimeout(id)
+  }, [searchQuery])
+
+  // Typo-tolerant server search (Atlas Search, with a $text fallback) when a
+  // query is present. Empty query returns to the browse catalogue.
+  useEffect(() => {
+    if (!debouncedQuery) {
+      setSearchResults([])
+      setSearchLoading(false)
+      return
+    }
+    let ignore = false
+    setSearchLoading(true)
+    fetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}&limit=50`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!ignore) setSearchResults(data?.data?.results ?? [])
+      })
+      .catch(() => {
+        if (!ignore) setSearchResults([])
+      })
+      .finally(() => {
+        if (!ignore) setSearchLoading(false)
+      })
+    return () => {
+      ignore = true
+    }
+  }, [debouncedQuery])
+
+  // Any query or filter change returns to the first page.
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [debouncedQuery, selectedCategory, selectedSection, sortBy, priceRange])
+
   // category is populated to { _id, name, slug }; tolerate a legacy string too
   const catName = (p: ListingProduct): string =>
     typeof p?.category === 'string' ? p.category : p?.category?.name ?? ''
 
+  // In search mode the working set is the (typo-tolerant) server results; the
+  // section/category filters below apply only when browsing, since search
+  // results carry a lean projection without those fields.
+  const isSearchMode = debouncedQuery.length > 0
+  const sourceProducts = isSearchMode ? searchResults : products
+
   const activeProducts = useMemo(() =>
-    products.filter(p => p.isActive !== false),
-    [products]
+    sourceProducts.filter(p => p.isActive !== false),
+    [sourceProducts]
   )
 
+  // Category counts reflect the whole catalogue, so the pills stay stable
+  // regardless of the current search or filter.
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {}
-    activeProducts.forEach(product => {
+    products.filter(p => p.isActive !== false).forEach(product => {
       counts[catName(product)] = (counts[catName(product)] || 0) + 1
     })
     return counts
-  }, [activeProducts])
+  }, [products])
 
   // Apply sidebar section filters (uses admin-set flags on products)
   const sectionFilteredProducts = useMemo(() => {
+    if (isSearchMode) return activeProducts
+
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
@@ -132,29 +194,20 @@ export default function ProductsPage() {
       default:
         return activeProducts
     }
-  }, [activeProducts, selectedSection])
+  }, [activeProducts, selectedSection, isSearchMode])
 
-  // Apply category + price + search + sort
+  // Apply category + price + sort. Text matching is handled server-side (Atlas),
+  // so there is no client-side `.includes()` filter here.
   const filteredProducts = useMemo(() => {
     let filtered = [...sectionFilteredProducts]
 
-    if (selectedCategory !== "all") {
+    if (!isSearchMode && selectedCategory !== "all") {
       filtered = filtered.filter((p) => catName(p) === selectedCategory)
     }
 
     filtered = filtered.filter(
       (p) => p.price >= priceRange[0] && p.price <= priceRange[1]
     )
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(
-        (p) =>
-          p.name.toLowerCase().includes(query) ||
-          (p.description || '').toLowerCase().includes(query) ||
-          catName(p).toLowerCase().includes(query)
-      )
-    }
 
     switch (sortBy) {
       case "price-low":
@@ -180,7 +233,19 @@ export default function ProductsPage() {
     }
 
     return filtered
-  }, [sectionFilteredProducts, selectedCategory, sortBy, priceRange, searchQuery])
+  }, [sectionFilteredProducts, selectedCategory, sortBy, priceRange, isSearchMode])
+
+  // Client-side pagination over the filtered set.
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE))
+  const pageProducts = useMemo(
+    () => filteredProducts.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filteredProducts, currentPage]
+  )
+
+  // If filtering shrinks the result set below the current page, snap back.
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(1)
+  }, [currentPage, totalPages])
 
   const resetFilters = () => {
     setSelectedCategory("all")
@@ -264,7 +329,7 @@ export default function ProductsPage() {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Dolo 650, paracetamol…"
-        aria-label="Search within results"
+        aria-label="Search medicines"
         className="w-full rounded-[var(--radius-sm)] border border-[var(--foil-soft)] py-2.5 pl-9 pr-3 text-sm transition-colors duration-[var(--dur-fast)] focus:border-[var(--ink-70)] focus:outline-none"
       />
     </div>
@@ -430,14 +495,23 @@ export default function ProductsPage() {
               <div className="text-sm text-[var(--ink-70)]">
                 Showing{" "}
                 <span className="data font-semibold text-[var(--ink)]">{filteredProducts.length}</span>{" "}
-                medicines
-                {selectedSection !== "all" && (
-                  <span className="ml-1 text-[var(--mint)]">
-                    in {sidebarSections.find(s => s.id === selectedSection)?.label}
-                  </span>
-                )}
-                {selectedCategory !== "all" && (
-                  <span className="ml-1 text-[var(--mint)]">/ {selectedCategory}</span>
+                {isSearchMode ? (
+                  <>
+                    result{filteredProducts.length === 1 ? "" : "s"} for
+                    <span className="ml-1 text-[var(--ink)]">“{debouncedQuery}”</span>
+                  </>
+                ) : (
+                  <>
+                    medicines
+                    {selectedSection !== "all" && (
+                      <span className="ml-1 text-[var(--mint)]">
+                        in {sidebarSections.find(s => s.id === selectedSection)?.label}
+                      </span>
+                    )}
+                    {selectedCategory !== "all" && (
+                      <span className="ml-1 text-[var(--mint)]">/ {selectedCategory}</span>
+                    )}
+                  </>
                 )}
               </div>
               <div className="flex items-center gap-2">
@@ -460,7 +534,7 @@ export default function ProductsPage() {
             </div>
 
             {/* Products Grid */}
-            {loading ? (
+            {(isSearchMode ? searchLoading : loading) ? (
               <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4" aria-hidden="true">
                 {[...Array(8)].map((_, i) => (
                   <div
@@ -478,20 +552,55 @@ export default function ProductsPage() {
                 ))}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product._id || product.id} product={product} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+                  {pageProducts.map((product) => (
+                    <ProductCard key={product._id || product.id} product={product} />
+                  ))}
+                </div>
+
+                {totalPages > 1 && (
+                  <nav
+                    className="mt-8 flex items-center justify-center gap-2"
+                    aria-label="Product pages"
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage <= 1}
+                      className="min-h-11 gap-1"
+                    >
+                      <ChevronLeft className="h-4 w-4" aria-hidden="true" /> Previous
+                    </Button>
+                    <span className="data px-3 text-sm text-[var(--ink-70)]">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={currentPage >= totalPages}
+                      className="min-h-11 gap-1"
+                    >
+                      Next <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  </nav>
+                )}
+              </>
             ) : (
               <EmptyState
-                title="No medicines match these filters"
-                description="Try a different category or price range, or clear the filters."
+                title={isSearchMode ? "No medicines match your search" : "No medicines match these filters"}
+                description={
+                  isSearchMode
+                    ? "Check the spelling or try the salt name, like paracetamol."
+                    : "Try a different category or price range, or clear the filters."
+                }
                 illustration={<EmptySearchArt />}
                 className="bg-[var(--paper-card)]"
               >
                 <Button onClick={resetFilters} variant="outline">
-                  Clear filters
+                  {isSearchMode ? "Clear search" : "Clear filters"}
                 </Button>
               </EmptyState>
             )}
