@@ -40,6 +40,7 @@ interface Product {
   price: number;
   originalPrice?: number;
   images?: Array<{ url: string }>;
+  form?: string;
   stock: number;
   category?: { name: string } | string;
   averageRating?: number;

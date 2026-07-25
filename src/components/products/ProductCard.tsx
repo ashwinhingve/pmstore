@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RxBadge } from "@/components/shared/RxBadge";
 import { PriceBlock } from "@/components/shared/PriceBlock";
 import { formatINR, type ScheduleClass } from "@/lib/pharma/format";
+import { resolveProductImage } from "@/lib/pharma/medicine-image";
 import { useCartStore } from "@/store/useCartStore";
 import { useCompareStore } from "@/store/useCompareStore";
 import { toast } from "@/store/useToastStore";
@@ -24,6 +25,7 @@ export interface ProductCardData {
   packSize?: number;
   packUnit?: string;
   scheduleClass?: ScheduleClass;
+  form?: string;
   images?: Array<string | { url: string }>;
   stock?: number;
   category?: { name: string } | string;
@@ -96,7 +98,10 @@ export function ProductCard({ product }: ProductCardProps) {
     return typeof firstImage === 'string' ? firstImage : firstImage.url;
   };
 
-  const imageUrl = getImageUrl();
+  // Real uploaded photo if present, otherwise a representative photo of the
+  // dosage form so every card shows a real product — never a blank icon or a
+  // generated placeholder.
+  const imageUrl = resolveProductImage(getImageUrl(), product.form);
   const averageRating = product.averageRating || product.average_rating || 0;
   const totalReviews = product.totalReviews || product.review_count || 0;
   const outOfStock = typeof product.stock === 'number' && product.stock <= 0;

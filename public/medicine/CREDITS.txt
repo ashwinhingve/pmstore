@@ -1,0 +1,12 @@
+Representative dosage-form photos used as fallbacks when a product has no
+uploaded image. Source: Pexels (https://www.pexels.com) — free to use for
+commercial purposes, no attribution required. Kept here for provenance.
+
+tablet.jpg     pexels.com/photo/161688
+capsule.jpg    pexels.com/photo/17820715
+syrup.jpg      pexels.com/photo/10022079
+injection.jpg  pexels.com/photo/4210560
+cream.jpg      pexels.com/photo/12969358
+drops.jpg      pexels.com/photo/10819538
+inhaler.jpg    pexels.com/photo/29702924
+generic.jpg    pexels.com/photo/3873163

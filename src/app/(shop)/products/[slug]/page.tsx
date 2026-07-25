@@ -107,7 +107,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
     isDiscontinued: { $ne: true },
     _id: { $ne: product._id },
   })
-    .select('name slug price originalPrice unitPrice packSize packUnit images averageRating totalReviews category stock isFeatured isActive sku tags')
+    .select('name slug price originalPrice unitPrice packSize packUnit form images averageRating totalReviews category stock isFeatured isActive sku tags')
     .populate('category', 'name slug')
     .limit(4)
     .lean();
@@ -222,6 +222,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
             images={serializedProduct.images}
             productName={serializedProduct.name}
             videoUrl={serializedProduct.videoUrl}
+            form={serializedProduct.form}
           />
 
           {/* Right: Product Info */}

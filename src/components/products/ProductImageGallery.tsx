@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { X, ZoomIn, Play } from 'lucide-react';
+import { getMedicineImage, isPlaceholderImage } from '@/lib/pharma/medicine-image';
 
 interface ProductImage {
   url: string;
@@ -13,28 +14,31 @@ interface ProductImageGalleryProps {
   images: ProductImage[];
   productName: string;
   videoUrl?: string;
+  /** Dosage form — used to pick a representative photo when there is no real one. */
+  form?: string;
 }
 
 export default function ProductImageGallery({
   images,
   productName,
   videoUrl,
+  form,
 }: ProductImageGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
 
-  const imageUrls = images.map((img) => (typeof img === 'string' ? img : img.url));
+  // Keep only genuine photos — generated placeholders are treated as "no photo".
+  const imageUrls = images
+    .map((img) => (typeof img === 'string' ? img : img.url))
+    .filter((url) => !isPlaceholderImage(url));
 
-  if (imageUrls.length === 0 && !videoUrl) {
-    return (
-      <div className="aspect-square bg-[var(--foil-soft)] rounded-2xl flex items-center justify-center">
-        <p className="text-[var(--ink-40)]">No images available</p>
-      </div>
-    );
-  }
+  // When the product has no real photo, fall back to a representative photo of
+  // its dosage form so the page never shows an empty frame or a placeholder.
+  const hasRealImages = imageUrls.length > 0;
+  const displayUrls = hasRealImages ? imageUrls : [getMedicineImage(form)];
 
-  const currentImage = imageUrls[selectedIndex];
+  const currentImage = displayUrls[selectedIndex];
 
   // Check if videoUrl is a YouTube link
   const isYouTube = videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'));
@@ -73,12 +77,19 @@ export default function ProductImageGallery({
             {currentImage && (
               <Image
                 src={currentImage}
-                alt={`${productName} - Image ${selectedIndex + 1}`}
+                alt={hasRealImages ? `${productName} - Image ${selectedIndex + 1}` : `${productName} - representative image`}
                 fill
-                className="object-contain p-4"
+                className={hasRealImages ? 'object-contain p-4' : 'object-cover'}
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority={selectedIndex === 0}
               />
+            )}
+
+            {/* Representative-image note — honest when it isn't the exact pack */}
+            {!hasRealImages && (
+              <p className="absolute inset-x-0 bottom-0 bg-[var(--ink)]/70 px-4 py-2 text-center text-xs font-medium text-[var(--paper)] backdrop-blur-sm">
+                Representative image — actual pack may vary
+              </p>
             )}
 
             {/* Zoom Button */}
