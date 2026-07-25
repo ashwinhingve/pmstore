@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { BulkActionDrawer, type BulkAction } from '@/components/admin/BulkActionDrawer';
 import { toast } from '@/store/useToastStore';
 import {
   Search,
@@ -61,6 +62,18 @@ interface ProductsTableProps {
   };
 }
 
+function BulkBarButton({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[var(--ink-10)]/40 px-3 text-sm font-semibold text-[var(--paper-card)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--ink-deep)]"
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function ProductsTable({
   products,
   pagination,
@@ -70,6 +83,27 @@ export default function ProductsTable({
   const router = useRouter();
   const [searchInput, setSearchInput] = useState(currentFilters.search);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkAction, setBulkAction] = useState<BulkAction | null>(null);
+
+  const allSelected = products.length > 0 && products.every((p) => selectedIds.has(p._id));
+  const someSelected = selectedIds.size > 0;
+
+  const toggleSelectAll = () => {
+    setSelectedIds(allSelected ? new Set() : new Set(products.map((p) => p._id)));
+  };
+
+  const toggleSelect = (productId: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(productId)) {
+        next.delete(productId);
+      } else {
+        next.add(productId);
+      }
+      return next;
+    });
+  };
 
   const updateFilters = (updates: Record<string, string>) => {
     const params = new URLSearchParams();
@@ -240,6 +274,18 @@ export default function ProductsTable({
         <table className="w-full">
           <thead className="sticky top-0 z-10 border-b border-[var(--foil)] bg-[var(--paper-tint)]">
             <tr>
+              <th className="w-12 px-4 py-3">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  ref={(el) => {
+                    if (el) el.indeterminate = someSelected && !allSelected;
+                  }}
+                  onChange={toggleSelectAll}
+                  aria-label="Select all products on this page"
+                  className="h-5 w-5 cursor-pointer accent-[var(--ink)]"
+                />
+              </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-[var(--ink-70)] uppercase tracking-wider">
                 Product
               </th>
@@ -266,7 +312,7 @@ export default function ProductsTable({
           <tbody className="divide-y divide-[var(--foil-soft)]">
             {products.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-12 text-center text-[var(--ink-40)]">
+                <td colSpan={8} className="px-4 py-12 text-center text-[var(--ink-40)]">
                   No products found. Try adjusting your filters or create a new product.
                 </td>
               </tr>
@@ -276,7 +322,23 @@ export default function ProductsTable({
                 const StockIcon = stockStatus.icon;
 
                 return (
-                  <tr key={product._id} className="hover:bg-[var(--foil-soft)]">
+                  <tr
+                    key={product._id}
+                    className={
+                      selectedIds.has(product._id)
+                        ? 'bg-[var(--paper-tint)]'
+                        : 'hover:bg-[var(--foil-soft)]'
+                    }
+                  >
+                    <td className="w-12 px-4 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(product._id)}
+                        onChange={() => toggleSelect(product._id)}
+                        aria-label={`Select ${product.name}`}
+                        className="h-5 w-5 cursor-pointer accent-[var(--ink)]"
+                      />
+                    </td>
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-3">
                         <div className="relative w-12 h-12 flex-shrink-0 bg-[var(--foil-soft)] rounded overflow-hidden">
@@ -396,6 +458,40 @@ export default function ProductsTable({
           </tbody>
         </table>
       </div>
+
+      {/* Bulk action bar — pins to the viewport bottom while rows are in view */}
+      {someSelected && (
+        <div className="sticky bottom-0 z-20 flex flex-wrap items-center justify-between gap-3 rounded-b-lg bg-[var(--ink)] px-4 py-3 shadow-[var(--shadow-lg)]">
+          <p className="text-sm font-medium text-[var(--paper-card)]">
+            <span className="data font-semibold">{selectedIds.size}</span>{' '}
+            {selectedIds.size === 1 ? 'product' : 'products'} selected
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <BulkBarButton onClick={() => setBulkAction('price')}>Set price</BulkBarButton>
+            <BulkBarButton onClick={() => setBulkAction('stock')}>Set stock</BulkBarButton>
+            <BulkBarButton onClick={() => setBulkAction('activate')}>Activate</BulkBarButton>
+            <BulkBarButton onClick={() => setBulkAction('deactivate')}>Deactivate</BulkBarButton>
+            <button
+              type="button"
+              onClick={() => setSelectedIds(new Set())}
+              className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] px-3 text-sm font-medium text-[var(--ink-10)] transition-colors duration-[var(--dur-fast)] hover:text-[var(--paper-card)]"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      <BulkActionDrawer
+        action={bulkAction}
+        selectedIds={[...selectedIds]}
+        onClose={() => setBulkAction(null)}
+        onDone={() => {
+          setBulkAction(null);
+          setSelectedIds(new Set());
+          router.refresh();
+        }}
+      />
 
       {/* Pagination */}
       {pagination.pages > 1 && (
