@@ -163,7 +163,7 @@ export default function OrdersTable({
   };
 
   return (
-    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
+    <div className="rounded-lg bg-[var(--paper-card)] shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
       {/* Search and Filter Bar */}
       <div className="p-4 border-b border-[var(--foil-soft)] space-y-4">
         <div className="flex items-center gap-4">
@@ -343,8 +343,8 @@ export default function OrdersTable({
           <tbody className="divide-y divide-[var(--foil-soft)]">
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-6 py-8 text-center text-sm text-[var(--ink-70)]">
-                  No orders found
+                <td colSpan={8} className="px-6 py-12 text-center text-[var(--ink-40)]">
+                  No orders yet. New orders appear here the moment they're placed.
                 </td>
               </tr>
             ) : (

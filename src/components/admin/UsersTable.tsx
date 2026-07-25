@@ -98,7 +98,7 @@ export default function UsersTable({
   };
 
   return (
-    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
+    <div className="rounded-lg bg-[var(--paper-card)] shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
       {/* Search and Filter Bar */}
       <div className="p-4 border-b border-[var(--foil-soft)] space-y-4">
         <div className="flex items-center gap-4">
@@ -225,8 +225,8 @@ export default function UsersTable({
           <tbody className="divide-y divide-[var(--foil-soft)]">
             {users.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-8 text-center text-sm text-[var(--ink-70)]">
-                  No users found
+                <td colSpan={7} className="px-6 py-12 text-center text-[var(--ink-40)]">
+                  No users yet. Registered customers appear here.
                 </td>
               </tr>
             ) : (

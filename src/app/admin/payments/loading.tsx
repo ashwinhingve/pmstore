@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function OrdersLoading() {
+export default function PaymentsLoading() {
   return (
     <div className="space-y-6" aria-hidden="true">
       <Skeleton className="h-8 w-48" />
