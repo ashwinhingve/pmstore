@@ -81,15 +81,19 @@ export default async function Home() {
       .lean()
       .exec();
 
-    // Serialize _id to string for client consumption
-    featuredProducts = products.map((p: any) => ({
-      ...p,
-      _id: p._id.toString(),
-      category:
-        typeof p.category === 'object' && p.category
-          ? { name: p.category.name || 'Uncategorized' }
-          : p.category || 'Uncategorized',
-    }));
+    // Deep-serialize for client consumption — round-tripping through JSON turns
+    // every ObjectId (including nested salts[]._id / images[]._id) into a string
+    // and yields plain objects, which Client Components require.
+    featuredProducts = products.map((p: any) => {
+      const plain = JSON.parse(JSON.stringify(p));
+      return {
+        ...plain,
+        category:
+          typeof plain.category === 'object' && plain.category
+            ? { name: plain.category.name || 'Uncategorized' }
+            : plain.category || 'Uncategorized',
+      };
+    });
   } catch (error) {
     // Silent fail — if catalogue is unseeded, we show empty state gracefully
     console.error('Failed to fetch featured products:', error);

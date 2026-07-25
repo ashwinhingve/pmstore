@@ -18,6 +18,7 @@ export async function GET(
     const product = await Product.findOne({
       slug,
       isActive: true,
+      isDiscontinued: { $ne: true },
     })
       .select('-__v')
       .populate('category', 'name slug')
@@ -36,6 +37,7 @@ export async function GET(
     const categoryId = product.category?._id ?? product.category;
     const relatedProducts = await Product.find({
       isActive: true,
+      isDiscontinued: { $ne: true },
       _id: { $ne: product._id },
       ...(product.compositionKey
         ? { compositionKey: product.compositionKey }

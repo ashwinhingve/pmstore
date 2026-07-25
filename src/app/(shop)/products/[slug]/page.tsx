@@ -37,6 +37,7 @@ export async function generateMetadata({
   const product = await Product.findOne({
     slug,
     isActive: true,
+    isDiscontinued: { $ne: true },
   }).lean() as any;
 
   if (!product) {
@@ -88,21 +89,26 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
   const product = await Product.findOne({
     slug,
     isActive: true,
+    isDiscontinued: { $ne: true },
   })
     .select('-__v')
+    .populate('category', 'name slug')
     .lean() as any;
 
   if (!product) {
     notFound();
   }
 
-  // Fetch related products
+  // Fetch related products (category is populated above, so match on its id)
+  const categoryId = product.category?._id ?? product.category;
   const relatedProducts = await Product.find({
-    category: product.category,
+    category: categoryId,
     isActive: true,
+    isDiscontinued: { $ne: true },
     _id: { $ne: product._id },
   })
-    .select('name slug price originalPrice images averageRating totalReviews category stock isFeatured isActive sku tags')
+    .select('name slug price originalPrice unitPrice packSize packUnit images averageRating totalReviews category stock isFeatured isActive sku tags')
+    .populate('category', 'name slug')
     .limit(4)
     .lean();
 
@@ -174,8 +180,8 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
       {
         "@type": "ListItem",
         "position": 3,
-        "name": serializedProduct.category,
-        "item": `${SITE_URL}/products?category=${encodeURIComponent(serializedProduct.category)}`,
+        "name": serializedProduct.category?.name ?? 'Products',
+        "item": `${SITE_URL}/products?category=${encodeURIComponent(serializedProduct.category?.name ?? '')}`,
       },
       {
         "@type": "ListItem",
@@ -204,8 +210,8 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
           items={[
             { label: 'Home', href: '/' },
             { label: 'Products', href: '/products' },
-            { label: product.category, href: `/products?category=${product.category}` },
-            { label: product.name, href: '#' },
+            { label: serializedProduct.category?.name ?? 'Products', href: `/products?category=${encodeURIComponent(serializedProduct.category?.name ?? '')}` },
+            { label: serializedProduct.name, href: '#' },
           ]}
         />
 
