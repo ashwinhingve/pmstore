@@ -61,38 +61,55 @@ export default function AccountSettingsPage() {
           </a>
         </div>
       ) : (
-        <div className="max-w-2xl space-y-6">
+        <div className="max-w-2xl space-y-8">
           <SavingsCounter />
 
-          <section className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)]">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <Bell className="mt-0.5 h-5 w-5 shrink-0 text-[var(--ink)]" aria-hidden="true" />
-                <div>
-                  <p className="font-semibold text-[var(--ink)]">Refill reminders</p>
-                  <p className="mt-1 text-[length:var(--step--1)] text-[var(--ink-70)]">
-                    We'll email you before your regular medicines run out, based on your last order.
-                  </p>
-                </div>
-              </div>
+          {/* Notifications section */}
+          <section>
+            <div className="mb-4">
+              <h2 className="text-[length:var(--step-0)] font-semibold text-[var(--ink)]">
+                Notifications
+              </h2>
+              <p className="mt-1 text-sm text-[var(--ink-70)]">
+                Control how we reach you about orders and refills.
+              </p>
+            </div>
 
-              <button
-                type="button"
-                role="switch"
-                aria-checked={optOut === false}
-                disabled={optOut === null || saving}
-                onClick={() => toggle(!optOut)}
-                className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-[var(--dur-fast)] disabled:opacity-50 ${
-                  optOut === false ? 'bg-[var(--mint)]' : 'bg-[var(--foil)]'
-                }`}
-              >
-                <span className="sr-only">Toggle refill reminders</span>
-                <span
-                  className={`inline-block h-5 w-5 transform rounded-full bg-[var(--paper-card)] shadow-[var(--shadow-xs)] transition-transform duration-[var(--dur-fast)] ${
-                    optOut === false ? 'translate-x-6' : 'translate-x-1'
+            <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)]">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <Bell
+                    className="mt-0.5 h-5 w-5 shrink-0 text-[var(--ink)]"
+                    aria-hidden="true"
+                  />
+                  <div>
+                    <p className="font-semibold text-[var(--ink)]">Refill reminders</p>
+                    <p className="mt-1 text-sm text-[var(--ink-70)]">
+                      We'll email you before your regular medicines run out, based on your last
+                      order.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={optOut === false}
+                  disabled={optOut === null || saving}
+                  aria-label={`Turn ${optOut === false ? 'off' : 'on'} refill reminders`}
+                  onClick={() => toggle(!optOut)}
+                  className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-[var(--dur-fast)] disabled:opacity-50 ${
+                    optOut === false ? 'bg-[var(--mint)]' : 'bg-[var(--foil)]'
                   }`}
-                />
-              </button>
+                >
+                  <span className="sr-only">Toggle refill reminders</span>
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-[var(--paper-card)] shadow-[var(--shadow-xs)] transition-transform duration-[var(--dur-fast)] ${
+                      optOut === false ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
           </section>
         </div>

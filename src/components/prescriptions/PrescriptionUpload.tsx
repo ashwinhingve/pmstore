@@ -114,11 +114,18 @@ export function PrescriptionUpload({ onUploaded, className }: PrescriptionUpload
     <div className={className}>
       <div
         {...getRootProps()}
-        className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[var(--radius-md)] border-2 border-dashed border-[var(--foil-soft)] px-6 py-8 text-center transition-colors hover:border-[var(--ink)]"
+        className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[var(--radius-md)] border-2 border-dashed px-6 py-8 text-center transition-colors duration-[var(--dur-fast)] ${
+          isDragActive
+            ? 'border-[var(--mint)] bg-[var(--mint-soft)]'
+            : 'border-[var(--foil-soft)] hover:border-[var(--ink)]'
+        }`}
         aria-label="Add prescription images"
       >
         <input {...getInputProps()} />
-        <Upload className="h-6 w-6 text-[var(--ink-70)]" aria-hidden="true" />
+        <Upload
+          className={`h-6 w-6 ${isDragActive ? 'text-[var(--mint)]' : 'text-[var(--ink-70)]'}`}
+          aria-hidden="true"
+        />
         <p className="text-[var(--ink)]">
           {isDragActive ? 'Drop the images here' : 'Tap to add a photo, or drag images here'}
         </p>
@@ -196,9 +203,14 @@ export function PrescriptionUpload({ onUploaded, className }: PrescriptionUpload
         type="button"
         onClick={handleUpload}
         disabled={uploading || images.length === 0}
-        className="mt-4 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-[var(--ink)] px-6 py-2.5 font-semibold text-white disabled:opacity-50"
+        className="mt-4 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-[var(--ink)] px-6 py-2.5 font-semibold text-white shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] disabled:opacity-50"
       >
-        {uploading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+        {uploading && (
+          <Loader2
+            className="h-4 w-4 animate-spin motion-reduce:animate-none"
+            aria-hidden="true"
+          />
+        )}
         {uploading ? 'Uploading…' : 'Upload prescription'}
       </button>
     </div>
