@@ -6,6 +6,7 @@ import { signIn, useSession } from "next-auth/react"
 import { AuthShell, AuthCard } from "@/components/account/AuthShell"
 import { Logo } from "@/components/shared/Logo"
 import { Button } from "@/components/ui/button"
+import { Tabs } from "@/components/ui/tabs"
 import { Mail, ArrowLeft, Phone, ShieldCheck, KeyRound, BadgeCheck } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -187,24 +188,27 @@ export default function LoginPage() {
 
       {/* Card */}
       <AuthCard>
-        {/* Tabs */}
-        <div className="flex border-b border-[var(--foil-soft)]" role="tablist">
-          {(["google", "email", "mobile"] as Tab[]).map((tab) => (
-            <button
-              key={tab}
-              role="tab"
-              aria-selected={activeTab === tab}
-              onClick={() => handleTabChange(tab)}
-              className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-                activeTab === tab
-                  ? "border-b-2 border-[var(--ink)] bg-[var(--foil-soft)]/40 text-[var(--ink)]"
-                  : "text-[var(--ink-40)] hover:text-[var(--ink-70)]"
-              }`}
-            >
-              {tab === "google" ? "Google" : tab === "email" ? "Email OTP" : "Mobile OTP"}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          tabs={[
+            {
+              id: "google",
+              label: "Google",
+              content: null, // Placeholder, will be rendered below
+            },
+            {
+              id: "email",
+              label: "Email OTP",
+              content: null, // Placeholder, will be rendered below
+            },
+            {
+              id: "mobile",
+              label: "Mobile OTP",
+              content: null, // Placeholder, will be rendered below
+            },
+          ]}
+          defaultTab="google"
+          onChange={(tabId) => handleTabChange(tabId as Tab)}
+        />
 
         <div className="p-8">
           {error && (

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { Navigation } from "./Navigation";
 import { MobileMenu } from "./MobileMenu";
 import { SearchBar } from "@/components/search/SearchBar";
@@ -25,7 +26,6 @@ import { SITE_NAME } from "@/lib/constants";
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const totalItems = useCartStore((state) => state.getTotalItems());
   const { data: session, status } = useSession();
@@ -41,21 +41,6 @@ export function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (showUserMenu && !target.closest('.user-menu-container')) {
-        setShowUserMenu(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showUserMenu]);
-
-  const menuLinkClass =
-    "flex min-h-11 items-center gap-3 px-4 text-sm text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--mint-soft)] hover:text-[var(--ink)]";
 
   return (
     <header
@@ -95,17 +80,9 @@ export function Header() {
 
           {/* User Account */}
           {mounted && status === 'authenticated' && session?.user ? (
-            <div className="user-menu-container relative">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)]"
-                aria-label="User account"
-                aria-expanded={showUserMenu}
-                aria-haspopup="menu"
-                onClick={() => setShowUserMenu(!showUserMenu)}
-              >
-                {session.user.image ? (
+            <DropdownMenu
+              trigger={
+                session.user.image ? (
                   <Image
                     src={session.user.image}
                     alt={session.user.name || 'User'}
@@ -115,75 +92,55 @@ export function Header() {
                   />
                 ) : (
                   <User className="h-5 w-5" />
-                )}
-              </Button>
-
-              {showUserMenu && (
-                <div className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-md)]">
-                  <div className="border-b border-[var(--foil-soft)] bg-[var(--mint-soft)] px-4 py-3">
-                    <p className="truncate text-sm font-semibold text-[var(--ink)]">
-                      {session.user.name || 'User'}
-                    </p>
-                    <p className="truncate text-xs text-[var(--ink-70)]">
-                      {session.user.email}
-                    </p>
-                    {session.user.role === 'admin' && (
-                      <span className="mt-1.5 inline-block rounded-full bg-[var(--ink)] px-2 py-0.5 text-xs font-semibold text-[var(--paper-card)]">
-                        Admin
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="py-2">
-                    {session.user.role === 'admin' && (
-                      <Link
-                        href="/admin/dashboard"
-                        className={menuLinkClass}
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
-                        Admin dashboard
-                      </Link>
-                    )}
-                    <Link
-                      href="/orders"
-                      className={menuLinkClass}
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      <Package className="h-4 w-4" aria-hidden="true" />
-                      Your orders
-                    </Link>
-                    <Link
-                      href="/saved"
-                      className={menuLinkClass}
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      <Bookmark className="h-4 w-4" aria-hidden="true" />
-                      Saved medicines
-                    </Link>
-                    <Link
-                      href="/profile"
-                      className={menuLinkClass}
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      <User className="h-4 w-4" aria-hidden="true" />
-                      Profile
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        setShowUserMenu(false);
-                        signOut({ callbackUrl: '/' });
-                      }}
-                      className={cn(menuLinkClass, "w-full hover:bg-[var(--foil-soft)]")}
-                    >
-                      <LogOut className="h-4 w-4" aria-hidden="true" />
-                      Sign out
-                    </button>
-                  </div>
+                )
+              }
+              header={
+                <div>
+                  <p className="truncate text-sm font-semibold text-[var(--ink)]">
+                    {session.user.name || 'User'}
+                  </p>
+                  <p className="truncate text-xs text-[var(--ink-70)]">
+                    {session.user.email}
+                  </p>
+                  {session.user.role === 'admin' && (
+                    <span className="mt-1.5 inline-block rounded-full bg-[var(--ink)] px-2 py-0.5 text-xs font-semibold text-[var(--paper-card)]">
+                      Admin
+                    </span>
+                  )}
                 </div>
-              )}
-            </div>
+              }
+              items={[
+                ...(session.user.role === 'admin' ? [
+                  {
+                    label: 'Admin dashboard',
+                    href: '/admin/dashboard',
+                    icon: <LayoutDashboard className="h-4 w-4" />,
+                  },
+                ] : []),
+                {
+                  label: 'Your orders',
+                  href: '/orders',
+                  icon: <Package className="h-4 w-4" />,
+                },
+                {
+                  label: 'Saved medicines',
+                  href: '/saved',
+                  icon: <Bookmark className="h-4 w-4" />,
+                },
+                {
+                  label: 'Profile',
+                  href: '/profile',
+                  icon: <User className="h-4 w-4" />,
+                },
+                {
+                  label: 'Sign out',
+                  onClick: () => signOut({ callbackUrl: '/' }),
+                  icon: <LogOut className="h-4 w-4" />,
+                },
+              ]}
+              align="right"
+              className="transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)]"
+            />
           ) : (
             <Link href="/login">
               <Button
