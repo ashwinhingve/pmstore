@@ -18,6 +18,7 @@ export doesn't match, write a mapping layer in `scripts/mappers/` — do not cha
 | `schedule_class` | `OTC` `H` `H1` `X` `G` |
 | `side_effects`, `contraindications` | Pipe-separated: `Nausea\|Rash\|Dizziness` |
 | `image_url_N` | Public URL. The importer uploads to Cloudinary and rewrites the field |
+| `tags` | Optional, pipe-separated internal labels (e.g. `price-unverified`). Not shown to customers as chips; used for filtering and SEO keyword fallback |
 
 Add `salt_3_*` columns if a product has three salts. The importer reads them dynamically.
 

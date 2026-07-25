@@ -168,6 +168,7 @@ export async function POST(req: NextRequest) {
           if (parsed.usageInstructions) product.usageInstructions = parsed.usageInstructions;
           product.sideEffects = parsed.sideEffects;
           product.contraindications = parsed.contraindications;
+          if (parsed.tags.length > 0) product.tags = parsed.tags;
           product.images = images as any;
           product.isActive = parsed.isActive;
         } else {
@@ -198,6 +199,7 @@ export async function POST(req: NextRequest) {
             usageInstructions: parsed.usageInstructions,
             sideEffects: parsed.sideEffects,
             contraindications: parsed.contraindications,
+            tags: parsed.tags,
             images,
             isActive: parsed.isActive,
           });

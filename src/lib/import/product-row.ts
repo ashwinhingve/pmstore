@@ -48,6 +48,7 @@ export interface ParsedProductRow {
   sideEffects: string[];
   contraindications: string[];
   imageUrls: string[];
+  tags: string[];
   isActive: boolean;
 }
 
@@ -181,6 +182,9 @@ export function parseProductRow(raw: Record<string, string>): ParseResult {
       sideEffects: splitList(raw.side_effects),
       contraindications: splitList(raw.contraindications),
       imageUrls,
+      // Free-form labels (pipe-separated). Used for internal flags like
+      // `price-unverified` and never rendered as customer-facing chips.
+      tags: splitList(raw.tags),
       isActive,
     },
   };

@@ -93,6 +93,7 @@ async function upsertProduct(row: ParsedProductRow): Promise<void> {
     usageInstructions: row.usageInstructions,
     sideEffects: row.sideEffects,
     contraindications: row.contraindications,
+    tags: row.tags,
     isActive: row.isActive,
   });
 
