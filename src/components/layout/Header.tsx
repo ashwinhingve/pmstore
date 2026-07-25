@@ -7,6 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { Navigation } from "./Navigation";
+import { TopBar } from "./TopBar";
 import { MobileMenu } from "./MobileMenu";
 import { SearchBar } from "@/components/search/SearchBar";
 import { Logo } from "@/components/shared/Logo";
@@ -43,13 +44,19 @@ export function Header() {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 w-full border-b border-[var(--foil-soft)] bg-[var(--paper)]/90 backdrop-blur transition-shadow duration-[var(--dur-fast)]",
-        scrolled && "shadow-[var(--shadow-sm)]"
-      )}
-    >
-      <div className="mx-auto flex h-18 max-w-[1200px] items-center justify-between px-4 sm:px-6 lg:px-8">
+    <>
+      {/* Utility bar — scrolls away, keeps the sticky header at a clean 72px */}
+      <TopBar />
+
+      <header
+        className={cn(
+          "sticky top-0 z-50 w-full border-b bg-[var(--paper)]/80 backdrop-blur-md transition-[box-shadow,border-color,background-color] duration-[var(--dur-base)]",
+          scrolled
+            ? "border-[var(--foil-soft)] shadow-[var(--shadow-sm)]"
+            : "border-transparent"
+        )}
+      >
+        <div className="mx-auto flex h-18 max-w-[1200px] items-center gap-4 px-4 sm:px-6 lg:px-8">
         {/* Logo and Brand */}
         <Link
           href="/"
@@ -72,9 +79,9 @@ export function Header() {
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-1 md:gap-2">
+        <div className="ml-auto flex items-center gap-1 md:gap-2">
           {/* Search — primary navigation (docs/03-DESIGN-SYSTEM.md) */}
-          <div className="hidden w-56 md:block lg:w-72">
+          <div className="hidden w-56 md:block lg:w-80">
             <SearchBar />
           </div>
 
@@ -204,8 +211,9 @@ export function Header() {
         <SearchBar />
       </div>
 
-      {/* Mobile Menu */}
-      <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
-    </header>
+        {/* Mobile Menu */}
+        <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+      </header>
+    </>
   );
 }

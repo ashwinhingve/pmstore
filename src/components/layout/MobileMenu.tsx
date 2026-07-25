@@ -16,6 +16,18 @@ const navItems = [
   { href: "/contact", label: "Contact", icon: Phone },
 ];
 
+// Mirrors the desktop CategoryMenu / landing Categories.
+const CATEGORIES = [
+  "Pain Relief",
+  "Antibiotics",
+  "Diabetes Care",
+  "Heart & BP",
+  "Skin Care",
+  "Vitamins & Minerals",
+  "Baby Care",
+  "Ayurveda",
+];
+
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
@@ -26,39 +38,59 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
   return (
     <Drawer open={isOpen} onClose={onClose} title="Menu" side="right" className="lg:hidden">
-      <nav aria-label="Mobile navigation" className="flex h-full flex-col justify-between p-4">
-        <ul className="space-y-1">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
-            return (
-              <li key={item.href}>
+      <nav aria-label="Mobile navigation" className="flex h-full flex-col p-4">
+        <div className="flex-1 overflow-y-auto">
+          <ul className="space-y-1">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    aria-current={isActive ? "page" : undefined}
+                    className={cn(
+                      "flex min-h-11 items-center gap-3 rounded-[var(--radius-sm)] px-3 text-base font-medium transition-colors duration-[var(--dur-fast)]",
+                      isActive
+                        ? "bg-[var(--mint-soft)] text-[var(--ink)]"
+                        : "text-[var(--ink-70)] hover:bg-[var(--foil-soft)] hover:text-[var(--ink)]"
+                    )}
+                  >
+                    <Icon
+                      className={cn("h-5 w-5", isActive ? "text-[var(--mint)]" : "text-[var(--ink-40)]")}
+                      aria-hidden="true"
+                    />
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="mt-6">
+            <h3 className="px-3 text-xs font-semibold uppercase tracking-wide text-[var(--ink-40)]">
+              Shop by category
+            </h3>
+            <div className="mt-2 flex flex-wrap gap-2 px-1">
+              {CATEGORIES.map((name) => (
                 <Link
-                  href={item.href}
+                  key={name}
+                  href={`/products?category=${encodeURIComponent(name)}`}
                   onClick={onClose}
-                  aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "flex min-h-11 items-center gap-3 rounded-[var(--radius-sm)] px-3 text-base font-medium transition-colors duration-[var(--dur-fast)]",
-                    isActive
-                      ? "bg-[var(--mint-soft)] text-[var(--ink)]"
-                      : "text-[var(--ink-70)] hover:bg-[var(--foil-soft)] hover:text-[var(--ink)]"
-                  )}
+                  className="rounded-[var(--radius-pill)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 py-1.5 text-sm font-medium text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:border-[var(--mint)] hover:text-[var(--ink)]"
                 >
-                  <Icon
-                    className={cn("h-5 w-5", isActive ? "text-[var(--mint)]" : "text-[var(--ink-40)]")}
-                    aria-hidden="true"
-                  />
-                  {item.label}
+                  {name}
                 </Link>
-              </li>
-            );
-          })}
-        </ul>
+              ))}
+            </div>
+          </div>
+        </div>
 
         <Link
           href="/prescriptions"
           onClick={onClose}
-          className="mt-4 flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[var(--ink)] px-4 font-medium text-[var(--paper-card)] shadow-[var(--shadow-xs)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--ink-deep)]"
+          className="mt-4 flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[var(--ink)] px-4 font-medium text-[var(--paper-card)] shadow-[var(--shadow-xs)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--ink-deep)]"
         >
           <FileUp className="h-5 w-5" aria-hidden="true" />
           Upload prescription
