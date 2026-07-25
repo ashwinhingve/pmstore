@@ -31,7 +31,7 @@ const TEMPLATE_HEADERS = [
   "salt_2_name", "salt_2_strength", "salt_2_unit",
   "price", "mrp", "gst_rate", "stock", "schedule_class", "prescription_required", "hsn_code",
   "short_description", "storage_instructions", "usage_instructions",
-  "side_effects", "contraindications", "image_url_1", "image_url_2", "is_active",
+  "side_effects", "contraindications", "image_url_1", "image_url_2", "tags", "is_active",
 ]
 
 const TEMPLATE_EXAMPLE: Record<string, string> = {
@@ -44,7 +44,7 @@ const TEMPLATE_EXAMPLE: Record<string, string> = {
   short_description: "Paracetamol 650 mg for fever and pain",
   storage_instructions: "Store below 30 C", usage_instructions: "As directed by the physician",
   side_effects: "Nausea|Rash", contraindications: "Severe liver disease",
-  image_url_1: "", image_url_2: "", is_active: "TRUE",
+  image_url_1: "", image_url_2: "", tags: "", is_active: "TRUE",
 }
 
 const REQUIRED_COLUMNS = ["sku", "name", "manufacturer", "category", "form", "price", "pack_size"]
@@ -117,18 +117,28 @@ export function ProductImportClient() {
     }
   }
 
-  function downloadTemplate() {
-    const header = TEMPLATE_HEADERS.join(",")
-    const example = TEMPLATE_HEADERS.map((h) => csvCell(TEMPLATE_EXAMPLE[h] ?? "")).join(",")
-    const blob = new Blob([`${header}\n${example}\n`], { type: "text/csv;charset=utf-8" })
+  function triggerDownload(contents: string, filename: string) {
+    const blob = new Blob([contents], { type: "text/csv;charset=utf-8" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = "product-import-template.csv"
+    a.download = filename
     document.body.appendChild(a)
     a.click()
     a.remove()
     URL.revokeObjectURL(url)
+  }
+
+  function downloadTemplate() {
+    const header = TEMPLATE_HEADERS.join(",")
+    const example = TEMPLATE_HEADERS.map((h) => csvCell(TEMPLATE_EXAMPLE[h] ?? "")).join(",")
+    triggerDownload(`${header}\n${example}\n`, "product-import-template.csv")
+  }
+
+  function downloadFailedRows() {
+    if (!result?.errors.length) return
+    const rows = result.errors.map((e) => `${csvCell(e.sku ?? "")},${csvCell(e.reason)}`)
+    triggerDownload(["sku,reason", ...rows].join("\n") + "\n", "product-import-failed-rows.csv")
   }
 
   return (
@@ -229,9 +239,16 @@ export function ProductImportClient() {
 
           {result.errors.length > 0 && (
             <div>
-              <h3 className="mb-2 text-sm font-semibold text-[var(--ink-70)]">
-                First {result.errors.length} row{result.errors.length === 1 ? "" : "s"} that failed
-              </h3>
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <h3 className="text-sm font-semibold text-[var(--ink-70)]">
+                  {result.failed > result.errors.length
+                    ? `First ${result.errors.length} of ${result.failed} rows that failed`
+                    : `${result.errors.length} row${result.errors.length === 1 ? "" : "s"} that failed`}
+                </h3>
+                <Button variant="outline" size="sm" onClick={downloadFailedRows} className="shrink-0 gap-2">
+                  <Download className="h-4 w-4" /> Download failed rows
+                </Button>
+              </div>
               <div className="overflow-x-auto rounded-[var(--radius-sm)] border border-[var(--foil-soft)]">
                 <table className="w-full min-w-[420px] text-left text-sm">
                   <thead className="bg-[var(--foil-soft)] text-xs uppercase tracking-wide text-[var(--ink-70)]">
