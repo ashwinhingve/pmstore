@@ -161,7 +161,7 @@ export default function ReturnRequestPage({
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
-        <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-12 max-w-md text-center">
+        <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-sm)] p-12 max-w-md text-center">
           <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-10 h-10 text-[var(--mint)]" />
           </div>
@@ -313,7 +313,7 @@ export default function ReturnRequestPage({
 
             {/* Refund Summary */}
             {selectedItems.length > 0 && (
-              <div className="bg-[var(--foil-soft)] rounded-2xl border-2 border-[var(--foil)] shadow-[var(--shadow-card)] p-6">
+              <div className="bg-[var(--foil-soft)] rounded-2xl border-2 border-[var(--foil)] shadow-[var(--shadow-sm)] p-6">
                 <h3 className="text-lg font-bold text-[var(--ink)] mb-3">
                   {returnType === 'refund' ? 'Refund' : 'Exchange'} summary
                 </h3>

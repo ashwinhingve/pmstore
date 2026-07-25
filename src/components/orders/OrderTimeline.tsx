@@ -151,7 +151,7 @@ function Timeline({
   formatDate: (date: string) => string;
 }) {
   return (
-    <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
+    <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-sm)] p-6">
       <h3 className="text-xl font-bold text-[var(--ink)] mb-6">Order Status</h3>
 
       <div className="relative">
@@ -228,7 +228,7 @@ function FailedTimeline({
   formatDate: (date: string) => string;
 }) {
   return (
-    <div className="bg-[var(--foil-soft)] rounded-2xl border-2 border-[var(--foil)] shadow-[var(--shadow-card)] p-6">
+    <div className="bg-[var(--foil-soft)] rounded-2xl border-2 border-[var(--foil)] shadow-[var(--shadow-sm)] p-6">
       <h3 className="text-xl font-bold text-[var(--ink)] mb-6">Order Status</h3>
 
       <div className="space-y-4">

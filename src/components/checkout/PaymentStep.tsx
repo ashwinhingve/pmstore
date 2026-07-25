@@ -90,7 +90,7 @@ export default function PaymentStep({
   };
 
   return (
-    <div className="bg-[var(--paper-card)] p-6 rounded-lg shadow-[var(--shadow-card)]">
+    <div className="bg-[var(--paper-card)] p-6 rounded-lg shadow-[var(--shadow-sm)]">
       {/* Load Cashfree JS SDK */}
       <Script
         src="https://sdk.cashfree.com/js/v3/cashfree.js"

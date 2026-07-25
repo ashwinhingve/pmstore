@@ -28,7 +28,7 @@ export default function OrderSummaryCard({ orderData }: OrderSummaryCardProps) {
   };
 
   return (
-    <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-card)] p-6">
+    <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-sm)] p-6">
       <h3 className="text-xl font-bold text-[var(--ink)] mb-4">Order Summary</h3>
 
       {/* Status Badges */}

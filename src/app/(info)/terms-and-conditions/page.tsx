@@ -33,7 +33,7 @@ export default function TermsConditionsPage() {
         <div className="container mx-auto px-4 max-w-4xl">
           <AnimatedSection direction="up" className="space-y-8">
             {/* Introduction */}
-            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] border border-[var(--foil-soft)]">
+            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
               <p className="text-[var(--ink)] leading-relaxed">
                 By accessing or using <strong>{SITE_URL}</strong>, you agree to these terms and conditions. Please read them carefully before placing an order.
               </p>
@@ -90,7 +90,7 @@ export default function TermsConditionsPage() {
             </div>
 
             {/* Payment Gateway Disclaimer */}
-            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] border border-[var(--foil-soft)]">
+            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-[var(--mint)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
                   <CreditCard className="w-6 h-6 text-[var(--ink)]" />
@@ -165,7 +165,7 @@ export default function TermsConditionsPage() {
             </div>
 
             {/* Contact Information */}
-            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] border border-[var(--foil-soft)]">
+            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-[var(--mint)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
                   <Mail className="w-6 h-6 text-[var(--ink)]" />

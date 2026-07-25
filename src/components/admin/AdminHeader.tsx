@@ -93,7 +93,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                     className="fixed inset-0 z-10"
                     onClick={() => setShowUserMenu(false)}
                   />
-                  <div className="absolute right-0 z-20 mt-2 w-56 origin-top-right rounded-lg bg-[var(--paper-card)] shadow-card border border-[var(--foil-soft)]">
+                  <div className="absolute right-0 z-20 mt-2 w-56 origin-top-right rounded-lg bg-[var(--paper-card)] shadow-[var(--shadow-md)] border border-[var(--foil-soft)]">
                     <div className="p-2">
                       {/* Profile info */}
                       <div className="px-3 py-2 border-b border-[var(--foil-soft)] mb-2">

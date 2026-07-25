@@ -73,7 +73,7 @@ export function WholesaleForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-8 text-center shadow-[var(--shadow-card)]">
+      <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-8 text-center shadow-[var(--shadow-sm)]">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--mint-soft)]">
           <CheckCircle2 className="h-7 w-7 text-[var(--mint)]" aria-hidden="true" />
         </div>
@@ -100,7 +100,7 @@ export function WholesaleForm() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-card)] md:p-8"
+      className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)] md:p-8"
     >
       {serverError && (
         <div

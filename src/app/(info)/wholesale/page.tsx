@@ -87,7 +87,7 @@ export default function WholesalePage() {
         <h2 className="mb-8 text-[length:var(--step-2)] text-[var(--ink)]">Why buy wholesale from us</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {BENEFITS.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-card)]">
+            <div key={title} className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
               <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--mint-soft)]">
                 <Icon className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
               </div>

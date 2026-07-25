@@ -174,7 +174,7 @@ export function SearchBar({ className }: { className?: string }) {
           id={listboxId}
           role="listbox"
           aria-label={showingRecent ? 'Recent searches' : 'Search suggestions'}
-          className="absolute z-50 mt-2 max-h-96 w-full overflow-auto rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] py-1 shadow-card"
+          className="absolute z-50 mt-2 max-h-96 w-full overflow-auto rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] py-1 shadow-[var(--shadow-md)]"
         >
           {showingRecent && recent.length > 0 && (
             <li className="flex items-center justify-between px-3 py-1.5 text-xs font-medium text-[var(--ink-40)]">

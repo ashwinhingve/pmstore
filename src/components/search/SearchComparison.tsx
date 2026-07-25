@@ -119,7 +119,7 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
       : null;
 
   return (
-    <div className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-card)]">
+    <div className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)]">
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--foil-soft)] px-4 py-3">
         <h3 className="font-semibold text-[var(--ink)]">{label}</h3>
         <div className="flex flex-wrap items-baseline gap-3">

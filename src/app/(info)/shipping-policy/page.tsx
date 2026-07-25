@@ -34,7 +34,7 @@ export default function ShippingPolicyPage() {
           <div className="space-y-12">
             {/* Delivery Coverage */}
             <AnimatedSection direction="up">
-              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-card)]">
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-sm)]">
                 <div className="flex items-center gap-3 mb-4">
                   <MapPin className="w-6 h-6 text-[var(--mint)]" />
                   <h2 className="text-2xl font-bold font-display text-[var(--ink)]">Delivery Coverage</h2>
@@ -58,7 +58,7 @@ export default function ShippingPolicyPage() {
 
             {/* Delivery Timeline */}
             <AnimatedSection direction="up">
-              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-card)]">
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-sm)]">
                 <div className="flex items-center gap-3 mb-4">
                   <Clock className="w-6 h-6 text-[var(--mint)]" />
                   <h2 className="text-2xl font-bold font-display text-[var(--ink)]">Estimated Delivery Time</h2>
@@ -83,7 +83,7 @@ export default function ShippingPolicyPage() {
 
             {/* Shipping Charges */}
             <AnimatedSection direction="up">
-              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-card)]">
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-sm)]">
                 <div className="flex items-center gap-3 mb-4">
                   <IndianRupee className="w-6 h-6 text-[var(--mint)]" />
                   <h2 className="text-2xl font-bold font-display text-[var(--ink)]">Shipping Charges</h2>
@@ -107,7 +107,7 @@ export default function ShippingPolicyPage() {
 
             {/* Order Processing */}
             <AnimatedSection direction="up">
-              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-card)]">
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-sm)]">
                 <div className="flex items-center gap-3 mb-4">
                   <Package className="w-6 h-6 text-[var(--mint)]" />
                   <h2 className="text-2xl font-bold font-display text-[var(--ink)]">Order Processing</h2>
@@ -135,7 +135,7 @@ export default function ShippingPolicyPage() {
 
             {/* Important Notes */}
             <AnimatedSection direction="up">
-              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-card)]">
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 border border-[var(--foil-soft)] shadow-[var(--shadow-sm)]">
                 <div className="flex items-center gap-3 mb-4">
                   <AlertCircle className="w-6 h-6 text-[var(--ink-40)]" />
                   <h2 className="text-2xl font-bold font-display text-[var(--ink)]">Important Notes</h2>

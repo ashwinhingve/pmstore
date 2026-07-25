@@ -72,7 +72,7 @@ function Door({
   return (
     <Link
       href={href}
-      className="flex min-h-11 items-start gap-4 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-card)] transition-colors hover:border-[var(--foil)]"
+      className="flex min-h-11 items-start gap-4 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)] transition-colors hover:border-[var(--foil)]"
     >
       <span className="mt-0.5 text-[var(--mint)]">{icon}</span>
       <span>

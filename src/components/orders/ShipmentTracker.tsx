@@ -85,7 +85,7 @@ export default function ShipmentTracker({
 
   if (loading && !tracking) {
     return (
-      <div className="bg-[var(--paper-card)] rounded-lg shadow-[var(--shadow-card)] p-6">
+      <div className="bg-[var(--paper-card)] rounded-lg shadow-[var(--shadow-sm)] p-6">
         <div className="flex items-center justify-center py-8">
           <div className="inline-block w-8 h-8 border-4 border-[var(--ink)] border-t-transparent rounded-full animate-spin"></div>
           <p className="ml-3 text-[var(--ink-70)]">Loading tracking information...</p>
@@ -96,7 +96,7 @@ export default function ShipmentTracker({
 
   if (error) {
     return (
-      <div className="bg-[var(--paper-card)] rounded-lg shadow-[var(--shadow-card)] p-6">
+      <div className="bg-[var(--paper-card)] rounded-lg shadow-[var(--shadow-sm)] p-6">
         <div className="bg-[var(--foil-soft)] border border-[var(--foil)] rounded-lg p-4">
           <div className="flex items-center gap-3">
             <svg
@@ -118,7 +118,7 @@ export default function ShipmentTracker({
   }
 
   return (
-    <div className="bg-[var(--paper-card)] rounded-lg shadow-[var(--shadow-card)] p-6" id="tracking">
+    <div className="bg-[var(--paper-card)] rounded-lg shadow-[var(--shadow-sm)] p-6" id="tracking">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-bold text-[var(--ink)]">Shipment Tracking</h3>
         <button

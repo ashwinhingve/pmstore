@@ -44,8 +44,8 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             <AnimatedSection direction="left">
-              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 h-full group border border-[var(--foil-soft)]">
-                <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] h-full group border border-[var(--foil-soft)]">
+                <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6">
                   <Target className="w-10 h-10 text-[var(--ink)]" />
                 </div>
                 <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our Mission</h2>
@@ -56,8 +56,8 @@ export default function AboutPage() {
             </AnimatedSection>
 
             <AnimatedSection direction="right">
-              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 h-full group border border-[var(--foil-soft)]">
-                <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] h-full group border border-[var(--foil-soft)]">
+                <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6">
                   <Lightbulb className="w-10 h-10 text-[var(--ink)]" />
                 </div>
                 <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our Vision</h2>
@@ -146,8 +146,8 @@ export default function AboutPage() {
 
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <StaggerItem>
-              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="w-8 h-8 text-[var(--ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Patient First</h3>
@@ -158,8 +158,8 @@ export default function AboutPage() {
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="w-8 h-8 text-[var(--ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Genuine Medicines</h3>
@@ -170,8 +170,8 @@ export default function AboutPage() {
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Leaf className="w-8 h-8 text-[var(--ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Affordability</h3>
@@ -182,8 +182,8 @@ export default function AboutPage() {
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <TrendingUp className="w-8 h-8 text-[var(--ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Expertise</h3>
@@ -194,8 +194,8 @@ export default function AboutPage() {
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="w-8 h-8 text-[var(--ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Convenience</h3>
@@ -206,8 +206,8 @@ export default function AboutPage() {
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] hover:shadow-lg transition-all duration-300 group hover:scale-105 text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
+                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="w-8 h-8 text-[var(--ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Trust</h3>
@@ -286,7 +286,7 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products">
-                <Button size="lg" className="bg-[var(--ink)] hover:bg-[var(--ink-70)] text-white px-10 py-6 text-lg shadow-[var(--shadow-card)] hover:shadow-lg">
+                <Button size="lg" className="bg-[var(--ink)] hover:bg-[var(--ink-70)] text-white px-10 py-6 text-lg shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]">
                   Browse Medicines
                 </Button>
               </Link>

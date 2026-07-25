@@ -33,7 +33,7 @@ export default function ReturnPolicyPage() {
         <div className="container mx-auto px-4 max-w-4xl">
           <AnimatedSection direction="up" className="space-y-8">
             {/* Introduction */}
-            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] border border-[var(--foil-soft)]">
+            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
               <p className="text-[var(--ink)] leading-relaxed">
                 {SITE_NAME} is committed to providing genuine, safely packaged medicines. Due to the nature of pharmaceuticals, please read this policy carefully before placing an order.
               </p>
@@ -101,7 +101,7 @@ export default function ReturnPolicyPage() {
             </div>
 
             {/* Replacement or Refund */}
-            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] border border-[var(--foil-soft)]">
+            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
               <h2 className="text-2xl font-bold font-display text-[var(--ink)] mb-4">Replacement or Refund</h2>
               <div className="space-y-3 text-[var(--ink)]">
                 <p className="leading-relaxed">
@@ -158,7 +158,7 @@ export default function ReturnPolicyPage() {
             </div>
 
             {/* Contact Information */}
-            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-card)] border border-[var(--foil-soft)]">
+            <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-[var(--mint)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
                   <Mail className="w-6 h-6 text-[var(--ink)]" />
