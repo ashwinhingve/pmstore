@@ -1,0 +1,157 @@
+sku,name,brand,manufacturer,category,composition,pack_size,pack_unit,assumed_price_inr,verified_price_inr,note
+PMS-A001,Avil 25,Avil,Sanofi,Respiratory & Allergy,Pheniramine Maleate 25 mg,15,tablet,12.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A002,Avil 50,Avil,Sanofi,Respiratory & Allergy,Pheniramine Maleate 50 mg,15,tablet,24.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A003,AF 200,AF,Aristo,Antibiotics,Fluconazole 200 mg,4,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A004,AF 400,AF,Aristo,Antibiotics,Fluconazole 400 mg,1,tablet,48.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A005,Amlovas-S 2.5,Amlovas-S,Macleods,Cardiac Care,S-Amlodipine 2.5 mg,10,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A006,Amlovas-AT,Amlovas-AT,Macleods,Cardiac Care,Amlodipine 5 mg + Atenolol 50 mg,10,tablet,110.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A007,Allegra 120,Allegra,Sanofi,Respiratory & Allergy,Fexofenadine 120 mg,10,tablet,180.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A008,Allegra 180,Allegra,Sanofi,Respiratory & Allergy,Fexofenadine 180 mg,10,tablet,220.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A009,Allegra-M,Allegra-M,Sanofi,Respiratory & Allergy,Fexofenadine 120 mg + Montelukast 10 mg,10,tablet,230.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A010,Amaryl M Forte 1mg,Amaryl,Sanofi,Diabetes Care,Glimepiride 1 mg + Metformin 1000 mg,15,tablet,210.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A011,Amaryl M 1mg,Amaryl,Sanofi,Diabetes Care,Glimepiride 1 mg + Metformin 500 mg,15,tablet,150.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A012,Amaryl M 2mg,Amaryl,Sanofi,Diabetes Care,Glimepiride 2 mg + Metformin 500 mg,15,tablet,190.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A013,Alex Cough Syrup,Alex,Glenmark,Respiratory & Allergy,Chlorpheniramine Maleate 4 mg + Dextromethorphan 10 mg + Phenylephrine 5 mg,100,ml,110.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A014,Azee 250,Azee,Cipla,Antibiotics,Azithromycin 250 mg,6,tablet,68.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A015,Azee 500,Azee,Cipla,Antibiotics,Azithromycin 500 mg,5,tablet,130.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A016,Azithral 250,Azithral,Alembic,Antibiotics,Azithromycin 250 mg,6,tablet,70.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A017,Azithral 500,Azithral,Alembic,Antibiotics,Azithromycin 500 mg,5,tablet,135.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A018,Amlokind-AT,Amlokind-AT,Mankind,Cardiac Care,Amlodipine 5 mg + Atenolol 50 mg,10,tablet,42.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A019,Aciloc 150,Aciloc,Cadila,Gastro,Ranitidine 150 mg,30,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A020,Aciloc 300,Aciloc,Cadila,Gastro,Ranitidine 300 mg,30,tablet,70.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A021,Augmentin 625 Duo,Augmentin,GlaxoSmithKline,Antibiotics,Amoxicillin 500 mg + Clavulanic Acid 125 mg,10,tablet,205.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A022,Aceclo Plus,Aceclo,Aristo,Pain Relief,Aceclofenac 100 mg + Paracetamol 500 mg,10,tablet,60.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A023,Aceclo MR,Aceclo,Aristo,Pain Relief,Aceclofenac 100 mg + Paracetamol 325 mg + Chlorzoxazone 250 mg,10,tablet,90.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A024,Avomine,Avomine,Abbott,Gastro,Promethazine Theoclate 25 mg,10,tablet,38.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A025,Atarax 10,Atarax,Dr Reddys,Neuro & Psychiatry,Hydroxyzine 10 mg,15,tablet,45.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A026,Atarax 25,Atarax,Dr Reddys,Neuro & Psychiatry,Hydroxyzine 25 mg,15,tablet,70.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A027,Azulix 1 MF,Azulix,Torrent,Diabetes Care,Glimepiride 1 mg + Metformin 500 mg,15,tablet,130.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A028,Azulix 2 MF,Azulix,Torrent,Diabetes Care,Glimepiride 2 mg + Metformin 500 mg,15,tablet,165.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A029,Aten 25,Aten,Zydus,Cardiac Care,Atenolol 25 mg,14,tablet,30.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A030,Aten 50,Aten,Zydus,Cardiac Care,Atenolol 50 mg,14,tablet,42.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A031,Aristozyme Liquid,Aristozyme,Aristo,Gastro,Fungal Diastase 50 mg + Pepsin 10 mg,200,ml,130.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A032,AKT-4 Kit,AKT-4,Lupin,Antibiotics,Rifampicin 450 mg + Isoniazid 300 mg + Ethambutol 800 mg + Pyrazinamide 750 mg,28,tablet,620.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A033,Anafortan,Anafortan,Abbott,Gastro,Camylofin 25 mg + Paracetamol 300 mg,10,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A034,Asomex 2.5,Asomex,Emcure,Cardiac Care,S-Amlodipine 2.5 mg,10,tablet,85.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A035,Amodep-AT,Amodep-AT,Systopic,Cardiac Care,Amlodipine 5 mg + Atenolol 50 mg,10,tablet,60.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A036,Amlopin-AT,Amlopin-AT,Stadmed,Cardiac Care,Amlodipine 5 mg + Atenolol 50 mg,10,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A037,Arkamin,Arkamin,Unichem,Cardiac Care,Clonidine 100 mcg,10,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A038,Atorfit CV 10,Atorfit,Micro Labs,Cardiac Care,Atorvastatin 10 mg + Clopidogrel 75 mg,10,capsule,140.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A039,Atorfit CV 20,Atorfit,Micro Labs,Cardiac Care,Atorvastatin 20 mg + Clopidogrel 75 mg,10,capsule,175.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-A040,Aristozyme Gold,Aristozyme,Aristo,Gastro,Fungal Diastase 100 mg + Pepsin 20 mg,10,capsule,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B001,Brufen 200,Brufen,Abbott,Pain Relief,Ibuprofen 200 mg,15,tablet,30.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B002,Brufen 400,Brufen,Abbott,Pain Relief,Ibuprofen 400 mg,15,tablet,45.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B003,Brufen 600,Brufen,Abbott,Pain Relief,Ibuprofen 600 mg,15,tablet,60.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B004,Betnesol,Betnesol,GlaxoSmithKline,General & OTC,Betamethasone 0.5 mg,20,tablet,30.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B005,Briv 50,Briv,UCB,Neuro & Psychiatry,Brivaracetam 50 mg,10,tablet,320.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B006,Becozyme C Forte,Becozyme,Piramal,Vitamins & Supplements,Vitamin B Complex 1 mg + Ascorbic Acid 75 mg,15,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B007,Brutacef 200 DT,Brutacef,Brooks,Antibiotics,Cefixime 200 mg,10,tablet,130.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B008,Brutoflam 90,Brutoflam,Brooks,Pain Relief,Etoricoxib 90 mg,10,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B009,Beplex Forte,Beplex,Systopic,Vitamins & Supplements,Vitamin B Complex 1 mg,15,tablet,35.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B010,Baclof 10,Baclof,Sun Pharma,Ortho & Muscle Care,Baclofen 10 mg,10,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B011,Buscopan,Buscopan,Sanofi,Gastro,Hyoscine Butylbromide 10 mg,10,tablet,42.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B012,Buscogast Plus,Buscogast,Cadila,Gastro,Hyoscine Butylbromide 10 mg + Paracetamol 500 mg,10,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-B013,Betnovate-N Cream,Betnovate-N,GlaxoSmithKline,Derma & Skin,Betamethasone 0.1 % + Neomycin 0.5 %,20,g,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C001,Ciplox TZ,Ciplox,Cipla,Antibiotics,Ciprofloxacin 500 mg + Tinidazole 600 mg,10,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C002,Cepodem 200,Cepodem,Alkem,Antibiotics,Cefpodoxime 200 mg,10,tablet,210.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C003,Concor Cor 2.5,Concor,Merck,Cardiac Care,Bisoprolol 2.5 mg,10,tablet,110.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C004,Concor AM 5,Concor,Merck,Cardiac Care,Bisoprolol 5 mg + Amlodipine 5 mg,10,tablet,150.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C005,Concor AM 2.5,Concor,Merck,Cardiac Care,Bisoprolol 2.5 mg + Amlodipine 5 mg,10,tablet,130.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C006,Contramol DT,Contramol,Sun Pharma,Pain Relief,Tramadol 50 mg,10,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C007,Calpol 500,Calpol,GlaxoSmithKline,Pain Relief,Paracetamol 500 mg,15,tablet,22.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C008,Clopitab 75,Clopitab,Cadila,Cardiac Care,Clopidogrel 75 mg,15,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C009,Coversyl AM 5,Coversyl,Servier,Cardiac Care,Perindopril 4 mg + Amlodipine 5 mg,10,tablet,180.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C010,Cilaheart 20,Cilaheart,Ipca,Cardiac Care,Cilnidipine 20 mg,10,tablet,120.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C011,Calcigard 10,Calcigard,Torrent,Cardiac Care,Nifedipine 10 mg,15,capsule,35.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C012,Cyclopam,Cyclopam,Indoco,Gastro,Dicyclomine 10 mg + Paracetamol 500 mg,10,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C013,Ciplar LA 20,Ciplar,Cipla,Cardiac Care,Propranolol 20 mg,15,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C014,Ciplar LA 40,Ciplar,Cipla,Cardiac Care,Propranolol 40 mg,15,tablet,75.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C015,Cetzine 10,Cetzine,Dr Reddys,Respiratory & Allergy,Cetirizine 10 mg,10,tablet,32.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C016,Cardivas 3.125,Cardivas,Sun Pharma,Cardiac Care,Carvedilol 3.125 mg,10,tablet,70.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C017,Clonafit Beta,Clonafit,Mankind,Neuro & Psychiatry,Clonazepam 0.5 mg + Propranolol 20 mg,10,tablet,65.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C018,Cardace 2.5,Cardace,Sanofi,Cardiac Care,Ramipril 2.5 mg,10,tablet,85.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C019,Caverta 50,Caverta,Sun Pharma,General & OTC,Sildenafil 50 mg,4,tablet,210.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C020,Caverta 100,Caverta,Sun Pharma,General & OTC,Sildenafil 100 mg,4,tablet,320.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C021,Ciplox 250,Ciplox,Cipla,Antibiotics,Ciprofloxacin 250 mg,10,tablet,45.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C022,Ciplox 500,Ciplox,Cipla,Antibiotics,Ciprofloxacin 500 mg,10,tablet,75.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C023,Clavam 625,Clavam,Alkem,Antibiotics,Amoxicillin 500 mg + Clavulanic Acid 125 mg,10,tablet,215.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C024,Calcimax 500,Calcimax,Meyer,Vitamins & Supplements,Calcium Carbonate 500 mg + Cholecalciferol 250 iu,15,tablet,90.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C025,Cefakind 250,Cefakind,Mankind,Antibiotics,Cefuroxime 250 mg,10,tablet,190.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C026,Cefakind 500,Cefakind,Mankind,Antibiotics,Cefuroxime 500 mg,10,tablet,340.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C027,Cipcal 500 D,Cipcal,Cipla,Vitamins & Supplements,Calcium Carbonate 500 mg + Cholecalciferol 250 iu,15,tablet,105.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C028,Cyclopam Suspension,Cyclopam,Indoco,Gastro,Dicyclomine 10 mg + Simethicone 40 mg,60,ml,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C029,Cremaffin Plus Syrup,Cremaffin,Abbott,Gastro,Milk of Magnesia 1.25 ml + Liquid Paraffin 1.25 ml + Sodium Picosulfate 3.33 mg,225,ml,190.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C030,Cypon Syrup,Cypon,Geno Pharma,Gastro,Cyproheptadine 2 mg + Tricholine Citrate 275 mg,200,ml,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C031,Calcimax D3 Syrup,Calcimax,Meyer,Vitamins & Supplements,Calcium 250 mg + Cholecalciferol 200 iu,200,ml,145.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C032,Crocin Syrup 125,Crocin,GlaxoSmithKline,Pain Relief,Paracetamol 125 mg,60,ml,42.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-C033,Crocin Syrup 250,Crocin,GlaxoSmithKline,Pain Relief,Paracetamol 250 mg,60,ml,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D001,Deriphyllin 150,Deriphyllin,Zydus,Respiratory & Allergy,Etophylline 77 mg + Theophylline 23 mg,10,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D002,Deriphyllin Retard 150,Deriphyllin,Zydus,Respiratory & Allergy,Etophylline 115 mg + Theophylline 35 mg,10,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D003,Dolo 650,Dolo,Micro Labs,Pain Relief,Paracetamol 650 mg,15,tablet,31.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D004,Dynapar 50,Dynapar,Troikaa,Pain Relief,Diclofenac 50 mg,10,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D005,Domstal 10,Domstal,Torrent,Gastro,Domperidone 10 mg,10,tablet,35.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D006,Dytor Plus 10,Dytor,Cipla,Cardiac Care,Torsemide 10 mg + Spironolactone 50 mg,10,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D007,Dytor Plus 20,Dytor,Cipla,Cardiac Care,Torsemide 20 mg + Spironolactone 50 mg,10,tablet,130.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D008,Dytor 5,Dytor,Cipla,Cardiac Care,Torsemide 5 mg,10,tablet,60.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D009,Dulcoflex 5,Dulcoflex,Boehringer Ingelheim,Gastro,Bisacodyl 5 mg,10,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D010,Diclomol,Diclomol,Win-Medicare,Pain Relief,Diclofenac 50 mg + Paracetamol 325 mg,10,tablet,38.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D011,Diclomol SP,Diclomol,Win-Medicare,Pain Relief,Diclofenac 50 mg + Paracetamol 325 mg + Serratiopeptidase 15 mg,10,tablet,90.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D012,Dilzem 30,Dilzem,Torrent,Cardiac Care,Diltiazem 30 mg,10,tablet,45.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D013,Drotin-M,Drotin-M,Walter Bushnell,Gastro,Drotaverine 80 mg + Mefenamic Acid 250 mg,10,tablet,60.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D014,Deplatt-A 150,Deplatt-A,Torrent,Cardiac Care,Aspirin 150 mg + Clopidogrel 75 mg,15,capsule,105.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D015,Doxt 100,Doxt,Aristo,Antibiotics,Doxycycline 100 mg,10,capsule,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D016,Dynaglipt-M,Dynaglipt-M,Zydus,Diabetes Care,Teneligliptin 20 mg + Metformin 500 mg,15,tablet,165.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D017,Dolonex DT,Dolonex,Pfizer,Pain Relief,Piroxicam 20 mg,15,tablet,130.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D018,Decdan 0.5,Decdan,Wyeth,General & OTC,Dexamethasone 0.5 mg,30,tablet,12.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D019,Dolowin Plus,Dolowin,Alkem,Pain Relief,Diclofenac 50 mg + Paracetamol 325 mg,10,tablet,45.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D020,Defcort 6,Defcort,Macleods,General & OTC,Deflazacort 6 mg,10,tablet,75.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D021,D3 Must 60K,D3,Mankind,Vitamins & Supplements,Cholecalciferol 60000 iu,4,tablet,60.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D022,Dazit 5,Dazit,Sun Pharma,Respiratory & Allergy,Desloratadine 5 mg,10,tablet,70.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D023,Dolowin MR,Dolowin,Alkem,Ortho & Muscle Care,Diclofenac 50 mg + Paracetamol 325 mg + Chlorzoxazone 250 mg,10,tablet,75.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D024,Drotin DS,Drotin,Walter Bushnell,Gastro,Drotaverine 80 mg,10,tablet,75.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D025,Deriphyllin OD 300,Deriphyllin,Zydus,Respiratory & Allergy,Theophylline 300 mg,10,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-D026,Drotikind-M,Drotikind-M,Mankind,Gastro,Drotaverine 80 mg + Mefenamic Acid 250 mg,10,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E001,Ecosprin 150,Ecosprin,USV,Cardiac Care,Aspirin 150 mg,14,tablet,12.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E002,Ecosprin AV 75,Ecosprin,USV,Cardiac Care,Aspirin 75 mg + Atorvastatin 10 mg,15,capsule,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E003,Ecosprin AV 150,Ecosprin,USV,Cardiac Care,Aspirin 150 mg + Atorvastatin 10 mg,15,capsule,110.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E004,Ecosprin Gold 10,Ecosprin,USV,Cardiac Care,Aspirin 75 mg + Atorvastatin 10 mg + Clopidogrel 75 mg,15,capsule,130.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E005,Ecosprin Gold 20,Ecosprin,USV,Cardiac Care,Aspirin 75 mg + Atorvastatin 20 mg + Clopidogrel 75 mg,15,capsule,160.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E006,Enteroquinol,Enteroquinol,East India Pharma,Gastro,Diiodohydroxyquinoline 250 mg,10,tablet,38.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E007,Eritel CH 40,Eritel,Micro Labs,Cardiac Care,Telmisartan 40 mg + Chlorthalidone 12.5 mg,15,tablet,155.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E008,Etrobax 90,Etrobax,Zuventus,Pain Relief,Etoricoxib 90 mg,10,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E009,Enzoflam,Enzoflam,Alkem,Pain Relief,Aceclofenac 100 mg + Paracetamol 325 mg + Serratiopeptidase 15 mg,10,tablet,85.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-E010,Emeset 4,Emeset,Cipla,Gastro,Ondansetron 4 mg,10,tablet,45.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F001,Flexon,Flexon,Aristo,Pain Relief,Ibuprofen 400 mg + Paracetamol 325 mg,10,tablet,32.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F002,Flagyl 200,Flagyl,Abbott,Antibiotics,Metronidazole 200 mg,10,tablet,25.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F003,Flagyl 400,Flagyl,Abbott,Antibiotics,Metronidazole 400 mg,10,tablet,42.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F004,Fenac Plus,Fenac,Sun Pharma,Pain Relief,Diclofenac 50 mg + Paracetamol 325 mg,10,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F005,Famocid 40,Famocid,Sun Pharma,Gastro,Famotidine 40 mg,14,tablet,75.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F006,Febrex Plus,Febrex,Indoco,Respiratory & Allergy,Paracetamol 500 mg + Phenylephrine 5 mg + Chlorpheniramine Maleate 2 mg,10,tablet,35.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F007,Folvite 5,Folvite,Pfizer,Vitamins & Supplements,Folic Acid 5 mg,30,tablet,45.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F008,Febrinil 650,Febrinil,Nulife,Pain Relief,Paracetamol 650 mg,15,tablet,30.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F009,Febrinil 500,Febrinil,Nulife,Pain Relief,Paracetamol 500 mg,15,tablet,22.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F010,Flexon Suspension,Flexon,Aristo,Pain Relief,Ibuprofen 100 mg + Paracetamol 162.5 mg,60,ml,45.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-F011,Flagyl Suspension,Flagyl,Abbott,Antibiotics,Metronidazole 200 mg,60,ml,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G001,Glycomet GP1,Glycomet,USV,Diabetes Care,Glimepiride 1 mg + Metformin 500 mg,15,tablet,105.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G002,Glycomet GP2,Glycomet,USV,Diabetes Care,Glimepiride 2 mg + Metformin 500 mg,15,tablet,140.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G003,Glycomet GP0.5,Glycomet,USV,Diabetes Care,Glimepiride 0.5 mg + Metformin 500 mg,15,tablet,85.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G004,Glycomet GP1 Forte,Glycomet,USV,Diabetes Care,Glimepiride 1 mg + Metformin 1000 mg,15,tablet,150.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G005,Glycomet SR 500,Glycomet,USV,Diabetes Care,Metformin 500 mg,20,tablet,45.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G006,Glycomet 500,Glycomet,USV,Diabetes Care,Metformin 500 mg,20,tablet,32.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G007,Glimestar M1,Glimestar,Mankind,Diabetes Care,Glimepiride 1 mg + Metformin 500 mg,15,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G008,Glimestar M2,Glimestar,Mankind,Diabetes Care,Glimepiride 2 mg + Metformin 500 mg,15,tablet,130.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G009,Gabapin NT 100,Gabapin,Intas,Neuro & Psychiatry,Gabapentin 100 mg + Nortriptyline 10 mg,10,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G010,Gabapin NT 400,Gabapin,Intas,Neuro & Psychiatry,Gabapentin 400 mg + Nortriptyline 10 mg,10,tablet,165.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G011,Gabapin NT 300,Gabapin,Intas,Neuro & Psychiatry,Gabapentin 300 mg + Nortriptyline 10 mg,10,tablet,145.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G012,Gabapin 100,Gabapin,Intas,Neuro & Psychiatry,Gabapentin 100 mg,10,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G013,Gemer 2,Gemer,Sun Pharma,Diabetes Care,Glimepiride 2 mg + Metformin 500 mg,10,tablet,115.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G014,Gemer 3,Gemer,Sun Pharma,Diabetes Care,Glimepiride 3 mg + Metformin 500 mg,10,tablet,140.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G015,Gluformin XL 1000,Gluformin,Abbott,Diabetes Care,Metformin 1000 mg,10,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G016,Glynase MF,Glynase,USV,Diabetes Care,Glipizide 5 mg + Metformin 500 mg,15,tablet,95.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G017,Glyciphage G1,Glyciphage,Franco-Indian,Diabetes Care,Glimepiride 1 mg + Metformin 500 mg,15,tablet,90.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G018,Glyciphage G2,Glyciphage,Franco-Indian,Diabetes Care,Glimepiride 2 mg + Metformin 500 mg,15,tablet,120.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G019,Glyciphage SR 500,Glyciphage,Franco-Indian,Diabetes Care,Metformin 500 mg,20,tablet,40.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G020,Glizid MR 30,Glizid,Panacea Biotec,Diabetes Care,Gliclazide 30 mg,10,tablet,55.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G021,Glizid-M XR 60,Glizid-M,Panacea Biotec,Diabetes Care,Gliclazide 60 mg + Metformin 500 mg,10,tablet,85.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G022,Gemcal D3,Gemcal,Sun Pharma,Vitamins & Supplements,Calcitriol 0.25 mcg + Calcium Carbonate 500 mg + Cholecalciferol 250 iu,10,capsule,110.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.
+PMS-G023,Gelusil MPS Syrup,Gelusil,Pfizer,Gastro,Magaldrate 400 mg + Simethicone 20 mg,200,ml,120.00,,Price and pack size are best-effort estimates. Confirm against the physical pack.

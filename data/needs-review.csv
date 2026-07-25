@@ -1,0 +1,52 @@
+page,raw_text,best_guess,reason
+A,Angican 5mg beta,possibly an amlodipine/atenolol combination,"brand name not resolvable; ""Angican"" is not a known brand"
+A,Aroz cold,a cold/anti-allergic combination,brand ambiguous; composition and strengths unknown
+A,ADDY 20A,unknown,not resolvable to any known Indian brand
+B,TAB Bomday 400,possibly Bandy 400 (Albendazole 400),spelling does not match a known brand; do not assume
+B,TAB Benz,possibly Benadon (Pyridoxine) or Benzac,"truncated name, no strength or form context"
+B,TAB Betnoguy 200 400 ER,possibly Metrogyl 200/400 ER (Metronidazole),reads on B page but resembles Metrogyl; identity uncertain
+B,SYP Benday,possibly Benadryl cough syrup (Diphenhydramine),spelling differs from Benadryl; composition unconfirmed
+C,CAP CO2 D3,possibly a calcium + vitamin D3 supplement,brand not resolvable
+C,TAB C2 PM,unknown,abbreviation not resolvable to a brand
+C,CAP Carvic,unknown,brand not resolvable; not Carvidon/Carnisure with confidence
+C,TAB Cluba 10 (prescription),unknown antihypertensive,brand not resolvable
+C,TAB C2 3,unknown,illegible / abbreviation not resolvable
+C,TAB Corflam,possibly a diclofenac anti-inflammatory,brand not resolvable with confidence
+C,TAB Cymoral-AP Forte Plus,possibly Aceclofenac + Paracetamol,"brand ""Cymoral"" not confirmed"
+C,TAB Coldsol,a cold combination,brand ambiguous; composition unknown
+C,TAB Cadisper C,unknown,brand not resolvable
+C,TAB Corstimax 12mg,unknown,brand not resolvable
+C,TAB Cildip 3D,possibly Cilnidipine combination,"suffix ""3D"" not resolvable to a known SKU"
+C,TAB Clom M,unknown,truncated / illegible
+C,TAB Cortel 40,possibly a telmisartan brand,"brand ""Cortel"" not confirmed"
+D,TAB Ordent,possibly Ondem (Ondansetron),spelling does not match a known brand
+D,TAB Dyrect,unknown,brand not resolvable
+D,TAB Duradulan,unknown,brand not resolvable
+D,CAP Derolac,possibly Darolac (probiotic),probiotic — no salt/strength model; verify strains and pack
+D,CAP Doxi SL,possibly Doxycycline + Lactic acid bacillus,combination unconfirmed
+D,TAB Dolokind AA / Plus,possibly Dolokind Plus (Diclofenac + Paracetamol),"the ""AA"" variant is not resolvable"
+D,TAB Doloforce DT,possibly a paracetamol DT,brand/composition unconfirmed
+D,TAB Dapaneu 10,possibly Dapagliflozin 10,"brand ""Dapaneu"" not confirmed"
+D,SYP Dacizen,unknown syrup,brand not resolvable
+E,TAB Envoformin G1,possibly a Metformin + Glimepiride brand,brand not resolvable
+E,TAB Erstel LN 40,possibly a Telmisartan combination,"brand/suffix ""LN"" not resolvable"
+E,CAP Erion 200 400 600 BLC,unknown,brand not resolvable
+E,TAB Escipy,possibly Escitalopram,"brand ""Escipy"" not confirmed; strength illegible"
+E,TAB Extel 40,possibly a Telmisartan brand,brand not confirmed
+E,TAB Ebast DC,possibly Ebastine combination (Ebast),"the ""DC"" variant is not resolvable"
+F,TAB Flexabenz,possibly a chlorzoxazone muscle-relaxant combination,brand not resolvable
+F,TAB Foirc,unknown,illegible; not Folvite
+F,TAB Fluzen AA,unknown,brand not resolvable
+F,CAP Flura BF,unknown,brand not resolvable
+F,CAP Flatubust,possibly an anti-flatulence (simethicone),brand not resolvable
+F,CAP Awnil (prescription),unknown,brand not resolvable
+G,TAB Glucef 100 200,unknown,brand not resolvable
+G,CAP Gudpres XL 10,unknown antihypertensive,brand not resolvable
+G,TAB Grenil,unknown,brand not resolvable
+G,TAB Gromdem MD,possibly a domperidone combination,brand not resolvable
+G,TAB Gut OK,unknown,brand not resolvable
+G,TAB Gliptagreat DM 500,possibly a Teneligliptin + Metformin brand,"brand ""Gliptagreat"" not confirmed"
+G,TAB Gabamax NT,Gabapentin + Nortriptyline (like Gabapin NT),strength not legible; import a specific strength after confirming
+G,TAB Gudrit,unknown,brand not resolvable
+G,CAP Gen D3,possibly a vitamin D3 supplement,brand not resolvable
+G,TAB Gelost 1,possibly Gelusil tablet,brand not resolvable with confidence
