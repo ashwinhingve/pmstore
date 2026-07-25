@@ -65,7 +65,7 @@ export function NewsletterForm() {
       </div>
 
       {status === "success" && (
-        <p className="text-sm text-[var(--mint)]">You're subscribed.</p>
+        <p className="text-sm text-[var(--mint)]">You&apos;re subscribed.</p>
       )}
 
       {status === "error" && (

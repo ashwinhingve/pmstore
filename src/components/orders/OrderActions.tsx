@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/store/useToastStore';
 
@@ -86,12 +87,12 @@ export default function OrderActions({
         </button>
       )}
 
-      <a
+      <Link
         href="/orders"
         className="block w-full bg-[var(--foil-soft)] text-[var(--ink)] py-2 px-4 rounded-lg hover:bg-[var(--foil)] font-medium text-center"
       >
-        View All Orders
-      </a>
+        View all orders
+      </Link>
 
       {/* Cancel Modal */}
       {showCancelModal && (

@@ -344,7 +344,7 @@ export default function OrdersTable({
             {orders.length === 0 ? (
               <tr>
                 <td colSpan={8} className="px-6 py-12 text-center text-[var(--ink-40)]">
-                  No orders yet. New orders appear here the moment they're placed.
+                  No orders yet. New orders appear here the moment they&apos;re placed.
                 </td>
               </tr>
             ) : (

@@ -34,9 +34,9 @@ export async function sendPushNotification(userId: string, message: FCMMessage):
     try {
       // Dynamic import — will fail gracefully if firebase-admin not installed
       // The try-catch here ensures we don't crash if the module is missing
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       // @ts-ignore intentional — firebase-admin may not be installed
-      admin = require('firebase-admin'); // eslint-disable-line global-require
+      admin = require('firebase-admin');  
     } catch {
       // firebase-admin not installed; degrade gracefully
       console.warn('firebase-admin not installed; push notifications disabled');

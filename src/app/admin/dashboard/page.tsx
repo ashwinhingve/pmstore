@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth-helpers';
 import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
@@ -191,7 +192,7 @@ export default async function AdminDashboard() {
       <div>
         <h1 className="text-2xl font-bold text-[var(--ink)]">Dashboard overview</h1>
         <p className="text-sm text-[var(--ink-70)] mt-1">
-          Here's what's happening with your store today.
+          Here&apos;s what&apos;s happening with your store today.
         </p>
       </div>
 
@@ -216,7 +217,7 @@ export default async function AdminDashboard() {
       <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
         <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Quick actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <a
+          <Link
             href="/admin/orders?status=pending"
             className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
           >
@@ -224,9 +225,9 @@ export default async function AdminDashboard() {
               <p className="text-sm font-medium text-[var(--ink)]">Process pending orders</p>
               <p className="text-xs text-[var(--ink-70)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>{pendingOrders} orders waiting</p>
             </div>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/payments?status=failed"
             className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
           >
@@ -234,9 +235,9 @@ export default async function AdminDashboard() {
               <p className="text-sm font-medium text-[var(--ink)]">Review failed payments</p>
               <p className="text-xs text-[var(--ink-70)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>{failedPayments} failed transactions</p>
             </div>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/products?filter=low-stock"
             className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
           >
@@ -244,9 +245,9 @@ export default async function AdminDashboard() {
               <p className="text-sm font-medium text-[var(--ink)]">Low stock alerts</p>
               <p className="text-xs text-[var(--ink-70)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>{lowStockCount} products low</p>
             </div>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/system"
             className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
           >
@@ -254,7 +255,7 @@ export default async function AdminDashboard() {
               <p className="text-sm font-medium text-[var(--ink)]">System health</p>
               <p className="text-xs text-[var(--ink-70)] mt-1">Check status</p>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -110,7 +110,7 @@ export default function ContactPage() {
               Get In Touch
             </h1>
             <p className="text-xl md:text-2xl text-[var(--ink-70)] mb-8">
-              Have questions about medicines, delivery, or prescriptions? We're here to help!
+              Have questions about medicines, delivery, or prescriptions? We&apos;re here to help.
             </p>
           </AnimatedSection>
         </div>
@@ -177,7 +177,7 @@ export default function ContactPage() {
             <AnimatedSection direction="left">
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] shadow-[var(--shadow-sm)] p-8 md:p-10 border border-[var(--foil-soft)]">
                 <h2 className="text-[length:var(--step-2)] font-bold font-display text-[var(--ink)] mb-2">Send us a message</h2>
-                <p className="text-[var(--ink-70)] mb-8">We'll get back to you within 24 hours.</p>
+                <p className="text-[var(--ink-70)] mb-8">We&apos;ll get back to you within 24 hours.</p>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <FormField label="Your Name" required error={errors.name?.message}>
@@ -210,7 +210,7 @@ export default function ContactPage() {
                       <CheckCircle2 className="w-6 h-6 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-semibold">Message sent!</p>
-                        <p className="text-sm">We'll get back to you within 24 hours.</p>
+                        <p className="text-sm">We&apos;ll get back to you within 24 hours.</p>
                       </div>
                     </div>
                   )}

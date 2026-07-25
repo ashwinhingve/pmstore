@@ -85,7 +85,7 @@ export default function AccountSettingsPage() {
                   <div>
                     <p className="font-semibold text-[var(--ink)]">Refill reminders</p>
                     <p className="mt-1 text-sm text-[var(--ink-70)]">
-                      We'll email you before your regular medicines run out, based on your last
+                      We&apos;ll email you before your regular medicines run out, based on your last
                       order.
                     </p>
                   </div>
