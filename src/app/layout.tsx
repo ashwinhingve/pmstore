@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import SessionProvider from "@/components/providers/SessionProvider";
 import { ToastViewport } from "@/components/ui/toast";
+import { CompareTray } from "@/components/compare/CompareTray";
 import { connectDB } from "@/lib/mongodb";
 import MarketingSettings from "@/models/MarketingSettings";
 
@@ -240,6 +241,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <Footer />
           </div>
           <ToastViewport />
+          <CompareTray />
         </SessionProvider>
       </body>
     </html>

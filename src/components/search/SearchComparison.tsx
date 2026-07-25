@@ -110,17 +110,35 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
   const label =
     bestValue.salts.length > 0 ? formatComposition(bestValue.salts) : bestValue.compositionKey;
 
+  // Link the two leading brands to the /compare page — only when both carry a
+  // real Mongo id (coerce() can fall back to the slug).
+  const isObjectId = (s: string) => /^[a-f0-9]{24}$/i.test(s);
+  const topTwo =
+    sorted.length >= 2 && isObjectId(sorted[0]._id) && isObjectId(sorted[1]._id)
+      ? `/compare?ids=${sorted[0]._id},${sorted[1]._id}`
+      : null;
+
   return (
     <div className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-card)]">
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--foil-soft)] px-4 py-3">
         <h3 className="font-semibold text-[var(--ink)]">{label}</h3>
-        {saving.percent > 0 && (
-          <p className="text-sm text-[var(--mint)]">
-            Save up to{' '}
-            <span style={mono} className="font-semibold">{saving.percent}%</span>{' '}
-            by brand
-          </p>
-        )}
+        <div className="flex flex-wrap items-baseline gap-3">
+          {saving.percent > 0 && (
+            <p className="text-sm text-[var(--mint)]">
+              Save up to{' '}
+              <span style={mono} className="font-semibold">{saving.percent}%</span>{' '}
+              by brand
+            </p>
+          )}
+          {topTwo && (
+            <Link
+              href={topTwo}
+              className="text-sm font-semibold text-[var(--ink)] underline decoration-[var(--foil)] underline-offset-4 transition-colors duration-[var(--dur-fast)] hover:decoration-[var(--ink)]"
+            >
+              Compare top two
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="overflow-x-auto">

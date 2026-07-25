@@ -50,10 +50,18 @@ export function Strip({ strip }: { strip: StripViewModel }) {
         ))}
       </ul>
 
-      {canSave && (
-        <p className="mt-3 text-[0.875rem] text-[var(--mint)]">
-          ↘ Switch to {canSave.name} and save {formatINR(canSave.savings!.perPack)} on this strip
-        </p>
+      {canSave && current && (
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-[0.875rem] text-[var(--mint)]">
+            ↘ Switch to {canSave.name} and save {formatINR(canSave.savings!.perPack)} on this strip
+          </p>
+          <Link
+            href={`/compare?ids=${current._id},${canSave._id}`}
+            className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[var(--foil-soft)] px-3 text-[0.8125rem] font-semibold text-[var(--ink)] transition-[border-color,box-shadow] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--foil)] hover:shadow-[var(--shadow-sm)]"
+          >
+            Compare side by side
+          </Link>
+        </div>
       )}
     </section>
   );

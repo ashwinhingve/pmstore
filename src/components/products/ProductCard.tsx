@@ -8,9 +8,10 @@ import { RxBadge } from "@/components/shared/RxBadge";
 import { PriceBlock } from "@/components/shared/PriceBlock";
 import { formatINR, type ScheduleClass } from "@/lib/pharma/format";
 import { useCartStore } from "@/store/useCartStore";
+import { useCompareStore } from "@/store/useCompareStore";
 import { toast } from "@/store/useToastStore";
 import { useState, useEffect } from "react";
-import { Plus, Minus, Package } from "lucide-react";
+import { Plus, Minus, Package, Scale } from "lucide-react";
 
 export interface ProductCardData {
   _id?: string;
@@ -70,6 +71,22 @@ export function ProductCard({ product }: ProductCardProps) {
     e.stopPropagation();
     addItem(product, 1);
     router.push('/checkout');
+  };
+
+  const pickForCompare = useCompareStore((state) => state.pick);
+  const clearCompare = useCompareStore((state) => state.clear);
+  const isPicked = useCompareStore((state) => state.picks.some((p) => p.id === productId));
+
+  const handleCompare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const picks = pickForCompare({ id: productId, name: product.name });
+    if (picks.length === 2) {
+      clearCompare();
+      router.push(`/compare?ids=${picks[0].id},${picks[1].id}`);
+    } else if (picks.length === 1) {
+      toast.info(`Comparing ${picks[0].name} — pick one more medicine`);
+    }
   };
 
   // Handle both old schema (string) and new schema (object with url)
@@ -265,6 +282,16 @@ export function ProductCard({ product }: ProductCardProps) {
                 </Button>
               </div>
             )}
+
+            <button
+              type="button"
+              onClick={handleCompare}
+              aria-pressed={mounted && isPicked}
+              className="mt-2 inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-[var(--radius-sm)] text-sm font-medium text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:text-[var(--ink)]"
+            >
+              <Scale className="h-4 w-4" aria-hidden="true" />
+              {mounted && isPicked ? 'Picked to compare' : 'Compare'}
+            </button>
           </div>
         </div>
       </article>
