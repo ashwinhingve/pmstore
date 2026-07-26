@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCartStore, cartItemKey } from '@/store/useCartStore';
@@ -30,7 +30,19 @@ export default function CheckoutPage() {
   const [creatingOrder, setCreatingOrder] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
 
-  // Redirect to login if not authenticated
+  // Navigation is a side-effect — it must run after render, never in the render
+  // body. Calling router.push() during render triggers a setState-in-render
+  // warning and can wedge the router. The empty-cart redirect is gated on
+  // `!orderDetails` so it can't bounce the user off the payment step in the
+  // brief window after an order is created and the cart is cleared.
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login?redirect=/checkout');
+    } else if (status === 'authenticated' && items.length === 0 && !orderDetails) {
+      router.push('/cart');
+    }
+  }, [status, items.length, orderDetails, router]);
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-[var(--paper)] py-12">
@@ -45,14 +57,8 @@ export default function CheckoutPage() {
     );
   }
 
-  if (status === 'unauthenticated') {
-    router.push('/login?redirect=/checkout');
-    return null;
-  }
-
-  // Redirect if cart is empty
-  if (items.length === 0) {
-    router.push('/cart');
+  // While the redirect effect runs, render nothing rather than a half-page.
+  if (status === 'unauthenticated' || (items.length === 0 && !orderDetails)) {
     return null;
   }
 

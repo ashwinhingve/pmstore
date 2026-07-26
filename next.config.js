@@ -73,8 +73,9 @@ const nextConfig = {
               // Cloudinary + other remote image hosts (see images.remotePatterns).
               "img-src 'self' data: blob: https:",
               "connect-src 'self' https://res.cloudinary.com https://*.razorpay.com https://*.cashfree.com",
-              // Payment gateways render in iframes.
-              "frame-src 'self' https://*.razorpay.com https://*.cashfree.com",
+              // Payment gateways render in iframes; the contact page embeds a
+              // Google Maps location frame.
+              "frame-src 'self' https://*.razorpay.com https://*.cashfree.com https://www.google.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
