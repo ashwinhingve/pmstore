@@ -267,10 +267,10 @@ export default function ProductsPage() {
   }
 
   const categoryPillClass = (active: boolean) =>
-    `flex min-h-10 shrink-0 items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] px-4 py-2 text-sm font-medium transition-colors duration-[var(--dur-fast)] ${
+    `flex min-h-10 shrink-0 items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-medium transition-colors duration-[var(--dur-fast)] ${
       active
-        ? "bg-[var(--ink)] text-[var(--paper-card)] shadow-[var(--shadow-xs)]"
-        : "bg-[var(--foil-soft)] text-[var(--ink-70)] hover:bg-[var(--foil)] hover:text-[var(--ink)]"
+        ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--paper-card)] shadow-[var(--shadow-xs)]"
+        : "border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)] hover:border-[var(--mint)] hover:text-[var(--ink)]"
     }`
 
   const sectionButtonClass = (active: boolean) =>
@@ -281,7 +281,7 @@ export default function ProductsPage() {
     }`
 
   const filterCardClass =
-    "rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-xs)]"
+    "rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)]"
 
   const priceRangeControls = (
     <>
@@ -524,7 +524,7 @@ export default function ProductsPage() {
           {/* Main Content */}
           <div className="flex-1">
             {/* Sort Bar (Desktop) */}
-            <div className="mb-4 hidden items-center justify-between rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 py-3 shadow-[var(--shadow-xs)] lg:flex">
+            <div className="mb-5 hidden items-center justify-between rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 py-3 shadow-[var(--shadow-sm)] lg:flex">
               <div className="text-sm text-[var(--ink-70)]">
                 Showing{" "}
                 <span className="data font-semibold text-[var(--ink)]">{filteredProducts.length}</span>{" "}
@@ -568,11 +568,11 @@ export default function ProductsPage() {
 
             {/* Products Grid */}
             {(isSearchMode ? searchLoading : loading) ? (
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4" aria-hidden="true">
+              <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4" aria-hidden="true">
                 {[...Array(8)].map((_, i) => (
                   <div
                     key={i}
-                    className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)]"
+                    className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)]"
                   >
                     <Skeleton className="aspect-square rounded-none" />
                     <div className="space-y-2 p-4">
@@ -586,7 +586,7 @@ export default function ProductsPage() {
               </div>
             ) : filteredProducts.length > 0 ? (
               <>
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
                   {pageProducts.map((product) => (
                     <ProductCard key={product._id || product.id} product={product} />
                   ))}

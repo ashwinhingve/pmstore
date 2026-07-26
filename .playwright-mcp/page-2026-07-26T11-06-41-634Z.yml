@@ -1,0 +1,219 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: Free home delivery across Bhopal
+        - generic [ref=e13]: Open Mon–Sun, 9:00 AM – 9:00 PM
+      - link "+91 9755550126" [ref=e17] [cursor=pointer]:
+        - /url: tel:+919755550126
+    - banner [ref=e21]:
+      - generic [ref=e22]:
+        - link "PM Store - Home" [ref=e23] [cursor=pointer]:
+          - /url: /
+          - img "PM Store mark" [ref=e25]
+          - generic [ref=e28]: PM Store
+        - generic "Main navigation" [ref=e30]:
+          - navigation [ref=e31]:
+            - link "Home" [ref=e32] [cursor=pointer]:
+              - /url: /
+            - link "Shop" [ref=e33] [cursor=pointer]:
+              - /url: /products
+            - button "Categories" [ref=e35]
+            - link "Bulk order" [ref=e38] [cursor=pointer]:
+              - /url: /wholesale
+            - link "About" [ref=e39] [cursor=pointer]:
+              - /url: /about
+            - link "Contact" [ref=e40] [cursor=pointer]:
+              - /url: /contact
+        - generic [ref=e41]:
+          - generic [ref=e43]:
+            - generic [ref=e44]: Search medicines by brand or salt
+            - combobox "Search medicines by brand or salt" [ref=e46]
+          - link [ref=e47] [cursor=pointer]:
+            - /url: /login
+            - button "Sign in" [ref=e48]
+          - link [ref=e49] [cursor=pointer]:
+            - /url: /cart
+            - button "Shopping cart" [ref=e50]
+    - main [ref=e51]:
+      - generic [ref=e53]:
+        - generic [ref=e55]:
+          - paragraph [ref=e56]: Catalogue
+          - heading "All medicines" [level=1] [ref=e58]
+          - paragraph [ref=e59]: Genuine medicines, generic prices — compare brands by price per tablet and switch to genuine, cheaper equivalents.
+        - generic [ref=e62]:
+          - button "Scroll categories left" [ref=e63]
+          - generic [ref=e66]:
+            - button "All" [ref=e67]
+            - button "Pain Relief 0" [ref=e68]:
+              - generic [ref=e69]: Pain Relief
+              - generic [ref=e70]: "0"
+            - button "Cardiac Care 0" [ref=e71]:
+              - generic [ref=e72]: Cardiac Care
+              - generic [ref=e73]: "0"
+            - button "Diabetes Care 0" [ref=e74]:
+              - generic [ref=e75]: Diabetes Care
+              - generic [ref=e76]: "0"
+            - button "Antibiotics 0" [ref=e77]:
+              - generic [ref=e78]: Antibiotics
+              - generic [ref=e79]: "0"
+            - button "Respiratory & Allergy 0" [ref=e80]:
+              - generic [ref=e81]: Respiratory & Allergy
+              - generic [ref=e82]: "0"
+            - button "Gastro 0" [ref=e83]:
+              - generic [ref=e84]: Gastro
+              - generic [ref=e85]: "0"
+            - button "Vitamins & Supplements 0" [ref=e86]:
+              - generic [ref=e87]: Vitamins & Supplements
+              - generic [ref=e88]: "0"
+            - button "Neuro & Psychiatry 0" [ref=e89]:
+              - generic [ref=e90]: Neuro & Psychiatry
+              - generic [ref=e91]: "0"
+            - button "Ortho & Muscle Care 0" [ref=e92]:
+              - generic [ref=e93]: Ortho & Muscle Care
+              - generic [ref=e94]: "0"
+            - button "Derma & Skin 0" [ref=e95]:
+              - generic [ref=e96]: Derma & Skin
+              - generic [ref=e97]: "0"
+            - button "General & OTC 0" [ref=e98]:
+              - generic [ref=e99]: General & OTC
+              - generic [ref=e100]: "0"
+          - button "Scroll categories right" [ref=e101]
+        - generic [ref=e105]:
+          - complementary [ref=e106]:
+            - generic [ref=e107]:
+              - generic [ref=e108]:
+                - heading "Browse by" [level=3] [ref=e109]
+                - generic [ref=e110]:
+                  - button "All medicines 0" [ref=e111]:
+                    - generic [ref=e117]: All medicines
+                    - generic [ref=e118]: "0"
+                  - button "Bestsellers" [ref=e119]
+                  - button "Newly in" [ref=e127]
+                  - button "Value buys" [ref=e132]
+                  - button "Trending" [ref=e137]
+              - textbox "Search medicines" [ref=e147]:
+                - /placeholder: Dolo 650, paracetamol…
+              - generic [ref=e148]:
+                - heading "Price range" [level=3] [ref=e149]
+                - generic [ref=e150]:
+                  - generic [ref=e151]: ₹0
+                  - generic [ref=e152]: ₹2000
+                - slider "Maximum price" [ref=e153] [cursor=pointer]: "2000"
+                - generic [ref=e154]:
+                  - button "Under ₹200" [ref=e155]
+                  - button "₹200-500" [ref=e156]
+                  - button "₹500-1K" [ref=e157]
+                  - button "All" [ref=e158]
+              - button "Reset filters" [ref=e159]
+          - generic [ref=e162]:
+            - generic [ref=e163]: Showing 0 medicines
+            - generic [ref=e164]:
+              - generic [ref=e165]: Sort by
+              - combobox "Sort by" [ref=e166]:
+                - option "Featured" [selected]
+                - option "Name (A-Z)"
+                - 'option "Price: low to high"'
+                - 'option "Price: high to low"'
+                - option "Highest rated"
+    - contentinfo [ref=e224]:
+      - generic [ref=e225]:
+        - generic [ref=e226]:
+          - generic [ref=e227]:
+            - link [ref=e228] [cursor=pointer]:
+              - /url: /
+              - img "PM Store mark" [ref=e230]
+              - heading "PM Store" [level=3] [ref=e233]
+              - paragraph [ref=e234]: Genuine medicines, generic prices
+            - paragraph [ref=e235]: Pratigya Medical Store is a trusted pharmacy bridging doctors and patients — genuine prescription and OTC medicines at generic prices, dispensed by trained pharmacists with free home delivery across Bhopal.
+            - link "Contact us on WhatsApp" [ref=e237] [cursor=pointer]:
+              - /url: https://wa.me/919755550126
+          - generic [ref=e240]:
+            - heading "Shop" [level=3] [ref=e241]
+            - list [ref=e242]:
+              - listitem [ref=e243]:
+                - link "All medicines" [ref=e244] [cursor=pointer]:
+                  - /url: /products
+              - listitem [ref=e245]:
+                - link "Upload prescription" [ref=e246] [cursor=pointer]:
+                  - /url: /prescriptions
+              - listitem [ref=e247]:
+                - link "Your orders" [ref=e248] [cursor=pointer]:
+                  - /url: /orders
+              - listitem [ref=e249]:
+                - link "Saved medicines" [ref=e250] [cursor=pointer]:
+                  - /url: /saved
+          - generic [ref=e251]:
+            - heading "Company" [level=3] [ref=e252]
+            - list [ref=e253]:
+              - listitem [ref=e254]:
+                - link "About us" [ref=e255] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e256]:
+                - link "Bulk order" [ref=e257] [cursor=pointer]:
+                  - /url: /wholesale
+              - listitem [ref=e258]:
+                - link "Contact" [ref=e259] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e260]:
+                - link "FAQs" [ref=e261] [cursor=pointer]:
+                  - /url: /faq
+          - generic [ref=e262]:
+            - heading "Legal & support" [level=3] [ref=e263]
+            - list [ref=e264]:
+              - listitem [ref=e265]:
+                - link "Privacy policy" [ref=e266] [cursor=pointer]:
+                  - /url: /privacy-policy
+              - listitem [ref=e267]:
+                - link "Terms & conditions" [ref=e268] [cursor=pointer]:
+                  - /url: /terms-and-conditions
+              - listitem [ref=e269]:
+                - link "Refund policy" [ref=e270] [cursor=pointer]:
+                  - /url: /refund-policy
+              - listitem [ref=e271]:
+                - link "Shipping policy" [ref=e272] [cursor=pointer]:
+                  - /url: /shipping-policy
+              - listitem [ref=e273]:
+                - link "Drug licence" [ref=e274] [cursor=pointer]:
+                  - /url: /drug-licence
+        - generic [ref=e276]:
+          - generic [ref=e277]:
+            - heading "Stay updated" [level=3] [ref=e278]
+            - paragraph [ref=e279]: Get news about new medicines and offers.
+          - generic [ref=e281]:
+            - generic [ref=e282]: Subscribe to updates
+            - generic [ref=e283]:
+              - textbox "Subscribe to updates" [ref=e284]:
+                - /placeholder: your@email.com
+              - button "Subscribe" [disabled]
+        - generic [ref=e285]:
+          - generic [ref=e286]:
+            - paragraph [ref=e287]: Government approved
+            - paragraph [ref=e288]: Generic-brand medicines
+          - generic [ref=e289]:
+            - paragraph [ref=e290]: Licensed pharmacy
+            - link "View drug licence" [ref=e291] [cursor=pointer]:
+              - /url: /drug-licence
+          - generic [ref=e292]:
+            - paragraph [ref=e293]: Trained pharmacists
+            - paragraph [ref=e294]: 20+ years of trusted service
+        - generic [ref=e295]:
+          - generic [ref=e300]:
+            - paragraph [ref=e301]: Location
+            - paragraph [ref=e302]: S 2 Vikash Kunj
+            - paragraph [ref=e303]: Bhopal, Madhya Pradesh — 462041
+          - generic [ref=e308]:
+            - paragraph [ref=e309]: Email us
+            - link "pmstoremedicine@gmail.com" [ref=e310] [cursor=pointer]:
+              - /url: mailto:pmstoremedicine@gmail.com
+          - generic [ref=e314]:
+            - paragraph [ref=e315]: Call us
+            - link "+91 9755550126" [ref=e316] [cursor=pointer]:
+              - /url: tel:+919755550126
+        - generic [ref=e318]:
+          - paragraph [ref=e319]: © 2026 Pratigya Medical Store. All rights reserved.
+          - paragraph [ref=e320]: Open Mon–Sun, 9:00 AM – 9:00 PM
+  - generic "Notifications"
+  - button "Open Next.js Dev Tools" [ref=e326] [cursor=pointer]
