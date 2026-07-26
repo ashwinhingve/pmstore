@@ -37,12 +37,16 @@ export interface SearchResponse {
 
 const EMPTY_FACETS: SearchFacets = { category: [], prescriptionRequired: [], price: [] };
 
-/** ObjectId and nested ObjectIds → strings, so the payload is JSON-safe. */
+/**
+ * Deep-serialize a Mongoose doc for the Server→Client boundary. Round-tripping
+ * through JSON turns every ObjectId — including nested ones like images[]._id
+ * and salts[]._id — into a string and yields plain objects, which Client
+ * Components require. A shallow copy left those nested ObjectIds intact and
+ * crashed ProductCard with "Only plain objects can be passed to Client
+ * Components". Mirrors the pattern in src/app/page.tsx.
+ */
 function serialize<T extends Record<string, unknown>>(doc: T): Record<string, unknown> {
-  const out: Record<string, unknown> = { ...doc };
-  if (out._id) out._id = String(out._id);
-  if (out.category && typeof out.category === 'object') out.category = String(out.category);
-  return out;
+  return JSON.parse(JSON.stringify(doc));
 }
 
 function toFilters(params: SearchQuery): SearchFilters {
