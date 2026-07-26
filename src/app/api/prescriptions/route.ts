@@ -68,6 +68,20 @@ export async function POST(req: NextRequest) {
     }
     const meta = parsed.data;
 
+    // Image hosting must be configured before we accept an upload. Without it the
+    // Cloudinary SDK throws an opaque error; fail early with an honest message.
+    if (
+      !process.env.CLOUDINARY_CLOUD_NAME ||
+      !process.env.CLOUDINARY_API_KEY ||
+      !process.env.CLOUDINARY_API_SECRET
+    ) {
+      console.error('Prescription upload: Cloudinary is not configured.');
+      return NextResponse.json(
+        { error: 'Prescription upload is temporarily unavailable. Try again later or call the store.' },
+        { status: 503 },
+      );
+    }
+
     const images = await Promise.all(
       files.map(async (file) => {
         const buffer = Buffer.from(await file.arrayBuffer());
@@ -76,7 +90,10 @@ export async function POST(req: NextRequest) {
             cloudinary.uploader
               .upload_stream(
                 { folder: CLOUDINARY_FOLDERS.PRESCRIPTIONS, resource_type: 'image' },
-                (error, res) => (error || !res ? reject(error) : resolve(res as never)),
+                (error, res) =>
+                  error || !res
+                    ? reject(error || new Error('Image upload failed'))
+                    : resolve(res as never),
               )
               .end(buffer);
           },

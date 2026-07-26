@@ -95,19 +95,27 @@ export async function POST(req: NextRequest) {
       </div>`
 
     // Send to the shop (reply-to the sender), then confirm to the sender.
-    await transporter.sendMail({
-      from,
-      to: adminEmail,
-      replyTo: email,
-      subject: `Contact form: ${esc(subject || "New message")}`,
-      html: adminHtml,
-    })
-    await transporter.sendMail({
-      from,
-      to: email,
-      subject: `Thank you for contacting ${SITE_SHORT_NAME}`,
-      html: userHtml,
-    })
+    // If delivery fails — bad/placeholder credentials, SMTP host unreachable —
+    // don't surface a 500 to the visitor. Their submission still "succeeds"; we
+    // log a no-PII warning so the misconfiguration is visible in server logs.
+    try {
+      await transporter.sendMail({
+        from,
+        to: adminEmail,
+        replyTo: email,
+        subject: `Contact form: ${esc(subject || "New message")}`,
+        html: adminHtml,
+      })
+      await transporter.sendMail({
+        from,
+        to: email,
+        subject: `Thank you for contacting ${SITE_SHORT_NAME}`,
+        html: userHtml,
+      })
+    } catch {
+      console.warn("Contact form: email delivery failed; message not sent.")
+      return NextResponse.json({ data: { sent: false } }, { status: 200 })
+    }
 
     return NextResponse.json({ data: { sent: true } }, { status: 200 })
   } catch (err) {
