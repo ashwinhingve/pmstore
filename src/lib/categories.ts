@@ -30,24 +30,30 @@ import {
  * "Ayurveda") that matched no products — every category link dead-ended on the
  * empty state. Keep this list aligned with the DB.
  */
+/** Decorative tile-tint keys (defined in src/styles/tokens.css, never red). */
+export type TintName =
+  | "sage" | "sky" | "teal" | "amber" | "violet" | "slate" | "plum" | "clay";
+
 export interface PharmaCategory {
   name: string;
   slug: string;
   icon: LucideIcon;
+  /** Tile tint for designed medicine/category cards — see getCategoryTint. */
+  tint: TintName;
 }
 
 export const PHARMA_CATEGORIES: PharmaCategory[] = [
-  { name: "Pain Relief", slug: "pain-relief", icon: Pill },
-  { name: "Cardiac Care", slug: "cardiac-care", icon: HeartPulse },
-  { name: "Diabetes Care", slug: "diabetes-care", icon: Droplets },
-  { name: "Antibiotics", slug: "antibiotics", icon: ShieldPlus },
-  { name: "Respiratory & Allergy", slug: "respiratory-allergy", icon: Wind },
-  { name: "Gastro", slug: "gastro", icon: Soup },
-  { name: "Vitamins & Supplements", slug: "vitamins-supplements", icon: Leaf },
-  { name: "Neuro & Psychiatry", slug: "neuro-psychiatry", icon: Brain },
-  { name: "Ortho & Muscle Care", slug: "ortho-muscle-care", icon: Bone },
-  { name: "Derma & Skin", slug: "derma-skin", icon: Sparkles },
-  { name: "General & OTC", slug: "general-otc", icon: Stethoscope },
+  { name: "Pain Relief", slug: "pain-relief", icon: Pill, tint: "clay" },
+  { name: "Cardiac Care", slug: "cardiac-care", icon: HeartPulse, tint: "plum" },
+  { name: "Diabetes Care", slug: "diabetes-care", icon: Droplets, tint: "sky" },
+  { name: "Antibiotics", slug: "antibiotics", icon: ShieldPlus, tint: "slate" },
+  { name: "Respiratory & Allergy", slug: "respiratory-allergy", icon: Wind, tint: "teal" },
+  { name: "Gastro", slug: "gastro", icon: Soup, tint: "amber" },
+  { name: "Vitamins & Supplements", slug: "vitamins-supplements", icon: Leaf, tint: "sage" },
+  { name: "Neuro & Psychiatry", slug: "neuro-psychiatry", icon: Brain, tint: "violet" },
+  { name: "Ortho & Muscle Care", slug: "ortho-muscle-care", icon: Bone, tint: "slate" },
+  { name: "Derma & Skin", slug: "derma-skin", icon: Sparkles, tint: "amber" },
+  { name: "General & OTC", slug: "general-otc", icon: Stethoscope, tint: "teal" },
 ];
 
 /** Lookup an icon by category name, for lists driven off the DB `/api/categories`. */
