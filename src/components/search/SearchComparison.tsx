@@ -1,14 +1,16 @@
 import Link from 'next/link';
+import { ArrowRight, Check } from 'lucide-react';
 import { computeUnitPrice, savingsVs, formatComposition, type Salt } from '@/lib/pharma/composition';
 
 /**
  * Same-composition comparison, surfaced from the current search results.
  *
  * Groups the visible results by compositionKey (no extra DB queries) and, for
- * any group with more than one brand, shows a compact table that leads with the
+ * any group with more than one brand, shows a comparison card that leads with the
  * unit price — the only honest way to compare brands (docs/03-DESIGN-SYSTEM.md,
- * CLAUDE.md rule #1). "Best value" = lowest price per unit; "Lowest pack price"
- * = lowest sticker price. Clicking a brand opens its product page (the Strip).
+ * CLAUDE.md rule #1). The cheapest-per-unit brand is highlighted as "Best value";
+ * the rest are listed below it with the amount they cost over the winner. Clicking
+ * a brand opens its product page (the Strip).
  */
 
 interface CompareProduct {
@@ -29,6 +31,7 @@ interface CompareProduct {
 
 const money = (n: number) => `₹${n.toFixed(2)}`;
 const mono = { fontFamily: 'var(--font-data)' as const, fontVariantNumeric: 'tabular-nums' as const };
+const unitNoun = (packUnit: string) => (packUnit === 'ml' ? 'ml' : 'unit');
 
 function coerce(raw: Record<string, unknown>): CompareProduct | null {
   const compositionKey = typeof raw.compositionKey === 'string' ? raw.compositionKey : '';
@@ -76,14 +79,17 @@ export function SearchComparison({ products }: { products: Record<string, unknow
   if (comparable.length === 0) return null;
 
   return (
-    <section className="mb-6" aria-label="Compare same-composition brands">
-      <h2 className="mb-1 text-lg font-bold text-[var(--ink)]">Same composition, compared</h2>
-      <p className="mb-4 text-sm text-[var(--ink-70)]">
-        These brands contain the same salt. Price is shown per {' '}
-        {comparable[0][0].packUnit === 'ml' ? 'ml' : 'tablet/unit'} — the fair way to compare.
+    <section className="mb-8" aria-label="Compare same-composition brands">
+      <h2 className="mb-1 text-[length:var(--step-2)] font-bold text-[var(--ink)]">
+        Same composition, compared
+      </h2>
+      <p className="mb-5 max-w-2xl text-sm text-[var(--ink-70)]">
+        These brands contain the same salt. We lead with the price per{' '}
+        {comparable[0][0].packUnit === 'ml' ? 'ml' : 'tablet'} — the fair way to compare, since a
+        cheaper-looking pack can cost more per dose.
       </p>
 
-      <div className="space-y-4">
+      <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
         {comparable.map((group) => (
           <CompareCard key={group[0].compositionKey} group={group} />
         ))}
@@ -110,6 +116,9 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
   const label =
     bestValue.salts.length > 0 ? formatComposition(bestValue.salts) : bestValue.compositionKey;
 
+  // The best-value brand shows first as a highlighted winner; the rest follow.
+  const rest = sorted.filter((p) => p._id !== bestValue._id);
+
   // Link the two leading brands to the /compare page — only when both carry a
   // real Mongo id (coerce() can fall back to the slug).
   const isObjectId = (s: string) => /^[a-f0-9]{24}$/i.test(s);
@@ -119,91 +128,129 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
       : null;
 
   return (
-    <div className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)]">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--foil-soft)] px-4 py-3">
-        <h3 className="font-semibold text-[var(--ink)]">{label}</h3>
-        <div className="flex flex-wrap items-baseline gap-3">
-          {saving.percent > 0 && (
-            <p className="text-sm text-[var(--mint)]">
-              Save up to{' '}
-              <span style={mono} className="font-semibold">{saving.percent}%</span>{' '}
-              by brand
-            </p>
-          )}
-          {topTwo && (
-            <Link
-              href={topTwo}
-              className="text-sm font-semibold text-[var(--ink)] underline decoration-[var(--foil)] underline-offset-4 transition-colors duration-[var(--dur-fast)] hover:decoration-[var(--ink)]"
-            >
-              Compare top two
-            </Link>
-          )}
+    <article className="flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)]">
+      {/* Header: composition + savings */}
+      <div className="flex items-start justify-between gap-3 border-b border-[var(--foil-soft)] px-4 py-3">
+        <div className="min-w-0">
+          <h3 className="truncate font-semibold text-[var(--ink)]">{label}</h3>
+          <p className="text-xs text-[var(--ink-40)]">
+            <span style={mono}>{group.length}</span> brands, same salt
+          </p>
         </div>
+        {saving.percent > 0 && (
+          <span className="shrink-0 rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--mint)]">
+            Save up to <span style={mono}>{saving.percent}%</span>
+          </span>
+        )}
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[520px] text-left text-sm">
-          <thead>
-            <tr className="text-xs uppercase tracking-wide text-[var(--ink-40)]">
-              <th scope="col" className="px-4 py-2 font-medium">Brand</th>
-              <th scope="col" className="px-4 py-2 font-medium">Per unit</th>
-              <th scope="col" className="px-4 py-2 font-medium">Pack</th>
-              <th scope="col" className="px-4 py-2 font-medium">Maker</th>
-              <th scope="col" className="px-4 py-2" />
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.map((p) => {
-              const out = p.stock <= 0;
-              return (
-                <tr
-                  key={p._id}
-                  className={`border-t border-[var(--foil-soft)] ${out ? 'opacity-60' : ''}`}
-                >
-                  <td className="px-4 py-3">
-                    <Link href={`/products/${p.slug}`} className="font-medium text-[var(--ink)] hover:underline">
-                      {p.name}
-                    </Link>
-                    {p.prescriptionRequired && (
-                      <span className="ml-2 rounded bg-[var(--rx-soft)] px-1.5 py-0.5 text-xs font-medium text-[var(--rx)]">
-                        Rx
-                      </span>
+      {/* Winner — the cheapest per unit, highlighted */}
+      <Link
+        href={`/products/${bestValue.slug}`}
+        className={`group block border-l-4 border-[var(--mint)] bg-[var(--mint-soft)]/60 px-4 py-3.5 transition-colors duration-[var(--dur-fast)] hover:bg-[var(--mint-soft)] ${
+          bestValue.stock <= 0 ? 'opacity-60' : ''
+        }`}
+      >
+        <div className="mb-1.5 flex items-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--mint)] px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--paper-card)]">
+            <Check className="h-3 w-3" aria-hidden="true" /> Best value
+          </span>
+          {bestValue.prescriptionRequired && <RxPill />}
+          {bestValue.stock <= 0 && <OutOfStock />}
+        </div>
+        <div className="flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <p className="truncate font-semibold text-[var(--ink)] group-hover:underline">
+              {bestValue.name}
+            </p>
+            <p className="truncate text-xs text-[var(--ink-70)]">{bestValue.manufacturer || '—'}</p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="leading-none">
+              <span style={mono} className="text-xl font-bold text-[var(--ink)]">
+                {money(bestValue.unitPrice)}
+              </span>
+              <span className="text-xs text-[var(--ink-40)]">/{unitNoun(bestValue.packUnit)}</span>
+            </p>
+            <p className="mt-1 text-xs text-[var(--ink-70)]">
+              <span style={mono}>{money(bestValue.price)}</span> ·{' '}
+              <span style={mono}>{bestValue.packSize}</span> {bestValue.packUnit}
+            </p>
+          </div>
+        </div>
+      </Link>
+
+      {/* Other brands */}
+      <ul className="divide-y divide-[var(--foil-soft)]">
+        {rest.map((p) => {
+          const out = p.stock <= 0;
+          return (
+            <li key={p._id}>
+              <Link
+                href={`/products/${p.slug}`}
+                className={`flex items-end justify-between gap-3 px-4 py-3 transition-colors duration-[var(--dur-fast)] hover:bg-[var(--paper-tint)] ${
+                  out ? 'opacity-60' : ''
+                }`}
+              >
+                <div className="min-w-0">
+                  <p className="flex items-center gap-2">
+                    <span className="truncate font-medium text-[var(--ink)]">{p.name}</span>
+                    {p.prescriptionRequired && <RxPill />}
+                  </p>
+                  <p className="truncate text-xs text-[var(--ink-70)]">
+                    {p.manufacturer || '—'}
+                    {p._id === lowestPack._id && p._id !== bestValue._id && (
+                      <span className="ml-1.5 text-[var(--ink-40)]">· lowest pack price</span>
                     )}
-                    {out && <span className="ml-2 text-xs text-[var(--ink-40)]">Out of stock</span>}
-                  </td>
-                  <td className="px-4 py-3">
+                    {out && <OutOfStock inline />}
+                  </p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="leading-none">
                     <span style={mono} className="font-semibold text-[var(--ink)]">
                       {money(p.unitPrice)}
                     </span>
-                    <span className="text-xs text-[var(--ink-40)]">/{p.packUnit === 'ml' ? 'ml' : 'unit'}</span>
-                  </td>
-                  <td className="px-4 py-3 text-[var(--ink-70)]">
-                    <span style={mono}>{money(p.price)}</span>{' '}
-                    <span className="text-xs text-[var(--ink-40)]">
-                      · <span style={mono}>{p.packSize}</span> {p.packUnit}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-[var(--ink-70)]">{p.manufacturer || '—'}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap justify-end gap-1">
-                      {p._id === bestValue._id && (
-                        <span className="rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-2 py-0.5 text-xs font-semibold text-[var(--mint)]">
-                          Best value
-                        </span>
-                      )}
-                      {p._id === lowestPack._id && p._id !== bestValue._id && (
-                        <span className="rounded-[var(--radius-pill)] bg-[var(--foil-soft)] px-2 py-0.5 text-xs font-semibold text-[var(--ink)]">
-                          Lowest price
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
+                    <span className="text-xs text-[var(--ink-40)]">/{unitNoun(p.packUnit)}</span>
+                  </p>
+                  {!out && p.unitPrice > bestValue.unitPrice && (
+                    <p style={mono} className="mt-1 text-xs text-[var(--ink-40)]">
+                      +{money(p.unitPrice - bestValue.unitPrice)}/{unitNoun(p.packUnit)}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+
+      {topTwo && (
+        <div className="mt-auto border-t border-[var(--foil-soft)] px-4 py-3">
+          <Link
+            href={topTwo}
+            className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--mint)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+          >
+            Compare top two side by side
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      )}
+    </article>
+  );
+}
+
+function RxPill() {
+  return (
+    <span className="rounded bg-[var(--rx-soft)] px-1.5 py-0.5 text-xs font-semibold text-[var(--rx)]">
+      Rx
+    </span>
+  );
+}
+
+function OutOfStock({ inline = false }: { inline?: boolean }) {
+  return (
+    <span className={`text-xs text-[var(--ink-40)] ${inline ? 'ml-1.5' : ''}`}>
+      {inline ? '· out of stock' : 'Out of stock'}
+    </span>
   );
 }
