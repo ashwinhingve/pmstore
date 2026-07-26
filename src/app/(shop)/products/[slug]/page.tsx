@@ -225,6 +225,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
             productName={serializedProduct.name}
             videoUrl={serializedProduct.videoUrl}
             form={serializedProduct.form}
+            category={serializedProduct.category?.name}
           />
 
           {/* Right: Product Info */}
@@ -238,7 +239,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
             title="Same composition, better price"
             description="The price that matters is per tablet. Switch to a genuine, cheaper brand with the exact same salts."
           />
-          <section className="mt-5 grid gap-8 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)] sm:p-6 md:grid-cols-3">
+          <section className="mt-5 grid gap-8 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-feature)] sm:p-6 md:grid-cols-3">
             <div className="space-y-4 md:col-span-1">
               {serializedProduct.scheduleClass && (
                 <RxBadge scheduleClass={serializedProduct.scheduleClass} />
@@ -349,7 +350,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
               title="Related medicines"
               className="mb-6"
             />
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
               {serializedRelated.map((relatedProduct: any) => (
                 <ProductCard key={relatedProduct._id || relatedProduct.id} product={relatedProduct} />
               ))}

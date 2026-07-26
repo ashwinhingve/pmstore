@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { X, ZoomIn, Play } from 'lucide-react';
-import { getMedicineImage, isPlaceholderImage } from '@/lib/pharma/medicine-image';
+import { isPlaceholderImage } from '@/lib/pharma/medicine-image';
+import { ProductVisual } from '@/components/products/ProductVisual';
 
 interface ProductImage {
   url: string;
@@ -14,8 +15,10 @@ interface ProductImageGalleryProps {
   images: ProductImage[];
   productName: string;
   videoUrl?: string;
-  /** Dosage form — used to pick a representative photo when there is no real one. */
+  /** Dosage form — used for the designed tile when there is no real photo. */
   form?: string;
+  /** Category — tints the designed tile. */
+  category?: string;
 }
 
 export default function ProductImageGallery({
@@ -23,6 +26,7 @@ export default function ProductImageGallery({
   productName,
   videoUrl,
   form,
+  category,
 }: ProductImageGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -33,12 +37,10 @@ export default function ProductImageGallery({
     .map((img) => (typeof img === 'string' ? img : img.url))
     .filter((url) => !isPlaceholderImage(url));
 
-  // When the product has no real photo, fall back to a representative photo of
-  // its dosage form so the page never shows an empty frame or a placeholder.
+  // When the product has no real photo, show a designed tile (ProductVisual)
+  // instead of a repeated stock photo, so the page never shows an empty frame.
   const hasRealImages = imageUrls.length > 0;
-  const displayUrls = hasRealImages ? imageUrls : [getMedicineImage(form)];
-
-  const currentImage = displayUrls[selectedIndex];
+  const currentImage: string | undefined = hasRealImages ? imageUrls[selectedIndex] : undefined;
 
   // Check if videoUrl is a YouTube link
   const isYouTube = videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'));
@@ -50,7 +52,7 @@ export default function ProductImageGallery({
   return (
     <div className="space-y-4">
       {/* Main Image / Video */}
-      <div className="relative aspect-square bg-[var(--paper-card)] rounded-2xl shadow-xl overflow-hidden group">
+      <div className="group relative aspect-square overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-feature)]">
         {showVideo && videoUrl ? (
           <div className="w-full h-full flex items-center justify-center bg-black">
             {isYouTube ? (
@@ -72,34 +74,37 @@ export default function ProductImageGallery({
               </video>
             )}
           </div>
-        ) : (
+        ) : hasRealImages ? (
           <>
             {currentImage && (
               <Image
                 src={currentImage}
-                alt={hasRealImages ? `${productName} - Image ${selectedIndex + 1}` : `${productName} - representative image`}
+                alt={`${productName} - Image ${selectedIndex + 1}`}
                 fill
-                className={hasRealImages ? 'object-contain p-4' : 'object-cover'}
+                className="object-contain p-4"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority={selectedIndex === 0}
               />
             )}
 
-            {/* Representative-image note — honest when it isn't the exact pack */}
-            {!hasRealImages && (
-              <p className="absolute inset-x-0 bottom-0 bg-[var(--ink)]/70 px-4 py-2 text-center text-xs font-medium text-[var(--paper)] backdrop-blur-sm">
-                Representative image — actual pack may vary
-              </p>
-            )}
-
             {/* Zoom Button */}
             <button
               onClick={() => setIsLightboxOpen(true)}
-              className="absolute top-4 right-4 p-2 bg-[var(--paper-card)] rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-4 top-4 rounded-full bg-[var(--paper-card)] p-2 opacity-0 shadow-[var(--shadow-md)] transition-opacity duration-[var(--dur-fast)] group-hover:opacity-100"
+              aria-label="Zoom image"
             >
-              <ZoomIn className="w-5 h-5 text-[var(--ink)]" />
+              <ZoomIn className="h-5 w-5 text-[var(--ink)]" />
             </button>
           </>
+        ) : (
+          <ProductVisual
+            imageUrl={null}
+            form={form}
+            category={category}
+            name={productName}
+            fit="contain"
+            priority
+          />
         )}
       </div>
 
@@ -149,7 +154,7 @@ export default function ProductImageGallery({
       )}
 
       {/* Lightbox */}
-      {isLightboxOpen && !showVideo && (
+      {isLightboxOpen && !showVideo && currentImage && (
         <div
           className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center p-4"
           onClick={() => setIsLightboxOpen(false)}

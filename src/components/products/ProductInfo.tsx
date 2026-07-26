@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/store/useCartStore';
 import { toast } from '@/store/useToastStore';
 import { formatINR, type ScheduleClass } from '@/lib/pharma/format';
+import { RxBadge } from '@/components/shared/RxBadge';
 import VariantSelector from './VariantSelector';
 import ProductReviews from './ProductReviews';
 
@@ -152,11 +153,14 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
     <div className="space-y-6">
       {/* Product Name */}
       <div>
-        {categoryName && (
-          <span className="mb-2 inline-flex w-fit items-center rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-[var(--mint-deep)]">
-            {categoryName}
-          </span>
-        )}
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          {categoryName && (
+            <span className="inline-flex w-fit items-center rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-[var(--mint-deep)]">
+              {categoryName}
+            </span>
+          )}
+          {product.scheduleClass && <RxBadge scheduleClass={product.scheduleClass} />}
+        </div>
         <h1 className="mb-1 font-[family-name:var(--font-display)] text-[length:var(--step-3)] font-extrabold leading-tight tracking-tight text-[var(--ink)]">
           {product.name}
         </h1>
