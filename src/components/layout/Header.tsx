@@ -66,11 +66,17 @@ export function Header() {
           <div className="shrink-0 text-[var(--ink)]">
             <Logo size={44} variant="mark" />
           </div>
-          <div className="hidden flex-col sm:flex lg:hidden xl:flex">
-            <span className="font-[family-name:var(--font-display)] text-lg font-bold leading-tight text-[var(--ink)] md:text-xl">
-              {SITE_SHORT_NAME}
-            </span>
-          </div>
+          <span className="hidden font-[family-name:var(--font-display)] text-lg leading-tight tracking-tight text-[var(--ink)] sm:inline md:text-xl lg:hidden xl:inline">
+            {(() => {
+              const [first, ...rest] = SITE_SHORT_NAME.split(" ");
+              return (
+                <>
+                  <span className="font-extrabold">{first}</span>
+                  {rest.length > 0 && <span className="font-medium text-[var(--ink-70)]"> {rest.join(" ")}</span>}
+                </>
+              );
+            })()}
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
