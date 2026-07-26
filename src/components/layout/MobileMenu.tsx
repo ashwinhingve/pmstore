@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { FileUp, Home, Info, Package, Phone, Pill, Bookmark, User, LayoutDashboard, Boxes } from "lucide-react";
+import { FileUp, Home, Info, Package, Phone, Pill, Bookmark, User, LayoutDashboard, ClipboardList } from "lucide-react";
 import { Drawer } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
 import { PHARMA_CATEGORIES } from "@/lib/categories";
@@ -11,7 +11,7 @@ import { PHARMA_CATEGORIES } from "@/lib/categories";
 const navItems = [
   { href: "/", label: "Home", icon: Home },
   { href: "/products", label: "Shop", icon: Pill },
-  { href: "/wholesale", label: "Bulk order", icon: Boxes },
+  { href: "/custom-order", label: "Custom order", icon: ClipboardList },
   { href: "/orders", label: "Your orders", icon: Package },
   { href: "/saved", label: "Saved medicines", icon: Bookmark },
   { href: "/profile", label: "Profile", icon: User },

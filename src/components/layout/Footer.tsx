@@ -6,6 +6,7 @@ import { SITE_NAME, SITE_SHORT_NAME, SITE_SLOGAN, SITE_DESCRIPTION, CONTACT, SOC
 
 const shopLinks = [
   { href: "/products", label: "All medicines" },
+  { href: "/custom-order", label: "Custom order" },
   { href: "/prescriptions", label: "Upload prescription" },
   { href: "/orders", label: "Your orders" },
   { href: "/saved", label: "Saved medicines" },
@@ -13,7 +14,7 @@ const shopLinks = [
 
 const companyLinks = [
   { href: "/about", label: "About us" },
-  { href: "/wholesale", label: "Bulk order" },
+  { href: "/wholesale", label: "Wholesale supply" },
   { href: "/contact", label: "Contact" },
   { href: "/faq", label: "FAQs" },
 ];

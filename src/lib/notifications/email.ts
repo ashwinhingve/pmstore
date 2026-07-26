@@ -980,6 +980,65 @@ class EmailService {
 
     return this.sendEmail(to, subject, html);
   }
+
+  async sendCustomOrder(order: {
+    name: string;
+    phone: string;
+    email?: string;
+    medicines: string;
+    quantity?: string;
+    deliveryArea?: string;
+    pincode?: string;
+    hasPrescription?: boolean;
+    notes?: string;
+  }) {
+    const to = process.env.ADMIN_EMAIL || CONTACT_EMAIL;
+
+    const row = (label: string, value?: string) =>
+      value && value.trim()
+        ? `<p class="label">${escapeHtml(label)}</p><p class="value">${escapeHtml(value)}</p>`
+        : '';
+
+    const location = [order.deliveryArea, order.pincode].filter(Boolean).join(', ');
+
+    const subject = `Custom order request - ${order.name}`;
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head><style>
+          body{font-family:Arial,sans-serif;line-height:1.6;color:#16233A}
+          .container{max-width:600px;margin:0 auto;padding:20px}
+          .header{background-color:#0E8F6E;color:#fff;padding:20px;text-align:center;border-radius:8px 8px 0 0}
+          .content{padding:20px;background-color:#FBFAF7}
+          .box{background-color:#fff;padding:16px;margin:14px 0;border-radius:8px;border-left:4px solid #0E8F6E}
+          .label{color:#56607A;font-size:12px;margin:8px 0 0;text-transform:uppercase;letter-spacing:.04em}
+          .value{font-size:15px;font-weight:600;margin:2px 0 8px;color:#16233A}
+          .footer{text-align:center;padding:16px;font-size:12px;color:#9AA2B4}
+        </style></head>
+        <body>
+          <div class="container">
+            <div class="header"><h1 style="margin:0;font-size:20px;">New custom order request</h1></div>
+            <div class="content">
+              <div class="box">
+                ${row('Name', order.name)}
+                ${row('Phone', order.phone)}
+                ${row('Email', order.email)}
+                ${row('Delivery area', location)}
+              </div>
+              <div class="box">
+                ${row('Medicines requested', order.medicines)}
+                ${row('Quantity', order.quantity)}
+                ${row('Has a prescription', order.hasPrescription ? 'Yes' : 'No')}
+                ${row('Notes', order.notes)}
+              </div>
+            </div>
+            <div class="footer"><p>${SITE_NAME} - custom order request</p></div>
+          </div>
+        </body>
+      </html>`;
+
+    return this.sendEmail(to, subject, html);
+  }
 }
 
 // Export singleton instance
