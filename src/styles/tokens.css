@@ -33,6 +33,7 @@
   --step-1:  clamp(1.18rem, 1.11rem + 0.32vw, 1.35rem);
   --step-2:  clamp(1.48rem, 1.34rem + 0.66vw, 1.9rem);
   --step-3:  clamp(1.85rem, 1.6rem + 1.2vw, 2.7rem);
+  --step-4:  clamp(2.4rem, 1.85rem + 2.6vw, 4rem);   /* premium hero display */
 
   /* Space + shape */
   --gap-xs: 0.375rem;
@@ -53,6 +54,9 @@
   --shadow-md:   0 2px 4px rgba(22, 35, 58, 0.06), 0 8px 20px rgba(22, 35, 58, 0.07);
   --shadow-lg:   0 4px 8px rgba(22, 35, 58, 0.08), 0 16px 36px rgba(22, 35, 58, 0.10);
   --shadow-hero: 0 12px 32px rgba(22, 35, 58, 0.16), 0 32px 64px rgba(22, 35, 58, 0.10);
+  /* Soft, wide premium elevation for feature surfaces (hero cards, featured,
+     detail buy-box). Lighter than --shadow-hero, more presence than --shadow-md. */
+  --shadow-feature: 0 4px 12px rgba(22, 35, 58, 0.05), 0 20px 48px rgba(22, 35, 58, 0.08);
   --border: 1px solid var(--foil-soft);
 
   /* Premium surfaces — the only sanctioned gradients. Navy hero bands use
@@ -65,6 +69,21 @@
   --surface-mint:    linear-gradient(140deg, var(--mint) 0%, var(--mint-deep) 100%);
   --paper-tint:      #F4F2ED;   /* warm alternating-section tint */
   --paper-tint-mint: #F0F8F5;   /* mint-washed section tint */
+
+  /* Category tints — DECORATIVE ONLY, for designed medicine tiles and category
+     cards so products read as distinct rather than a repeated stock photo. Each
+     is a soft background + a deeper accent for the dosage-form glyph. Muted and
+     low-saturation to stay calm and clinical. NONE are in the red hue family —
+     --rx red keeps its exclusive "needs a doctor" meaning (docs/03-DESIGN-SYSTEM.md).
+     Assigned per category in src/lib/categories.ts. */
+  --tint-sage-soft:   #EAF1E8;  --tint-sage:   #5E7C5A;
+  --tint-sky-soft:    #E7EFF7;  --tint-sky:    #3E6E96;
+  --tint-teal-soft:   #E1F0EF;  --tint-teal:   #2C7A74;
+  --tint-amber-soft:  #F4EEDE;  --tint-amber:  #93763C;
+  --tint-violet-soft: #ECEAF4;  --tint-violet: #665A8E;
+  --tint-slate-soft:  #E9ECF1;  --tint-slate:  #4C5768;
+  --tint-plum-soft:   #F0EAEF;  --tint-plum:   #785673;
+  --tint-clay-soft:   #F1ECE6;  --tint-clay:   #7A6650;
 
   /* Motion — pick from these three durations; nothing slower than --dur-slow. */
   --dur-fast: 120ms;

@@ -49,6 +49,16 @@ confirmations and `--mint` for savings.
 These are the only sanctioned gradients. Text on `--surface-hero` is `--paper`; hairlines on it
 are `--ink-10`. Never invent a new gradient in a component.
 
+### Category tints (decorative)
+
+`--tint-{sage,sky,teal,amber,violet,slate,plum,clay}` each pair a soft background (`-soft`) with a
+deeper accent. They exist for **designed medicine tiles** (the catalogue no longer repeats one stock
+photo per dosage form) and category cards — a product with no real photo shows a category-tinted
+tile with its dosage-form glyph, so every card reads as distinct. Assigned per category in
+`src/lib/categories.ts` (`getCategoryTint`). They are muted, low-saturation, and **never in the red
+hue** — `--rx` red must keep its exclusive "needs a doctor" meaning. Decorative only: never carry
+state or meaning through a tint.
+
 ### Elevation
 
 | Token | Use |
@@ -56,6 +66,7 @@ are `--ink-10`. Never invent a new gradient in a component.
 | `--shadow-xs` | pressed / resting chips |
 | `--shadow-sm` | resting cards, sticky header after scroll |
 | `--shadow-md` | raised cards, dropdowns, hovered interactive cards |
+| `--shadow-feature` | premium feature surfaces (hero card, featured, detail buy-box) |
 | `--shadow-lg` | drawers, dialogs, sticky order summaries |
 | `--shadow-hero` | the hero search card and nothing else |
 
@@ -90,9 +101,10 @@ Public Sans. If you're unsure: does it have a unit? Then mono.
 
 ### Scale
 
-`--step--1` through `--step-3`, fluid via `clamp()`. Display weights 600 and 800 with
-`letter-spacing: -0.022em`. Body 400 and 500. Never go below 12px, and never below 14px for
-anything a customer must read to take a medicine correctly.
+`--step--1` through `--step-3`, fluid via `clamp()`, plus `--step-4` for the premium hero display
+only (up to 4rem). Display weights 600 and 800 with `letter-spacing: -0.022em`. Body 400 and 500.
+Never go below 12px, and never below 14px for anything a customer must read to take a medicine
+correctly.
 
 ---
 
