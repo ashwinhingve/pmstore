@@ -31,6 +31,7 @@ export function Navigation() {
       <NavLink href="/" label="Home" />
       <NavLink href="/products" label="Shop" />
       <CategoryMenu />
+      <NavLink href="/wholesale" label="Bulk order" />
       <NavLink href="/about" label="About" />
       <NavLink href="/contact" label="Contact" />
     </nav>

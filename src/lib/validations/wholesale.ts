@@ -68,3 +68,16 @@ export const wholesaleEnquirySchema = z.object({
 });
 
 export type WholesaleEnquiryInput = z.infer<typeof wholesaleEnquirySchema>;
+
+/**
+ * Admin-only: the lifecycle an enquiry moves through in the bulk-orders queue.
+ * `new` → just arrived, `contacted` → the shop has reached out, `closed` → done
+ * (quoted, converted or declined). Mirrors the enum on the WholesaleEnquiry model.
+ */
+export const WHOLESALE_STATUSES = ['new', 'contacted', 'closed'] as const;
+
+export const wholesaleStatusSchema = z.object({
+  status: z.enum(WHOLESALE_STATUSES),
+});
+
+export type WholesaleStatus = (typeof WHOLESALE_STATUSES)[number];

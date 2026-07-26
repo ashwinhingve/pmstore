@@ -13,7 +13,7 @@ const shopLinks = [
 
 const companyLinks = [
   { href: "/about", label: "About us" },
-  { href: "/wholesale", label: "Wholesale" },
+  { href: "/wholesale", label: "Bulk order" },
   { href: "/contact", label: "Contact" },
   { href: "/faq", label: "FAQs" },
 ];

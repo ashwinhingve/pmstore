@@ -12,7 +12,7 @@ import {
 import { WholesaleForm } from "@/components/wholesale/WholesaleForm"
 
 export const metadata: Metadata = {
-  title: "Wholesale & bulk supply",
+  title: "Bulk order & wholesale supply",
   description:
     "Bulk medicine supply for pharmacies, clinics and institutions from Pratigya Medical Store — genuine, licensed stock, GST invoicing and reliable monthly delivery. Request a wholesale quote.",
   alternates: { canonical: "/wholesale" },
@@ -58,7 +58,7 @@ export default function WholesalePage() {
     <div className="bg-[var(--paper)]">
       {/* Hero */}
       <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-20">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--mint)]">Wholesale</p>
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--mint)]">Bulk order</p>
         <h1 className="max-w-3xl text-[length:var(--step-3)] text-[var(--ink)]">
           Bulk supply for pharmacies, clinics and institutions
         </h1>
