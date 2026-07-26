@@ -2,6 +2,7 @@ import { requireAdmin } from '@/lib/auth-helpers';
 import { connectDB } from '@/lib/mongodb';
 import Shipment from '@/models/Shipment';
 import Order from '@/models/Order';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import ShipmentsTable from '@/components/admin/ShipmentsTable';
 
 interface SearchParams {
@@ -145,20 +146,17 @@ export default async function AdminShipmentsPage({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--ink)]">Shipment management</h1>
-          <p className="text-sm text-[var(--ink-70)] mt-1">
-            Track and manage all shipments ({totalShipments.toLocaleString()} total)
-          </p>
-        </div>
+      <AdminPageHeader
+        title="Shipment management"
+        description={<>Track and manage all shipments ({totalShipments.toLocaleString()} total)</>}
+      >
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--paper-card)] border border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink)] hover:bg-[var(--foil-soft)]">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           Export CSV
         </div>
-      </div>
+      </AdminPageHeader>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">

@@ -2,6 +2,7 @@ import { requireAdmin } from '@/lib/auth-helpers';
 import { connectDB } from '@/lib/mongodb';
 import User from '@/models/User';
 import Order from '@/models/Order';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import UsersTable from '@/components/admin/UsersTable';
 
 interface SearchParams {
@@ -123,15 +124,10 @@ export default async function AdminUsersPage({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--ink)]">User management</h1>
-          <p className="text-sm text-[var(--ink-70)] mt-1">
-            Manage all users and their permissions ({totalUsers.toLocaleString()} total)
-          </p>
-        </div>
-
-        {/* Export Button */}
+      <AdminPageHeader
+        title="User management"
+        description={<>Manage all users and their permissions ({totalUsers.toLocaleString()} total)</>}
+      >
         <div
           className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--paper-card)] border border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink)] hover:bg-[var(--foil-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--ink)]"
         >
@@ -150,7 +146,7 @@ export default async function AdminUsersPage({
           </svg>
           Export CSV
         </div>
-      </div>
+      </AdminPageHeader>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

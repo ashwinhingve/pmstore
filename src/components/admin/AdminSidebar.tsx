@@ -9,7 +9,6 @@ import {
   Truck,
   Users,
   Package,
-  Film,
   Tags,
   Settings,
   UserCheck,
@@ -66,7 +65,6 @@ export const adminNavigation: NavGroup[] = [
   {
     title: 'Site',
     items: [
-      { label: 'Production', href: '/admin/production', icon: Film },
       { label: 'Site settings', href: '/admin/settings', icon: Settings },
       { label: 'Marketing', href: '/admin/marketing', icon: BarChart2 },
     ],

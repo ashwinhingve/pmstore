@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/auth-helpers';
 import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import OrdersTable from '@/components/admin/OrdersTable';
 
 interface SearchParams {
@@ -128,16 +129,10 @@ export default async function AdminOrdersPage({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--ink)]">Order management</h1>
-          <p className="text-sm text-[var(--ink-70)] mt-1">
-            Manage all orders from your store (<span style={{ fontFamily: 'var(--font-data)' }}>{totalOrders.toLocaleString()}</span> total)
-          </p>
-        </div>
-
-        {/* Export placeholder */}
-      </div>
+      <AdminPageHeader
+        title="Order management"
+        description={<>Manage all orders from your store (<span style={{ fontFamily: 'var(--font-data)' }}>{totalOrders.toLocaleString()}</span> total)</>}
+      />
 
       {/* Status Overview Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">

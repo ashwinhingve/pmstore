@@ -2,6 +2,7 @@ import { requireStaff } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
 import Prescription from '@/models/Prescription';
 import { PrescriptionActions } from '@/components/admin/PrescriptionActions';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 
 interface PrescriptionQueueItem {
   _id: string;
@@ -41,10 +42,10 @@ export default async function AdminPrescriptionsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-2 text-3xl font-bold text-[var(--ink)]">Prescription Queue</h1>
-      <p className="mb-6 text-[var(--ink-70)]">
-        Review and verify pending prescriptions. Oldest submissions appear first.
-      </p>
+      <AdminPageHeader
+        title="Prescription Queue"
+        description="Review and verify pending prescriptions. Oldest submissions appear first."
+      />
 
       <div className="overflow-x-auto rounded-lg border border-[var(--foil-soft)]">
         <table className="w-full text-sm">

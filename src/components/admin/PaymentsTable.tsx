@@ -9,12 +9,10 @@ import {
   Eye,
   ChevronLeft,
   ChevronRight,
-  AlertCircle,
-  CheckCircle,
-  Clock,
   RotateCcw,
   RefreshCw,
 } from 'lucide-react';
+import { Badge, statusBadgeVariant } from '@/components/ui/badge';
 
 interface Transaction {
   id: string;
@@ -50,24 +48,6 @@ interface PaymentsTableProps {
   paymentMethodCounts: Array<{ _id: string; count: number }>;
 }
 
-const statusConfig = {
-  success: {
-    color: 'bg-[var(--mint-soft)] text-[var(--mint)]',
-    icon: CheckCircle,
-  },
-  pending: {
-    color: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
-    icon: Clock,
-  },
-  failed: {
-    color: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-    icon: AlertCircle,
-  },
-  refunded: {
-    color: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-    icon: RotateCcw,
-  },
-};
 
 export default function PaymentsTable({
   transactions,
@@ -386,9 +366,6 @@ export default function PaymentsTable({
               </tr>
             ) : (
               transactions.map((txn) => {
-                const StatusIcon = statusConfig[txn.status as keyof typeof statusConfig]?.icon || AlertCircle;
-                const statusColor = statusConfig[txn.status as keyof typeof statusConfig]?.color || 'bg-[var(--foil-soft)] text-[var(--ink)]';
-
                 return (
                   <tr key={txn.id} className="hover:bg-[var(--foil-soft)]">
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -426,12 +403,9 @@ export default function PaymentsTable({
                       <div className="text-sm text-[var(--ink)]">{txn.paymentMethod}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${statusColor}`}
-                      >
-                        <StatusIcon className="w-3 h-3" />
+                      <Badge variant={statusBadgeVariant(txn.status)}>
                         {txn.status}
-                      </span>
+                      </Badge>
                       {txn.failureReason && (
                         <div className="text-xs text-[var(--ink)] mt-1">{txn.failureReason}</div>
                       )}

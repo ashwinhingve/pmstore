@@ -33,7 +33,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
   };
 
   return (
-    <header className="bg-[var(--paper-card)] border-b border-[var(--foil-soft)] sticky top-0 z-50">
+    <header className="sticky top-0 z-50 border-b border-[var(--foil-soft)] bg-[var(--paper-card)]/95 backdrop-blur">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Left side: Mobile menu button + Title */}
@@ -48,7 +48,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
               <Menu className="h-6 w-6" aria-hidden="true" />
             </button>
             <div className="ml-4 lg:ml-0">
-              <h1 className="text-lg font-semibold text-[var(--ink)]">Admin panel</h1>
+              <h1 className="font-[family-name:var(--font-display)] text-lg font-bold tracking-tight text-[var(--ink)]">Admin panel</h1>
             </div>
           </div>
 
@@ -73,7 +73,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                 onClick={() => setShowUserMenu(!showUserMenu)}
               >
                 {/* User avatar */}
-                <div className="h-8 w-8 rounded-full bg-[var(--ink)] flex items-center justify-center text-[var(--paper-card)] font-semibold">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--ink)] font-semibold text-[var(--paper-card)] shadow-[var(--shadow-xs)] ring-1 ring-[var(--foil-soft)]">
                   {user.name?.charAt(0).toUpperCase() || 'A'}
                 </div>
 

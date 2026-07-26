@@ -13,6 +13,7 @@ import {
   X,
   RefreshCw,
 } from 'lucide-react';
+import { Badge, statusBadgeVariant } from '@/components/ui/badge';
 
 interface Order {
   id: string;
@@ -46,18 +47,6 @@ interface OrdersTableProps {
   paymentStatusCounts: Array<{ _id: string; count: number }>;
 }
 
-const statusColorMap: Record<string, string> = {
-  success: 'bg-[var(--mint-soft)] text-[var(--mint)]',
-  paid: 'bg-[var(--mint-soft)] text-[var(--mint)]',
-  pending: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
-  failed: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-  refunded: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-  confirmed: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-  processing: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
-  shipped: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-  delivered: 'bg-[var(--mint-soft)] text-[var(--mint)]',
-  cancelled: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-};
 
 export default function OrdersTable({
   orders,
@@ -371,22 +360,14 @@ export default function OrdersTable({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                        statusColorMap[order.paymentStatus] || 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
-                      }`}
-                    >
+                    <Badge variant={statusBadgeVariant(order.paymentStatus)}>
                       {order.paymentStatus}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${
-                        statusColorMap[order.orderStatus] || 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
-                      }`}
-                    >
+                    <Badge variant={statusBadgeVariant(order.orderStatus)}>
                       {order.orderStatus}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
                     {formatDate(order.createdAt)}

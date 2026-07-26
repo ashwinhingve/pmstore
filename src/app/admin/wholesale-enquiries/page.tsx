@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/mongodb';
 import WholesaleEnquiry from '@/models/WholesaleEnquiry';
 import { monthlyVolumeLabel, WHOLESALE_STATUSES } from '@/lib/validations/wholesale';
 import WholesaleEnquiriesTable from '@/components/admin/WholesaleEnquiriesTable';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 
 export const metadata = { title: 'Bulk orders' };
 
@@ -76,15 +77,10 @@ export default async function AdminWholesaleEnquiriesPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--ink)]">Bulk orders</h1>
-        <p className="mt-1 text-sm text-[var(--ink-70)]">
-          Wholesale and bulk-supply enquiries from the storefront (
-          <span style={{ fontFamily: 'var(--font-data)' }}>{total.toLocaleString('en-IN')}</span> total).
-          Reach out, then move each one to <span className="font-medium">contacted</span> or{' '}
-          <span className="font-medium">closed</span>.
-        </p>
-      </div>
+      <AdminPageHeader
+        title="Bulk orders"
+        description={`Wholesale and bulk-supply enquiries from the storefront (${total.toLocaleString('en-IN')} total). Reach out, then move each one to contacted or closed.`}
+      />
 
       <WholesaleEnquiriesTable
         enquiries={enquiries}

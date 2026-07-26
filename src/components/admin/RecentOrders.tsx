@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
+import { Badge, statusBadgeVariant } from '@/components/ui/badge';
 
 interface Order {
   id: string;
@@ -18,18 +19,6 @@ interface RecentOrdersProps {
   orders: Order[];
 }
 
-const statusColorMap: Record<string, string> = {
-  success: 'bg-[var(--mint-soft)] text-[var(--mint)]',
-  paid: 'bg-[var(--mint-soft)] text-[var(--mint)]',
-  pending: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
-  failed: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-  confirmed: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-  processing: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
-  shipped: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-  delivered: 'bg-[var(--mint-soft)] text-[var(--mint)]',
-  cancelled: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-};
-
 export default function RecentOrders({ orders }: RecentOrdersProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -43,10 +32,10 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
   };
 
   return (
-    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)]">
+    <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)]">
       <div className="p-6 border-b border-[var(--foil-soft)] flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-[var(--ink)]">Recent orders</h3>
+          <h3 className="font-[family-name:var(--font-display)] text-[length:var(--step-1)] font-bold text-[var(--ink)]">Recent orders</h3>
           <p className="text-sm text-[var(--ink-70)] mt-1">Latest orders from your store</p>
         </div>
         <Link
@@ -109,22 +98,14 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                        statusColorMap[order.paymentStatus] || 'bg-[var(--foil-soft)] text-[var(--ink)]'
-                      }`}
-                    >
+                    <Badge variant={statusBadgeVariant(order.paymentStatus)}>
                       {order.paymentStatus}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${
-                        statusColorMap[order.orderStatus] || 'bg-[var(--foil-soft)] text-[var(--ink)]'
-                      }`}
-                    >
+                    <Badge variant={statusBadgeVariant(order.orderStatus)}>
                       {order.orderStatus}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
                     {formatDate(order.createdAt)}

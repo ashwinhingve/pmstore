@@ -10,6 +10,9 @@ import DashboardStats from '@/components/admin/DashboardStats';
 import RecentOrders from '@/components/admin/RecentOrders';
 import RevenueChart from '@/components/admin/RevenueChart';
 import OrdersStatusDonut from '@/components/admin/OrdersStatusDonut';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
+import { Card } from '@/components/ui/card';
+import { Clock, CreditCard, PackageX, Activity } from 'lucide-react';
 
 /**
  * Admin Dashboard Overview
@@ -187,14 +190,11 @@ export default async function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--ink)]">Dashboard overview</h1>
-        <p className="text-sm text-[var(--ink-70)] mt-1">
-          Here&apos;s what&apos;s happening with your store today.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <AdminPageHeader
+        title="Dashboard overview"
+        description="Here's what's happening with your store today."
+      />
 
       {/* Stats Grid */}
       <DashboardStats stats={stats} />
@@ -214,50 +214,56 @@ export default async function AdminDashboard() {
       <RecentOrders orders={recentOrders} />
 
       {/* Quick Actions */}
-      <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
-        <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Quick actions</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link
-            href="/admin/orders?status=pending"
-            className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
-          >
-            <div className="flex-1">
-              <p className="text-sm font-medium text-[var(--ink)]">Process pending orders</p>
-              <p className="text-xs text-[var(--ink-70)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>{pendingOrders} orders waiting</p>
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/payments?status=failed"
-            className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
-          >
-            <div className="flex-1">
-              <p className="text-sm font-medium text-[var(--ink)]">Review failed payments</p>
-              <p className="text-xs text-[var(--ink-70)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>{failedPayments} failed transactions</p>
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/products?filter=low-stock"
-            className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
-          >
-            <div className="flex-1">
-              <p className="text-sm font-medium text-[var(--ink)]">Low stock alerts</p>
-              <p className="text-xs text-[var(--ink-70)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>{lowStockCount} products low</p>
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/system"
-            className="flex items-center gap-3 p-4 rounded-lg border-2 border-[var(--foil-soft)] hover:border-[var(--ink)] hover:bg-[var(--foil-soft)] transition-all"
-          >
-            <div className="flex-1">
-              <p className="text-sm font-medium text-[var(--ink)]">System health</p>
-              <p className="text-xs text-[var(--ink-70)] mt-1">Check status</p>
-            </div>
-          </Link>
+      <Card variant="elevated" padding="lg">
+        <h2 className="mb-4 text-[length:var(--step-1)] font-bold text-[var(--ink)]">Quick actions</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            {
+              href: '/admin/orders?status=pending',
+              icon: Clock,
+              title: 'Process pending orders',
+              meta: `${pendingOrders} orders waiting`,
+            },
+            {
+              href: '/admin/payments?status=failed',
+              icon: CreditCard,
+              title: 'Review failed payments',
+              meta: `${failedPayments} failed transactions`,
+            },
+            {
+              href: '/admin/products?filter=low-stock',
+              icon: PackageX,
+              title: 'Low stock alerts',
+              meta: `${lowStockCount} products low`,
+            },
+            {
+              href: '/admin/system',
+              icon: Activity,
+              title: 'System health',
+              meta: 'Check status',
+            },
+          ].map(({ href, icon: Icon, title, meta }) => (
+            <Link
+              key={title}
+              href={href}
+              className="group flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper)] p-4 shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)]"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--mint-soft)] text-[var(--mint)]">
+                <Icon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-[var(--ink)]">{title}</p>
+                <p
+                  className="mt-0.5 text-xs text-[var(--ink-70)]"
+                  style={{ fontFamily: 'var(--font-data)' }}
+                >
+                  {meta}
+                </p>
+              </div>
+            </Link>
+          ))}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

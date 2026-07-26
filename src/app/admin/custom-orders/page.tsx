@@ -2,6 +2,7 @@ import { requireAdmin } from '@/lib/auth-helpers';
 import { connectDB } from '@/lib/mongodb';
 import CustomOrder from '@/models/CustomOrder';
 import { CUSTOM_ORDER_STATUSES } from '@/lib/validations/custom-order';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import CustomOrdersTable from '@/components/admin/CustomOrdersTable';
 
 export const metadata = { title: 'Custom orders' };
@@ -65,15 +66,10 @@ export default async function AdminCustomOrdersPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--ink)]">Custom orders</h1>
-        <p className="mt-1 text-sm text-[var(--ink-70)]">
-          Customer requests for medicines to source (
-          <span style={{ fontFamily: 'var(--font-data)' }}>{total.toLocaleString('en-IN')}</span> total).
-          Call the customer, then move each one to <span className="font-medium">contacted</span> or{' '}
-          <span className="font-medium">closed</span>.
-        </p>
-      </div>
+      <AdminPageHeader
+        title="Custom orders"
+        description={<>Customer requests for medicines to source (<span style={{ fontFamily: 'var(--font-data)' }}>{total.toLocaleString('en-IN')}</span> total). Call the customer, then move each one to <span className="font-medium">contacted</span> or{' '}<span className="font-medium">closed</span>.</>}
+      />
 
       <CustomOrdersTable
         orders={orders}

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 
 interface Discount {
   _id: string;
@@ -205,14 +206,10 @@ export default function AdminOffersPage() {
 
   return (
     <div className="space-y-6 max-w-6xl">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--ink)]">Offers Management</h1>
-          <p className="text-sm text-[var(--ink-40)] mt-1">
-            Create and manage discount codes, automatic offers, and first-order deals.
-          </p>
-        </div>
+      <AdminPageHeader
+        title="Offers Management"
+        description="Create and manage discount codes, automatic offers, and first-order deals."
+      >
         <Button
           onClick={openAdd}
           className="bg-gradient-to-r from-[var(--ink)] to-[var(--ink)] hover:opacity-90 text-white"
@@ -221,7 +218,7 @@ export default function AdminOffersPage() {
           <Plus className="w-4 h-4 mr-2" />
           New Offer
         </Button>
-      </div>
+      </AdminPageHeader>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

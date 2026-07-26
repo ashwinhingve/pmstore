@@ -13,6 +13,7 @@ import {
   Pill,
   FileText,
 } from 'lucide-react';
+import { Badge, statusBadgeVariant } from '@/components/ui/badge';
 
 interface Order {
   id: string;
@@ -43,12 +44,6 @@ const STATUS_TABS: Array<{ value: string; label: string }> = [
   { value: 'contacted', label: 'Contacted' },
   { value: 'closed', label: 'Closed' },
 ];
-
-const STATUS_STYLE: Record<Order['status'], string> = {
-  new: 'bg-[var(--mint-soft)] text-[var(--mint)]',
-  contacted: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
-  closed: 'bg-[var(--foil-soft)] text-[var(--ink-40)]',
-};
 
 const mono = { fontFamily: 'var(--font-data)' as const, fontVariantNumeric: 'tabular-nums' as const };
 
@@ -222,9 +217,9 @@ export default function CustomOrdersTable({
                     <span style={mono} className="hidden text-xs text-[var(--ink-40)] sm:inline">
                       {formatDate(o.createdAt)}
                     </span>
-                    <span className={`rounded-[var(--radius-pill)] px-2.5 py-1 text-xs font-semibold capitalize ${STATUS_STYLE[o.status]}`}>
+                    <Badge variant={statusBadgeVariant(o.status)}>
                       {o.status}
-                    </span>
+                    </Badge>
                     <label className="sr-only" htmlFor={`status-${o.id}`}>
                       Update status for {o.name}
                     </label>

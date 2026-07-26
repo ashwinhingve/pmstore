@@ -2,6 +2,7 @@ import { requireAdmin } from '@/lib/auth-helpers';
 import { connectDB } from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
 import Order from '@/models/Order';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import PaymentsTable from '@/components/admin/PaymentsTable';
 
 interface SearchParams {
@@ -184,17 +185,10 @@ export default async function AdminPaymentsPage({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--ink)]">Payment Management</h1>
-          <p className="text-sm text-[var(--ink-40)] mt-1">
-            View and manage all payment transactions ({totalTransactions.toLocaleString()}{' '}
-            total)
-          </p>
-        </div>
-
-        {/* Export placeholder */}
-      </div>
+      <AdminPageHeader
+        title="Payment Management"
+        description={<>View and manage all payment transactions ({totalTransactions.toLocaleString()}{' '}total)</>}
+      />
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

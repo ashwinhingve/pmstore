@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
 import Product from '@/models/Product';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import ProductsTable from '@/components/admin/ProductsTable';
 
 interface SearchParams {
@@ -90,8 +91,27 @@ export default async function AdminProductsPage({
   total = dbTotal;
 
   const [dbCategoryCounts, dbStatusCounts, dbStockCounts] = await Promise.all([
+    // Category counts — join Category to expose name/slug alongside the
+    // ObjectId that products group by (mirrors /api/admin/products).
     Product.aggregate([
       { $group: { _id: '$category', count: { $sum: 1 } } },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'category',
+        },
+      },
+      { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          count: 1,
+          name: '$category.name',
+          slug: '$category.slug',
+        },
+      },
       { $sort: { count: -1 } },
     ]),
     Product.aggregate([
@@ -146,18 +166,15 @@ export default async function AdminProductsPage({
     stockLevels: stockCounts,
   };
 
-  // Serialize data
+  // Serialize data — aggregation `_id`s (e.g. category ObjectIds) are BSON
+  // objects with a toJSON method and can't cross the RSC → client boundary raw.
   const serializedProducts = JSON.parse(JSON.stringify(products));
+  const serializedFilters = JSON.parse(JSON.stringify(filters));
 
   return (
     <div className="p-6 bg-[var(--paper)]">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[var(--ink)]">
-          Product Management
-        </h1>
-        <p className="text-[var(--ink-70)] mt-2">
-          Manage your product catalog, inventory, and pricing
-        </p>
+        <AdminPageHeader title="Product Management" description="Manage your product catalog, inventory, and pricing" />
       </div>
 
       {dbError && (
@@ -171,7 +188,7 @@ export default async function AdminProductsPage({
       <ProductsTable
         products={serializedProducts}
         pagination={pagination}
-        filters={filters}
+        filters={serializedFilters}
         currentFilters={{
           search,
           category,

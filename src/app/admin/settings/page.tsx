@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/mongodb';
 import SiteSettings from '@/models/SiteSettings';
 import AnnouncementManager from '@/components/admin/AnnouncementManager';
 import HeroSliderManager from '@/components/admin/HeroSliderManager';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 
 export default async function AdminSettingsPage() {
   await requireAdmin();
@@ -52,12 +53,10 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-8 max-w-5xl">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--ink)]">Site Settings</h1>
-        <p className="text-sm text-[var(--ink-40)] mt-1">
-          Manage homepage content, announcement banner, and slider.
-        </p>
-      </div>
+      <AdminPageHeader
+        title="Site Settings"
+        description="Manage homepage content, announcement banner, and slider."
+      />
 
       {/* Hero Slider */}
       <HeroSliderManager initialSlides={heroSlides} />

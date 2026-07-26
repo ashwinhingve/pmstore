@@ -13,6 +13,7 @@ import {
   Truck,
   RefreshCw,
 } from 'lucide-react';
+import { Badge, statusBadgeVariant } from '@/components/ui/badge';
 
 interface Shipment {
   id: string;
@@ -60,21 +61,22 @@ interface ShipmentsTableProps {
   pendingOrders?: PendingOrder[];
 }
 
-// Keys must match Delhivery's actual shipmentStatus strings stored in the DB
-const statusConfig: Record<string, { color: string; label: string }> = {
-  'Pending': { color: 'bg-[var(--foil-soft)] text-[var(--ink-70)]', label: 'Pending' },
-  'Manifested': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Manifested' },
-  'Dispatched': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Dispatched' },
-  'In Transit': { color: 'bg-[var(--foil-soft)] text-[var(--ink-70)]', label: 'In transit' },
-  'Out for Delivery': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Out for delivery' },
-  'Delivered': { color: 'bg-[var(--mint-soft)] text-[var(--mint)]', label: 'Delivered' },
-  'Cancelled': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Cancelled' },
-  'RTO': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'RTO' },
-  'RTO Delivered': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'RTO delivered' },
-  'Lost': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Lost' },
-  'Damaged': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Damaged' },
-  'Shipment Created': { color: 'bg-[var(--foil-soft)] text-[var(--ink)]', label: 'Created' },
-};
+// Filter dropdown options. Keys must match Delhivery's actual shipmentStatus
+// strings stored in the DB; the status pill itself is coloured by <Badge>.
+const SHIPMENT_STATUS_OPTIONS: { value: string; label: string }[] = [
+  { value: 'Pending', label: 'Pending' },
+  { value: 'Manifested', label: 'Manifested' },
+  { value: 'Dispatched', label: 'Dispatched' },
+  { value: 'In Transit', label: 'In transit' },
+  { value: 'Out for Delivery', label: 'Out for delivery' },
+  { value: 'Delivered', label: 'Delivered' },
+  { value: 'Cancelled', label: 'Cancelled' },
+  { value: 'RTO', label: 'RTO' },
+  { value: 'RTO Delivered', label: 'RTO delivered' },
+  { value: 'Lost', label: 'Lost' },
+  { value: 'Damaged', label: 'Damaged' },
+  { value: 'Shipment Created', label: 'Created' },
+];
 
 export default function ShipmentsTable({
   shipments,
@@ -374,9 +376,9 @@ export default function ShipmentsTable({
                   className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink)]"
                 >
                   <option value="">All statuses</option>
-                  {Object.entries(statusConfig).map(([key, config]) => (
-                    <option key={key} value={key}>
-                      {config.label}
+                  {SHIPMENT_STATUS_OPTIONS.map(({ value, label }) => (
+                    <option key={value} value={value}>
+                      {label}
                     </option>
                   ))}
                 </select>
@@ -467,10 +469,6 @@ export default function ShipmentsTable({
               </tr>
             ) : (
               visibleShipments.map((shipment) => {
-                const statusInfo = statusConfig[shipment.status] || {
-                  color: 'bg-[var(--foil-soft)] text-[var(--ink)]',
-                  label: shipment.status,
-                };
                 const provider = shipment.provider || 'delhivery';
 
                 return (
@@ -500,11 +498,9 @@ export default function ShipmentsTable({
                       <div className="text-xs text-[var(--ink-70)]">{shipment.customerEmail}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${statusInfo.color}`}
-                      >
-                        {statusInfo.label}
-                      </span>
+                      <Badge variant={statusBadgeVariant(shipment.status)}>
+                        {shipment.status}
+                      </Badge>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-[var(--ink)]">{shipment.courier}</div>

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { toast } from '@/store/useToastStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import {
   Plus,
   Pencil,
@@ -210,13 +211,10 @@ export default function AdminCategoriesPage() {
 
   return (
     <div className="p-6 max-w-5xl">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--ink)]">Categories</h1>
-          <p className="text-sm text-[var(--ink-40)] mt-1">
-            Manage product categories — upload images for circles on homepage
-          </p>
-        </div>
+      <AdminPageHeader
+        title="Categories"
+        description="Manage product categories — upload images for circles on homepage"
+      >
         <Button
           onClick={() => setShowAdd(true)}
           className="bg-[var(--ink)] hover:opacity-90 text-white"
@@ -224,7 +222,7 @@ export default function AdminCategoriesPage() {
           <Plus className="w-4 h-4 mr-2" />
           Add Category
         </Button>
-      </div>
+      </AdminPageHeader>
 
       {/* Add Form */}
       {showAdd && (

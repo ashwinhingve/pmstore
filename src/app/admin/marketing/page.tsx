@@ -6,6 +6,7 @@ import AnalyticsSection from './components/AnalyticsSection';
 import AdsSection from './components/AdsSection';
 import PixelSection from './components/PixelSection';
 import SearchConsoleSection from './components/SearchConsoleSection';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 
 export const metadata = {
   title: 'Marketing & Analytics | Admin',
@@ -32,12 +33,10 @@ export default async function MarketingPage() {
 
   return (
     <div className="space-y-8 max-w-5xl">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--ink)]">Marketing & Analytics</h1>
-        <p className="text-sm text-[var(--ink-40)] mt-1">
-          Manage tracking scripts and marketing integrations. Changes take effect on next page load.
-        </p>
-      </div>
+      <AdminPageHeader
+        title="Marketing & Analytics"
+        description="Manage tracking scripts and marketing integrations. Changes take effect on next page load."
+      />
 
       <GtmSection initialGtmId={data.gtm_id} initialGtmEnabled={data.gtm_enabled} />
       <AnalyticsSection initialId={data.google_analytics_id} gtmEnabled={data.gtm_enabled} />

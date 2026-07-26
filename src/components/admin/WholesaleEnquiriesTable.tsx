@@ -13,6 +13,7 @@ import {
   FileText,
   Boxes,
 } from 'lucide-react';
+import { Badge, statusBadgeVariant } from '@/components/ui/badge';
 
 interface Enquiry {
   id: string;
@@ -47,12 +48,6 @@ const STATUS_TABS: Array<{ value: string; label: string }> = [
   { value: 'contacted', label: 'Contacted' },
   { value: 'closed', label: 'Closed' },
 ];
-
-const STATUS_STYLE: Record<Enquiry['status'], string> = {
-  new: 'bg-[var(--mint-soft)] text-[var(--mint)]',
-  contacted: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
-  closed: 'bg-[var(--foil-soft)] text-[var(--ink-40)]',
-};
 
 const mono = { fontFamily: 'var(--font-data)' as const, fontVariantNumeric: 'tabular-nums' as const };
 
@@ -224,9 +219,9 @@ export default function WholesaleEnquiriesTable({
                     <span style={mono} className="hidden text-xs text-[var(--ink-40)] sm:inline">
                       {formatDate(e.createdAt)}
                     </span>
-                    <span className={`rounded-[var(--radius-pill)] px-2.5 py-1 text-xs font-semibold capitalize ${STATUS_STYLE[e.status]}`}>
+                    <Badge variant={statusBadgeVariant(e.status)}>
                       {e.status}
-                    </span>
+                    </Badge>
                     <label className="sr-only" htmlFor={`status-${e.id}`}>
                       Update status for {e.businessName}
                     </label>

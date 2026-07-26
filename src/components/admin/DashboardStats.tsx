@@ -84,7 +84,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
         return (
           <div
             key={key}
-            className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-xs)] transition-shadow duration-[var(--dur-fast)] hover:shadow-[var(--shadow-md)]"
+            className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)]"
           >
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-lg ${colorClass}`}>
@@ -103,7 +103,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
             </div>
 
             <div>
-              <p className="text-2xl font-bold text-[var(--ink)] mb-1 data" style={{ fontFamily: 'var(--font-data)' }}>
+              <p className="text-[length:var(--step-2)] font-bold text-[var(--ink)] mb-1 data" style={{ fontFamily: 'var(--font-data)' }}>
                 {formatValue(key, stat.value)}
               </p>
               <p className="text-sm text-[var(--ink-70)]">{stat.label}</p>
