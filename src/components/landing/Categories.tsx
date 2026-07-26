@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Container } from '@/components/shared/Container';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { PHARMA_CATEGORIES } from '@/lib/categories';
+import { getCategoryTint } from '@/lib/pharma/medicine-visual';
 
 /**
  * Categories — canonical pharma categories (src/lib/categories.ts). Names match
@@ -30,6 +31,7 @@ export function Categories() {
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {CATEGORIES.map((category, i) => {
             const Icon = category.icon;
+            const tint = getCategoryTint(category.name);
             return (
               <motion.div
                 key={category.name}
@@ -43,11 +45,15 @@ export function Categories() {
               >
                 <Link
                   href={`/products?category=${encodeURIComponent(category.name)}`}
-                  className="group flex h-full flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 text-center shadow-[var(--shadow-sm)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]"
+                  className="group flex h-full flex-col items-center gap-3 rounded-[var(--radius-lg)] border border-transparent p-6 text-center shadow-[var(--shadow-sm)] transition-[box-shadow,transform] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)]"
+                  style={{ backgroundColor: tint.bg }}
                 >
-                  <div className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--mint-soft)] p-3.5 text-[var(--mint)] transition-colors duration-[var(--dur-fast)] group-hover:bg-[var(--mint)] group-hover:text-[var(--paper-card)]">
+                  <span
+                    className="inline-flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[var(--paper-card)] shadow-[var(--shadow-xs)]"
+                    style={{ color: tint.fg }}
+                  >
                     <Icon className="h-6 w-6" aria-hidden="true" />
-                  </div>
+                  </span>
                   <h3 className="text-[0.9375rem] font-semibold text-[var(--ink)]">
                     {category.name}
                   </h3>

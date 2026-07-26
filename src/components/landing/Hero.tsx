@@ -61,7 +61,7 @@ export function Hero() {
 
           <motion.h1
             {...fadeUp(0.06)}
-            className="mt-5 text-balance text-[length:var(--step-3)] text-[var(--paper)]"
+            className="mt-5 text-balance text-[length:var(--step-4)] font-extrabold leading-[1.05] text-[var(--paper)]"
           >
             Genuine medicines at{' '}
             <span className="text-[var(--mint)]">honest prices</span>
