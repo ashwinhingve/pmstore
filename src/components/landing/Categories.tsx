@@ -43,9 +43,9 @@ export function Categories() {
               >
                 <Link
                   href={`/products?category=${encodeURIComponent(category.name)}`}
-                  className="flex h-full flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 text-center shadow-[var(--shadow-xs)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]"
+                  className="group flex h-full flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 text-center shadow-[var(--shadow-sm)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]"
                 >
-                  <div className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--mint-soft)] p-3 text-[var(--mint)]">
+                  <div className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--mint-soft)] p-3.5 text-[var(--mint)] transition-colors duration-[var(--dur-fast)] group-hover:bg-[var(--mint)] group-hover:text-[var(--paper-card)]">
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </div>
                   <h3 className="text-[0.9375rem] font-semibold text-[var(--ink)]">

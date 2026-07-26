@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth';
 import Product from '@/models/Product';
 import { SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants';
 import { Hero } from '@/components/landing/Hero';
+import { PromoBar } from '@/components/landing/PromoBar';
 import { VideoSection } from '@/components/landing/VideoSection';
 import { QuickActions } from '@/components/landing/QuickActions';
 import { Categories } from '@/components/landing/Categories';
@@ -104,6 +105,7 @@ export default async function Home() {
     <div className="w-full">
       {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
       <Hero />
+      <PromoBar />
       <QuickActions signedIn={signedIn} />
       <VideoSection />
       <FeaturedProducts products={featuredProducts} />

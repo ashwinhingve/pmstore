@@ -24,7 +24,24 @@ export function Hero() {
   });
 
   return (
-    <section className="relative overflow-hidden bg-[image:var(--surface-hero)]">
+    <section className="relative overflow-hidden bg-[var(--ink-deep)]">
+      {/* Photographic backdrop — a real pharmacy, washed in brand navy so the
+          copy stays legible. Decorative; the meaning is in the text + search. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <Image
+          src="/landing/hero-pharmacy.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-right"
+        />
+        {/* Brand navy wash keeps it on-palette and knocks the photo back */}
+        <div className="absolute inset-0 bg-[image:var(--surface-hero)] opacity-90 mix-blend-multiply" />
+        {/* Guarantee contrast under the left-hand copy */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--ink-deep)] via-[var(--ink-deep)]/85 to-[var(--ink-deep)]/40" />
+      </div>
+
       {/* Depth — soft mint/ink glows behind the content. Decorative. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="absolute -left-24 -top-24 h-80 w-80 rounded-full bg-[var(--mint)]/20 blur-3xl" />

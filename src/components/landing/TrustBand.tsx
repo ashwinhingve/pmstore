@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ShieldCheck, BadgeCheck, Stethoscope, Truck, Check } from 'lucide-react';
 import { Container } from '@/components/shared/Container';
@@ -36,29 +37,47 @@ export function TrustBand() {
           ))}
         </div>
 
-        {/* Why us */}
-        <div className="mb-14">
-          <SectionHeading title="Why Pratigya Medical Store" className="mb-6" />
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {VALUE_PROPS.map((prop, i) => (
-              <motion.li
-                key={prop}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.4,
-                  delay: reduceMotion ? 0 : (i % 3) * 0.06,
-                }}
-                viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-                className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)]"
-              >
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)]">
-                  <Check className="h-3.5 w-3.5 text-[var(--mint)]" aria-hidden="true" />
-                </span>
-                <span className="text-[0.9375rem] font-medium text-[var(--ink)]">{prop}</span>
-              </motion.li>
-            ))}
-          </ul>
+        {/* Why us — real pharmacy photo alongside the value props */}
+        <div className="mb-14 grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          <motion.div
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.5 }}
+            viewport={{ once: true, margin: '0px 0px -80px 0px' }}
+            className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-md)]"
+          >
+            <Image
+              src="/landing/pharmacist.jpg"
+              alt="A pharmacist checking a medicine at Pratigya Medical Store"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
+          </motion.div>
+
+          <div>
+            <SectionHeading title="Why Pratigya Medical Store" className="mb-6" />
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {VALUE_PROPS.map((prop, i) => (
+                <motion.li
+                  key={prop}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.4,
+                    delay: reduceMotion ? 0 : (i % 2) * 0.06,
+                  }}
+                  viewport={{ once: true, margin: '0px 0px -60px 0px' }}
+                  className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)]"
+                >
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)]">
+                    <Check className="h-3.5 w-3.5 text-[var(--mint)]" aria-hidden="true" />
+                  </span>
+                  <span className="text-[0.9375rem] font-medium text-[var(--ink)]">{prop}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Credentials */}
