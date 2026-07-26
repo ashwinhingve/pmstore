@@ -27,8 +27,8 @@ export const CONTACT = {
   phoneHref: "tel:+919755550126",
   whatsapp: "+91 9755550126",
   whatsappHref: "https://wa.me/919755550126",
-  email: "pawan8133@gmail.com",
-  emailHref: "mailto:pawan8133@gmail.com",
+  email: "pmstoremedicine@gmail.com",
+  emailHref: "mailto:pmstoremedicine@gmail.com",
   address: {
     line1: "S 2 Vikash Kunj",
     city: "Bhopal",

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ShieldCheck } from 'lucide-react';
+import { CONTACT } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Drug Licence & Compliance — Pratigya Medical Store',
@@ -53,8 +54,8 @@ export default function DrugLicencePage() {
 
       <p className="mt-8 text-[length:var(--step--1)] text-[var(--ink-70)]">
         For any compliance query, contact us at{' '}
-        <a href="mailto:support@pratigyamedicalstore.com" className="underline">
-          support@pratigyamedicalstore.com
+        <a href={CONTACT.emailHref} className="underline">
+          {CONTACT.email}
         </a>
         .
       </p>

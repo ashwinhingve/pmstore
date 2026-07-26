@@ -16,7 +16,7 @@ This checklist covers everything needed to submit PMStore to the Google Play Sto
   - [ ] Includes data retention policy (e.g., "Prescriptions retained for 12 months")
   - [ ] Includes data deletion request process
   - [ ] Covers HIPAA/PDPA compliance (India)
-  - [ ] Contact email for data requests: `support@pratigyamedicalstore.com`
+  - [ ] Contact email for data requests: `pmstoremedicine@gmail.com`
 
 - [ ] Terms of Service at `https://pratigyamedicalstore.com/terms`
   - [ ] Includes disclaimer that app is not a substitute for professional medical advice
@@ -150,7 +150,7 @@ Expected rating: **Suitable for all ages** (or PEGI 3 if European submission).
   4. For prescription medicines, upload a clear prescription photo
   5. Receive your order with home delivery
   
-  Questions? Contact: support@pratigyamedicalstore.com
+  Questions? Contact: pmstoremedicine@gmail.com
   ```
 
 ## Technical Requirements
@@ -207,7 +207,7 @@ Privacy & Security:
 
 Supported devices: Android 5.0+
 
-Questions? Email: support@pratigyamedicalstore.com
+Questions? Email: pmstoremedicine@gmail.com
 ```
 
 ## Expected Review Timeline
