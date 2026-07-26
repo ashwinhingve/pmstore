@@ -65,3 +65,13 @@ export function resolveProductImage(
   if (imageUrl && !isPlaceholderImage(imageUrl)) return imageUrl;
   return getMedicineImage(form);
 }
+
+/**
+ * True when resolveProductImage would fall back to a dosage-form photo rather
+ * than a real uploaded pack shot. Surfaces use this to add an honest
+ * "representative image" note — the fallback is a generic photo of that form,
+ * not the exact pack (see the file header).
+ */
+export function isRepresentativeImage(imageUrl: string | null | undefined): boolean {
+  return !imageUrl || isPlaceholderImage(imageUrl);
+}

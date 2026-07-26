@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RxBadge } from "@/components/shared/RxBadge";
 import { PriceBlock } from "@/components/shared/PriceBlock";
 import { formatINR, type ScheduleClass } from "@/lib/pharma/format";
-import { resolveProductImage } from "@/lib/pharma/medicine-image";
+import { resolveProductImage, isRepresentativeImage } from "@/lib/pharma/medicine-image";
 import { useCartStore } from "@/store/useCartStore";
 import { useCompareStore } from "@/store/useCompareStore";
 import { toast } from "@/store/useToastStore";
@@ -100,8 +100,10 @@ export function ProductCard({ product }: ProductCardProps) {
 
   // Real uploaded photo if present, otherwise a representative photo of the
   // dosage form so every card shows a real product — never a blank icon or a
-  // generated placeholder.
-  const imageUrl = resolveProductImage(getImageUrl(), product.form);
+  // generated placeholder. `representative` drives an honest label + alt text.
+  const rawImageUrl = getImageUrl();
+  const imageUrl = resolveProductImage(rawImageUrl, product.form);
+  const representative = isRepresentativeImage(rawImageUrl);
   const averageRating = product.averageRating || product.average_rating || 0;
   const totalReviews = product.totalReviews || product.review_count || 0;
   const outOfStock = typeof product.stock === 'number' && product.stock <= 0;
@@ -132,13 +134,13 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/products/${product.slug}`} className="group block h-full">
-      <article className="flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-xs)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]">
+      <article className="flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]">
         {/* Product Image */}
         <div className="relative aspect-square overflow-hidden border-b border-[var(--foil-soft)] bg-[var(--paper-tint)]">
           {imageUrl && !imageError ? (
             <Image
               src={imageUrl}
-              alt={product.name}
+              alt={representative ? `${product.name} — representative image` : product.name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1280px) 25vw, 20vw"
               className="object-cover"
@@ -168,6 +170,12 @@ export function ProductCard({ product }: ProductCardProps) {
           {packLabel && (
             <span className="pack absolute bottom-2 left-2 rounded-[var(--radius-pill)] border border-[var(--foil-soft)] bg-[var(--paper-card)]/90 px-2.5 py-1 text-xs font-semibold text-[var(--ink)] backdrop-blur-sm">
               {packLabel}
+            </span>
+          )}
+
+          {representative && !outOfStock && (
+            <span className="absolute bottom-2 right-2 rounded-[var(--radius-pill)] bg-[var(--paper-card)]/85 px-2 py-0.5 text-[0.625rem] font-medium text-[var(--ink-40)] backdrop-blur-sm">
+              Representative
             </span>
           )}
 
