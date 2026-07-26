@@ -13,7 +13,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
       href={href}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "relative px-1 py-2 text-base font-medium transition-colors duration-[var(--dur-fast)]",
+        "relative whitespace-nowrap px-1 py-2 text-base font-medium transition-colors duration-[var(--dur-fast)]",
         "after:absolute after:inset-x-1 after:bottom-0 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-[var(--mint)] after:transition-transform after:duration-[var(--dur-base)] after:ease-[var(--ease-out)] hover:after:scale-x-100",
         isActive
           ? "text-[var(--ink)] after:scale-x-100"
