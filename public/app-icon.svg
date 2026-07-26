@@ -1,10 +1,10 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- PM Store app icon (maskable) — centred capsule + "P" mark on paper -->
-  <rect width="512" height="512" fill="#FBFAF7" />
-  <g transform="translate(76.8, 76.8) scale(5.6)">
-    <rect x="6" y="18" width="52" height="28" rx="14" fill="#E4F3ED" stroke="#0E8F6E" stroke-width="3.5" />
-    <path d="M32 19.5 V44.5" stroke="#0E8F6E" stroke-width="2" stroke-linecap="round" opacity="0.55" />
-    <path d="M22 21 V43" stroke="#16233A" stroke-width="4.25" stroke-linecap="round" />
-    <path d="M22 21 H30 A7 7 0 0 1 30 34 H22" fill="none" stroke="#16233A" stroke-width="4.25" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- PM Store app icon (maskable) — navy field, mint capsule cross centred in the safe zone -->
+  <rect width="512" height="512" fill="#16233A" />
+  <g transform="translate(106,106) scale(4.6875)">
+    <rect x="11" y="26" width="42" height="12" rx="6" fill="#FBFAF7" />
+    <rect x="26" y="8" width="12" height="48" rx="6" fill="#0E8F6E" />
+    <rect x="26.8" y="30.8" width="10.4" height="2.2" rx="1" fill="#FBFAF7" opacity="0.9" />
+    <rect x="28.6" y="12" width="2.6" height="13" rx="1.3" fill="#FBFAF7" opacity="0.4" />
   </g>
 </svg>

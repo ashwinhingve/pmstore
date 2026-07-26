@@ -9,15 +9,18 @@ interface LogoProps {
 }
 
 /**
- * PM Store logo — a pharmaceutical capsule holding a stylized "P".
+ * PM Store logo — a medical cross whose vertical bar is a pharmaceutical
+ * capsule. Navy cross + mint pill: pharmacy at a glance, premium and legible
+ * from favicon to hero.
  *
- * - `mark`: icon only (nav, favicon, footer).
- * - `full`: icon + "PM Store" wordmark, optionally with the slogan.
+ * - `mark`: symbol only (nav, favicon, footer).
+ * - `full`: symbol + "PM Store" wordmark ("PM" emphasised), optionally the slogan.
  *
- * Two-tone by design: the capsule is always mint (`--mint`, the brand accent,
- * legible on both paper and the navy footer band); the "P" and wordmark use
- * `currentColor`, so they turn navy on light surfaces and paper on dark ones —
- * set the surrounding text color and the logo adapts.
+ * The pill is always mint (`--mint`) — legible on both paper and the navy footer
+ * band. The cross arms and wordmark use `currentColor`, so they turn navy on
+ * light surfaces and paper on dark ones — set the surrounding text color and the
+ * logo adapts. The static assets (public/logo.svg, app-icon.svg, src/app/icon.svg)
+ * mirror this artwork.
  */
 export function Logo({
   size = 40,
@@ -25,70 +28,45 @@ export function Logo({
   withSlogan = false,
   className = "",
 }: LogoProps) {
-  const viewBoxSize = 64;
-
   const mark = (
     <svg
       width={size}
       height={size}
-      viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}
+      viewBox="0 0 64 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       role="img"
       aria-label={`${SITE_SHORT_NAME} mark`}
     >
-      {/* Capsule — mint outline with a soft mint wash. rx = height/2 → stadium. */}
-      <rect
-        x="6"
-        y="18"
-        width="52"
-        height="28"
-        rx="14"
-        className="fill-[var(--mint-soft)] stroke-[var(--mint)]"
-        strokeWidth="3.5"
-      />
-      {/* Capsule seam — the two-piece joint, in mint. */}
-      <path
-        d="M32 19.5 V44.5"
-        className="stroke-[var(--mint)]"
-        strokeWidth="2"
-        strokeLinecap="round"
-        opacity="0.55"
-      />
-      {/* "P" — stem + bowl, in currentColor so it adapts to the surface. */}
-      <path
-        d="M22 21 V43"
-        stroke="currentColor"
-        strokeWidth="4.25"
-        strokeLinecap="round"
-      />
-      <path
-        d="M22 21 H30 A7 7 0 0 1 30 34 H22"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="4.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      {/* Cross arm — horizontal, adapts to the surface. */}
+      <rect x="11" y="26" width="42" height="12" rx="6" fill="currentColor" />
+      {/* Pill — the vertical bar of the cross, always mint. */}
+      <rect x="26" y="8" width="12" height="48" rx="6" className="fill-[var(--mint)]" />
+      {/* Capsule seam. */}
+      <rect x="26.8" y="30.8" width="10.4" height="2.2" rx="1" className="fill-[var(--paper-card)]" opacity="0.9" />
+      {/* Soft highlight for a glassy, premium finish. */}
+      <rect x="28.6" y="12" width="2.6" height="13" rx="1.3" className="fill-[var(--paper-card)]" opacity="0.4" />
     </svg>
   );
 
   if (variant === "full") {
     const wordmarkFontSize = Math.max(15, size * 0.5);
+    const [first, ...rest] = SITE_SHORT_NAME.split(" ");
     return (
       <div className="flex items-center gap-2.5">
         {mark}
         <span className="flex flex-col leading-none">
           <span
-            className="font-[family-name:var(--font-display)] font-extrabold tracking-tight"
+            className="font-[family-name:var(--font-display)] tracking-tight"
             style={{ fontSize: `${wordmarkFontSize}px`, color: "currentColor" }}
           >
-            {SITE_SHORT_NAME}
+            <span className="font-extrabold">{first}</span>
+            {rest.length > 0 && <span className="font-medium opacity-90"> {rest.join(" ")}</span>}
           </span>
           {withSlogan && (
             <span
-              className="mt-1 font-medium opacity-75"
+              className="mt-1 font-medium opacity-70"
               style={{ fontSize: `${Math.max(10, wordmarkFontSize * 0.42)}px` }}
             >
               {SITE_SLOGAN}

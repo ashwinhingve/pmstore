@@ -1,19 +1,21 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- PM Store logo lockup — capsule + "P" mark, wordmark, slogan -->
-  <!-- Colors: paper #FBFAF7 bg, mint #0E8F6E capsule, mint-soft #E4F3ED fill, ink #16233A P/wordmark, ink-70 #56607A slogan -->
+  <!-- PM Store logo lockup — capsule-cross mark, "PM Store" wordmark, slogan -->
+  <!-- Colors: paper #FBFAF7 bg, ink #16233A cross/PM, mint #0E8F6E pill, ink-70 #56607A "Store"/slogan -->
   <rect width="512" height="512" fill="#FBFAF7" />
 
-  <!-- Mark: 64-unit artwork scaled ×3.6 and centred near the top -->
-  <g transform="translate(140.8, 44.8) scale(3.6)">
-    <rect x="6" y="18" width="52" height="28" rx="14" fill="#E4F3ED" stroke="#0E8F6E" stroke-width="3.5" />
-    <path d="M32 19.5 V44.5" stroke="#0E8F6E" stroke-width="2" stroke-linecap="round" opacity="0.55" />
-    <path d="M22 21 V43" stroke="#16233A" stroke-width="4.25" stroke-linecap="round" />
-    <path d="M22 21 H30 A7 7 0 0 1 30 34 H22" fill="none" stroke="#16233A" stroke-width="4.25" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Mark: 64-unit artwork scaled and centred near the top -->
+  <g transform="translate(181,52) scale(2.34)">
+    <rect x="11" y="26" width="42" height="12" rx="6" fill="#16233A" />
+    <rect x="26" y="8" width="12" height="48" rx="6" fill="#0E8F6E" />
+    <rect x="26.8" y="30.8" width="10.4" height="2.2" rx="1" fill="#FBFAF7" opacity="0.9" />
+    <rect x="28.6" y="12" width="2.6" height="13" rx="1.3" fill="#FBFAF7" opacity="0.4" />
   </g>
 
   <!-- Wordmark -->
-  <text x="256" y="320" text-anchor="middle" font-family="'Public Sans', system-ui, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5" fill="#16233A">PM Store</text>
+  <text x="256" y="332" text-anchor="middle" font-family="'Bricolage Grotesque', 'Public Sans', system-ui, Arial, sans-serif" font-size="76" letter-spacing="-2">
+    <tspan font-weight="800" fill="#16233A">PM</tspan><tspan font-weight="500" fill="#56607A"> Store</tspan>
+  </text>
 
   <!-- Slogan -->
-  <text x="256" y="368" text-anchor="middle" font-family="'Public Sans', system-ui, Arial, sans-serif" font-size="27" font-weight="500" fill="#56607A">Genuine medicines, generic prices</text>
+  <text x="256" y="378" text-anchor="middle" font-family="'Public Sans', system-ui, Arial, sans-serif" font-size="26" font-weight="500" fill="#56607A">Genuine medicines, generic prices</text>
 </svg>
