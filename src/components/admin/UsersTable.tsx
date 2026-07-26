@@ -11,6 +11,7 @@ import {
   Shield,
   User,
 } from 'lucide-react';
+import { formatDate } from '@/lib/utils/format-date';
 
 interface UserData {
   id: string;
@@ -87,15 +88,6 @@ export default function UsersTable({
   };
 
   const hasActiveFilters = filters.role || filters.search || filters.sortBy !== 'createdAt';
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    }).format(date);
-  };
 
   return (
     <div className="rounded-lg bg-[var(--paper-card)] shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { toast } from '@/store/useToastStore';
+import { formatDate, formatDateTime } from '@/lib/utils/format-date';
 
 interface Scan {
   status: string;
@@ -212,14 +213,14 @@ export default function ShipmentTracker({
           <p className="text-sm text-[var(--ink-70)] mt-2">
             Estimated Delivery:{' '}
             <span className="font-medium pack">
-              {new Date(tracking.estimatedDelivery).toLocaleDateString()}
+              {formatDate(tracking.estimatedDelivery)}
             </span>
           </p>
         )}
 
         {tracking.deliveryDate && (
           <p className="text-sm text-[var(--mint)] mt-2 font-medium pack">
-            Delivered on {new Date(tracking.deliveryDate).toLocaleDateString()}
+            Delivered on {formatDate(tracking.deliveryDate)}
           </p>
         )}
       </div>
@@ -247,7 +248,7 @@ export default function ShipmentTracker({
                 <div className="flex justify-between items-start mb-1">
                   <p className="font-medium text-[var(--ink)]">{scan.status}</p>
                   <p className="text-sm text-[var(--ink-40)] pack">
-                    {new Date(scan.timestamp).toLocaleString()}
+                    {formatDateTime(scan.timestamp)}
                   </p>
                 </div>
                 <p className="text-sm text-[var(--ink-70)]">{scan.location}</p>

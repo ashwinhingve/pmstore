@@ -1,4 +1,5 @@
 import { CheckCircle, Clock, Package, Truck, Home, XCircle } from 'lucide-react';
+import { formatDateTime } from '@/lib/utils/format-date';
 
 interface OrderTimelineAdminProps {
   orderStatus: string;
@@ -22,17 +23,6 @@ export default function OrderTimelineAdmin({
   shipmentDate,
   lastStatusUpdate,
 }: OrderTimelineAdminProps) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
-  };
-
   // Build timeline events based on order status
   const events: TimelineEvent[] = [];
 
@@ -211,7 +201,7 @@ function Timeline({
                   {event.label}
                 </p>
                 {event.date && (
-                  <p className="text-xs text-[var(--ink-40)] mt-1">{formatDate(event.date)}</p>
+                  <p className="text-xs text-[var(--ink-40)] mt-1">{formatDateTime(event.date)}</p>
                 )}
               </div>
             </div>
@@ -267,7 +257,7 @@ function FailedTimeline({
                   {event.label}
                 </p>
                 {event.date && (
-                  <p className="text-xs text-[var(--ink-70)] mt-1">{formatDate(event.date)}</p>
+                  <p className="text-xs text-[var(--ink-70)] mt-1">{formatDateTime(event.date)}</p>
                 )}
               </div>
             </div>

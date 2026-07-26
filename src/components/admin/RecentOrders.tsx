@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
 import { Badge, statusBadgeVariant } from '@/components/ui/badge';
+import { formatDateTime } from '@/lib/utils/format-date';
 
 interface Order {
   id: string;
@@ -20,17 +21,6 @@ interface RecentOrdersProps {
 }
 
 export default function RecentOrders({ orders }: RecentOrdersProps) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
-  };
-
   return (
     <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)]">
       <div className="p-6 border-b border-[var(--foil-soft)] flex items-center justify-between">
@@ -108,7 +98,7 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
                     </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
-                    {formatDate(order.createdAt)}
+                    {formatDateTime(order.createdAt)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <Link

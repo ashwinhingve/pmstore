@@ -1,3 +1,5 @@
+import { formatDateTime } from '@/lib/utils/format-date';
+
 interface Scan {
   status: string;
   location: string;
@@ -51,13 +53,7 @@ export default function ShipmentScanTimeline({ scans, provider }: Props) {
                 <p className="text-xs text-[var(--ink-40)] mt-0.5">{scan.remarks}</p>
               )}
               <p className="text-xs text-[var(--ink-40)] mt-1" style={{ fontFamily: 'var(--font-data)' }}>
-                {new Date(scan.timestamp).toLocaleString('en-IN', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
+                {formatDateTime(scan.timestamp)}
               </p>
             </div>
           </div>

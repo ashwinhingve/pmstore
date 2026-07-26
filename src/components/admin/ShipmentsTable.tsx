@@ -14,6 +14,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { Badge, statusBadgeVariant } from '@/components/ui/badge';
+import { formatDateTime } from '@/lib/utils/format-date';
 
 interface Shipment {
   id: string;
@@ -161,17 +162,6 @@ export default function ShipmentsTable({
 
   const hasActiveFilters = filters.status || filters.dateFrom || filters.dateTo || filters.search;
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
-  };
-
   const getTrackingUrl = (shipment: Shipment) =>
     shipment.trackingUrl || `https://www.delhivery.com/track/package/${shipment.waybill}`;
 
@@ -238,7 +228,7 @@ export default function ShipmentsTable({
                     <p className="text-xs text-[var(--ink-70)]">{order.customerEmail}</p>
                     <p className="text-xs text-[var(--ink-70)] mt-0.5" style={{ fontFamily: 'var(--font-data)' }}>
                       ₹{order.totalAmount.toLocaleString('en-IN')} &middot;{' '}
-                      {formatDate(order.createdAt)}
+                      {formatDateTime(order.createdAt)}
                     </p>
                   </div>
 
@@ -515,7 +505,7 @@ export default function ShipmentsTable({
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
-                      {formatDate(shipment.createdAt)}
+                      {formatDateTime(shipment.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end gap-2">

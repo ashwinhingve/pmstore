@@ -82,6 +82,7 @@ export default async function AdminPrescriptionsPage() {
                       day: 'numeric',
                       hour: '2-digit',
                       minute: '2-digit',
+                      timeZone: 'Asia/Kolkata',
                     })}
                   </td>
                   <td className="px-4 py-3 text-center text-[var(--ink)]">{rx.images.length}</td>

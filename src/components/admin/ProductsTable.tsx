@@ -393,10 +393,10 @@ export default function ProductsTable({
                     </td>
                     <td className="px-4 py-4 text-sm">
                       <div>
-                        <p className="font-medium text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>₹{product.price.toLocaleString()}</p>
+                        <p className="font-medium text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>₹{product.price.toLocaleString('en-IN')}</p>
                         {product.originalPrice && product.originalPrice > product.price && (
                           <p className="text-xs text-[var(--ink-40)] line-through" style={{ fontFamily: 'var(--font-data)' }}>
-                            ₹{product.originalPrice.toLocaleString()}
+                            ₹{product.originalPrice.toLocaleString('en-IN')}
                           </p>
                         )}
                       </div>

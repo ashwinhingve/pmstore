@@ -1,4 +1,5 @@
 import { CheckCircle, Clock, Package, Truck, Home, XCircle } from 'lucide-react';
+import { formatDateTime } from '@/lib/utils/format-date';
 
 interface OrderTimelineProps {
   orderStatus: string;
@@ -22,16 +23,6 @@ export default function OrderTimeline({
   shipmentDate,
   estimatedDelivery,
 }: OrderTimelineProps) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
-  };
-
   // Build timeline steps
   const steps: TimelineStep[] = [];
 
@@ -117,7 +108,7 @@ export default function OrderTimeline({
   } else {
     steps.push({
       label: 'Shipped',
-      date: estimatedDelivery ? `Est. ${formatDate(estimatedDelivery)}` : null,
+      date: estimatedDelivery ? `Est. ${formatDateTime(estimatedDelivery)}` : null,
       status: orderStatus === 'shipped' ? 'current' : 'upcoming',
       icon: Truck,
     });
@@ -134,7 +125,7 @@ export default function OrderTimeline({
   } else {
     steps.push({
       label: 'Delivered',
-      date: estimatedDelivery ? `Est. ${formatDate(estimatedDelivery)}` : null,
+      date: estimatedDelivery ? `Est. ${formatDateTime(estimatedDelivery)}` : null,
       status: 'upcoming',
       icon: Home,
     });
@@ -208,7 +199,7 @@ function Timeline({
                   <p className="text-sm text-[var(--ink-70)] mt-1 pack">
                     {typeof step.date === 'string' && step.date.startsWith('Est.')
                       ? step.date
-                      : formatDate(step.date)}
+                      : formatDateTime(step.date)}
                   </p>
                 )}
               </div>
@@ -238,7 +229,7 @@ function FailedTimeline({
           </div>
           <div>
             <p className="text-base font-medium text-[var(--ink)]">Order Placed</p>
-            <p className="text-sm text-[var(--ink-70)] mt-1 pack">{formatDate(createdAt)}</p>
+            <p className="text-sm text-[var(--ink-70)] mt-1 pack">{formatDateTime(createdAt)}</p>
           </div>
         </div>
 

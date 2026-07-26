@@ -60,7 +60,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
     if (key === 'totalRevenue') {
       return `₹${value.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
     }
-    return value.toLocaleString();
+    return value.toLocaleString('en-IN');
   };
 
   const getTrendIcon = (trend?: 'up' | 'down' | 'neutral') => {

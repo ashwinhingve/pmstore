@@ -13,6 +13,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { Badge, statusBadgeVariant } from '@/components/ui/badge';
+import { formatDateTime } from '@/lib/utils/format-date';
 
 interface Transaction {
   id: string;
@@ -140,17 +141,6 @@ export default function PaymentsTable({
     filters.amountMin ||
     filters.amountMax ||
     filters.search;
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
-  };
 
   return (
     <div className="rounded-lg bg-[var(--paper-card)] shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
@@ -411,7 +401,7 @@ export default function PaymentsTable({
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-40)]" style={{ fontFamily: 'var(--font-data)' }}>
-                      {formatDate(txn.createdAt)}
+                      {formatDateTime(txn.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       {txn.orderId && (

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { toast } from '@/store/useToastStore';
+import { formatDate, formatDateTime } from '@/lib/utils/format-date';
 
 interface OrderStatusManagerProps {
   orderId: string;
@@ -107,13 +108,10 @@ export default function OrderStatusManager({
       {isCancelled && liveRefundAmount > 0 && (
         <div className="mb-4 p-3 bg-[var(--foil-soft)] border border-[var(--foil)] rounded-lg">
           <p className="text-xs font-semibold text-[var(--ink)] mb-1">Refund initiated</p>
-          <p className="text-sm font-bold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>₹{liveRefundAmount.toLocaleString()}</p>
+          <p className="text-sm font-bold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>₹{liveRefundAmount.toLocaleString('en-IN')}</p>
           {liveRefundedAt && (
             <p className="text-xs text-[var(--ink-70)] mt-1">
-              {new Date(liveRefundedAt).toLocaleDateString('en-IN', {
-                day: 'numeric', month: 'short', year: 'numeric',
-                hour: '2-digit', minute: '2-digit',
-              })}
+              {formatDateTime(liveRefundedAt)}
             </p>
           )}
         </div>
@@ -123,10 +121,7 @@ export default function OrderStatusManager({
       {isCancelled && liveCancelledAt && (
         <div className="mb-4">
           <p className="text-xs text-[var(--ink-70)]">
-            Cancelled on{' '}
-            {new Date(liveCancelledAt).toLocaleDateString('en-IN', {
-              day: 'numeric', month: 'short', year: 'numeric',
-            })}
+            Cancelled on {formatDate(liveCancelledAt)}
           </p>
         </div>
       )}

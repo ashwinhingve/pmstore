@@ -14,6 +14,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { Badge, statusBadgeVariant } from '@/components/ui/badge';
+import { formatDate as formatDateIST } from '@/lib/utils/format-date';
 
 interface Order {
   id: string;
@@ -49,7 +50,7 @@ const mono = { fontFamily: 'var(--font-data)' as const, fontVariantNumeric: 'tab
 
 function formatDate(iso: string): string {
   if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  return formatDateIST(iso);
 }
 
 export default function CustomOrdersTable({
