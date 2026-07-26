@@ -68,7 +68,7 @@ state or meaning through a tint.
 | `--shadow-md` | raised cards, dropdowns, hovered interactive cards |
 | `--shadow-feature` | premium feature surfaces (hero card, featured, detail buy-box) |
 | `--shadow-lg` | drawers, dialogs, sticky order summaries |
-| `--shadow-hero` | the hero search card and nothing else |
+| `--shadow-hero` | the hero carousel panel and nothing else |
 
 `--shadow-card` remains as a legacy alias; new work picks from the scale. An interactive card may
 raise one step on hover (`sm → md`) over `--dur-fast`. No scale transforms on hover.
@@ -197,16 +197,20 @@ Buttons support a `loading` prop (spinner + `aria-busy`); default height is 44px
 
 ## Layout
 
-Home page is **search-first**. The hero is a `--surface-hero` navy band whose primary element is
-the search card (`--shadow-hero`) — not a promotion. Three doors, in this order:
+Home page is **search-first**. The hero sits on a light `--paper` surface. Its primary element is
+the search card (`--shadow-feature`) on the left — not a promotion — with a sliding image carousel
+on the right (shop-managed via Admin → Site settings; see below). Three doors, in this order:
 
 1. Search
 2. Order again — last order, one tap, only when signed in with order history
 3. Upload prescription
 
-No carousels, no smiling pharmacist stock photos, no festival banners. Illustration is inline SVG
-in token colors only. Below the fold, sections alternate `--paper` / `--paper-tint` backgrounds
-instead of hairline dividers. Categories and offers go below the fold.
+The hero carousel is the one sanctioned image slider, and its slides are shop-managed content
+(Admin → Site settings), not stock photography — it autoplays on the marketing home only, pauses on
+hover/focus, and holds still under `prefers-reduced-motion`. Elsewhere: no gratuitous carousels, no
+festival banners; decorative illustration is inline SVG in token colors only. Below the fold,
+sections alternate `--paper` / `--paper-tint` backgrounds instead of hairline dividers. Categories
+and offers go below the fold.
 
 Container max-width 1200px. Mobile-first — build the 360px layout, then widen.
 

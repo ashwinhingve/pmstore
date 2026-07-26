@@ -3,8 +3,10 @@ import { getServerSession } from 'next-auth';
 import { connectDB } from '@/lib/mongodb';
 import { authOptions } from '@/lib/auth';
 import Product from '@/models/Product';
+import SiteSettings from '@/models/SiteSettings';
 import { SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants';
 import { Hero } from '@/components/landing/Hero';
+import type { HeroSlideView } from '@/components/landing/HeroCarousel';
 import { PromoBar } from '@/components/landing/PromoBar';
 import { VideoSection } from '@/components/landing/VideoSection';
 import { QuickActions } from '@/components/landing/QuickActions';
@@ -72,6 +74,9 @@ export default async function Home() {
 
   // Fetch ~8 featured products
   let featuredProducts: Product[] = [];
+  // Admin-managed hero slides (Admin → Site settings). Empty → HeroCarousel
+  // falls back to its built-in photo set.
+  let heroSlides: HeroSlideView[] = [];
   try {
     await connectDB();
     const products = await Product.find({
@@ -96,15 +101,29 @@ export default async function Home() {
             : plain.category || 'Uncategorized',
       };
     });
+    // Active hero slides, ordered; serialize ObjectId at the boundary and drop
+    // any slide without an image so the carousel never renders a blank frame.
+    const settings = await SiteSettings.findOne({ key: 'global' })
+      .select('heroSlider')
+      .lean();
+    heroSlides = ((settings as any)?.heroSlider?.slides ?? [])
+      .filter((s: any) => s.isActive && s.image)
+      .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+      .map((s: any) => ({
+        _id: String(s._id),
+        image: s.image as string,
+        title: s.title || undefined,
+        subtitle: s.subtitle || undefined,
+      }));
   } catch (error) {
     // Silent fail — if catalogue is unseeded, we show empty state gracefully
-    console.error('Failed to fetch featured products:', error);
+    console.error('Failed to fetch home page data:', error);
   }
 
   return (
     <div className="w-full">
       {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
-      <Hero />
+      <Hero slides={heroSlides} />
       <PromoBar />
       <QuickActions signedIn={signedIn} />
       <VideoSection />
