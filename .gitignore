@@ -44,3 +44,8 @@ next-env.d.ts
 # stray nested clone and leftover Taptifs docs (kept locally, not tracked)
 /pmstore/
 /documents(taptifs)/
+
+# Playwright MCP scratch
+.playwright-mcp/
+products-new.png
+*-new.png
