@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MessageCircle, Mail, Phone, MapPin } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { NewsletterForm } from "./NewsletterForm";
-import { SITE_NAME, SITE_DESCRIPTION, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
+import { SITE_NAME, SITE_SHORT_NAME, SITE_SLOGAN, SITE_DESCRIPTION, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
 
 const shopLinks = [
   { href: "/products", label: "All medicines" },
@@ -43,8 +43,8 @@ export function Footer() {
               <div className="mb-2 text-[var(--paper)]">
                 <Logo size={40} variant="mark" />
               </div>
-              <h3 className="text-lg font-bold text-[var(--paper)]">{SITE_NAME}</h3>
-              <p className="text-xs font-medium text-[var(--foil)]">Trusted pharmacy</p>
+              <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--paper)]">{SITE_SHORT_NAME}</h3>
+              <p className="text-xs font-medium text-[var(--foil)]">{SITE_SLOGAN}</p>
             </Link>
             <p className="max-w-sm text-sm leading-relaxed text-[var(--foil)]">
               {SITE_DESCRIPTION}

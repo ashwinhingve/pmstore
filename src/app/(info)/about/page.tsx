@@ -6,7 +6,7 @@ import { CountUpStat } from "@/components/shared/CountUpStat"
 import { CertificationBadge } from "@/components/shared/CertificationBadge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { SITE_NAME, CONTACT, VALUE_PROPS } from "@/lib/constants"
+import { SITE_NAME, SITE_SHORT_NAME, SITE_SLOGAN, VALUE_PROPS } from "@/lib/constants"
 import {
   Heart,
   Leaf,
@@ -24,16 +24,21 @@ import {
 export default function AboutPage() {
   return (
     <main>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[var(--paper)] py-20 md:py-32">
-        <div className="container mx-auto px-4">
-          <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
-            <h1 className="text-[length:var(--step-3)] mb-6 text-[var(--ink)]">
-              Our Story
+      {/* Hero Section — navy prescription-counter band */}
+      <section className="relative overflow-hidden bg-[image:var(--surface-hero)] py-20 text-[var(--paper)] md:py-28">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+          <AnimatedSection direction="up" className="mx-auto max-w-3xl text-center">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--mint-soft)]">
+              About {SITE_SHORT_NAME}
+            </p>
+            <h1 className="mb-5 font-[family-name:var(--font-display)] text-[length:var(--step-3)] font-extrabold tracking-tight text-[var(--paper)]">
+              {SITE_SLOGAN}
             </h1>
-            <p className="text-xl md:text-2xl text-[var(--ink-70)] mb-8">
-              {SITE_NAME} has been your trusted pharmacy for over 20 years, dispensing genuine medicines at affordable prices.
-              Our mission: help every Indian family save 60–70% on medicines with government-approved generic brands, backed by trained pharmacists and free home delivery.
+            <p className="text-lg leading-relaxed text-[var(--ink-10)] md:text-xl">
+              {SITE_SHORT_NAME} — Pratigya Medical Store — has served Bhopal for over 20 years,
+              dispensing genuine medicines at generic prices. Our aim is simple: help every family
+              save 60–70% with government-approved generic brands, trained pharmacists, and free
+              home delivery.
             </p>
           </AnimatedSection>
         </div>
@@ -41,14 +46,14 @@ export default function AboutPage() {
 
       {/* Mission & Vision */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             <AnimatedSection direction="left">
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] h-full group border border-[var(--foil-soft)]">
                 <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6">
                   <Target className="w-10 h-10 text-[var(--ink)]" />
                 </div>
-                <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our Mission</h2>
+                <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our mission</h2>
                 <p className="text-lg text-[var(--ink-70)] leading-relaxed">
                   Make genuine prescription and OTC medicines accessible at affordable prices. We partner with trusted suppliers to dispense government-approved generic brands at 60–70% savings, backed by trained pharmacists and free home delivery.
                 </p>
@@ -60,7 +65,7 @@ export default function AboutPage() {
                 <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6">
                   <Lightbulb className="w-10 h-10 text-[var(--ink)]" />
                 </div>
-                <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our Vision</h2>
+                <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our vision</h2>
                 <p className="text-lg text-[var(--ink-70)] leading-relaxed">
                   Bridge every doctor and patient with trust. Expand from Bhopal to serve all of India, making affordable genuine medicines a reality and establishing healthcare affordability as a standard, not a luxury.
                 </p>
@@ -72,10 +77,10 @@ export default function AboutPage() {
 
       {/* Stats Section */}
       <section className="py-16 md:py-24 bg-[var(--paper)]">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-12">
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
-              Our Impact
+              Our impact
             </h2>
             <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
           </AnimatedSection>
@@ -84,25 +89,25 @@ export default function AboutPage() {
             <CountUpStat
               end={20}
               suffix="+"
-              label="Years Serving Bhopal"
+              label="Years serving Bhopal"
               icon={<Award className="w-12 h-12 text-[var(--ink)]" />}
             />
             <CountUpStat
               end={10000}
               suffix="+"
-              label="Satisfied Customers"
+              label="Satisfied customers"
               icon={<Users className="w-12 h-12 text-[var(--ink)]" />}
             />
             <CountUpStat
               end={5000}
               suffix="+"
-              label="Genuine Medicines"
+              label="Genuine medicines"
               icon={<Package className="w-12 h-12 text-[var(--ink)]" />}
             />
             <CountUpStat
               end={60}
               suffix="%"
-              label="Average Savings"
+              label="Average savings"
               icon={<TrendingUp className="w-12 h-12 text-[var(--ink)]" />}
             />
           </div>
@@ -111,10 +116,10 @@ export default function AboutPage() {
 
       {/* Why Choose Us */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
-              Why Choose Us
+              Why choose us
             </h2>
             <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
             <p className="text-[var(--ink-70)] mt-6 max-w-2xl mx-auto">
@@ -136,10 +141,10 @@ export default function AboutPage() {
 
       {/* Core Values */}
       <section className="py-16 md:py-24 bg-[var(--paper)]">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-12">
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
-              Our Values
+              Our values
             </h2>
             <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
           </AnimatedSection>
@@ -150,7 +155,7 @@ export default function AboutPage() {
                 <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="w-8 h-8 text-[var(--ink)]" />
                 </div>
-                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Patient First</h3>
+                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Patient first</h3>
                 <p className="text-[var(--ink-70)]">
                   Your health and medication access guide every decision we make.
                 </p>
@@ -162,7 +167,7 @@ export default function AboutPage() {
                 <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="w-8 h-8 text-[var(--ink)]" />
                 </div>
-                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Genuine Medicines</h3>
+                <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Genuine medicines</h3>
                 <p className="text-[var(--ink-70)]">
                   We dispense only government-approved medicines from trusted suppliers.
                 </p>
@@ -223,10 +228,10 @@ export default function AboutPage() {
 
       {/* Compliance & License */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-12">
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
-              Government Approved
+              Government approved
             </h2>
             <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
             <p className="text-[var(--ink-70)] mt-6 max-w-2xl mx-auto">
@@ -240,7 +245,7 @@ export default function AboutPage() {
                 <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="w-8 h-8 text-[var(--mint)]" />
                 </div>
-                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Registered Pharmacy</h3>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Registered pharmacy</h3>
                 <p className="text-[var(--ink-70)] text-sm">
                   Licensed under Food & Drug Administration, Madhya Pradesh
                 </p>
@@ -252,7 +257,7 @@ export default function AboutPage() {
                 <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="w-8 h-8 text-[var(--mint)]" />
                 </div>
-                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Verified Medicines</h3>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Verified medicines</h3>
                 <p className="text-[var(--ink-70)] text-sm">
                   All products sourced from licensed distributors
                 </p>
@@ -264,7 +269,7 @@ export default function AboutPage() {
                 <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Award className="w-8 h-8 text-[var(--mint)]" />
                 </div>
-                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">20+ Years Trust</h3>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">20+ years of trust</h3>
                 <p className="text-[var(--ink-70)] text-sm">
                   Serving Bhopal with pharmacy care and affordability
                 </p>
@@ -276,23 +281,23 @@ export default function AboutPage() {
 
       {/* CTA Section */}
       <section className="py-16 md:py-24 bg-[var(--paper)]">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
             <h2 className="text-[length:var(--step-2)] mb-6 text-[var(--ink)]">
-              Start Saving on Medicines Today
+              Start saving on medicines today
             </h2>
             <p className="text-xl text-[var(--ink-70)] mb-8">
-              Order genuine medicines at 60–70% savings, with free home delivery and pharmacist verification
+              Order genuine medicines at 60–70% savings, with free home delivery and pharmacist verification.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/products">
-                <Button size="lg" className="bg-[var(--ink)] hover:bg-[var(--ink-70)] text-white px-10 py-6 text-lg shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]">
-                  Browse Medicines
+                <Button size="lg" className="bg-[var(--ink)] hover:bg-[var(--ink-deep)] text-[var(--paper-card)] px-10 py-6 text-lg shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]">
+                  Browse medicines
                 </Button>
               </Link>
               <Link href="/contact">
-                <Button size="lg" variant="outline" className="border-2 border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--ink)] hover:text-white px-10 py-6 text-lg">
-                  Contact Us
+                <Button size="lg" variant="outline" className="border-2 border-[var(--ink)] text-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--paper-card)] px-10 py-6 text-lg">
+                  Contact us
                 </Button>
               </Link>
             </div>

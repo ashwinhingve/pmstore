@@ -37,33 +37,33 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pratigyamedicalsto
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "PMStore — Pratigya Medical Store | Online Pharmacy",
-    template: "%s | PMStore",
+    default: "PM Store — Pratigya Medical Store | Online Pharmacy",
+    template: "%s | PM Store",
   },
-  description: "PMStore (Pratigya Medical Store) — order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents of the same composition, upload a prescription, and reorder in one tap.",
-  keywords: ["pmstore", "pratigya medical store", "online pharmacy", "buy medicines online", "generic medicine", "price per tablet", "prescription upload", "medicine home delivery", "India pharmacy"],
+  description: "PM Store (Pratigya Medical Store) — order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents of the same composition, upload a prescription, and reorder in one tap.",
+  keywords: ["pm store", "pmstore", "pratigya medical store", "online pharmacy", "buy medicines online", "generic medicine", "price per tablet", "prescription upload", "medicine home delivery", "India pharmacy"],
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "PMStore — Pratigya Medical Store | Online Pharmacy",
+    title: "PM Store — Pratigya Medical Store | Online Pharmacy",
     description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, upload a prescription, and reorder in one tap.",
     images: [
       {
         url: "/logo.svg",
         width: 512,
         height: 512,
-        alt: "PMStore — Pratigya Medical Store",
+        alt: "PM Store — Pratigya Medical Store",
       },
     ],
-    siteName: "PMStore",
+    siteName: "PM Store",
     type: "website",
     locale: "en_IN",
     url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "PMStore — Pratigya Medical Store | Online Pharmacy",
+    title: "PM Store — Pratigya Medical Store | Online Pharmacy",
     description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, and upload a prescription.",
     images: ["/logo.svg"],
   },
@@ -85,7 +85,7 @@ const orgJsonLd = {
   "@type": "Pharmacy",
   "@id": `${SITE_URL}/#organization`,
   "name": "Pratigya Medical Store",
-  "alternateName": "PMStore",
+  "alternateName": "PM Store",
   "url": SITE_URL,
   "logo": {
     "@type": "ImageObject",
@@ -107,7 +107,7 @@ const websiteJsonLd = {
   "@type": "WebSite",
   "@id": `${SITE_URL}/#website`,
   "url": SITE_URL,
-  "name": "PMStore",
+  "name": "PM Store",
   "description": "Online pharmacy — genuine medicines, price-per-unit comparison, and prescription upload.",
   "publisher": {
     "@id": `${SITE_URL}/#organization`,

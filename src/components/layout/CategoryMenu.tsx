@@ -2,32 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import {
-  ChevronDown,
-  Pill,
-  Shield,
-  Droplets,
-  Heart,
-  Sparkles,
-  Leaf,
-  Baby,
-  Flower2,
-  ArrowRight,
-} from "lucide-react";
+import { ChevronDown, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PHARMA_CATEGORIES } from "@/lib/categories";
 
-// Curated pharma categories — mirrors the landing Categories section. Static by
-// design (the DB categories are food-store leftovers). Links pre-filter /products.
-const CATEGORIES = [
-  { name: "Pain Relief", icon: Pill },
-  { name: "Antibiotics", icon: Shield },
-  { name: "Diabetes Care", icon: Droplets },
-  { name: "Heart & BP", icon: Heart },
-  { name: "Skin Care", icon: Sparkles },
-  { name: "Vitamins & Minerals", icon: Leaf },
-  { name: "Baby Care", icon: Baby },
-  { name: "Ayurveda", icon: Flower2 },
-];
+// Canonical pharma categories — names match the DB so each link filters
+// /products correctly. See src/lib/categories.ts.
+const CATEGORIES = PHARMA_CATEGORIES;
 
 /**
  * Desktop "Shop by category" dropdown. Opens on hover for mouse users and on

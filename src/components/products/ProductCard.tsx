@@ -132,9 +132,9 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/products/${product.slug}`} className="group block h-full">
-      <article className="flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-xs)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)]">
+      <article className="flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-xs)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]">
         {/* Product Image */}
-        <div className="relative aspect-square overflow-hidden bg-[var(--paper-tint)]">
+        <div className="relative aspect-square overflow-hidden border-b border-[var(--foil-soft)] bg-[var(--paper-tint)]">
           {imageUrl && !imageError ? (
             <Image
               src={imageUrl}
@@ -182,9 +182,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Product Info */}
         <div className="flex flex-1 flex-col p-4">
-          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-[var(--mint)]">
-            {typeof product.category === 'string' ? product.category : product.category?.name}
-          </p>
+          {(typeof product.category === 'string' ? product.category : product.category?.name) && (
+            <span className="mb-2 inline-flex w-fit items-center rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-[var(--mint-deep)]">
+              {typeof product.category === 'string' ? product.category : product.category?.name}
+            </span>
+          )}
 
           <h3 className="mb-2 line-clamp-2 font-[family-name:var(--font-display)] text-sm font-semibold leading-snug text-[var(--ink)] md:text-base">
             {product.name}
@@ -272,7 +274,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   size="sm"
                   onClick={handleAddToCart}
                   disabled={isAdding || outOfStock}
-                  className="h-10 w-full bg-[var(--mint)] text-sm font-semibold text-[var(--paper-card)] hover:bg-[var(--mint-deep)]"
+                  className="h-11 w-full bg-[var(--mint)] text-sm font-semibold text-[var(--paper-card)] hover:bg-[var(--mint-deep)]"
                 >
                   {isAdding ? "Added to cart" : "Add to cart"}
                 </Button>
@@ -281,7 +283,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   variant="outline"
                   onClick={handleBuyNow}
                   disabled={outOfStock}
-                  className="h-10 w-full text-sm font-semibold"
+                  className="h-11 w-full text-sm font-semibold"
                 >
                   Buy now
                 </Button>

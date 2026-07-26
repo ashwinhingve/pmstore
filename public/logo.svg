@@ -1,30 +1,19 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Pratigya Medical Store Logo: Capsule with P mark -->
-  <!-- Colors: mint (#0E8F6E) for capsule, ink (#16233A) for P -->
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- PM Store logo lockup — capsule + "P" mark, wordmark, slogan -->
+  <!-- Colors: paper #FBFAF7 bg, mint #0E8F6E capsule, mint-soft #E4F3ED fill, ink #16233A P/wordmark, ink-70 #56607A slogan -->
+  <rect width="512" height="512" fill="#FBFAF7" />
 
-  <!-- Capsule outline in mint green -->
-  <rect
-    x="10"
-    y="16"
-    width="44"
-    height="32"
-    rx="16"
-    fill="none"
-    stroke="#0E8F6E"
-    stroke-width="2"
-  />
+  <!-- Mark: 64-unit artwork scaled ×3.6 and centred near the top -->
+  <g transform="translate(140.8, 44.8) scale(3.6)">
+    <rect x="6" y="18" width="52" height="28" rx="14" fill="#E4F3ED" stroke="#0E8F6E" stroke-width="3.5" />
+    <path d="M32 19.5 V44.5" stroke="#0E8F6E" stroke-width="2" stroke-linecap="round" opacity="0.55" />
+    <path d="M22 21 V43" stroke="#16233A" stroke-width="4.25" stroke-linecap="round" />
+    <path d="M22 21 H30 A7 7 0 0 1 30 34 H22" fill="none" stroke="#16233A" stroke-width="4.25" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
 
-  <!-- Stylized "P" mark in navy ink -->
-  <!-- Vertical stem of P -->
-  <rect x="22" y="18" width="3" height="28" fill="#16233A" />
+  <!-- Wordmark -->
+  <text x="256" y="320" text-anchor="middle" font-family="'Public Sans', system-ui, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5" fill="#16233A">PM Store</text>
 
-  <!-- Rounded top loop of P -->
-  <path
-    d="M 25 18 Q 35 18 35 26 Q 35 34 25 34"
-    fill="none"
-    stroke="#16233A"
-    stroke-width="2.5"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+  <!-- Slogan -->
+  <text x="256" y="368" text-anchor="middle" font-family="'Public Sans', system-ui, Arial, sans-serif" font-size="27" font-weight="500" fill="#56607A">Genuine medicines, generic prices</text>
 </svg>

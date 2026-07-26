@@ -27,7 +27,7 @@ export function organizationSchema(siteUrl: string) {
     '@type': 'Pharmacy',
     '@id': ORG_ID(siteUrl),
     name: 'Pratigya Medical Store',
-    alternateName: 'PMStore',
+    alternateName: 'PM Store',
     url: siteUrl,
     logo: {
       '@type': 'ImageObject',
@@ -51,7 +51,7 @@ export function websiteSchema(siteUrl: string) {
     '@type': 'WebSite',
     '@id': `${siteUrl}/#website`,
     url: siteUrl,
-    name: 'PMStore',
+    name: 'PM Store',
     description:
       'Online pharmacy — genuine medicines, price-per-unit comparison, and prescription upload.',
     publisher: { '@id': ORG_ID(siteUrl) },

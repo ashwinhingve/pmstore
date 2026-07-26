@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileUp, Home, Info, Package, Phone, Pill, Bookmark, User } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { FileUp, Home, Info, Package, Phone, Pill, Bookmark, User, LayoutDashboard } from "lucide-react";
 import { Drawer } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
+import { PHARMA_CATEGORIES } from "@/lib/categories";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -16,17 +18,9 @@ const navItems = [
   { href: "/contact", label: "Contact", icon: Phone },
 ];
 
-// Mirrors the desktop CategoryMenu / landing Categories.
-const CATEGORIES = [
-  "Pain Relief",
-  "Antibiotics",
-  "Diabetes Care",
-  "Heart & BP",
-  "Skin Care",
-  "Vitamins & Minerals",
-  "Baby Care",
-  "Ayurveda",
-];
+// Canonical pharma categories — mirrors the desktop CategoryMenu / landing
+// Categories. Names match the DB so each link filters /products correctly.
+const CATEGORIES = PHARMA_CATEGORIES.map((c) => c.name);
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -35,11 +29,23 @@ interface MobileMenuProps {
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+  const isAdmin = status === "authenticated" && session?.user?.role === "admin";
 
   return (
     <Drawer open={isOpen} onClose={onClose} title="Menu" side="right" className="lg:hidden">
       <nav aria-label="Mobile navigation" className="flex h-full flex-col p-4">
         <div className="flex-1 overflow-y-auto">
+          {isAdmin && (
+            <Link
+              href="/admin/dashboard"
+              onClick={onClose}
+              className="mb-3 flex min-h-11 items-center gap-3 rounded-[var(--radius-sm)] bg-[var(--ink)] px-3 font-semibold text-[var(--paper-card)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--ink-deep)]"
+            >
+              <LayoutDashboard className="h-5 w-5" aria-hidden="true" />
+              Admin dashboard
+            </Link>
+          )}
           <ul className="space-y-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href;

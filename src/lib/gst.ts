@@ -1,5 +1,5 @@
 /**
- * GST Utility — PMStore
+ * GST Utility — PM Store
  *
  * Seller state: Madhya Pradesh (GSTIN: 23GGLPD7346M1ZZ)
  * Intra-state sale (customer in MP) → CGST + SGST (split equally)

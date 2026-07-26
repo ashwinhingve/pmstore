@@ -125,7 +125,7 @@ export default function AdminSidebar() {
           <div className="mb-6 flex shrink-0 items-center px-6">
             <div>
               <h2 className="text-xl font-bold text-[var(--ink)]">Admin panel</h2>
-              <p className="text-sm text-[var(--ink-40)]">PMStore</p>
+              <p className="text-sm text-[var(--ink-40)]">PM Store</p>
             </div>
           </div>
 

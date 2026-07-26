@@ -108,7 +108,7 @@ class SMSService {
   }
 
   async sendFeedbackRequestSMS(phone: string, orderNumber: string, reviewUrl: string): Promise<SMSResult> {
-    const message = `Thank you for your PMStore order ${orderNumber}! Share your experience: ${reviewUrl} - ${SITE_NAME}`;
+    const message = `Thank you for your PM Store order ${orderNumber}! Share your experience: ${reviewUrl} - ${SITE_NAME}`;
     return this.sendSMS(phone, message);
   }
 
@@ -121,38 +121,38 @@ class SMSService {
 
   async notifyAdminOrderConfirmed(orderNumber: string, customerName: string, amount: number, paymentMethod: string): Promise<SMSResult> {
     const method = paymentMethod === 'cod' ? 'COD' : 'Online';
-    const message = `[PMStore] Order ${orderNumber} confirmed. Customer: ${customerName}. Amount: Rs.${amount.toFixed(2)}. Method: ${method}.`;
+    const message = `[PM Store] Order ${orderNumber} confirmed. Customer: ${customerName}. Amount: Rs.${amount.toFixed(2)}. Method: ${method}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminPaymentFailed(orderNumber: string, customerName: string, amount: number): Promise<SMSResult> {
-    const message = `[PMStore] Payment FAILED for order ${orderNumber}. Customer: ${customerName}. Amount: Rs.${amount.toFixed(2)}.`;
+    const message = `[PM Store] Payment FAILED for order ${orderNumber}. Customer: ${customerName}. Amount: Rs.${amount.toFixed(2)}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminShipmentCreated(orderNumber: string, trackingNumber: string, customerName: string): Promise<SMSResult> {
-    const message = `[PMStore] Order ${orderNumber} shipped. Tracking: ${trackingNumber}. Customer: ${customerName}.`;
+    const message = `[PM Store] Order ${orderNumber} shipped. Tracking: ${trackingNumber}. Customer: ${customerName}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminOutForDelivery(orderNumber: string, customerName: string): Promise<SMSResult> {
-    const message = `[PMStore] Order ${orderNumber} out for delivery. Customer: ${customerName}.`;
+    const message = `[PM Store] Order ${orderNumber} out for delivery. Customer: ${customerName}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminOrderDelivered(orderNumber: string, customerName: string): Promise<SMSResult> {
-    const message = `[PMStore] Order ${orderNumber} DELIVERED. Customer: ${customerName}.`;
+    const message = `[PM Store] Order ${orderNumber} DELIVERED. Customer: ${customerName}.`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminOrderCancelled(orderNumber: string, customerName: string, refundAmount?: number): Promise<SMSResult> {
     const refundText = refundAmount ? ` Refund: Rs.${refundAmount.toFixed(2)}.` : '';
-    const message = `[PMStore] Order ${orderNumber} CANCELLED. Customer: ${customerName}.${refundText}`;
+    const message = `[PM Store] Order ${orderNumber} CANCELLED. Customer: ${customerName}.${refundText}`;
     return this.sendAdminSMS(message);
   }
 
   async notifyAdminReturnRequest(orderNumber: string, customerName: string): Promise<SMSResult> {
-    const message = `[PMStore] Return request for order ${orderNumber}. Customer: ${customerName}.`;
+    const message = `[PM Store] Return request for order ${orderNumber}. Customer: ${customerName}.`;
     return this.sendAdminSMS(message);
   }
 }

@@ -434,7 +434,7 @@ class EmailService {
               <a href="${appUrl}/admin/orders" class="button">View in Admin Panel</a>
             </div>
           </div>
-          <div class="footer"><p>PMStorefs Admin Notification</p></div>
+          <div class="footer"><p>PM Store Admin Notification</p></div>
         </div>
       </body></html>`;
     await this.sendEmail(adminEmail, subject, html);
@@ -470,7 +470,7 @@ class EmailService {
               <a href="${appUrl}/admin/orders" class="button">View in Admin Panel</a>
             </div>
           </div>
-          <div class="footer"><p>PMStorefs Admin Notification</p></div>
+          <div class="footer"><p>PM Store Admin Notification</p></div>
         </div>
       </body></html>`;
     await this.sendEmail(adminEmail, subject, html);
@@ -503,7 +503,7 @@ class EmailService {
               <a href="${appUrl}/admin/orders" class="button">View in Admin Panel</a>
             </div>
           </div>
-          <div class="footer"><p>PMStorefs Admin Notification</p></div>
+          <div class="footer"><p>PM Store Admin Notification</p></div>
         </div>
       </body></html>`;
     await this.sendEmail(adminEmail, subject, html);
@@ -538,7 +538,7 @@ class EmailService {
               <a href="${appUrl}/admin/orders" class="button">View in Admin Panel</a>
             </div>
           </div>
-          <div class="footer"><p>PMStorefs Admin Notification</p></div>
+          <div class="footer"><p>PM Store Admin Notification</p></div>
         </div>
       </body></html>`;
     await this.sendEmail(adminEmail, subject, html);
@@ -856,7 +856,7 @@ class EmailService {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://pmstore.in';
     const greeting = name ? `Hi ${name},` : 'Hello,';
 
-    const subject = 'Welcome to PMStore!';
+    const subject = 'Welcome to PM Store!';
     const html = `
       <!DOCTYPE html>
       <html>

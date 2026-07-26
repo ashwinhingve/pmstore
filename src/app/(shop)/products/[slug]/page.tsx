@@ -12,8 +12,10 @@ import { PriceBlock } from '@/components/shared/PriceBlock';
 import { RxBadge } from '@/components/shared/RxBadge';
 import { SaveButton } from '@/components/shared/SaveButton';
 import { Accordion } from '@/components/ui/Accordion';
+import { SectionHeading } from '@/components/shared/SectionHeading';
 import { getAlternatives } from '@/lib/pharma/alternatives-data';
 import { formatComposition } from '@/lib/pharma/composition';
+import { Stethoscope } from 'lucide-react';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
 
@@ -44,7 +46,7 @@ export async function generateMetadata({
     return { title: 'Product Not Found' };
   }
 
-  const title = product.seo?.metaTitle || `${product.name} | PMStore`;
+  const title = product.seo?.metaTitle || `${product.name} | PM Store`;
   const description = product.seo?.metaDescription || product.description;
   const ogImage = product.seo?.ogImage || product.images?.[0]?.url || `${SITE_URL}/images/logo.jpg`;
   const canonicalUrl = `${SITE_URL}/products/${product.slug}`;
@@ -61,7 +63,7 @@ export async function generateMetadata({
       description,
       type: 'website',
       url: canonicalUrl,
-      siteName: 'PMStore',
+      siteName: 'PM Store',
       locale: 'en_IN',
       images: [
         {
@@ -144,7 +146,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
       "itemCondition": "https://schema.org/NewCondition",
       "seller": {
         "@type": "Organization",
-        "name": "PMStore",
+        "name": "PM Store",
       },
     },
   };
@@ -229,60 +231,76 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
           <ProductInfo product={serializedProduct} autoOpenReview={review === '1'} />
         </div>
 
-        {/* Pharma details + the Strip (price per unit is the headline) */}
-        <section className="mt-10 grid gap-8 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)] sm:p-6 lg:grid-cols-3">
-          <div className="space-y-4 lg:col-span-1">
-            {serializedProduct.scheduleClass && (
-              <RxBadge scheduleClass={serializedProduct.scheduleClass} />
-            )}
-            {serializedProduct.salts?.length > 0 && (
-              <div>
-                <p className="text-xs uppercase tracking-wide text-[var(--ink-40)]">Composition</p>
-                <p className="strength text-[var(--ink)]">
-                  {formatComposition(serializedProduct.salts)}
-                </p>
-              </div>
-            )}
-            <div className="flex flex-wrap gap-x-8 gap-y-3">
-              {serializedProduct.manufacturer && (
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-[var(--ink-40)]">Manufacturer</p>
-                  <p className="text-[var(--ink)]">{serializedProduct.manufacturer}</p>
-                </div>
+        {/* Compare & save — composition, pricing, and same-salt alternatives */}
+        <div className="mt-12">
+          <SectionHeading
+            eyebrow="Compare & save"
+            title="Same composition, better price"
+            description="The price that matters is per tablet. Switch to a genuine, cheaper brand with the exact same salts."
+          />
+          <section className="mt-5 grid gap-8 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)] sm:p-6 md:grid-cols-3">
+            <div className="space-y-4 md:col-span-1">
+              {serializedProduct.scheduleClass && (
+                <RxBadge scheduleClass={serializedProduct.scheduleClass} />
               )}
-              {serializedProduct.packSize > 0 && (
+              {serializedProduct.salts?.length > 0 && (
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-[var(--ink-40)]">Pack</p>
-                  <p className="pack text-[var(--ink)]">
-                    {serializedProduct.packSize} {serializedProduct.packUnit}
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-40)]">Composition</p>
+                  <p className="strength mt-0.5 text-[var(--ink)]">
+                    {formatComposition(serializedProduct.salts)}
                   </p>
                 </div>
               )}
+              <div className="flex flex-wrap gap-x-8 gap-y-3 border-t border-[var(--foil-soft)] pt-4">
+                {serializedProduct.manufacturer && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-40)]">Manufacturer</p>
+                    <p className="mt-0.5 text-[var(--ink)]">{serializedProduct.manufacturer}</p>
+                  </div>
+                )}
+                {serializedProduct.packSize > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-40)]">Pack</p>
+                    <p className="pack mt-0.5 text-[var(--ink)]">
+                      {serializedProduct.packSize} {serializedProduct.packUnit}
+                    </p>
+                  </div>
+                )}
+              </div>
+              {serializedProduct.unitPrice != null && (
+                <div className="border-t border-[var(--foil-soft)] pt-4">
+                  <PriceBlock
+                    price={serializedProduct.price}
+                    mrp={serializedProduct.mrp}
+                    unitPrice={serializedProduct.unitPrice}
+                    packSize={serializedProduct.packSize}
+                    packUnit={serializedProduct.packUnit}
+                  />
+                </div>
+              )}
+              <SaveButton productId={String(serializedProduct._id)} showLabel />
             </div>
-            {serializedProduct.unitPrice != null && (
-              <PriceBlock
-                price={serializedProduct.price}
-                mrp={serializedProduct.mrp}
-                unitPrice={serializedProduct.unitPrice}
-                packSize={serializedProduct.packSize}
-                packUnit={serializedProduct.packUnit}
-              />
-            )}
-            <SaveButton productId={String(serializedProduct._id)} showLabel />
-          </div>
-          <div className="lg:col-span-2">{strip && <Strip strip={strip} />}</div>
-        </section>
+            <div className="md:col-span-2 md:border-l md:border-[var(--foil-soft)] md:pl-6">
+              {strip && <Strip strip={strip} />}
+            </div>
+          </section>
+        </div>
 
         {/* Usage / storage / safety — medical copy rendered verbatim */}
         {(serializedProduct.usageInstructions ||
           serializedProduct.storageInstructions ||
           serializedProduct.sideEffects?.length > 0 ||
           serializedProduct.contraindications?.length > 0) && (
-          <div className="mt-10 max-w-3xl">
-            <h2 className="mb-4 text-[length:var(--step-1)] text-[var(--ink)]">
-              Medical information
-            </h2>
-            <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 shadow-[var(--shadow-xs)]">
+          <div className="mt-12 max-w-3xl">
+            <div className="mb-4 flex items-center gap-2.5">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--mint-soft)] text-[var(--mint)]">
+                <Stethoscope className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--step-1)] font-bold text-[var(--ink)]">
+                Medical information
+              </h2>
+            </div>
+            <div className="overflow-hidden rounded-[var(--radius-md)] border border-l-2 border-[var(--foil-soft)] border-l-[var(--mint)] bg-[var(--paper-card)] px-4 shadow-[var(--shadow-xs)]">
             {serializedProduct.usageInstructions && (
               <Accordion title="How to take it" defaultOpen>
                 <p>{serializedProduct.usageInstructions}</p>
@@ -326,10 +344,12 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
         {/* Related Products */}
         {serializedRelated.length > 0 && (
           <div className="mt-16">
-            <h2 className="mb-6 text-[length:var(--step-2)] text-[var(--ink)]">
-              Related medicines
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <SectionHeading
+              eyebrow="More options"
+              title="Related medicines"
+              className="mb-6"
+            />
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               {serializedRelated.map((relatedProduct: any) => (
                 <ProductCard key={relatedProduct._id || relatedProduct.id} product={relatedProduct} />
               ))}

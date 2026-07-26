@@ -5,7 +5,7 @@
  *
  * ONE-TIME SETUP:
  *   1. Open Telegram, search for @BotFather and send /newbot
- *   2. Follow prompts — give it a name like "PMStorefs Orders"
+ *   2. Follow prompts — give it a name like "PM Store Orders"
  *   3. BotFather sends you a bot token like: 123456789:AAFxxx...
  *   4. Search for your new bot in Telegram and press Start
  *   5. Open: https://api.telegram.org/bot<TOKEN>/getUpdates

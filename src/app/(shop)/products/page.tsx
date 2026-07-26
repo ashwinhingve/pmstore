@@ -3,7 +3,8 @@
 import { useState, useMemo, useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { ProductCard, type ProductCardData } from "@/components/products/ProductCard"
-import { categories as staticCategories } from "@/data/products"
+import { PHARMA_CATEGORIES } from "@/lib/categories"
+import { SITE_SLOGAN } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Drawer } from "@/components/ui/drawer"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -68,7 +69,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [categories, setCategories] = useState<CategoryData[]>(
-    staticCategories.map(c => ({ name: c.name, slug: c.slug }))
+    PHARMA_CATEGORIES.map(c => ({ name: c.name, slug: c.slug }))
   )
   const categoryScrollRef = useRef<HTMLDivElement>(null)
 
@@ -337,6 +338,32 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--paper)]">
+      {/* Page header — scrolls away; the category bar below stays sticky */}
+      <div className="border-b border-[var(--foil-soft)] bg-[var(--paper-tint)]">
+        <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--mint-deep)]">
+            Catalogue
+          </p>
+          <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h1 className="font-[family-name:var(--font-display)] text-[length:var(--step-2)] font-extrabold tracking-tight text-[var(--ink)]">
+              {isSearchMode
+                ? "Search results"
+                : selectedCategory !== "all"
+                  ? selectedCategory
+                  : "All medicines"}
+            </h1>
+            {!loading && (
+              <span className="data text-sm text-[var(--ink-70)]">
+                {filteredProducts.length} {filteredProducts.length === 1 ? "item" : "items"}
+              </span>
+            )}
+          </div>
+          <p className="mt-1 max-w-2xl text-sm text-[var(--ink-70)]">
+            {SITE_SLOGAN} — compare brands by price per tablet and switch to genuine, cheaper equivalents.
+          </p>
+        </div>
+      </div>
+
       {/* Horizontal Category Bar */}
       <div className="sticky top-[72px] z-30 border-b border-[var(--foil-soft)] bg-[var(--paper-card)]/95 backdrop-blur">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
@@ -385,6 +412,12 @@ export default function ProductsPage() {
             >
               <ChevronRight className="h-4 w-4 text-[var(--ink-70)]" aria-hidden="true" />
             </button>
+
+            {/* Mobile scroll affordance — fades the right edge of the pill row */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[var(--paper-card)] to-transparent md:hidden"
+            />
           </div>
         </div>
       </div>

@@ -2,9 +2,16 @@
 // Content is authoritative from the live store site pratigyamedicalstore.in.
 // Do not hardcode brand name, contact details, or currency elsewhere — import from here.
 
+// Full legal/registered name — used in SEO metadata, schema.org, legal pages,
+// and transactional email/SMS. Matches the domain pratigyamedicalstore.com.
 export const SITE_NAME = "Pratigya Medical Store";
-export const SITE_SHORT_NAME = "PMStore";
+// Short display brand — used everywhere customers read the name (navbar, footer
+// heading, logo wordmark, page-title suffix).
+export const SITE_SHORT_NAME = "PM Store";
+// Compliance badge (kept distinct from the marketing slogan below).
 export const SITE_TAGLINE = "Government Approved Generic Brand";
+// Marketing slogan — logo lockup, hero, footer, PWA manifest.
+export const SITE_SLOGAN = "Genuine medicines, generic prices";
 export const SITE_DESCRIPTION =
   "Pratigya Medical Store is a trusted pharmacy bridging doctors and patients — " +
   "genuine prescription and OTC medicines at generic prices, dispensed by trained " +

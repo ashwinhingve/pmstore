@@ -51,26 +51,20 @@ export default function ContactPage() {
     setSubmitStatus(null)
 
     try {
-      console.log("Submitting contact form:", data)
+      // Never log the form body — it carries the customer's phone and email.
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
 
-      const result = await response.json()
-      console.log("API Response:", result)
-
       if (response.ok) {
-        console.log("✓ Contact form submitted successfully")
         setSubmitStatus("success")
         reset()
       } else {
-        console.error("❌ Error submitting contact form:", result)
         setSubmitStatus("error")
       }
-    } catch (error) {
-      console.error("❌ Network error:", error)
+    } catch {
       setSubmitStatus("error")
     } finally {
       setIsSubmitting(false)
@@ -80,7 +74,7 @@ export default function ContactPage() {
   const faqItems = [
     {
       question: "What are your business hours?",
-      answer: "We're open Monday to Saturday from 9:00 AM to 6:00 PM IST. We're closed on Sundays and national holidays. However, you can reach us via email 24/7, and we'll respond within 24 hours.",
+      answer: "We're open every day, Monday to Sunday, from 9:00 AM to 9:00 PM. You can also email or WhatsApp us any time and we'll respond within 24 hours.",
     },
     {
       question: "How quickly can I expect a response?",
@@ -102,15 +96,19 @@ export default function ContactPage() {
 
   return (
     <main>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[var(--paper)] py-20 md:py-32">
-        <div className="container mx-auto px-4">
-          <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
-            <h1 className="text-[length:var(--step-3)] mb-6 text-[var(--ink)]">
-              Get In Touch
+      {/* Hero Section — navy prescription-counter band */}
+      <section className="relative overflow-hidden bg-[image:var(--surface-hero)] py-20 text-[var(--paper)] md:py-28">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+          <AnimatedSection direction="up" className="mx-auto max-w-3xl text-center">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--mint-soft)]">
+              Contact
+            </p>
+            <h1 className="mb-5 font-[family-name:var(--font-display)] text-[length:var(--step-3)] font-extrabold tracking-tight text-[var(--paper)]">
+              Get in touch
             </h1>
-            <p className="text-xl md:text-2xl text-[var(--ink-70)] mb-8">
-              Have questions about medicines, delivery, or prescriptions? We&apos;re here to help.
+            <p className="text-lg leading-relaxed text-[var(--ink-10)] md:text-xl">
+              Questions about medicines, delivery, or a prescription? We&apos;re here to help —
+              call, WhatsApp, or send a message and we&apos;ll reply within 24 hours.
             </p>
           </AnimatedSection>
         </div>
@@ -118,14 +116,14 @@ export default function ContactPage() {
 
       {/* Contact Info Cards */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             <StaggerItem>
               <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] text-center h-full border border-[var(--foil-soft)]">
                 <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <MapPin className="w-8 h-8 text-[var(--ink)]" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Visit Us</h3>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Visit us</h3>
                 <p className="text-sm text-[var(--ink-70)]">
                   {CONTACT.address.line1}<br />
                   {CONTACT.address.city}, {CONTACT.address.state}<br />
@@ -139,7 +137,7 @@ export default function ContactPage() {
                 <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Phone className="w-8 h-8 text-[var(--ink)]" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Call Us</h3>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Call us</h3>
                 <a href={CONTACT.phoneHref} className="text-sm text-[var(--ink-70)] hover:text-[var(--mint)] transition-colors block">
                   {CONTACT.phone}
                 </a>
@@ -151,7 +149,7 @@ export default function ContactPage() {
                 <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Mail className="w-8 h-8 text-[var(--ink)]" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Email Us</h3>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Email us</h3>
                 <a href={CONTACT.emailHref} className="text-sm text-[var(--ink-70)] hover:text-[var(--mint)] transition-colors block">
                   {CONTACT.email}
                 </a>
@@ -163,7 +161,7 @@ export default function ContactPage() {
                 <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Clock className="w-8 h-8 text-[var(--ink)]" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Business Hours</h3>
+                <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Business hours</h3>
                 <p className="text-sm text-[var(--ink-70)]">
                   {CONTACT.hours}
                 </p>
@@ -180,15 +178,15 @@ export default function ContactPage() {
                 <p className="text-[var(--ink-70)] mb-8">We&apos;ll get back to you within 24 hours.</p>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  <FormField label="Your Name" required error={errors.name?.message}>
+                  <FormField label="Your name" required error={errors.name?.message}>
                     <Input {...register("name")} placeholder="John Doe" error={errors.name?.message} />
                   </FormField>
 
-                  <FormField label="Email Address" required error={errors.email?.message}>
+                  <FormField label="Email address" required error={errors.email?.message}>
                     <Input {...register("email")} type="email" placeholder="john@example.com" error={errors.email?.message} />
                   </FormField>
 
-                  <FormField label="Phone Number" required error={errors.phone?.message}>
+                  <FormField label="Phone number" required error={errors.phone?.message}>
                     <PhoneInput {...register("phone")} placeholder="+91 XXXXX XXXXX" error={errors.phone?.message} />
                   </FormField>
 
@@ -225,7 +223,7 @@ export default function ContactPage() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-[var(--ink)] hover:bg-[var(--ink-deep)] text-white py-3 text-base font-semibold shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)]"
+                    className="w-full bg-[var(--ink)] hover:bg-[var(--ink-deep)] text-[var(--paper-card)] py-3 text-base font-semibold shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)]"
                   >
                     {isSubmitting ? 'Sending…' : 'Send message'}
                   </Button>
@@ -245,7 +243,7 @@ export default function ContactPage() {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Pratigya Medical Store Location — Bhopal"
+                  title="PM Store location — Bhopal"
                 ></iframe>
               </div>
 
@@ -303,7 +301,7 @@ export default function ContactPage() {
 
       {/* FAQ Section */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-12">
             <h2 className="text-[length:var(--step-2)] mb-4 text-[var(--ink)]">
               Frequently asked questions

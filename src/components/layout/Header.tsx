@@ -22,7 +22,7 @@ import {
   Package,
   Bookmark,
 } from "lucide-react";
-import { SITE_NAME } from "@/lib/constants";
+import { SITE_SHORT_NAME } from "@/lib/constants";
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -61,14 +61,14 @@ export function Header() {
         <Link
           href="/"
           className="group flex items-center gap-3 transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
-          aria-label={`${SITE_NAME} - Home`}
+          aria-label={`${SITE_SHORT_NAME} - Home`}
         >
           <div className="shrink-0 text-[var(--ink)]">
             <Logo size={44} variant="mark" />
           </div>
           <div className="hidden flex-col sm:flex lg:hidden xl:flex">
-            <span className="text-lg font-bold leading-tight text-[var(--ink)] md:text-xl">
-              {SITE_NAME}
+            <span className="font-[family-name:var(--font-display)] text-lg font-bold leading-tight text-[var(--ink)] md:text-xl">
+              {SITE_SHORT_NAME}
             </span>
           </div>
         </Link>
@@ -84,6 +84,19 @@ export function Header() {
           <div className="hidden w-56 md:block lg:w-80">
             <SearchBar />
           </div>
+
+          {/* Admin dashboard — only for admins (role read from the DB session) */}
+          {mounted && status === 'authenticated' && session?.user?.role === 'admin' && (
+            <Link href="/admin/dashboard" className="hidden sm:inline-flex">
+              <Button
+                size="sm"
+                className="gap-1.5 bg-[var(--ink)] text-[var(--paper-card)] hover:bg-[var(--ink-deep)]"
+              >
+                <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
+                Admin
+              </Button>
+            </Link>
+          )}
 
           {/* User Account */}
           {mounted && status === 'authenticated' && session?.user ? (

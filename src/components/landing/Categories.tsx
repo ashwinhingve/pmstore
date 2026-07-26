@@ -2,33 +2,16 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import {
-  Pill,
-  Shield,
-  Droplets,
-  Heart,
-  Leaf,
-  Sparkles,
-  Baby,
-  Flower2,
-} from 'lucide-react';
 import { Container } from '@/components/shared/Container';
 import { SectionHeading } from '@/components/shared/SectionHeading';
+import { PHARMA_CATEGORIES } from '@/lib/categories';
 
 /**
- * Categories — a curated STATIC list of pharma categories.
- * Do NOT read from DB (food-store leftovers).
+ * Categories — canonical pharma categories (src/lib/categories.ts). Names match
+ * the DB so each card links to a working /products filter. Shows the first
+ * eight; "View all" leads to the full catalogue.
  */
-const CATEGORIES = [
-  { name: 'Pain Relief', icon: Pill },
-  { name: 'Antibiotics', icon: Shield },
-  { name: 'Diabetes Care', icon: Droplets },
-  { name: 'Heart & BP', icon: Heart },
-  { name: 'Skin Care', icon: Sparkles },
-  { name: 'Vitamins & Minerals', icon: Leaf },
-  { name: 'Baby Care', icon: Baby },
-  { name: 'Ayurveda', icon: Flower2 },
-];
+const CATEGORIES = PHARMA_CATEGORIES.slice(0, 8);
 
 export function Categories() {
   const reduceMotion = useReducedMotion();
@@ -59,7 +42,7 @@ export function Categories() {
                 viewport={{ once: true, margin: '0px 0px -60px 0px' }}
               >
                 <Link
-                  href="/products"
+                  href={`/products?category=${encodeURIComponent(category.name)}`}
                   className="flex h-full flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 text-center shadow-[var(--shadow-xs)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]"
                 >
                   <div className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--mint-soft)] p-3 text-[var(--mint)]">

@@ -27,7 +27,7 @@ export async function generateMetadata({
   searchParams: Promise<RawParams>;
 }): Promise<Metadata> {
   const q = firstString((await searchParams).q);
-  return { title: q ? `Search: ${q} — PMStore` : 'Search — PMStore' };
+  return { title: q ? `Search: ${q} — PM Store` : 'Search — PM Store' };
 }
 
 function firstString(v: string | string[] | undefined): string {

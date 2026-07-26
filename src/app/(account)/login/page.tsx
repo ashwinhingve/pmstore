@@ -181,7 +181,7 @@ export default function LoginPage() {
           <Logo variant="mark" size={48} />
         </div>
         <h1 className="mb-2 text-[length:var(--step-2)] text-[var(--ink)]">
-          Welcome to PMStore
+          Welcome to PM Store
         </h1>
         <p className="text-[var(--ink-70)]">Sign in to continue</p>
       </div>
