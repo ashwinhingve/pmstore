@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Accordion } from '@/components/ui/Accordion';
+import { FAQAccordion } from '@/components/shared/FAQAccordion';
 import { ArrowRight } from 'lucide-react';
 import { Container } from '@/components/shared/Container';
 import { SectionHeading } from '@/components/shared/SectionHeading';
@@ -54,12 +54,8 @@ export function FaqPreview() {
             className="mb-10"
           />
 
-          <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-2 shadow-[var(--shadow-sm)]">
-            {SAMPLE_FAQS.map((faq, i) => (
-              <Accordion key={faq.question} title={faq.question} defaultOpen={i === 0}>
-                <p>{faq.answer}</p>
-              </Accordion>
-            ))}
+          <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)]">
+            <FAQAccordion items={SAMPLE_FAQS} />
           </div>
 
           <div className="mt-8 text-center">

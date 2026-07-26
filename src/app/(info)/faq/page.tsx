@@ -97,7 +97,7 @@ export default function FaqPage() {
               </h2>
               <p className="mt-1 text-sm text-[var(--ink-70)]">{section.description}</p>
             </div>
-            <Card variant="surface">
+            <Card variant="surface" padding="none" className="overflow-hidden">
               <FAQAccordion items={section.items} />
             </Card>
           </section>
