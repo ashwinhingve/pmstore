@@ -27,6 +27,7 @@ interface Order {
   orderStatus: string;
   createdAt: string;
   waybill: string | null;
+  isManualDelivery: boolean;
 }
 
 interface Filters {
@@ -335,6 +336,9 @@ export default function OrdersTable({
                     </div>
                     {order.waybill && (
                       <div className="text-xs text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>AWB: {order.waybill}</div>
+                    )}
+                    {order.isManualDelivery && (
+                      <Badge variant="strong" className="mt-1">Deliver manually</Badge>
                     )}
                   </td>
                   <td className="px-6 py-4">

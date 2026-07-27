@@ -87,6 +87,16 @@ export const PRODUCTS_PER_PAGE = 12;
 export const FREE_SHIPPING_THRESHOLD = 500;
 export const STANDARD_SHIPPING_COST = 40;
 
+// PIN codes the store delivers itself (local hand-delivery in Bhopal), bypassing
+// the courier partners. Kept as a list so the local zone can grow without code
+// changes. 462041 is the shop's own pincode today.
+export const LOCAL_DELIVERY_PINCODES: readonly string[] = ["462041"];
+
+/** True when an order's delivery pincode is one the store delivers itself. */
+export function isManualDeliveryPincode(postalCode?: string | null): boolean {
+  return !!postalCode && LOCAL_DELIVERY_PINCODES.includes(postalCode.trim());
+}
+
 // Image sizes
 export const IMAGE_SIZES = {
   THUMBNAIL: { width: 200, height: 200 },

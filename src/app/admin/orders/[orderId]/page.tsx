@@ -12,6 +12,8 @@ import CreateShipmentButton from '@/components/admin/CreateShipmentButton';
 import ShipmentScanTimeline from '@/components/admin/ShipmentScanTimeline';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { isManualDeliveryPincode } from '@/lib/constants';
 
 interface PageProps {
   params: Promise<{
@@ -224,6 +226,9 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
                   {orderData.shippingAddress.city}, {orderData.shippingAddress.state}{' '}
                   <span style={{ fontFamily: 'var(--font-data)' }}>{orderData.shippingAddress.postalCode}</span>
                 </p>
+                {isManualDeliveryPincode(orderData.shippingAddress.postalCode) && (
+                  <Badge variant="strong" className="mt-1">Deliver manually</Badge>
+                )}
               </div>
 
               {orderData.waybill && (

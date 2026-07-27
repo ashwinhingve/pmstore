@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import OrdersTable from '@/components/admin/OrdersTable';
+import { isManualDeliveryPincode } from '@/lib/constants';
 
 interface SearchParams {
   page?: string;
@@ -86,6 +87,7 @@ export default async function AdminOrdersPage({
       .skip(skip)
       .limit(limit)
       .populate('userId', 'name email')
+      .populate('shippingAddressId', 'postalCode')
       .lean(),
     Order.countDocuments(query),
   ]);
@@ -105,6 +107,7 @@ export default async function AdminOrdersPage({
     orderStatus: order.orderStatus,
     createdAt: order.createdAt.toISOString(),
     waybill: order.waybill || null,
+    isManualDelivery: isManualDeliveryPincode(order.shippingAddressId?.postalCode),
   }));
 
   // Get status counts for filters
