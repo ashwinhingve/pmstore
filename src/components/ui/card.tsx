@@ -12,9 +12,10 @@ const cardVariants = cva(
         surface: "shadow-[var(--shadow-sm)]",
         /** Raised card — sticky summaries, dropdown panels, feature cards. */
         elevated: "shadow-[var(--shadow-md)]",
-        /** Card that is itself a link/button target: raises one elevation step on hover. */
+        /** Card that is itself a link/button target: raises one elevation step and
+         *  warms its border on hover. */
         interactive:
-          "shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-within:shadow-[var(--shadow-md)]",
+          "shadow-[var(--shadow-sm)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--brand-soft)] hover:shadow-[var(--shadow-md)] focus-within:shadow-[var(--shadow-md)]",
         /** Hairline only — dense admin contexts where shadows would stack noisily. */
         flat: "shadow-none",
       },

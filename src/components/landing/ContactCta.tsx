@@ -8,8 +8,9 @@ import { SectionHeading } from '@/components/shared/SectionHeading';
 import { CONTACT, SOCIAL_LINKS } from '@/lib/constants';
 
 /**
- * ContactCta — closing navy band mirroring the hero: contact info,
- * WhatsApp CTA and a link to /contact.
+ * ContactCta — closing brand-orange band: contact info, WhatsApp CTA and a link
+ * to /contact. The WhatsApp button stays green — that is WhatsApp's own colour,
+ * not a theme accent.
  */
 export function ContactCta() {
   const reduceMotion = useReducedMotion();
@@ -18,7 +19,7 @@ export function ContactCta() {
     'flex flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--paper)]/15 bg-[var(--paper)]/5 p-6 transition-colors duration-[var(--dur-fast)]';
 
   return (
-    <section className="bg-[image:var(--surface-hero)]">
+    <section className="bg-[image:var(--surface-brand)]">
       <Container className="py-14 sm:py-20">
         <motion.div
           className="text-center"
@@ -37,22 +38,22 @@ export function ContactCta() {
           />
 
           <div className="grid gap-5 sm:grid-cols-3">
-            <a href={CONTACT.phoneHref} className={`${cardClass} hover:border-[var(--mint)]`}>
-              <Phone className="h-6 w-6 text-[var(--mint-soft)]" aria-hidden="true" />
+            <a href={CONTACT.phoneHref} className={`${cardClass} hover:border-[var(--brand-ink)]`}>
+              <Phone className="h-6 w-6 text-[var(--brand-ink)]" aria-hidden="true" />
               <span className="font-semibold text-[var(--paper)]">Call us</span>
-              <span className="data text-sm text-[var(--ink-10)]">{CONTACT.phone}</span>
+              <span className="data text-sm text-[var(--brand-ink)]/85">{CONTACT.phone}</span>
             </a>
 
-            <a href={CONTACT.emailHref} className={`${cardClass} hover:border-[var(--mint)]`}>
-              <Mail className="h-6 w-6 text-[var(--mint-soft)]" aria-hidden="true" />
+            <a href={CONTACT.emailHref} className={`${cardClass} hover:border-[var(--brand-ink)]`}>
+              <Mail className="h-6 w-6 text-[var(--brand-ink)]" aria-hidden="true" />
               <span className="font-semibold text-[var(--paper)]">Email us</span>
-              <span className="break-all text-sm text-[var(--ink-10)]">{CONTACT.email}</span>
+              <span className="break-all text-sm text-[var(--brand-ink)]/85">{CONTACT.email}</span>
             </a>
 
             <div className={cardClass}>
-              <MapPin className="h-6 w-6 text-[var(--mint-soft)]" aria-hidden="true" />
+              <MapPin className="h-6 w-6 text-[var(--brand-ink)]" aria-hidden="true" />
               <span className="font-semibold text-[var(--paper)]">Visit us</span>
-              <span className="text-center text-sm text-[var(--ink-10)]">
+              <span className="text-center text-sm text-[var(--brand-ink)]/85">
                 {CONTACT.address.line1}, {CONTACT.address.city}
               </span>
             </div>
@@ -76,7 +77,7 @@ export function ContactCta() {
             </Link>
           </div>
 
-          <p className="mt-6 text-sm text-[var(--ink-10)]">{CONTACT.hours}</p>
+          <p className="mt-6 text-sm text-[var(--brand-ink)]/85">{CONTACT.hours}</p>
         </motion.div>
       </Container>
     </section>

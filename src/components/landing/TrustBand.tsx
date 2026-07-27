@@ -7,6 +7,7 @@ import { Container } from '@/components/shared/Container';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { CountUpStat } from '@/components/shared/CountUpStat';
 import { VALUE_PROPS } from '@/lib/constants';
+import { TRUST_IMAGES } from '@/lib/landing-images';
 
 /**
  * TrustBand — stats + VALUE_PROPS + credentials.
@@ -28,7 +29,7 @@ export function TrustBand() {
   ];
 
   return (
-    <section className="bg-[var(--paper-tint-mint)]">
+    <section className="bg-[var(--brand-tint)]">
       <Container className="py-14 sm:py-20">
         {/* Stats */}
         <div className="mb-14 grid gap-8 sm:grid-cols-3">
@@ -47,8 +48,8 @@ export function TrustBand() {
             className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-md)]"
           >
             <Image
-              src="/landing/pharmacist.jpg"
-              alt="A pharmacist checking a medicine at Pratigya Medical Store"
+              src={TRUST_IMAGES[0].url}
+              alt={TRUST_IMAGES[0].alt}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"

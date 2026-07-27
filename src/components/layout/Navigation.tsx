@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { CategoryMenu } from "./CategoryMenu";
 
+// Categories used to live here as a dropdown. They now surface as image cards on
+// the landing page (src/components/landing/Categories.tsx) and in the mobile
+// menu's "Shop by category" section, so the top nav stays lean. CategoryMenu.tsx
+// is kept in the repo, just no longer rendered.
 function NavLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
   const isActive = pathname === href;
@@ -14,10 +17,10 @@ function NavLink({ href, label }: { href: string; label: string }) {
       aria-current={isActive ? "page" : undefined}
       className={cn(
         "relative whitespace-nowrap px-1 py-2 text-base font-medium transition-colors duration-[var(--dur-fast)]",
-        "after:absolute after:inset-x-1 after:bottom-0 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-[var(--mint)] after:transition-transform after:duration-[var(--dur-base)] after:ease-[var(--ease-out)] hover:after:scale-x-100",
+        "after:absolute after:inset-x-1 after:bottom-0 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-[var(--brand-ink)] after:transition-transform after:duration-[var(--dur-base)] after:ease-[var(--ease-out)] hover:after:scale-x-100",
         isActive
-          ? "text-[var(--ink)] after:scale-x-100"
-          : "text-[var(--ink-70)] hover:text-[var(--ink)]"
+          ? "text-[var(--brand-ink)] after:scale-x-100"
+          : "text-[var(--brand-ink)]/80 hover:text-[var(--brand-ink)]"
       )}
     >
       {label}
@@ -30,7 +33,6 @@ export function Navigation() {
     <nav className="flex items-center gap-6">
       <NavLink href="/" label="Home" />
       <NavLink href="/products" label="Shop" />
-      <CategoryMenu />
       <NavLink href="/custom-order" label="Custom order" />
       <NavLink href="/about" label="About" />
       <NavLink href="/contact" label="Contact" />

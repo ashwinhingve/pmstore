@@ -50,9 +50,9 @@ export function Header() {
 
       <header
         className={cn(
-          "sticky top-0 z-50 w-full border-b bg-[var(--paper)]/80 backdrop-blur-md transition-[box-shadow,border-color,background-color] duration-[var(--dur-base)]",
+          "sticky top-0 z-50 w-full border-b bg-[image:var(--surface-brand)] transition-[box-shadow,border-color] duration-[var(--dur-base)]",
           scrolled
-            ? "border-[var(--foil-soft)] shadow-[var(--shadow-sm)]"
+            ? "border-[var(--brand-deep)] shadow-[var(--shadow-md)]"
             : "border-transparent"
         )}
       >
@@ -63,16 +63,16 @@ export function Header() {
           className="group flex items-center gap-3 transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
           aria-label={`${SITE_SHORT_NAME} - Home`}
         >
-          <div className="shrink-0 text-[var(--ink)]">
+          <div className="shrink-0 text-[var(--brand-ink)]">
             <Logo size={44} variant="mark" />
           </div>
-          <span className="hidden font-[family-name:var(--font-display)] text-lg leading-tight tracking-tight text-[var(--ink)] sm:inline md:text-xl lg:hidden xl:inline">
+          <span className="hidden font-[family-name:var(--font-display)] text-lg leading-tight tracking-tight text-[var(--brand-ink)] sm:inline md:text-xl lg:hidden xl:inline">
             {(() => {
               const [first, ...rest] = SITE_SHORT_NAME.split(" ");
               return (
                 <>
                   <span className="font-extrabold">{first}</span>
-                  {rest.length > 0 && <span className="font-medium text-[var(--ink-70)]"> {rest.join(" ")}</span>}
+                  {rest.length > 0 && <span className="font-medium text-[var(--brand-ink)]/80"> {rest.join(" ")}</span>}
                 </>
               );
             })()}
@@ -96,7 +96,7 @@ export function Header() {
             <Link href="/admin/dashboard" className="hidden sm:inline-flex">
               <Button
                 size="sm"
-                className="gap-1.5 bg-[var(--ink)] text-[var(--paper-card)] hover:bg-[var(--ink-deep)]"
+                className="gap-1.5 bg-[var(--brand-ink)] text-[var(--brand-deep)] hover:bg-[var(--brand-ink)]/90"
               >
                 <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
                 Admin
@@ -165,14 +165,14 @@ export function Header() {
                 },
               ]}
               align="right"
-              className="transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)]"
+              className="text-[var(--brand-ink)] transition-colors hover:bg-[var(--brand-ink)]/15 hover:text-[var(--brand-ink)]"
             />
           ) : (
             <Link href="/login">
               <Button
                 variant="ghost"
                 size="icon"
-                className="transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)]"
+                className="text-[var(--brand-ink)] transition-colors hover:bg-[var(--brand-ink)]/15 hover:text-[var(--brand-ink)]"
                 aria-label="Sign in"
               >
                 <User className="h-5 w-5" />
@@ -186,7 +186,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="hidden transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)] sm:flex"
+                className="hidden text-[var(--brand-ink)] transition-colors hover:bg-[var(--brand-ink)]/15 hover:text-[var(--brand-ink)] sm:flex"
                 aria-label="Your orders"
               >
                 <Package className="h-5 w-5" />
@@ -199,12 +199,12 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="relative transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)]"
+              className="relative text-[var(--brand-ink)] transition-colors hover:bg-[var(--brand-ink)]/15 hover:text-[var(--brand-ink)]"
               aria-label={`Shopping cart${mounted && totalItems > 0 ? ` with ${totalItems} items` : ''}`}
             >
               <ShoppingCart className="h-5 w-5" />
               {mounted && totalItems > 0 && (
-                <span className="data absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--ink)] text-xs font-bold text-[var(--paper-card)] shadow-[var(--shadow-xs)]">
+                <span className="data absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brand-ink)] text-xs font-bold text-[var(--brand-deep)] shadow-[var(--shadow-xs)]">
                   {totalItems}
                 </span>
               )}
@@ -215,7 +215,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="transition-colors hover:bg-[var(--mint-soft)] hover:text-[var(--mint)] lg:hidden"
+            className="text-[var(--brand-ink)] transition-colors hover:bg-[var(--brand-ink)]/15 hover:text-[var(--brand-ink)] lg:hidden"
             onClick={() => setIsMobileMenuOpen(true)}
             aria-label="Open menu"
             aria-expanded={isMobileMenuOpen}
@@ -226,7 +226,7 @@ export function Header() {
       </div>
 
       {/* Mobile search — full width under the bar; search is the primary action */}
-      <div className="border-t border-[var(--foil-soft)] px-4 py-2 md:hidden">
+      <div className="border-t border-[var(--brand-ink)]/15 px-4 pb-3 pt-2 md:hidden">
         <SearchBar />
       </div>
 

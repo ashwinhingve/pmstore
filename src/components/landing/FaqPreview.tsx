@@ -61,7 +61,7 @@ export function FaqPreview() {
           <div className="mt-8 text-center">
             <Link
               href="/faq"
-              className="inline-flex items-center gap-1.5 font-medium text-[var(--mint)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+              className="inline-flex items-center gap-1.5 font-semibold text-[var(--brand-deep)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
             >
               View all FAQs
               <ArrowRight className="h-4 w-4" aria-hidden="true" />

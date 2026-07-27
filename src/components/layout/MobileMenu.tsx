@@ -60,12 +60,12 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     className={cn(
                       "flex min-h-11 items-center gap-3 rounded-[var(--radius-sm)] px-3 text-base font-medium transition-colors duration-[var(--dur-fast)]",
                       isActive
-                        ? "bg-[var(--mint-soft)] text-[var(--ink)]"
+                        ? "bg-[var(--brand-soft)] text-[var(--brand-deep)]"
                         : "text-[var(--ink-70)] hover:bg-[var(--foil-soft)] hover:text-[var(--ink)]"
                     )}
                   >
                     <Icon
-                      className={cn("h-5 w-5", isActive ? "text-[var(--mint)]" : "text-[var(--ink-40)]")}
+                      className={cn("h-5 w-5", isActive ? "text-[var(--brand)]" : "text-[var(--ink-40)]")}
                       aria-hidden="true"
                     />
                     {item.label}
@@ -85,7 +85,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                   key={name}
                   href={`/products?category=${encodeURIComponent(name)}`}
                   onClick={onClose}
-                  className="rounded-[var(--radius-pill)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 py-1.5 text-sm font-medium text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:border-[var(--mint)] hover:text-[var(--ink)]"
+                  className="rounded-[var(--radius-pill)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 py-1.5 text-sm font-medium text-[var(--ink-70)] transition-colors duration-[var(--dur-fast)] hover:border-[var(--brand)] hover:text-[var(--brand-deep)]"
                 >
                   {name}
                 </Link>
@@ -97,7 +97,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         <Link
           href="/prescriptions"
           onClick={onClose}
-          className="mt-4 flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[var(--ink)] px-4 font-medium text-[var(--paper-card)] shadow-[var(--shadow-xs)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--ink-deep)]"
+          className="mt-4 flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[image:var(--surface-brand)] px-4 font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-xs)] transition-[filter,box-shadow] duration-[var(--dur-fast)] hover:shadow-[var(--shadow-brand)] hover:brightness-105"
         >
           <FileUp className="h-5 w-5" aria-hidden="true" />
           Upload prescription

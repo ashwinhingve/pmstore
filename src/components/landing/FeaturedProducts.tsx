@@ -139,7 +139,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
           <div className="mt-6 text-center">
             <Link
               href="/products"
-              className="inline-flex items-center gap-1.5 font-medium text-[var(--mint)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+              className="inline-flex items-center gap-1.5 font-semibold text-[var(--brand-deep)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
             >
               View all medicines
               <ArrowRight className="h-4 w-4" aria-hidden="true" />

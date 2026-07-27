@@ -70,7 +70,7 @@ export function VideoSection() {
         {/* Play indicator overlay when not playing */}
         {!isPlaying && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-            <div className="inline-flex items-center justify-center rounded-full bg-[var(--mint)] p-4">
+            <div className="inline-flex items-center justify-center rounded-full bg-[image:var(--surface-brand)] p-4">
               <Play className="h-6 w-6 fill-current text-[var(--paper-card)]" aria-hidden="true" />
             </div>
           </div>

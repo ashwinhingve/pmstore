@@ -19,6 +19,18 @@
   --rx:         #B23A34;   /* Schedule H — prescription flags ONLY, never discounts */
   --rx-soft:    #FAECEA;
 
+  /* Brand — pharmacy orange (Dr. Morepen inspired). This is the storefront's
+     primary accent: headers, CTAs, links, active states. Deliberately a warm
+     orange hue, kept clearly distinct from --rx red (#B23A34) so the "needs a
+     doctor" signal is never diluted, and from --mint green which keeps its
+     savings / in-stock / verified meaning. */
+  --brand:        #F65A0F;   /* primary actions, links, active */
+  --brand-bright: #FF7A2E;   /* gradient start, highlights */
+  --brand-deep:   #D8440A;   /* gradient end, hover / pressed */
+  --brand-soft:   #FFE9DC;   /* peach chips, badges, soft fills */
+  --brand-tint:   #FFF3EC;   /* section-background wash */
+  --brand-ink:    #FFFFFF;   /* text / icons on orange surfaces */
+
   /* Type — families come from next/font via the --font-*-loaded variables */
   --font-display: var(--font-display-loaded), 'Bricolage Grotesque', system-ui, sans-serif;
   --font-body:    var(--font-body-loaded), 'Public Sans', system-ui, sans-serif;
@@ -67,8 +79,14 @@
   --ink-10:          #E4E7ED;   /* on-dark hairlines, subtle fills */
   --surface-hero:    linear-gradient(140deg, var(--ink) 0%, var(--ink-deep) 100%);
   --surface-mint:    linear-gradient(140deg, var(--mint) 0%, var(--mint-deep) 100%);
+  /* Brand orange gradient — header band, primary CTAs, promo surfaces. Same
+     135–140° convention as the navy/mint surfaces. --shadow-brand is the warm
+     CTA glow; use sparingly on primary buttons and floating orange elements. */
+  --surface-brand:   linear-gradient(135deg, var(--brand-bright) 0%, var(--brand) 52%, var(--brand-deep) 100%);
+  --shadow-brand:    0 8px 24px rgba(216, 68, 10, 0.26);
   --paper-tint:      #F4F2ED;   /* warm alternating-section tint */
   --paper-tint-mint: #F0F8F5;   /* mint-washed section tint */
+  --paper-tint-brand: var(--brand-tint);   /* peach alternating-section tint */
 
   /* Category tints — DECORATIVE ONLY, for designed medicine tiles and category
      cards so products read as distinct rather than a repeated stock photo. Each

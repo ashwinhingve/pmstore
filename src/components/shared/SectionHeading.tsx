@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 
 /**
- * Standard section header: optional mint eyebrow, display-face title,
+ * Standard section header: optional brand eyebrow, display-face title,
  * optional one-line description. Keeps heading rhythm identical across pages.
  */
 export function SectionHeading({
@@ -32,7 +32,7 @@ export function SectionHeading({
         <p
           className={cn(
             'mb-2 text-sm font-semibold uppercase tracking-[0.08em]',
-            onDark ? 'text-[var(--mint-soft)]' : 'text-[var(--mint)]'
+            onDark ? 'text-[var(--brand-ink)]/90' : 'text-[var(--brand)]'
           )}
         >
           {eyebrow}

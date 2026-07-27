@@ -64,16 +64,16 @@ export function QuickActions({ signedIn }: QuickActionsProps) {
               >
                 <Link
                   href={action.href}
-                  className="group flex h-full flex-col items-start rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]"
+                  className="group flex h-full flex-col items-start rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--brand)] hover:shadow-[var(--shadow-md)]"
                 >
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[image:var(--surface-mint)] text-[var(--paper-card)] shadow-[var(--shadow-xs)]">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[image:var(--surface-brand)] text-[var(--brand-ink)] shadow-[var(--shadow-xs)]">
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </div>
                   <h3 className="mt-4 text-[length:var(--step-1)] font-semibold text-[var(--ink)]">
                     {action.title}
                   </h3>
                   <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--ink-70)]">{action.description}</p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--mint)]">
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--brand-deep)]">
                     {action.cta}
                     <ArrowRight
                       className="h-4 w-4 transition-transform duration-[var(--dur-fast)] group-hover:translate-x-0.5"

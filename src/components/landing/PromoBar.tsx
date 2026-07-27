@@ -38,7 +38,7 @@ export function PromoBar() {
                 href={href}
                 className="group flex items-center gap-3 rounded-[var(--radius-md)] px-1 py-1 transition-colors duration-[var(--dur-fast)]"
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--mint-soft)] text-[var(--mint)] transition-colors duration-[var(--dur-fast)] group-hover:bg-[var(--mint)] group-hover:text-[var(--paper-card)]">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--brand-soft)] text-[var(--brand-deep)] transition-colors duration-[var(--dur-fast)] group-hover:bg-[var(--brand)] group-hover:text-[var(--brand-ink)]">
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <span className="min-w-0">

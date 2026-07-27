@@ -1,9 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Star } from 'lucide-react';
 import { Container } from '@/components/shared/Container';
 import { SectionHeading } from '@/components/shared/SectionHeading';
+import { TESTIMONIAL_IMAGES } from '@/lib/landing-images';
 
 /**
  * Testimonials — SAMPLE curated testimonials. Replace with real client feedback.
@@ -88,19 +90,29 @@ export function Testimonials() {
                 {Array.from({ length: testimonial.stars }).map((_, j) => (
                   <Star
                     key={j}
-                    className="h-4 w-4 fill-[var(--mint)] text-[var(--mint)]"
+                    className="h-4 w-4 fill-[var(--brand)] text-[var(--brand)]"
                     aria-hidden="true"
                   />
                 ))}
               </div>
               <blockquote className="flex-1 text-[var(--ink)]">{testimonial.quote}</blockquote>
               <figcaption className="mt-4 flex items-center gap-3 border-t border-[var(--foil-soft)] pt-4">
-                <span
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--mint-soft)] text-sm font-semibold text-[var(--mint)]"
-                  aria-hidden="true"
-                >
-                  {testimonial.initials}
-                </span>
+                {TESTIMONIAL_IMAGES[i] ? (
+                  <Image
+                    src={TESTIMONIAL_IMAGES[i].url}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <span
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-soft)] text-sm font-semibold text-[var(--brand-deep)]"
+                    aria-hidden="true"
+                  >
+                    {testimonial.initials}
+                  </span>
+                )}
                 <span className="text-[0.9375rem] font-semibold text-[var(--ink)]">
                   {testimonial.name}
                 </span>

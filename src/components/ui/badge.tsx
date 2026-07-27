@@ -19,6 +19,8 @@ const badgeVariants = cva(
         success: "bg-[var(--mint-soft)] text-[var(--mint)]",
         strong: "bg-[var(--ink)] text-[var(--paper-card)]",
         outline: "border border-[var(--foil)] text-[var(--ink-70)]",
+        /** Brand accent — "New", "Popular", promo tags. Never for Rx or savings. */
+        brand: "bg-[var(--brand-soft)] text-[var(--brand-deep)]",
         rx: "bg-[var(--rx-soft)] text-[var(--rx)]",
       },
     },

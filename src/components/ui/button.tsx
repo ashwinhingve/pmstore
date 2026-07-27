@@ -13,15 +13,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--ink)] text-[var(--paper-card)] shadow-[var(--shadow-xs)] hover:bg-[var(--ink-deep)] hover:shadow-[var(--shadow-sm)]",
+          "bg-[image:var(--surface-brand)] text-[var(--brand-ink)] font-semibold shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-brand)] hover:brightness-105",
         destructive:
           "bg-[var(--ink)] text-[var(--paper-card)] border border-[var(--ink)] shadow-[var(--shadow-xs)] hover:bg-[var(--ink-deep)] hover:shadow-[var(--shadow-sm)]",
         outline:
-          "border-2 border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink)] hover:border-[var(--foil)] hover:bg-[var(--foil-soft)]",
+          "border-2 border-[var(--brand)] bg-[var(--paper-card)] text-[var(--brand-deep)] hover:bg-[var(--brand-soft)]",
         secondary:
           "bg-[var(--foil-soft)] text-[var(--ink)] hover:bg-[var(--foil)]",
-        ghost: "hover:bg-[var(--foil-soft)] text-[var(--ink)]",
-        link: "text-[var(--ink)] underline-offset-4 hover:underline",
+        ghost: "hover:bg-[var(--brand-soft)] text-[var(--ink)]",
+        link: "text-[var(--brand-deep)] underline-offset-4 hover:underline",
       },
       size: {
         default: "h-11 px-5 py-2",

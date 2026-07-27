@@ -5,13 +5,17 @@ import { authOptions } from '@/lib/auth';
 import Product from '@/models/Product';
 import SiteSettings from '@/models/SiteSettings';
 import { SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants';
-import { Hero } from '@/components/landing/Hero';
+// Legacy split hero (Hero + HeroCarousel) is retained in the repo but no longer
+// rendered — replaced by the full-screen HeroSlider below.
+import { HeroSlider } from '@/components/landing/HeroSlider';
 import type { HeroSlideView } from '@/components/landing/HeroCarousel';
 import { PromoBar } from '@/components/landing/PromoBar';
-import { VideoSection } from '@/components/landing/VideoSection';
 import { QuickActions } from '@/components/landing/QuickActions';
 import { Categories } from '@/components/landing/Categories';
+import { PromoBanners } from '@/components/landing/PromoBanners';
 import { FeaturedProducts } from '@/components/landing/FeaturedProducts';
+// VideoSection is retained in the repo but left off the landing for a cleaner,
+// more focused flow. Re-add <VideoSection /> below to bring it back.
 import { TrustBand } from '@/components/landing/TrustBand';
 import { Testimonials } from '@/components/landing/Testimonials';
 import { FaqPreview } from '@/components/landing/FaqPreview';
@@ -123,12 +127,12 @@ export default async function Home() {
   return (
     <div className="w-full">
       {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
-      <Hero slides={heroSlides} />
+      <HeroSlider slides={heroSlides} />
       <PromoBar />
-      <QuickActions signedIn={signedIn} />
-      <VideoSection />
-      <FeaturedProducts products={featuredProducts} />
       <Categories />
+      <QuickActions signedIn={signedIn} />
+      <FeaturedProducts products={featuredProducts} />
+      <PromoBanners />
       <TrustBand />
       <Testimonials />
       <FaqPreview />
