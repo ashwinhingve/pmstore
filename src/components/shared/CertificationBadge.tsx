@@ -40,8 +40,8 @@ export const CertificationBadge: React.FC<CertificationBadgeProps> = ({
             />
           </div>
         ) : (
-          <div className="w-24 h-24 rounded-full bg-[var(--mint)] flex items-center justify-center">
-            {certification.icon || <Shield className="w-12 h-12 text-[var(--paper-card)]" />}
+          <div className="w-24 h-24 rounded-full bg-[var(--brand)] flex items-center justify-center">
+            {certification.icon || <Shield className="w-12 h-12 text-[var(--brand-ink)]" />}
           </div>
         )}
       </div>

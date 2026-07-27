@@ -135,7 +135,7 @@ export function CustomOrderForm() {
           <input
             type="checkbox"
             {...register("hasPrescription")}
-            className="mt-0.5 h-4 w-4 accent-[var(--mint)]"
+            className="mt-0.5 h-4 w-4 accent-[var(--brand)]"
           />
           <span className="text-sm text-[var(--ink-70)]">
             I have a prescription for this. Schedule H / H1 / X medicines can only be dispensed
@@ -157,7 +157,7 @@ export function CustomOrderForm() {
         {...register("website")}
       />
 
-      <Button type="submit" disabled={isSubmitting} className="mt-8 h-12 w-full bg-[var(--mint)] text-base font-semibold text-[var(--paper-card)] hover:bg-[var(--mint-deep)] md:w-auto md:px-10">
+      <Button type="submit" disabled={isSubmitting} className="mt-8 h-12 w-full bg-[var(--brand)] text-base font-semibold text-[var(--brand-ink)] hover:bg-[var(--brand-deep)] md:w-auto md:px-10">
         {isSubmitting ? "Sending…" : "Send request"}
       </Button>
       <p className="mt-3 text-sm text-[var(--ink-70)]">

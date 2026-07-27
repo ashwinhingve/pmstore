@@ -145,8 +145,8 @@ export default function ImageUploader({
           {...getRootProps()}
           className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
             isDragActive
-              ? 'border-[var(--mint)] bg-[var(--mint-soft)]'
-              : 'border-[var(--foil-soft)] hover:border-[var(--mint)] bg-[var(--foil-soft)]'
+              ? 'border-[var(--brand)] bg-[var(--brand-soft)]'
+              : 'border-[var(--foil-soft)] hover:border-[var(--brand)] bg-[var(--foil-soft)]'
           } ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <input {...getInputProps()} />
@@ -156,7 +156,7 @@ export default function ImageUploader({
               <p className="text-[var(--ink)] mb-2 font-medium">Uploading...</p>
               <div className="w-full bg-[var(--foil-soft)] rounded-full h-2 max-w-xs mx-auto">
                 <div
-                  className="bg-[var(--mint)] h-2 rounded-full transition-all"
+                  className="bg-[var(--brand)] h-2 rounded-full transition-all"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
@@ -180,7 +180,7 @@ export default function ImageUploader({
           {images.map((image, index) => (
             <div
               key={image.publicId || index}
-              className="relative group aspect-square bg-[var(--foil-soft)] rounded-xl overflow-hidden border-2 border-[var(--foil-soft)] hover:border-[var(--mint)] transition-colors"
+              className="relative group aspect-square bg-[var(--foil-soft)] rounded-xl overflow-hidden border-2 border-[var(--foil-soft)] hover:border-[var(--brand)] transition-colors"
             >
               <Image
                 src={image.url}
@@ -192,7 +192,7 @@ export default function ImageUploader({
 
               {/* Primary Badge */}
               {index === 0 && (
-                <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 bg-[var(--mint)] text-[var(--paper-card)] text-xs font-semibold rounded-lg shadow-md">
+                <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 bg-[var(--brand)] text-[var(--paper-card)] text-xs font-semibold rounded-lg shadow-md">
                   <Star className="w-3 h-3 fill-current" />
                   Primary
                 </div>
@@ -255,7 +255,7 @@ export default function ImageUploader({
                     onClick={() => replaceInputRefs.current[index]?.click()}
                     title="Replace image"
                     disabled={replacingIndex !== null}
-                    className="w-8 h-8 bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)] rounded-lg flex items-center justify-center shadow transition-colors disabled:opacity-50"
+                    className="w-8 h-8 bg-[var(--brand)] hover:bg-[var(--brand)] text-[var(--paper-card)] rounded-lg flex items-center justify-center shadow transition-colors disabled:opacity-50"
                   >
                     <RefreshCw className="w-4 h-4" />
                   </button>
@@ -266,7 +266,7 @@ export default function ImageUploader({
                       type="button"
                       onClick={() => setAsPrimary(index)}
                       title="Set as primary"
-                      className="w-8 h-8 bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)] rounded-lg flex items-center justify-center shadow transition-colors"
+                      className="w-8 h-8 bg-[var(--brand)] hover:bg-[var(--brand)] text-[var(--paper-card)] rounded-lg flex items-center justify-center shadow transition-colors"
                     >
                       <Star className="w-4 h-4" />
                     </button>
@@ -298,8 +298,8 @@ export default function ImageUploader({
         <span>{images.length}/{maxImages} images</span>
         {images.length > 0 && (
           <>
-            <span className="flex items-center gap-1"><Star className="w-3 h-3 text-[var(--mint)]" /> = Set as primary</span>
-            <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3 text-[var(--mint)]" /> = Replace image</span>
+            <span className="flex items-center gap-1"><Star className="w-3 h-3 text-[var(--brand)]" /> = Set as primary</span>
+            <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3 text-[var(--brand)]" /> = Replace image</span>
             <span className="flex items-center gap-1"><X className="w-3 h-3 text-[var(--ink-70)]" /> = Delete image</span>
           </>
         )}

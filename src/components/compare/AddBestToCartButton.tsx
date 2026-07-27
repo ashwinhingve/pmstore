@@ -24,7 +24,7 @@ export function AddBestToCartButton({ product }: { product: CompareProduct }) {
         setTimeout(() => setAdded(false), 1500);
       }}
       disabled={added}
-      className="h-11 bg-[var(--mint)] px-5 text-sm font-semibold text-[var(--paper-card)] hover:bg-[var(--mint-deep)]"
+      className="h-11 bg-[var(--brand)] px-5 text-sm font-semibold text-[var(--brand-ink)] hover:bg-[var(--brand-deep)]"
     >
       {added ? 'Added to cart' : `Add ${product.name} to cart`}
     </Button>

@@ -59,7 +59,7 @@ function StarRating({
           <Star
             className={`${sizeClass} ${
               star <= (hovered || rating)
-                ? 'text-[var(--mint)] fill-[var(--mint)]'
+                ? 'text-[var(--brand)] fill-[var(--brand)]'
                 : 'text-[var(--foil)]'
             }`}
           />
@@ -268,10 +268,10 @@ export default function ProductReviews({ productId, autoOpenReview }: ProductRev
             return (
               <div key={star} className="flex items-center gap-2 text-sm">
                 <span className="w-3 text-[var(--ink-70)]" style={{ fontFamily: 'var(--font-data)' }}>{star}</span>
-                <Star className="w-3.5 h-3.5 text-[var(--mint)] fill-[var(--mint)]" />
+                <Star className="w-3.5 h-3.5 text-[var(--brand)] fill-[var(--brand)]" />
                 <div className="flex-1 h-2 bg-[var(--foil-soft)] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[var(--mint)] rounded-full"
+                    className="h-full bg-[var(--brand)] rounded-full"
                     style={{ width: `${percentage}%` }}
                   />
                 </div>

@@ -80,7 +80,7 @@ function Pill({ alt }: { alt: RankedAlternative }) {
       className={cn(
         'flex h-full w-32 flex-col gap-1 rounded-[var(--radius-sm)] border bg-[var(--paper-card)] p-2.5 transition-[border-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)]',
         isCurrent
-          ? 'border-2 border-[var(--ink)] shadow-[var(--shadow-xs)]'
+          ? 'border-2 border-[var(--brand)] shadow-[var(--shadow-xs)]'
           : 'border border-[var(--foil-soft)] hover:border-[var(--foil)] hover:shadow-[var(--shadow-sm)]',
         outOfStock && 'opacity-60'
       )}

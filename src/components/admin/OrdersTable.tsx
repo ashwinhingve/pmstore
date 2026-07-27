@@ -166,7 +166,7 @@ export default function OrdersTable({
             type="button"
             onClick={handleSyncPayments}
             disabled={isSyncing}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--mint)] bg-[var(--mint-soft)] text-[var(--mint)] rounded-lg text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)] rounded-lg text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
             {isSyncing ? 'Syncing...' : 'Sync'}
@@ -194,7 +194,7 @@ export default function OrdersTable({
 
         {/* Sync Result Message */}
         {syncResult && (
-          <div className="text-sm text-[var(--mint)] bg-[var(--mint-soft)] px-3 py-2 rounded-lg">
+          <div className="text-sm text-[var(--brand)] bg-[var(--brand-soft)] px-3 py-2 rounded-lg">
             {syncResult}
           </div>
         )}

@@ -133,7 +133,7 @@ export default function CartPage() {
                 Add the medicines you need and they&apos;ll show up here.
               </p>
               <Link href="/products">
-                <Button size="lg" className="bg-[var(--mint)] px-10 text-base hover:bg-[var(--mint-deep)]">
+                <Button size="lg" className="bg-[var(--brand)] px-10 text-base text-[var(--brand-ink)] hover:bg-[var(--brand-deep)]">
                   <ShoppingBag className="mr-2 h-5 w-5" aria-hidden="true" />
                   Browse medicines
                 </Button>
@@ -367,7 +367,7 @@ export default function CartPage() {
                     <Button
                       onClick={handleApplyCoupon}
                       disabled={couponLoading || !couponInput.trim()}
-                      className="bg-[var(--mint)] hover:opacity-90 text-[var(--paper-card)] px-5 rounded-xl"
+                      className="bg-[var(--brand)] hover:opacity-90 text-[var(--brand-ink)] px-5 rounded-xl"
                     >
                       {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}
                     </Button>
@@ -477,7 +477,7 @@ export default function CartPage() {
                 )}
 
                 <Link href="/checkout">
-                  <Button className="mb-4 w-full bg-[var(--mint)] py-6 text-lg font-semibold text-[var(--paper-card)] shadow-[var(--shadow-sm)] hover:bg-[var(--mint-deep)] hover:shadow-[var(--shadow-md)]">
+                  <Button className="mb-4 w-full bg-[var(--brand)] py-6 text-lg font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-brand)] hover:bg-[var(--brand-deep)] hover:shadow-[var(--shadow-md)]">
                     Proceed to checkout
                     <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
                   </Button>

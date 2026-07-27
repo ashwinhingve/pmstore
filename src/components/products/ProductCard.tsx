@@ -106,7 +106,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const inCart = mounted && itemQuantity > 0;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--mint)] hover:shadow-[var(--shadow-md)]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--brand)] hover:shadow-[var(--shadow-md)]">
       {/* Visual */}
       <div className={`relative aspect-square overflow-hidden border-b border-[var(--foil-soft)] ${outOfStock ? "opacity-70" : ""}`}>
         <ProductVisual
@@ -125,7 +125,7 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
 
         {isNew && !outOfStock && (
-          <span className="pointer-events-none absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--mint)] px-2 py-0.5 text-[0.6875rem] font-semibold text-[var(--paper-card)] shadow-[var(--shadow-xs)]">
+          <span className="pointer-events-none absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--brand)] px-2 py-0.5 text-[0.6875rem] font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-xs)]">
             New
           </span>
         )}
@@ -149,7 +149,7 @@ export function ProductCard({ product }: ProductCardProps) {
         className={`absolute right-2.5 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--foil-soft)] bg-[var(--paper-card)]/95 text-[var(--ink-70)] shadow-[var(--shadow-sm)] backdrop-blur-sm transition-[opacity,color] duration-[var(--dur-fast)] hover:text-[var(--ink)] focus-visible:opacity-100 ${
           isNew ? "top-11" : "top-2.5"
         } opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 ${
-          mounted && isPicked ? "border-[var(--mint)] text-[var(--mint)] !opacity-100" : ""
+          mounted && isPicked ? "border-[var(--brand)] text-[var(--brand)] !opacity-100" : ""
         }`}
       >
         <Scale className="h-4 w-4" aria-hidden="true" />
@@ -158,7 +158,7 @@ export function ProductCard({ product }: ProductCardProps) {
       {/* Info */}
       <div className="flex flex-1 flex-col p-4">
         {categoryName && (
-          <span className="mb-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[var(--mint-deep)]">
+          <span className="mb-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[var(--brand-deep)]">
             {categoryName}
           </span>
         )}
@@ -179,7 +179,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 <svg
                   key={i}
                   className={`h-3.5 w-3.5 fill-current ${
-                    i < Math.floor(averageRating) ? "text-[var(--mint)]" : "text-[var(--foil-soft)]"
+                    i < Math.floor(averageRating) ? "text-[var(--brand)]" : "text-[var(--foil-soft)]"
                   }`}
                   viewBox="0 0 20 20"
                   aria-hidden="true"
@@ -243,7 +243,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     e.stopPropagation();
                     addItem(product, 1);
                   }}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--mint)] text-[var(--paper-card)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--mint-deep)]"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--brand)] text-[var(--brand-ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--brand-deep)]"
                 >
                   <Plus className="h-4 w-4" aria-hidden="true" />
                 </button>
@@ -253,7 +253,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 size="sm"
                 onClick={handleAddToCart}
                 disabled={isAdding || outOfStock}
-                className="h-11 w-full bg-[var(--mint)] text-sm font-semibold text-[var(--paper-card)] hover:bg-[var(--mint-deep)]"
+                className="h-11 w-full bg-[var(--brand)] text-sm font-semibold text-[var(--brand-ink)] hover:bg-[var(--brand-deep)]"
               >
                 {outOfStock ? "Out of stock" : isAdding ? "Added to cart" : "Add to cart"}
               </Button>

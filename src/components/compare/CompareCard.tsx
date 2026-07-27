@@ -21,12 +21,12 @@ export function CompareCard({ product, isBest }: { product: CompareProduct; isBe
       }`}
       className={cn(
         'flex h-full flex-col gap-3 rounded-[var(--radius-lg)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)] sm:p-6',
-        isBest ? 'border-2 border-[var(--mint)]' : 'border border-[var(--foil-soft)]',
+        isBest ? 'border-2 border-[var(--brand)]' : 'border border-[var(--foil-soft)]',
         outOfStock && 'opacity-60'
       )}
     >
       <div className="flex min-h-7 flex-wrap items-center gap-1.5">
-        {isBest && <Badge tone="mint">Best option</Badge>}
+        {isBest && <Badge tone="brand">Best option</Badge>}
         {product.scheduleClass && <RxBadge scheduleClass={product.scheduleClass as ScheduleClass} />}
         {outOfStock && <Badge tone="muted">Out of stock</Badge>}
       </div>

@@ -104,7 +104,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
               type="button"
               onClick={() => setEnabled(!enabled)}
               className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
-                enabled ? 'bg-[var(--mint)]' : 'bg-[var(--foil)]'
+                enabled ? 'bg-[var(--brand)]' : 'bg-[var(--foil)]'
               }`}
             >
               <span
@@ -176,7 +176,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
                   onClick={() => updateAnnouncement(a.id, 'isActive', !a.isActive)}
                   className={`mt-6 p-2 rounded-lg transition-colors ${
                     a.isActive
-                      ? 'text-[var(--mint)] hover:bg-[var(--mint-soft)]'
+                      ? 'text-[var(--brand)] hover:bg-[var(--brand-soft)]'
                       : 'text-[var(--ink-40)] hover:bg-[var(--foil-soft)]'
                   }`}
                   title={a.isActive ? 'Visible' : 'Hidden'}
@@ -209,7 +209,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
           <button
             type="button"
             onClick={addAnnouncement}
-            className="w-full py-3 border-2 border-dashed border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink-40)] hover:border-[var(--mint)] hover:text-[var(--mint)] transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 border-2 border-dashed border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink-40)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-colors flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Add Announcement
@@ -221,7 +221,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
           {message && (
             <p
               className={`text-sm font-medium ${
-                message.type === 'success' ? 'text-[var(--mint)]' : 'text-[var(--ink-70)]'
+                message.type === 'success' ? 'text-[var(--brand)]' : 'text-[var(--ink-70)]'
               }`}
             >
               {message.text}

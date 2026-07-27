@@ -269,14 +269,14 @@ export default function ProductsPage() {
   const categoryPillClass = (active: boolean) =>
     `flex min-h-10 shrink-0 items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-medium transition-colors duration-[var(--dur-fast)] ${
       active
-        ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--paper-card)] shadow-[var(--shadow-xs)]"
-        : "border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)] hover:border-[var(--mint)] hover:text-[var(--ink)]"
+        ? "border-[var(--brand)] bg-[var(--brand)] text-[var(--brand-ink)] shadow-[var(--shadow-xs)]"
+        : "border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)] hover:border-[var(--brand)] hover:text-[var(--ink)]"
     }`
 
   const sectionButtonClass = (active: boolean) =>
     `flex w-full items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 text-sm font-medium transition-colors duration-[var(--dur-fast)] ${
       active
-        ? "bg-[var(--mint-soft)] text-[var(--ink)]"
+        ? "bg-[var(--brand-soft)] text-[var(--ink)]"
         : "text-[var(--ink-70)] hover:bg-[var(--foil-soft)] hover:text-[var(--ink)]"
     }`
 
@@ -297,7 +297,7 @@ export default function ProductsPage() {
         aria-label="Maximum price"
         value={priceRange[1]}
         onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-        className="h-1.5 w-full cursor-pointer appearance-none rounded-[var(--radius-pill)] bg-[var(--foil-soft)] accent-[var(--mint)]"
+        className="h-1.5 w-full cursor-pointer appearance-none rounded-[var(--radius-pill)] bg-[var(--foil-soft)] accent-[var(--brand)]"
       />
       <div className="mt-3 grid grid-cols-2 gap-1.5">
         {[
@@ -311,7 +311,7 @@ export default function ProductsPage() {
             onClick={() => setPriceRange([0, range.max])}
             className={`data rounded-[var(--radius-sm)] px-2 py-1.5 text-xs font-medium transition-colors duration-[var(--dur-fast)] ${
               priceRange[1] === range.max
-                ? "bg-[var(--mint-soft)] text-[var(--ink)]"
+                ? "bg-[var(--brand-soft)] text-[var(--ink)]"
                 : "bg-[var(--foil-soft)] text-[var(--ink-70)] hover:bg-[var(--foil)]"
             }`}
           >
@@ -341,7 +341,7 @@ export default function ProductsPage() {
       {/* Page header — scrolls away; the category bar below stays sticky */}
       <div className="border-b border-[var(--foil-soft)] bg-[var(--paper-tint)]">
         <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--mint-deep)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
             Catalogue
           </p>
           <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -441,7 +441,7 @@ export default function ProductsPage() {
                         className={sectionButtonClass(selectedSection === section.id)}
                       >
                         <Icon
-                          className={`h-4 w-4 ${selectedSection === section.id ? "text-[var(--mint)]" : "text-[var(--ink-40)]"}`}
+                          className={`h-4 w-4 ${selectedSection === section.id ? "text-[var(--brand)]" : "text-[var(--ink-40)]"}`}
                           aria-hidden="true"
                         />
                         <span>{section.label}</span>
@@ -509,7 +509,7 @@ export default function ProductsPage() {
                     onClick={() => setSelectedSection(section.id)}
                     className={`flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-pill)] px-3 py-1.5 text-xs font-medium transition-colors duration-[var(--dur-fast)] ${
                       selectedSection === section.id
-                        ? "bg-[var(--ink)] text-[var(--paper-card)]"
+                        ? "bg-[var(--brand)] text-[var(--brand-ink)]"
                         : "border border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)]"
                     }`}
                   >
@@ -537,12 +537,12 @@ export default function ProductsPage() {
                   <>
                     medicines
                     {selectedSection !== "all" && (
-                      <span className="ml-1 text-[var(--mint)]">
+                      <span className="ml-1 text-[var(--brand)]">
                         in {sidebarSections.find(s => s.id === selectedSection)?.label}
                       </span>
                     )}
                     {selectedCategory !== "all" && (
-                      <span className="ml-1 text-[var(--mint)]">/ {selectedCategory}</span>
+                      <span className="ml-1 text-[var(--brand)]">/ {selectedCategory}</span>
                     )}
                   </>
                 )}
@@ -665,7 +665,7 @@ export default function ProductsPage() {
                     className={sectionButtonClass(selectedSection === section.id)}
                   >
                     <Icon
-                      className={`h-4 w-4 ${selectedSection === section.id ? "text-[var(--mint)]" : "text-[var(--ink-40)]"}`}
+                      className={`h-4 w-4 ${selectedSection === section.id ? "text-[var(--brand)]" : "text-[var(--ink-40)]"}`}
                       aria-hidden="true"
                     />
                     <span>{section.label}</span>

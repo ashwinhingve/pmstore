@@ -162,8 +162,8 @@ export default function ReturnRequestPage({
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--paper)]">
         <div className="bg-[var(--paper-card)] rounded-2xl shadow-[var(--shadow-sm)] p-12 max-w-md text-center">
-          <div className="w-16 h-16 bg-[var(--mint-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="w-10 h-10 text-[var(--mint)]" />
+          <div className="w-16 h-16 bg-[var(--brand-soft)] rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-10 h-10 text-[var(--brand)]" />
           </div>
           <h2 className="mb-2 text-2xl font-bold text-[var(--ink)]">
             Return request submitted

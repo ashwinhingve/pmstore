@@ -169,7 +169,7 @@ export default function SpecificationsManager({
                 <button
                   type="button"
                   onClick={() => addSpecification('', '')}
-                  className="w-full text-left px-3 py-2 text-sm text-[var(--mint)] hover:bg-[var(--mint-soft)] rounded transition-colors font-medium"
+                  className="w-full text-left px-3 py-2 text-sm text-[var(--brand)] hover:bg-[var(--brand-soft)] rounded transition-colors font-medium"
                 >
                   + Custom Specification
                 </button>

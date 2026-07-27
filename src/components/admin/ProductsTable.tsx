@@ -170,7 +170,7 @@ export default function ProductsTable({
   const getStockStatus = (stock: number) => {
     if (stock === 0) return { label: 'Out of Stock', color: 'text-[var(--ink-70)] bg-[var(--foil-soft)]', icon: PackageX };
     if (stock <= 10) return { label: 'Low Stock', color: 'text-[var(--ink-70)] bg-[var(--foil-soft)]', icon: AlertTriangle };
-    return { label: 'In Stock', color: 'text-[var(--mint)] bg-[var(--mint-soft)]', icon: Package };
+    return { label: 'In Stock', color: 'text-[var(--brand)] bg-[var(--brand-soft)]', icon: Package };
   };
 
   return (
@@ -199,7 +199,7 @@ export default function ProductsTable({
           </Link>
 
           <Link href="/admin/products/new">
-            <Button className="bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)]">
+            <Button className="bg-[var(--brand)] hover:bg-[var(--brand)] text-[var(--paper-card)]">
               <Plus className="w-4 h-4 mr-2" />
               Add Product
             </Button>
@@ -360,22 +360,22 @@ export default function ProductsTable({
                           <p className="font-medium text-[var(--ink)]">{product.name}</p>
                           <div className="flex flex-wrap gap-1 mt-1">
                             {product.isFeatured && (
-                              <span className="inline-block px-2 py-0.5 bg-[var(--mint-soft)] text-[var(--mint)] text-xs rounded">
+                              <span className="inline-block px-2 py-0.5 bg-[var(--brand-soft)] text-[var(--brand)] text-xs rounded">
                                 Featured
                               </span>
                             )}
                             {product.isBestseller && (
-                              <span className="inline-block px-2 py-0.5 bg-[var(--mint-soft)] text-[var(--mint)] text-xs rounded">
+                              <span className="inline-block px-2 py-0.5 bg-[var(--brand-soft)] text-[var(--brand)] text-xs rounded">
                                 Bestseller
                               </span>
                             )}
                             {product.isTrending && (
-                              <span className="inline-block px-2 py-0.5 bg-[var(--mint-soft)] text-[var(--mint)] text-xs rounded">
+                              <span className="inline-block px-2 py-0.5 bg-[var(--brand-soft)] text-[var(--brand)] text-xs rounded">
                                 Trending
                               </span>
                             )}
                             {product.isValueBuy && (
-                              <span className="inline-block px-2 py-0.5 bg-[var(--mint-soft)] text-[var(--mint)] text-xs rounded">
+                              <span className="inline-block px-2 py-0.5 bg-[var(--brand-soft)] text-[var(--brand)] text-xs rounded">
                                 Value Buy
                               </span>
                             )}
@@ -412,7 +412,7 @@ export default function ProductsTable({
                         onClick={() => toggleActive(product._id, product.isActive)}
                         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                           product.isActive
-                            ? 'bg-[var(--mint-soft)] text-[var(--mint)]'
+                            ? 'bg-[var(--brand-soft)] text-[var(--brand)]'
                             : 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
                         }`}
                       >

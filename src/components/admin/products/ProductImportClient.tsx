@@ -166,7 +166,7 @@ export function ProductImportClient() {
         {...getRootProps()}
         className={`flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-md)] border-2 border-dashed p-10 text-center transition-colors ${
           isDragActive
-            ? "border-[var(--mint)] bg-[var(--mint-soft)]"
+            ? "border-[var(--brand)] bg-[var(--brand-soft)]"
             : "border-[var(--foil)] bg-[var(--paper-card)] hover:bg-[var(--foil-soft)]"
         }`}
       >
@@ -228,7 +228,7 @@ export function ProductImportClient() {
       {result && (
         <div className="space-y-4 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+            <CheckCircle2 className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
             <h2 className="font-semibold text-[var(--ink)]">Import finished</h2>
           </div>
           <div className="grid grid-cols-3 gap-3">

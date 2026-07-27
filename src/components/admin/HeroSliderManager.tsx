@@ -195,7 +195,7 @@ export default function HeroSliderManager({ initialSlides }: Props) {
         </div>
         <Button
           onClick={() => setShowAdd(true)}
-          className="bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)]"
+          className="bg-[var(--brand)] hover:bg-[var(--brand)] text-[var(--paper-card)]"
           disabled={showAdd || processing}
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -284,7 +284,7 @@ function SlideRow({
   saving: boolean;
 }) {
   return (
-    <div className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${slide.isActive ? 'border-[var(--foil-soft)] bg-[var(--paper-card)] hover:border-[var(--mint)]' : 'border-[var(--foil-soft)] bg-[var(--foil-soft)] opacity-60'}`}>
+    <div className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${slide.isActive ? 'border-[var(--foil-soft)] bg-[var(--paper-card)] hover:border-[var(--brand)]' : 'border-[var(--foil-soft)] bg-[var(--foil-soft)] opacity-60'}`}>
       {/* Thumbnail */}
       <div className="relative w-24 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--foil-soft)]">
         {slide.image ? (
@@ -332,7 +332,7 @@ function SlideRow({
         <button
           onClick={onToggle}
           disabled={saving}
-          className={`p-2 rounded-lg transition-colors ${slide.isActive ? 'text-[var(--mint)] hover:bg-[var(--mint-soft)]' : 'text-[var(--ink-40)] hover:bg-[var(--foil-soft)]'}`}
+          className={`p-2 rounded-lg transition-colors ${slide.isActive ? 'text-[var(--brand)] hover:bg-[var(--brand-soft)]' : 'text-[var(--ink-40)] hover:bg-[var(--foil-soft)]'}`}
           title={slide.isActive ? 'Hide slide' : 'Show slide'}
         >
           {slide.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
@@ -398,7 +398,7 @@ function SlideForm({
           <label className="block text-sm font-medium text-[var(--ink)] mb-2">Slide Image</label>
           <div
             onClick={onImageClick}
-            className="relative w-full aspect-[16/7] rounded-lg overflow-hidden border-2 border-dashed border-[var(--foil-soft)] hover:border-[var(--mint)] cursor-pointer bg-white transition-colors group"
+            className="relative w-full aspect-[16/7] rounded-lg overflow-hidden border-2 border-dashed border-[var(--foil-soft)] hover:border-[var(--brand)] cursor-pointer bg-white transition-colors group"
           >
             {form.image ? (
               <>
@@ -411,7 +411,7 @@ function SlideForm({
                 </div>
               </>
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center text-[var(--ink-40)] group-hover:text-[var(--mint)] transition-colors">
+              <div className="w-full h-full flex flex-col items-center justify-center text-[var(--ink-40)] group-hover:text-[var(--brand)] transition-colors">
                 {uploading ? (
                   <Loader2 className="w-8 h-8 animate-spin text-[var(--ink-70)]" />
                 ) : (
@@ -526,7 +526,7 @@ function SlideForm({
             type="checkbox"
             checked={form.isActive !== false}
             onChange={(e) => onChange({ ...form, isActive: e.target.checked })}
-            className="w-4 h-4 accent-[var(--mint)]"
+            className="w-4 h-4 accent-[var(--brand)]"
           />
           <span className="text-sm text-[var(--ink)]">Active (visible on homepage)</span>
         </label>

@@ -185,7 +185,7 @@ export function AddressStep({ onNext, disabled }: AddressStepProps) {
           <p className="text-[var(--ink-70)] mb-4">No saved addresses found</p>
           <Button
             onClick={() => setShowNewAddressForm(true)}
-            className="bg-[var(--ink)] hover:opacity-90 text-[var(--paper-card)]"
+            className="bg-[var(--brand)] hover:opacity-90 text-[var(--brand-ink)]"
           >
             Add Your First Address
           </Button>

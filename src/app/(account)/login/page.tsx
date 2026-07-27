@@ -177,7 +177,7 @@ export default function LoginPage() {
     <AuthShell>
       {/* Header */}
       <div className="mb-8 text-center">
-        <div className="mb-4 flex items-center justify-center text-[var(--mint)]">
+        <div className="mb-4 flex items-center justify-center text-[var(--brand)]">
           <Logo variant="mark" size={48} />
         </div>
         <h1 className="mb-2 text-[length:var(--step-2)] text-[var(--ink)]">
@@ -451,7 +451,7 @@ export default function LoginPage() {
             )}
 
             {/* Info Section */}
-            <div className="mt-8 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--mint-soft)] p-4">
+            <div className="mt-8 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--brand-soft)] p-4">
               <p className="text-center text-sm text-[var(--ink-70)]">
                 By signing in, you agree to our{" "}
                 <a href="/terms-and-conditions" className="font-medium text-[var(--ink)] hover:underline">Terms of Service</a>{" "}
@@ -474,7 +474,7 @@ export default function LoginPage() {
             key={label}
             className="flex flex-col items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 text-center"
           >
-            <Icon className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+            <Icon className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
             <span className="text-xs text-[var(--ink-70)]">{label}</span>
           </div>
         ))}

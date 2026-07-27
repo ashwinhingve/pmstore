@@ -52,12 +52,12 @@ export function NewsletterForm() {
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === "loading"}
             required
-            className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink)] placeholder:text-[var(--ink-40)] focus:outline-none focus:ring-2 focus:ring-[var(--mint)] focus:ring-offset-0 disabled:opacity-50 min-h-11"
+            className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink)] placeholder:text-[var(--ink-40)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:ring-offset-0 disabled:opacity-50 min-h-11"
           />
           <Button
             type="submit"
             disabled={status === "loading" || !email}
-            className="min-h-11 px-4 bg-[var(--mint)] text-[var(--paper-card)] hover:opacity-90 disabled:opacity-50"
+            className="min-h-11 px-4 bg-[var(--brand)] text-[var(--brand-ink)] hover:opacity-90 disabled:opacity-50"
           >
             {status === "loading" ? "Subscribing..." : "Subscribe"}
           </Button>
@@ -65,7 +65,7 @@ export function NewsletterForm() {
       </div>
 
       {status === "success" && (
-        <p className="text-sm text-[var(--mint)]">You&apos;re subscribed.</p>
+        <p className="text-sm text-[var(--brand)]">You&apos;re subscribed.</p>
       )}
 
       {status === "error" && (

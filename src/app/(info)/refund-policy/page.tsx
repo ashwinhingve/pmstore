@@ -12,8 +12,8 @@ export default function ReturnPolicyPage() {
       <section className="relative overflow-hidden bg-[var(--paper)] py-20 md:py-32">
         <div className="container mx-auto px-4">
           <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
-            <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-6">
-              <RefreshCcw className="w-10 h-10 text-[var(--ink)]" />
+            <div className="w-20 h-20 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-6">
+              <RefreshCcw className="w-10 h-10 text-[var(--brand-ink)]" />
             </div>
             <h1 className="text-[length:var(--step-3)] mb-6 text-[var(--ink)]">
               Return & Refund Policy
@@ -42,8 +42,8 @@ export default function ReturnPolicyPage() {
             {/* Non-Returnable Products */}
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[var(--mint)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
-                  <AlertCircle className="w-6 h-6 text-[var(--ink)]" />
+                <div className="w-12 h-12 bg-[var(--brand)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
+                  <AlertCircle className="w-6 h-6 text-[var(--brand-ink)]" />
                 </div>
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold font-display text-[var(--ink)] mb-3">Non-Returnable Medicines</h2>
@@ -62,8 +62,8 @@ export default function ReturnPolicyPage() {
             {/* Wrong/Damaged/Defective Product */}
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[var(--mint)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
-                  <PackageCheck className="w-6 h-6 text-[var(--ink)]" />
+                <div className="w-12 h-12 bg-[var(--brand)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
+                  <PackageCheck className="w-6 h-6 text-[var(--brand-ink)]" />
                 </div>
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold font-display text-[var(--ink)] mb-3">Wrong / Damaged / Defective Medicine</h2>
@@ -80,7 +80,7 @@ export default function ReturnPolicyPage() {
                     <p>📧 Email: {CONTACT.email}</p>
                   </div>
 
-                  <div className="bg-[var(--mint-soft)] rounded-[var(--radius-md)] p-6 border-l-4 border-[var(--mint)]">
+                  <div className="bg-[var(--brand-soft)] rounded-[var(--radius-md)] p-6 border-l-4 border-[var(--brand)]">
                     <h4 className="font-semibold font-display text-[var(--ink)] mb-2 flex items-center gap-2">
                       <Camera className="w-5 h-5" />
                       Required Evidence
@@ -160,8 +160,8 @@ export default function ReturnPolicyPage() {
             {/* Contact Information */}
             <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[var(--mint)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6 text-[var(--ink)]" />
+                <div className="w-12 h-12 bg-[var(--brand)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-6 h-6 text-[var(--brand-ink)]" />
                 </div>
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold font-display text-[var(--ink)] mb-4">Contact Information</h2>

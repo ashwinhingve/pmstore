@@ -48,12 +48,12 @@ export function AccountShell({
                     className={cn(
                       'flex min-h-11 items-center gap-3 whitespace-nowrap rounded-[var(--radius-sm)] px-3 text-sm font-medium transition-colors duration-[var(--dur-fast)]',
                       isActive
-                        ? 'bg-[var(--mint-soft)] text-[var(--ink)]'
+                        ? 'bg-[var(--brand-soft)] text-[var(--ink)]'
                         : 'text-[var(--ink-70)] hover:bg-[var(--foil-soft)] hover:text-[var(--ink)]'
                     )}
                   >
                     <Icon
-                      className={cn('h-4 w-4', isActive ? 'text-[var(--mint)]' : 'text-[var(--ink-40)]')}
+                      className={cn('h-4 w-4', isActive ? 'text-[var(--brand)]' : 'text-[var(--ink-40)]')}
                       aria-hidden="true"
                     />
                     {item.label}

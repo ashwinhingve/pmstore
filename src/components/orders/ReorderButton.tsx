@@ -85,7 +85,7 @@ export function ReorderButton({ orderId }: { orderId: string }) {
         type="button"
         onClick={handleReorder}
         disabled={status === 'loading'}
-        className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--mint)] px-4 py-2 text-[length:var(--step--1)] font-semibold text-[var(--ink)] transition hover:opacity-90 disabled:opacity-60"
+        className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--brand)] px-4 py-2 text-[length:var(--step--1)] font-semibold text-[var(--brand-ink)] transition hover:opacity-90 disabled:opacity-60"
       >
         <RotateCcw className="h-4 w-4" aria-hidden="true" />
         {status === 'loading' ? 'Adding to cart…' : 'Reorder'}

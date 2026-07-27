@@ -85,7 +85,7 @@ export default function VariantsManager({
               key={variant.id}
               className={`p-4 rounded-lg border-2 transition-colors ${
                 editingIndex === index
-                  ? 'border-[var(--mint)] bg-[var(--mint-soft)]'
+                  ? 'border-[var(--brand)] bg-[var(--brand-soft)]'
                   : 'border-[var(--foil-soft)] bg-[var(--foil-soft)]'
               }`}
             >
@@ -208,7 +208,7 @@ export default function VariantsManager({
                         onChange={(e) =>
                           setEditForm({ ...editForm, isActive: e.target.checked })
                         }
-                        className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
+                        className="w-4 h-4 text-[var(--brand)] border-[var(--foil-soft)] rounded focus:ring-[var(--brand)]"
                       />
                       <span className="text-sm font-medium text-[var(--ink)]">
                         Active variant
@@ -249,7 +249,7 @@ export default function VariantsManager({
                       <span
                         className={`px-2 py-0.5 text-xs rounded ${
                           variant.isActive
-                            ? 'bg-[var(--mint-soft)] text-[var(--mint)]'
+                            ? 'bg-[var(--brand-soft)] text-[var(--brand)]'
                             : 'bg-[var(--foil-soft)] text-[var(--ink-70)]'
                         }`}
                       >

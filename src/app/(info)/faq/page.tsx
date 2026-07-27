@@ -106,7 +106,7 @@ export default function FaqPage() {
 
       <p className="mt-10 text-center text-[var(--ink-70)]">
         Can&apos;t find your answer?{' '}
-        <a href="/contact" className="font-medium text-[var(--mint)] underline underline-offset-2">
+        <a href="/contact" className="font-medium text-[var(--brand)] underline underline-offset-2">
           Contact us
         </a>
       </p>

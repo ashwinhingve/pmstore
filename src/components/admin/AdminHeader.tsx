@@ -62,7 +62,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
               <span className="sr-only">View notifications</span>
               <Bell className="h-5 w-5" />
               {/* Notification badge */}
-              <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-[var(--mint)] ring-2 ring-[var(--paper-card)]" />
+              <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-[var(--brand)] ring-2 ring-[var(--paper-card)]" />
             </button>
 
             {/* User menu */}

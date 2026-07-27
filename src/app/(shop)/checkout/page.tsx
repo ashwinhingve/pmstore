@@ -162,8 +162,8 @@ export default function CheckoutPage() {
                   <span
                     className={`data flex h-10 w-10 items-center justify-center rounded-full font-semibold shadow-[var(--shadow-xs)] transition-colors duration-[var(--dur-base)] ${
                       currentStep === 'address'
-                        ? 'bg-[var(--ink)] text-[var(--paper-card)]'
-                        : 'bg-[var(--mint)] text-[var(--paper-card)]'
+                        ? 'bg-[var(--brand)] text-[var(--brand-ink)]'
+                        : 'bg-[var(--mint-soft)] text-[var(--mint)]'
                     }`}
                   >
                     {currentStep === 'payment' ? '✓' : '1'}
@@ -173,7 +173,7 @@ export default function CheckoutPage() {
                 <li aria-hidden="true">
                   <span
                     className={`block h-1 w-16 rounded-full transition-colors duration-[var(--dur-base)] ${
-                      currentStep === 'payment' ? 'bg-[var(--mint)]' : 'bg-[var(--foil-soft)]'
+                      currentStep === 'payment' ? 'bg-[var(--brand)]' : 'bg-[var(--foil-soft)]'
                     }`}
                   />
                 </li>
@@ -336,15 +336,15 @@ export default function CheckoutPage() {
                 <div className="mt-6 border-t border-[var(--foil-soft)] pt-6">
                   <div className="flex items-center justify-around text-xs text-[var(--ink-70)]">
                     <div className="flex flex-col items-center gap-1.5 text-center">
-                      <Lock className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                      <Lock className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
                       <span>Secure payment</span>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 text-center">
-                      <Truck className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                      <Truck className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
                       <span>Fast delivery</span>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 text-center">
-                      <BadgeCheck className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                      <BadgeCheck className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
                       <span>100% authentic</span>
                     </div>
                   </div>

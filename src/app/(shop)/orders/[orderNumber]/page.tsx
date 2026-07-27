@@ -143,7 +143,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
           <div className="mb-8">
             <Link
               href="/orders"
-              className="mb-4 inline-flex min-h-11 items-center gap-2 text-[var(--mint)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+              className="mb-4 inline-flex min-h-11 items-center gap-2 text-[var(--brand)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               Back to orders
@@ -193,7 +193,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
 
                 {canReturn && (
                   <Link href={`/orders/${orderData.orderNumber}/return`}>
-                    <Button className="bg-[var(--mint)] hover:bg-[var(--mint-deep)]">
+                    <Button className="bg-[var(--brand)] hover:bg-[var(--brand-deep)]">
                       Request return
                     </Button>
                   </Link>
@@ -248,7 +248,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
               {/* Shipping Information */}
               <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
                 <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-[var(--ink)]">
-                  <Package className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                  <Package className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
                   Shipping information
                 </h3>
                 <div className="space-y-3">
@@ -373,7 +373,7 @@ export default async function UserOrderDetailsPage({ params }: PageProps) {
                         )}
                       </div>
                       <div className="mt-2 flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-[var(--mint)] animate-pulse"></span>
+                        <span className="w-2 h-2 rounded-full bg-[var(--brand)] animate-pulse"></span>
                         <p className="text-xs text-[var(--ink-70)]">
                           Refund processing — typically 5–7 business days
                         </p>

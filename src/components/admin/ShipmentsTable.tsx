@@ -199,7 +199,7 @@ export default function ShipmentsTable({
       {pendingOrders.length > 0 && (
         <div className="rounded-lg bg-[var(--paper-card)] shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
           <div className="px-6 py-4 border-b border-[var(--foil-soft)] flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[var(--mint)] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[var(--brand)] animate-pulse" />
             <h3 className="text-sm font-semibold text-[var(--ink)]">
               Orders awaiting shipment ({pendingOrders.length})
             </h3>
@@ -236,7 +236,7 @@ export default function ShipmentsTable({
                     <div className={`text-xs font-medium px-3 py-1.5 rounded-md ${
                       result.startsWith('Error')
                         ? 'bg-[var(--foil-soft)] text-[var(--ink)]'
-                        : 'bg-[var(--mint-soft)] text-[var(--mint)]'
+                        : 'bg-[var(--brand-soft)] text-[var(--brand)]'
                     }`}>
                       {result.startsWith('Error') ? result : `Waybill: ${result}`}
                     </div>
@@ -296,7 +296,7 @@ export default function ShipmentsTable({
             type="button"
             onClick={handlePollTracking}
             disabled={isPolling}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--mint)] bg-[var(--mint-soft)] text-[var(--mint)] rounded-lg text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)] rounded-lg text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${isPolling ? 'animate-spin' : ''}`} />
             {isPolling ? 'Updating...' : 'Refresh tracking'}
@@ -346,7 +346,7 @@ export default function ShipmentsTable({
 
         {/* Poll Result Message */}
         {pollResult && (
-          <div className="text-sm text-[var(--mint)] bg-[var(--mint-soft)] px-3 py-2 rounded-lg">
+          <div className="text-sm text-[var(--brand)] bg-[var(--brand-soft)] px-3 py-2 rounded-lg">
             {pollResult}
           </div>
         )}

@@ -28,7 +28,7 @@ export default function AboutPage() {
       <section className="relative overflow-hidden bg-[image:var(--surface-hero)] py-20 text-[var(--paper)] md:py-28">
         <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <AnimatedSection direction="up" className="mx-auto max-w-3xl text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--mint-soft)]">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--brand-soft)]">
               About {SITE_SHORT_NAME}
             </p>
             <h1 className="mb-5 font-[family-name:var(--font-display)] text-[length:var(--step-3)] font-extrabold tracking-tight text-[var(--paper)]">
@@ -50,8 +50,8 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             <AnimatedSection direction="left">
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] h-full group border border-[var(--foil-soft)]">
-                <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6">
-                  <Target className="w-10 h-10 text-[var(--ink)]" />
+                <div className="w-20 h-20 bg-[var(--brand)] rounded-full flex items-center justify-center mb-6">
+                  <Target className="w-10 h-10 text-[var(--brand-ink)]" />
                 </div>
                 <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our mission</h2>
                 <p className="text-lg text-[var(--ink-70)] leading-relaxed">
@@ -62,8 +62,8 @@ export default function AboutPage() {
 
             <AnimatedSection direction="right">
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] h-full group border border-[var(--foil-soft)]">
-                <div className="w-20 h-20 bg-[var(--mint)] rounded-full flex items-center justify-center mb-6">
-                  <Lightbulb className="w-10 h-10 text-[var(--ink)]" />
+                <div className="w-20 h-20 bg-[var(--brand)] rounded-full flex items-center justify-center mb-6">
+                  <Lightbulb className="w-10 h-10 text-[var(--brand-ink)]" />
                 </div>
                 <h2 className="text-3xl font-bold font-display text-[var(--ink)] mb-4">Our vision</h2>
                 <p className="text-lg text-[var(--ink-70)] leading-relaxed">
@@ -82,7 +82,7 @@ export default function AboutPage() {
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
               Our impact
             </h2>
-            <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
+            <div className="w-24 h-1 bg-[var(--brand)] mx-auto mt-4"></div>
           </AnimatedSection>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -121,7 +121,7 @@ export default function AboutPage() {
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
               Why choose us
             </h2>
-            <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
+            <div className="w-24 h-1 bg-[var(--brand)] mx-auto mt-4"></div>
             <p className="text-[var(--ink-70)] mt-6 max-w-2xl mx-auto">
               We bring affordable, genuine medicines to every household
             </p>
@@ -146,14 +146,14 @@ export default function AboutPage() {
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
               Our values
             </h2>
-            <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
+            <div className="w-24 h-1 bg-[var(--brand)] mx-auto mt-4"></div>
           </AnimatedSection>
 
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <StaggerItem>
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Heart className="w-8 h-8 text-[var(--ink)]" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Heart className="w-8 h-8 text-[var(--brand-ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Patient first</h3>
                 <p className="text-[var(--ink-70)]">
@@ -164,8 +164,8 @@ export default function AboutPage() {
 
             <StaggerItem>
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-[var(--ink)]" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shield className="w-8 h-8 text-[var(--brand-ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Genuine medicines</h3>
                 <p className="text-[var(--ink-70)]">
@@ -176,8 +176,8 @@ export default function AboutPage() {
 
             <StaggerItem>
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Leaf className="w-8 h-8 text-[var(--ink)]" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Leaf className="w-8 h-8 text-[var(--brand-ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Affordability</h3>
                 <p className="text-[var(--ink-70)]">
@@ -188,8 +188,8 @@ export default function AboutPage() {
 
             <StaggerItem>
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="w-8 h-8 text-[var(--ink)]" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="w-8 h-8 text-[var(--brand-ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Expertise</h3>
                 <p className="text-[var(--ink-70)]">
@@ -200,8 +200,8 @@ export default function AboutPage() {
 
             <StaggerItem>
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-[var(--ink)]" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-8 h-8 text-[var(--brand-ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Convenience</h3>
                 <p className="text-[var(--ink-70)]">
@@ -212,8 +212,8 @@ export default function AboutPage() {
 
             <StaggerItem>
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] group text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-[var(--ink)]" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-8 h-8 text-[var(--brand-ink)]" />
                 </div>
                 <h3 className="text-xl font-bold font-display text-[var(--ink)] mb-3">Trust</h3>
                 <p className="text-[var(--ink-70)]">
@@ -233,7 +233,7 @@ export default function AboutPage() {
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
               Government approved
             </h2>
-            <div className="w-24 h-1 bg-[var(--mint)] mx-auto mt-4"></div>
+            <div className="w-24 h-1 bg-[var(--brand)] mx-auto mt-4"></div>
             <p className="text-[var(--ink-70)] mt-6 max-w-2xl mx-auto">
               Licensed pharmacy under the Drugs & Cosmetics Act, 1940
             </p>

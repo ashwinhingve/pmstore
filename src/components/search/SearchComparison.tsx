@@ -147,12 +147,12 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
       {/* Winner — the cheapest per unit, highlighted */}
       <Link
         href={`/products/${bestValue.slug}`}
-        className={`group block border-l-4 border-[var(--mint)] bg-[var(--mint-soft)]/60 px-4 py-3.5 transition-colors duration-[var(--dur-fast)] hover:bg-[var(--mint-soft)] ${
+        className={`group block border-l-4 border-[var(--brand)] bg-[var(--brand-soft)]/60 px-4 py-3.5 transition-colors duration-[var(--dur-fast)] hover:bg-[var(--brand-soft)]/80 ${
           bestValue.stock <= 0 ? 'opacity-60' : ''
         }`}
       >
         <div className="mb-1.5 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--mint)] px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--paper-card)]">
+          <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--brand)] px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--brand-ink)]">
             <Check className="h-3 w-3" aria-hidden="true" /> Best value
           </span>
           {bestValue.prescriptionRequired && <RxPill />}
@@ -228,7 +228,7 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
         <div className="mt-auto border-t border-[var(--foil-soft)] px-4 py-3">
           <Link
             href={topTwo}
-            className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--mint)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--brand)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
           >
             Compare top two side by side
             <ArrowRight className="h-4 w-4" aria-hidden="true" />

@@ -100,7 +100,7 @@ export default function ContactPage() {
       <section className="relative overflow-hidden bg-[image:var(--surface-hero)] py-20 text-[var(--paper)] md:py-28">
         <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
           <AnimatedSection direction="up" className="mx-auto max-w-3xl text-center">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--mint-soft)]">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--brand-soft)]">
               Contact
             </p>
             <h1 className="mb-5 font-[family-name:var(--font-display)] text-[length:var(--step-3)] font-extrabold tracking-tight text-[var(--paper)]">
@@ -120,8 +120,8 @@ export default function ContactPage() {
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             <StaggerItem>
               <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MapPin className="w-8 h-8 text-[var(--ink)]" aria-hidden="true" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MapPin className="w-8 h-8 text-[var(--brand-ink)]" aria-hidden="true" />
                 </div>
                 <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Visit us</h3>
                 <p className="text-sm text-[var(--ink-70)]">
@@ -134,11 +134,11 @@ export default function ContactPage() {
 
             <StaggerItem>
               <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Phone className="w-8 h-8 text-[var(--ink)]" aria-hidden="true" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Phone className="w-8 h-8 text-[var(--brand-ink)]" aria-hidden="true" />
                 </div>
                 <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Call us</h3>
-                <a href={CONTACT.phoneHref} className="text-sm text-[var(--ink-70)] hover:text-[var(--mint)] transition-colors block">
+                <a href={CONTACT.phoneHref} className="text-sm text-[var(--ink-70)] hover:text-[var(--brand)] transition-colors block">
                   {CONTACT.phone}
                 </a>
               </div>
@@ -146,11 +146,11 @@ export default function ContactPage() {
 
             <StaggerItem>
               <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Mail className="w-8 h-8 text-[var(--ink)]" aria-hidden="true" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-8 h-8 text-[var(--brand-ink)]" aria-hidden="true" />
                 </div>
                 <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Email us</h3>
-                <a href={CONTACT.emailHref} className="text-sm text-[var(--ink-70)] hover:text-[var(--mint)] transition-colors block">
+                <a href={CONTACT.emailHref} className="text-sm text-[var(--ink-70)] hover:text-[var(--brand)] transition-colors block">
                   {CONTACT.email}
                 </a>
               </div>
@@ -158,8 +158,8 @@ export default function ContactPage() {
 
             <StaggerItem>
               <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] text-center h-full border border-[var(--foil-soft)]">
-                <div className="w-16 h-16 bg-[var(--mint)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Clock className="w-8 h-8 text-[var(--ink)]" aria-hidden="true" />
+                <div className="w-16 h-16 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Clock className="w-8 h-8 text-[var(--brand-ink)]" aria-hidden="true" />
                 </div>
                 <h3 className="text-lg font-bold font-display text-[var(--ink)] mb-2">Business hours</h3>
                 <p className="text-sm text-[var(--ink-70)]">
@@ -270,8 +270,8 @@ export default function ContactPage() {
                     href={CONTACT.phoneHref}
                     className="flex items-center gap-4 p-4 bg-[var(--paper-card)] rounded-[var(--radius-md)] shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] border border-[var(--foil-soft)]"
                   >
-                    <div className="w-12 h-12 bg-[var(--mint)] rounded-full flex items-center justify-center shrink-0">
-                      <Phone className="w-6 h-6 text-[var(--ink)]" aria-hidden="true" />
+                    <div className="w-12 h-12 bg-[var(--brand)] rounded-full flex items-center justify-center shrink-0">
+                      <Phone className="w-6 h-6 text-[var(--brand-ink)]" aria-hidden="true" />
                     </div>
                     <div>
                       <p className="font-semibold font-display text-[var(--ink)]">Call now</p>
@@ -283,8 +283,8 @@ export default function ContactPage() {
                     href={CONTACT.emailHref}
                     className="flex items-center gap-4 p-4 bg-[var(--paper-card)] rounded-[var(--radius-md)] shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] border border-[var(--foil-soft)]"
                   >
-                    <div className="w-12 h-12 bg-[var(--mint)] rounded-full flex items-center justify-center shrink-0">
-                      <Mail className="w-6 h-6 text-[var(--ink)]" aria-hidden="true" />
+                    <div className="w-12 h-12 bg-[var(--brand)] rounded-full flex items-center justify-center shrink-0">
+                      <Mail className="w-6 h-6 text-[var(--brand-ink)]" aria-hidden="true" />
                     </div>
                     <div>
                       <p className="font-semibold font-display text-[var(--ink)]">Email us</p>

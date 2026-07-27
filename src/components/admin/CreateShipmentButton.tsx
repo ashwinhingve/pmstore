@@ -47,12 +47,12 @@ export default function CreateShipmentButton({ orderId, orderNumber, paymentMeth
     return (
       <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 rounded-full bg-[var(--mint-soft)] flex items-center justify-center">
-            <svg className="w-4 h-4 text-[var(--mint)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-8 h-8 rounded-full bg-[var(--brand-soft)] flex items-center justify-center">
+            <svg className="w-4 h-4 text-[var(--brand)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 className="text-sm font-semibold text-[var(--mint)]">Shipment created</h3>
+          <h3 className="text-sm font-semibold text-[var(--brand)]">Shipment created</h3>
         </div>
         <p className="text-sm text-[var(--ink-70)] mb-1">Waybill</p>
         <p className="text-sm data font-semibold text-[var(--ink)] mb-3" style={{ fontFamily: 'var(--font-data)' }}>{result.waybill}</p>

@@ -166,7 +166,7 @@ export function BulkActionDrawer({
             <Button
               onClick={submit}
               loading={submitting}
-              className="h-11 flex-1 bg-[var(--mint)] font-semibold text-[var(--paper-card)] hover:bg-[var(--mint-deep)]"
+              className="h-11 flex-1 bg-[var(--brand)] font-semibold text-[var(--paper-card)] hover:bg-[var(--brand-deep)]"
             >
               {TITLES[action]}
             </Button>

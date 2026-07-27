@@ -81,7 +81,7 @@ export default async function OrderTrackPage({ params }: PageProps) {
         {/* Back link */}
         <Link
           href={`/orders/${orderNumber}`}
-          className="mb-6 inline-flex min-h-11 items-center gap-2 text-[var(--mint)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+          className="mb-6 inline-flex min-h-11 items-center gap-2 text-[var(--brand)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           Back to order details
@@ -128,14 +128,14 @@ export default async function OrderTrackPage({ params }: PageProps) {
 
               {s?.currentLocation && (
                 <div className="mt-4 flex items-center gap-2 text-sm text-[var(--ink-70)]">
-                  <MapPin className="w-4 h-4 text-[var(--mint)] shrink-0" />
+                  <MapPin className="w-4 h-4 text-[var(--brand)] shrink-0" />
                   <span>Current Location: <strong className="text-[var(--ink)]">{s.currentLocation}</strong></span>
                 </div>
               )}
 
               {(o.estimatedDeliveryDate || s?.estimatedDelivery) && (
                 <div className="mt-2 flex items-center gap-2 text-sm text-[var(--ink-70)]">
-                  <Clock className="w-4 h-4 text-[var(--mint)] shrink-0" />
+                  <Clock className="w-4 h-4 text-[var(--brand)] shrink-0" />
                   <span>
                     Estimated Delivery:{' '}
                     <strong className="text-[var(--ink)]">
@@ -170,7 +170,7 @@ export default async function OrderTrackPage({ params }: PageProps) {
                   href={getCourierTrackingUrl(s?.provider || o.shippingProvider || 'delhivery', o.trackingNumber, s?.trackingUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-[var(--mint)] hover:opacity-90"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-[var(--brand)] hover:opacity-90"
                 >
                   <Truck className="w-4 h-4" />
                   Track on {getCourierDisplayName(s?.provider || o.shippingProvider, s?.courierName)}
@@ -182,7 +182,7 @@ export default async function OrderTrackPage({ params }: PageProps) {
             {sortedScans.length > 0 ? (
               <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
                 <h2 className="mb-6 flex items-center gap-2 text-xl font-bold text-[var(--ink)]">
-                  <Package className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+                  <Package className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
                   Shipment timeline
                 </h2>
 
@@ -195,7 +195,7 @@ export default async function OrderTrackPage({ params }: PageProps) {
                       <div key={idx} className="relative flex gap-4">
                         {/* Dot */}
                         <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center shrink-0 border-2 ${
-                          idx === 0 ? 'bg-[var(--mint)] border-[var(--mint)]' : 'bg-[var(--paper-card)] border-[var(--foil-soft)]'
+                          idx === 0 ? 'bg-[var(--brand)] border-[var(--brand)]' : 'bg-[var(--paper-card)] border-[var(--foil-soft)]'
                         }`}>
                           {idx === 0 ? (
                             <Package className="w-4 h-4 text-white" />
@@ -207,7 +207,7 @@ export default async function OrderTrackPage({ params }: PageProps) {
                         {/* Content */}
                         <div className="flex-1 pb-2">
                           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                            <p className={`font-semibold text-sm ${idx === 0 ? 'text-[var(--mint)]' : 'text-[var(--ink)]'}`}>
+                            <p className={`font-semibold text-sm ${idx === 0 ? 'text-[var(--brand)]' : 'text-[var(--ink)]'}`}>
                               {scan.status}
                             </p>
                             <p className="text-xs text-[var(--ink-70)] shrink-0">

@@ -95,7 +95,7 @@ export function AdminNavLinks({ onNavigate }: { onNavigate?: () => void }) {
                   className={cn(
                     'group flex min-h-10 items-center rounded-[var(--radius-sm)] border-l-4 px-3 py-2 text-sm font-medium transition-colors duration-[var(--dur-fast)]',
                     isActive
-                      ? 'border-[var(--mint)] bg-[var(--mint-soft)] text-[var(--ink)]'
+                      ? 'border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--ink)]'
                       : 'border-transparent text-[var(--ink-70)] hover:bg-[var(--foil-soft)] hover:text-[var(--ink)]'
                   )}
                 >
@@ -103,7 +103,7 @@ export function AdminNavLinks({ onNavigate }: { onNavigate?: () => void }) {
                     className={cn(
                       'mr-3 h-5 w-5 shrink-0 transition-colors duration-[var(--dur-fast)]',
                       isActive
-                        ? 'text-[var(--mint)]'
+                        ? 'text-[var(--brand)]'
                         : 'text-[var(--ink-40)] group-hover:text-[var(--ink-70)]'
                     )}
                   />

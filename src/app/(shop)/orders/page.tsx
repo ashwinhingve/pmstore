@@ -195,7 +195,7 @@ export default function OrdersPage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search by order number..."
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[var(--foil-soft)] focus:border-[var(--mint)] focus:outline-none text-sm"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[var(--foil-soft)] focus:border-[var(--brand)] focus:outline-none text-sm"
                     />
                   </div>
                 </form>
@@ -206,14 +206,14 @@ export default function OrdersPage() {
                   onClick={() => setShowFilters(!showFilters)}
                   className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl border-2 font-medium transition-colors ${
                     hasActiveFilters
-                      ? 'bg-[var(--mint-soft)] border-[var(--mint)] text-[var(--mint)]'
+                      ? 'bg-[var(--brand-soft)] border-[var(--brand)] text-[var(--brand)]'
                       : 'bg-[var(--paper-card)] border-[var(--foil-soft)] text-[var(--ink-70)] hover:bg-[var(--foil-soft)]'
                   }`}
                 >
                   <Filter className="w-5 h-5" />
                   Filters
                   {hasActiveFilters && (
-                    <span className="bg-[var(--mint)] text-white text-xs rounded-full px-2 py-0.5">
+                    <span className="bg-[var(--brand)] text-white text-xs rounded-full px-2 py-0.5">
                       Active
                     </span>
                   )}
@@ -234,7 +234,7 @@ export default function OrdersPage() {
                         variant={filter === 'all' ? 'default' : 'outline'}
                         onClick={() => setFilter('all')}
                         size="sm"
-                        className={filter === 'all' ? 'bg-[var(--mint)] hover:bg-opacity-90' : ''}
+                        className={filter === 'all' ? 'bg-[var(--brand)] hover:bg-opacity-90' : ''}
                       >
                         All orders
                       </Button>
@@ -242,7 +242,7 @@ export default function OrdersPage() {
                         variant={filter === 'confirmed' ? 'default' : 'outline'}
                         onClick={() => setFilter('confirmed')}
                         size="sm"
-                        className={filter === 'confirmed' ? 'bg-[var(--mint)] hover:bg-opacity-90' : ''}
+                        className={filter === 'confirmed' ? 'bg-[var(--brand)] hover:bg-opacity-90' : ''}
                       >
                         Confirmed
                       </Button>
@@ -250,7 +250,7 @@ export default function OrdersPage() {
                         variant={filter === 'processing' ? 'default' : 'outline'}
                         onClick={() => setFilter('processing')}
                         size="sm"
-                        className={filter === 'processing' ? 'bg-[var(--mint)] hover:bg-opacity-90' : ''}
+                        className={filter === 'processing' ? 'bg-[var(--brand)] hover:bg-opacity-90' : ''}
                       >
                         Processing
                       </Button>
@@ -258,7 +258,7 @@ export default function OrdersPage() {
                         variant={filter === 'shipped' ? 'default' : 'outline'}
                         onClick={() => setFilter('shipped')}
                         size="sm"
-                        className={filter === 'shipped' ? 'bg-[var(--mint)] hover:bg-opacity-90' : ''}
+                        className={filter === 'shipped' ? 'bg-[var(--brand)] hover:bg-opacity-90' : ''}
                       >
                         Shipped
                       </Button>
@@ -266,7 +266,7 @@ export default function OrdersPage() {
                         variant={filter === 'delivered' ? 'default' : 'outline'}
                         onClick={() => setFilter('delivered')}
                         size="sm"
-                        className={filter === 'delivered' ? 'bg-[var(--mint)] hover:bg-opacity-90' : ''}
+                        className={filter === 'delivered' ? 'bg-[var(--brand)] hover:bg-opacity-90' : ''}
                       >
                         Delivered
                       </Button>
@@ -283,7 +283,7 @@ export default function OrdersPage() {
                         type="date"
                         value={dateFrom}
                         onChange={(e) => setDateFrom(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg border-2 border-[var(--foil-soft)] focus:border-[var(--mint)] focus:outline-none text-sm"
+                        className="w-full px-3 py-2 rounded-lg border-2 border-[var(--foil-soft)] focus:border-[var(--brand)] focus:outline-none text-sm"
                       />
                     </div>
                     <div>
@@ -294,7 +294,7 @@ export default function OrdersPage() {
                         type="date"
                         value={dateTo}
                         onChange={(e) => setDateTo(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg border-2 border-[var(--foil-soft)] focus:border-[var(--mint)] focus:outline-none text-sm"
+                        className="w-full px-3 py-2 rounded-lg border-2 border-[var(--foil-soft)] focus:border-[var(--brand)] focus:outline-none text-sm"
                       />
                     </div>
                   </div>
@@ -311,7 +311,7 @@ export default function OrdersPage() {
                     <button
                       type="button"
                       onClick={() => setShowFilters(false)}
-                      className="min-h-11 rounded-[var(--radius-sm)] bg-[var(--mint)] px-4 py-2 text-sm font-medium text-[var(--paper-card)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--mint-deep)]"
+                      className="min-h-11 rounded-[var(--radius-sm)] bg-[var(--brand)] px-4 py-2 text-sm font-medium text-[var(--brand-ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--brand-deep)]"
                     >
                       Apply filters
                     </button>
@@ -333,12 +333,12 @@ export default function OrdersPage() {
                     : 'Order the medicines you need and track them here.'}
                 </p>
                 {hasActiveFilters ? (
-                  <Button onClick={handleClearFilters} className="bg-[var(--mint)] hover:bg-[var(--mint-deep)]">
+                  <Button onClick={handleClearFilters} className="bg-[var(--brand)] hover:bg-[var(--brand-deep)]">
                     Clear filters
                   </Button>
                 ) : (
                   <Link href="/products">
-                    <Button className="bg-[var(--mint)] hover:bg-[var(--mint-deep)]">
+                    <Button className="bg-[var(--brand)] hover:bg-[var(--brand-deep)]">
                       Browse medicines
                     </Button>
                   </Link>

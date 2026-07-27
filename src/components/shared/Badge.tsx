@@ -4,11 +4,12 @@ import { cn } from '@/lib/utils';
  * Small pill label. `--rx` is intentionally NOT a tone here — prescription flags
  * use RxBadge, and red must never leak into commerce badges.
  */
-export type BadgeTone = 'mint' | 'ink' | 'neutral' | 'muted';
+export type BadgeTone = 'mint' | 'ink' | 'brand' | 'neutral' | 'muted';
 
 const TONES: Record<BadgeTone, string> = {
   mint: 'bg-[var(--mint-soft)] text-[var(--mint)]',
   ink: 'bg-transparent text-[var(--ink)] ring-2 ring-[var(--ink)] ring-inset',
+  brand: 'bg-[var(--brand-soft)] text-[var(--brand)]',
   neutral: 'bg-[var(--foil-soft)] text-[var(--ink-70)]',
   muted: 'bg-[var(--foil-soft)] text-[var(--ink-40)]',
 };

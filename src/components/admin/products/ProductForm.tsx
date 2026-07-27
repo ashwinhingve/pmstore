@@ -359,7 +359,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => updateField('isActive', e.target.checked)}
-                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
+                  className="w-4 h-4 text-[var(--brand)] border-[var(--foil-soft)] rounded focus:ring-[var(--brand)]"
                 />
                 <span className="text-sm font-medium text-[var(--ink)]">Active (visible in shop)</span>
               </label>
@@ -369,7 +369,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isFeatured}
                   onChange={(e) => updateField('isFeatured', e.target.checked)}
-                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
+                  className="w-4 h-4 text-[var(--brand)] border-[var(--foil-soft)] rounded focus:ring-[var(--brand)]"
                 />
                 <span className="text-sm font-medium text-[var(--ink)]">Featured product</span>
               </label>
@@ -379,7 +379,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isBestseller}
                   onChange={(e) => updateField('isBestseller', e.target.checked)}
-                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
+                  className="w-4 h-4 text-[var(--brand)] border-[var(--foil-soft)] rounded focus:ring-[var(--brand)]"
                 />
                 <span className="text-sm font-medium text-[var(--ink)]">Bestseller</span>
               </label>
@@ -389,7 +389,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isTrending}
                   onChange={(e) => updateField('isTrending', e.target.checked)}
-                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
+                  className="w-4 h-4 text-[var(--brand)] border-[var(--foil-soft)] rounded focus:ring-[var(--brand)]"
                 />
                 <span className="text-sm font-medium text-[var(--ink)]">Trending</span>
               </label>
@@ -399,7 +399,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   type="checkbox"
                   checked={formData.isValueBuy}
                   onChange={(e) => updateField('isValueBuy', e.target.checked)}
-                  className="w-4 h-4 text-[var(--mint)] border-[var(--foil-soft)] rounded focus:ring-[var(--mint)]"
+                  className="w-4 h-4 text-[var(--brand)] border-[var(--foil-soft)] rounded focus:ring-[var(--brand)]"
                 />
                 <span className="text-sm font-medium text-[var(--ink)]">Value Buy</span>
               </label>
@@ -419,7 +419,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <button
                   type="button"
                   onClick={addSalt}
-                  className="text-sm font-medium text-[var(--mint)] hover:text-[var(--mint)]"
+                  className="text-sm font-medium text-[var(--brand)] hover:text-[var(--brand)]"
                 >
                   + Add salt
                 </button>
@@ -707,8 +707,8 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     onClick={() => !videoUploading && videoInputRef.current?.click()}
                     className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
                       videoUploading
-                        ? 'border-[var(--mint)] bg-[var(--mint-soft)] cursor-wait'
-                        : 'border-[var(--foil-soft)] hover:border-[var(--mint)] bg-[var(--foil-soft)]'
+                        ? 'border-[var(--brand)] bg-[var(--brand-soft)] cursor-wait'
+                        : 'border-[var(--foil-soft)] hover:border-[var(--brand)] bg-[var(--foil-soft)]'
                     }`}
                   >
                     <input
@@ -738,8 +738,8 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     />
                     {videoUploading ? (
                       <div>
-                        <div className="w-8 h-8 mx-auto mb-2 border-[3px] border-[var(--mint)] border-t-transparent rounded-full animate-spin" />
-                        <p className="text-sm text-[var(--mint)] font-medium">Uploading video...</p>
+                        <div className="w-8 h-8 mx-auto mb-2 border-[3px] border-[var(--brand)] border-t-transparent rounded-full animate-spin" />
+                        <p className="text-sm text-[var(--brand)] font-medium">Uploading video...</p>
                       </div>
                     ) : (
                       <div>
@@ -799,7 +799,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     <button
                       type="button"
                       onClick={() => setShowReplaceVideo(true)}
-                      className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-[var(--foil-soft)] text-[var(--mint)] hover:bg-[var(--mint-soft)] font-medium transition-colors"
+                      className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-[var(--foil-soft)] text-[var(--brand)] hover:bg-[var(--brand-soft)] font-medium transition-colors"
                     >
                       <RefreshCw className="w-4 h-4" />
                       Replace Video
@@ -818,9 +818,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
               {/* ── Replace mode ── */}
               {showReplaceVideo && (
-                <div className="space-y-4 border-2 border-[var(--mint-soft)] rounded-xl p-4 bg-[var(--mint-soft)]/40">
+                <div className="space-y-4 border-2 border-[var(--brand-soft)] rounded-xl p-4 bg-[var(--brand-soft)]/40">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-[var(--mint)]">Upload replacement video</p>
+                    <p className="text-sm font-semibold text-[var(--brand)]">Upload replacement video</p>
                     <button
                       type="button"
                       onClick={() => setShowReplaceVideo(false)}
@@ -833,7 +833,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   <div
                     onClick={() => !videoUploading && replaceVideoInputRef.current?.click()}
                     className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
-                      videoUploading ? 'border-[var(--mint)] bg-[var(--mint-soft)] cursor-wait' : 'border-[var(--foil-soft)] hover:border-[var(--mint)] bg-[var(--paper-card)]'
+                      videoUploading ? 'border-[var(--brand)] bg-[var(--brand-soft)] cursor-wait' : 'border-[var(--foil-soft)] hover:border-[var(--brand)] bg-[var(--paper-card)]'
                     }`}
                   >
                     <input
@@ -864,12 +864,12 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     />
                     {videoUploading ? (
                       <div>
-                        <div className="w-8 h-8 mx-auto mb-2 border-[3px] border-[var(--mint)] border-t-transparent rounded-full animate-spin" />
-                        <p className="text-sm text-[var(--mint)] font-medium">Uploading replacement...</p>
+                        <div className="w-8 h-8 mx-auto mb-2 border-[3px] border-[var(--brand)] border-t-transparent rounded-full animate-spin" />
+                        <p className="text-sm text-[var(--brand)] font-medium">Uploading replacement...</p>
                       </div>
                     ) : (
                       <div>
-                        <RefreshCw className="w-10 h-10 mx-auto mb-2 text-[var(--mint)]" />
+                        <RefreshCw className="w-10 h-10 mx-auto mb-2 text-[var(--brand)]" />
                         <p className="text-sm text-[var(--ink)] font-medium">Click to upload new video</p>
                         <p className="text-xs text-[var(--ink-40)] mt-1">Replaces the current video · MP4, WebM, MOV (max 50MB)</p>
                       </div>
@@ -877,9 +877,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="flex-1 border-t border-[var(--mint-soft)]" />
+                    <div className="flex-1 border-t border-[var(--brand-soft)]" />
                     <span className="text-xs text-[var(--ink-40)] font-medium">OR paste URL</span>
-                    <div className="flex-1 border-t border-[var(--mint-soft)]" />
+                    <div className="flex-1 border-t border-[var(--brand-soft)]" />
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -943,7 +943,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <select
                   value={formData.gstRate ?? 5}
                   onChange={(e) => updateField('gstRate', parseInt(e.target.value))}
-                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--mint)] bg-[var(--paper-card)] text-[var(--ink)]"
+                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--brand)] bg-[var(--paper-card)] text-[var(--ink)]"
                 >
                   <option value={0}>0% — GST Exempt</option>
                   <option value={5}>5% — Standard Food</option>
@@ -1206,7 +1206,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               onClick={() => setActiveTab(tab.id)}
               className={`min-h-11 whitespace-nowrap border-b-2 px-1 pb-3 text-sm font-medium transition-colors duration-[var(--dur-fast)] ${
                 activeTab === tab.id
-                  ? 'border-[var(--mint)] text-[var(--mint)]'
+                  ? 'border-[var(--brand)] text-[var(--brand)]'
                   : 'border-transparent text-[var(--ink-40)] hover:border-[var(--foil-soft)] hover:text-[var(--ink)]'
               }`}
             >
@@ -1247,7 +1247,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
           <Button
             type="submit"
             disabled={submitting}
-            className="bg-[var(--mint)] hover:bg-[var(--mint)] text-[var(--paper-card)]"
+            className="bg-[var(--brand)] hover:bg-[var(--brand)] text-[var(--paper-card)]"
           >
             {submitting
               ? mode === 'create'

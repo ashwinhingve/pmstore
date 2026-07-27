@@ -113,7 +113,7 @@ export function PrescriptionActions({ prescriptionId }: PrescriptionActionsProps
         size="sm"
         onClick={handleVerify}
         disabled={verifying}
-        className="text-xs h-8 flex items-center gap-1 bg-[var(--mint)] hover:opacity-90"
+        className="text-xs h-8 flex items-center gap-1 bg-[var(--brand)] hover:opacity-90"
       >
         <CheckCircle className="w-3 h-3" />
         {verifying ? 'Verifying...' : 'Verify'}

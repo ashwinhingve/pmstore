@@ -99,7 +99,7 @@ export default function AccountSettingsPage() {
                   aria-label={`Turn ${optOut === false ? 'off' : 'on'} refill reminders`}
                   onClick={() => toggle(!optOut)}
                   className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-[var(--dur-fast)] disabled:opacity-50 ${
-                    optOut === false ? 'bg-[var(--mint)]' : 'bg-[var(--foil)]'
+                    optOut === false ? 'bg-[var(--brand)]' : 'bg-[var(--foil)]'
                   }`}
                 >
                   <span className="sr-only">Toggle refill reminders</span>

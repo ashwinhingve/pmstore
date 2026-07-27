@@ -46,7 +46,7 @@ const iconMap = {
 
 const colorMap = {
   totalOrders: 'text-[var(--ink)] bg-[var(--foil-soft)]',
-  totalRevenue: 'text-[var(--mint)] bg-[var(--mint-soft)]',
+  totalRevenue: 'text-[var(--brand)] bg-[var(--brand-soft)]',
   pendingOrders: 'text-[var(--ink-70)] bg-[var(--foil-soft)]',
   activeShipments: 'text-[var(--ink)] bg-[var(--foil-soft)]',
   failedPayments: 'text-[var(--ink-70)] bg-[var(--foil-soft)]',
@@ -70,7 +70,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
   };
 
   const getTrendColor = (trend?: 'up' | 'down' | 'neutral') => {
-    if (trend === 'up') return 'text-[var(--mint)]';
+    if (trend === 'up') return 'text-[var(--brand)]';
     if (trend === 'down') return 'text-[var(--ink-70)]';
     return 'text-[var(--ink-70)]';
   };

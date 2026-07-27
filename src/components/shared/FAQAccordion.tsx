@@ -54,7 +54,7 @@ export const FAQAccordion: React.FC<FAQAccordionProps> = ({
                   {item.question}
                 </span>
                 <span
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--mint-soft)] text-[var(--mint)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] ${
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--brand-soft)] text-[var(--brand)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] ${
                     isOpen ? "rotate-45" : ""
                   }`}
                 >

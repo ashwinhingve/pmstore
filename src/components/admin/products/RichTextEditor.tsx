@@ -36,7 +36,7 @@ export default function RichTextEditor({
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-[var(--mint)] underline',
+          class: 'text-[var(--brand)] underline',
         },
       }),
     ],
@@ -77,7 +77,7 @@ export default function RichTextEditor({
       type="button"
       onClick={onClick}
       className={`p-2 rounded hover:bg-[var(--foil-soft)] transition-colors ${
-        active ? 'bg-[var(--mint-soft)] text-[var(--mint)]' : 'text-[var(--ink)]'
+        active ? 'bg-[var(--brand-soft)] text-[var(--brand)]' : 'text-[var(--ink)]'
       }`}
     >
       {children}

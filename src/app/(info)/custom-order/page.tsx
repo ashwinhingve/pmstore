@@ -22,7 +22,7 @@ export default function CustomOrderPage() {
     <div className="bg-[var(--paper)]">
       {/* Hero */}
       <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-20">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--mint)]">Custom order</p>
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--brand)]">Custom order</p>
         <h1 className="max-w-3xl text-[length:var(--step-3)] text-[var(--ink)]">
           Can&apos;t find your medicine? Request it.
         </h1>
@@ -33,7 +33,7 @@ export default function CustomOrderPage() {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="#request"
-            className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--mint)] px-6 font-semibold text-[var(--paper-card)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--mint-deep)]"
+            className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--brand)] px-6 font-semibold text-[var(--brand-ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--brand-deep)]"
           >
             Request a medicine <ArrowRight className="h-4 w-4" />
           </Link>
@@ -55,7 +55,7 @@ export default function CustomOrderPage() {
               const Icon = s.icon
               return (
                 <li key={s.title} className="relative">
-                  <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--mint-soft)] text-[var(--mint)]">
+                  <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--brand-soft)] text-[var(--brand)]">
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
                   <p className="text-xs font-semibold text-[var(--ink-40)]" style={{ fontFamily: "var(--font-data)" }}>
@@ -81,7 +81,7 @@ export default function CustomOrderPage() {
             </p>
             <div className="mt-6 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)]">
               <div className="flex items-start gap-3">
-                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--mint)]" aria-hidden="true" />
+                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand)]" aria-hidden="true" />
                 <p className="text-sm text-[var(--ink-70)]">
                   Prescription medicines (Schedule H / H1 / X) are dispensed only against a valid
                   prescription. Tick the box in the form and we&apos;ll collect it before delivery.

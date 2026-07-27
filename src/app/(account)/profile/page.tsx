@@ -130,12 +130,12 @@ export default function ProfilePage() {
             <Button
               type="submit"
               loading={status === 'saving'}
-              className="bg-[var(--mint)] text-[var(--paper-card)] hover:bg-[var(--mint-deep)]"
+              className="bg-[var(--brand)] text-[var(--paper-card)] hover:bg-[var(--brand-deep)]"
             >
               Save changes
             </Button>
             {status === 'saved' && (
-              <span className="flex items-center gap-1 text-[length:var(--step--1)] text-[var(--mint)]">
+              <span className="flex items-center gap-1 text-[length:var(--step--1)] text-[var(--brand)]">
                 <Check className="h-4 w-4" aria-hidden="true" /> Saved
               </span>
             )}

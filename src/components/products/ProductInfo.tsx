@@ -155,7 +155,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
       <div>
         <div className="mb-2 flex flex-wrap items-center gap-2">
           {categoryName && (
-            <span className="inline-flex w-fit items-center rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-[var(--mint-deep)]">
+            <span className="inline-flex w-fit items-center rounded-[var(--radius-pill)] bg-[var(--brand-soft)] px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-[var(--brand)]">
               {categoryName}
             </span>
           )}
@@ -175,7 +175,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
               key={i}
               className={`w-5 h-5 ${
                 i < Math.floor(product.averageRating)
-                  ? 'fill-[var(--mint)] text-[var(--mint)]'
+                  ? 'fill-[var(--brand)] text-[var(--brand)]'
                   : 'text-[var(--foil-soft)]'
               }`}
             />
@@ -341,7 +341,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
             key={label}
             className="flex flex-col items-center gap-2 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-tint)] px-2 py-3 text-center"
           >
-            <Icon className={`h-6 w-6 ${accent ? 'text-[var(--mint)]' : 'text-[var(--ink)]'}`} aria-hidden="true" />
+            <Icon className={`h-6 w-6 ${accent ? 'text-[var(--brand)]' : 'text-[var(--ink)]'}`} aria-hidden="true" />
             <p className="text-xs font-medium leading-tight text-[var(--ink-70)]">{label}</p>
           </div>
         ))}

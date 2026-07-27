@@ -140,11 +140,11 @@ export default function PaymentStep({
             onClick={() => setPaymentMethod('cod')}
             className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
               paymentMethod === 'cod'
-                ? 'border-[var(--mint)] bg-[var(--mint-soft)]'
+                ? 'border-[var(--brand)] bg-[var(--brand-soft)]'
                 : 'border-[var(--foil-soft)] hover:border-[var(--foil)] bg-[var(--paper-card)]'
             }`}
           >
-            <svg className="w-8 h-8 text-[var(--mint)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`w-8 h-8 ${paymentMethod === 'cod' ? 'text-[var(--brand)]' : 'text-[var(--ink-70)]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
@@ -178,14 +178,14 @@ export default function PaymentStep({
 
       {/* COD Info */}
       {paymentMethod === 'cod' && (
-        <div className="bg-[var(--mint-soft)] border border-[var(--mint)] rounded-lg p-4 mb-6">
+        <div className="bg-[var(--brand-soft)] border border-[var(--brand)] rounded-lg p-4 mb-6">
           <div className="flex items-start gap-3">
-            <svg className="w-5 h-5 text-[var(--mint)] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--brand)] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div>
-              <p className="text-sm font-semibold text-[var(--mint)] mb-1">Cash on Delivery</p>
+              <p className="text-sm font-semibold text-[var(--brand)] mb-1">Cash on Delivery</p>
               <p className="text-xs text-[var(--ink-70)]">
                 Pay <span className="price">₹{totalAmount.toFixed(2)}</span> in cash when your order is delivered. Please keep exact change ready.
               </p>
@@ -255,7 +255,7 @@ export default function PaymentStep({
         <button
           onClick={handleCOD}
           disabled={loading}
-          className="w-full bg-[var(--mint)] hover:opacity-90 text-[var(--paper-card)] font-semibold py-4 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-[var(--brand)] hover:opacity-90 text-[var(--brand-ink)] font-semibold py-4 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading ? (
             <>

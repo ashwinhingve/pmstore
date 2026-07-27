@@ -58,7 +58,7 @@ export default function WholesalePage() {
     <div className="bg-[var(--paper)]">
       {/* Hero */}
       <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-20">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--mint)]">Wholesale</p>
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--brand)]">Wholesale</p>
         <h1 className="max-w-3xl text-[length:var(--step-3)] text-[var(--ink)]">
           Bulk supply for pharmacies, clinics and institutions
         </h1>
@@ -88,8 +88,8 @@ export default function WholesalePage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {BENEFITS.map(({ icon: Icon, title, body }) => (
             <div key={title} className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--mint-soft)]">
-                <Icon className="h-5 w-5 text-[var(--mint)]" aria-hidden="true" />
+              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--brand-soft)]">
+                <Icon className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
               </div>
               <h3 className="mb-1 text-[length:var(--step-1)] text-[var(--ink)]">{title}</h3>
               <p className="text-[var(--ink-70)]">{body}</p>
@@ -130,7 +130,7 @@ export default function WholesalePage() {
             </p>
             <div className="mt-6 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5">
               <div className="flex items-start gap-3">
-                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--mint)]" aria-hidden="true" />
+                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand)]" aria-hidden="true" />
                 <p className="text-sm text-[var(--ink-70)]">
                   Schedule H / H1 medicines are supplied only to buyers with a valid drug licence.
                   Add your DL number and we&apos;ll verify before supply.

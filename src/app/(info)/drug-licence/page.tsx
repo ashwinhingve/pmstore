@@ -18,8 +18,8 @@ export default function DrugLicencePage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
       <div className="mb-8 flex items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[var(--mint-soft)]">
-          <ShieldCheck className="h-6 w-6 text-[var(--mint)]" aria-hidden="true" />
+        <span className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[var(--brand-soft)]">
+          <ShieldCheck className="h-6 w-6 text-[var(--brand)]" aria-hidden="true" />
         </span>
         <h1 className="text-[length:var(--step-3)] text-[var(--ink)]">
           Drug licence &amp; compliance

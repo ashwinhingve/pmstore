@@ -116,14 +116,14 @@ export function PrescriptionUpload({ onUploaded, className }: PrescriptionUpload
         {...getRootProps()}
         className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[var(--radius-md)] border-2 border-dashed px-6 py-8 text-center transition-colors duration-[var(--dur-fast)] ${
           isDragActive
-            ? 'border-[var(--mint)] bg-[var(--mint-soft)]'
+            ? 'border-[var(--brand)] bg-[var(--brand-soft)]'
             : 'border-[var(--foil-soft)] hover:border-[var(--ink)]'
         }`}
         aria-label="Add prescription images"
       >
         <input {...getInputProps()} />
         <Upload
-          className={`h-6 w-6 ${isDragActive ? 'text-[var(--mint)]' : 'text-[var(--ink-70)]'}`}
+          className={`h-6 w-6 ${isDragActive ? 'text-[var(--brand)]' : 'text-[var(--ink-70)]'}`}
           aria-hidden="true"
         />
         <p className="text-[var(--ink)]">

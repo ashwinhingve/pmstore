@@ -41,8 +41,8 @@ export const Timeline: React.FC<TimelineProps> = ({ items, className = "" }) => 
 
               {/* Center dot */}
               <div className="relative flex-shrink-0 hidden md:block">
-                <div className="w-16 h-16 rounded-full bg-[var(--mint)] flex items-center justify-center shadow-lg z-10 relative">
-                  {item.icon || <Check className="w-8 h-8 text-[var(--paper-card)]" />}
+                <div className="w-16 h-16 rounded-full bg-[var(--brand)] flex items-center justify-center shadow-lg z-10 relative">
+                  {item.icon || <Check className="w-8 h-8 text-[var(--brand-ink)]" />}
                 </div>
               </div>
 

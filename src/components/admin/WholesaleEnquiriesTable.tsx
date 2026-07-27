@@ -131,7 +131,7 @@ export default function WholesaleEnquiriesTable({
               className={`inline-flex items-center gap-2 rounded-[var(--radius-pill)] border px-4 py-2 text-sm font-medium transition-colors duration-[var(--dur-fast)] ${
                 active
                   ? 'border-[var(--ink)] bg-[var(--ink)] text-[var(--paper-card)]'
-                  : 'border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)] hover:border-[var(--mint)] hover:text-[var(--ink)]'
+                  : 'border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)] hover:border-[var(--brand)] hover:text-[var(--ink)]'
               }`}
             >
               {tab.label}
@@ -156,7 +156,7 @@ export default function WholesaleEnquiriesTable({
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Search business, contact, email or phone"
-            className="h-11 w-full rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] pl-10 pr-3 text-sm text-[var(--ink)] outline-none focus:border-[var(--mint)]"
+            className="h-11 w-full rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] pl-10 pr-3 text-sm text-[var(--ink)] outline-none focus:border-[var(--brand)]"
           />
         </div>
         <button
@@ -200,8 +200,8 @@ export default function WholesaleEnquiriesTable({
                     aria-expanded={isOpen}
                     className="flex min-w-0 flex-1 items-start gap-3 text-left"
                   >
-                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--mint-soft)]">
-                      <Building2 className="h-4 w-4 text-[var(--mint)]" aria-hidden="true" />
+                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--brand-soft)]">
+                      <Building2 className="h-4 w-4 text-[var(--brand)]" aria-hidden="true" />
                     </span>
                     <span className="min-w-0">
                       <span className="block truncate font-semibold text-[var(--ink)]">{e.businessName}</span>
@@ -231,7 +231,7 @@ export default function WholesaleEnquiriesTable({
                       value={e.status}
                       disabled={savingId === e.id}
                       onChange={(ev) => changeStatus(e.id, ev.target.value as Enquiry['status'])}
-                      className="h-9 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--mint)] disabled:opacity-60"
+                      className="h-9 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--brand)] disabled:opacity-60"
                     >
                       <option value="new">New</option>
                       <option value="contacted">Contacted</option>
