@@ -1,5 +1,5 @@
 import { CheckCircle, Clock, Package, Truck, Home, XCircle } from 'lucide-react';
-import { formatDateTime } from '@/lib/utils/format-date';
+import { formatDate, formatDateTime } from '@/lib/utils/format-date';
 
 interface OrderTimelineAdminProps {
   orderStatus: string;
