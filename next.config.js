@@ -5,8 +5,11 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
 
-  // Output configuration for production deployment
-  output: 'standalone',
+  // Output configuration for production deployment.
+  // VPS/self-host build uses 'standalone' (small Docker/PM2 bundle). Vercel sets
+  // VERCEL=1 and manages its own output — 'standalone' there is unsupported, so
+  // fall back to the default only on Vercel.
+  output: process.env.VERCEL ? undefined : 'standalone',
 
   // Image optimization
   images: {
