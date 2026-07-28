@@ -23,7 +23,8 @@
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE"
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -37,6 +38,12 @@
           "cameraPermission": "The app needs camera access to capture prescriptions."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "eb0938dc-0f73-4688-8ece-35aa95de577e"
+      }
+    },
+    "owner": "hingve"
   }
 }
