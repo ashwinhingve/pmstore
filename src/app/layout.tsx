@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import SessionProvider from "@/components/providers/SessionProvider";
 import { ToastViewport } from "@/components/ui/toast";
 import { CompareTray } from "@/components/compare/CompareTray";
+import { WhatsAppButton } from "@/components/shared/WhatsAppButton";
 import { connectDB } from "@/lib/mongodb";
 import MarketingSettings from "@/models/MarketingSettings";
 
@@ -242,6 +243,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </div>
           <ToastViewport />
           <CompareTray />
+          <WhatsAppButton />
         </SessionProvider>
       </body>
     </html>
