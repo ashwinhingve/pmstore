@@ -129,4 +129,11 @@ describe('executeSuggest (no Atlas → regex-prefix fallback)', () => {
     const res = await executeSuggest({ q: 'dol', limit: 8 });
     expect((res.data as Array<{ name: string }>).some((r) => r.name === 'Dolo 650')).toBe(true);
   });
+
+  it('suggests brands by composition — "para" surfaces Crocin (salt match, not name)', async () => {
+    const res = await executeSuggest({ q: 'para', limit: 8 });
+    const names = (res.data as Array<{ name: string }>).map((r) => r.name);
+    // Crocin 650 does not start with "para" — it can only be found via its salt.
+    expect(names).toContain('Crocin 650');
+  });
 });

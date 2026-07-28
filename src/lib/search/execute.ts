@@ -113,20 +113,50 @@ async function textFallback(params: SearchQuery, filters: SearchFilters): Promis
   };
 }
 
+// Short-lived in-memory cache for autocomplete. The VPS runs a long-lived Node
+// process, so repeated prefixes (the common case while someone types) skip the
+// DB round-trip. TTL is short enough that catalogue edits show up quickly.
+const SUGGEST_TTL_MS = 60_000;
+const SUGGEST_CACHE_MAX = 500;
+const suggestCache = new Map<string, { at: number; data: Record<string, unknown>[] }>();
+
 export async function executeSuggest(params: SearchSuggestQuery): Promise<{ data: Record<string, unknown>[] }> {
+  const cacheKey = `${params.q.trim().toLowerCase()}|${params.limit}`;
+  const hit = suggestCache.get(cacheKey);
+  if (hit && Date.now() - hit.at < SUGGEST_TTL_MS) {
+    return { data: hit.data };
+  }
+
+  let data: Record<string, unknown>[];
   try {
     const results = await Product.aggregate(asPipeline(buildSuggestPipeline(params)));
-    return { data: results.map(serialize) };
+    data = results.map(serialize);
   } catch {
-    // Fallback: prefix match on name over the text index.
+    // Fallback (no Atlas): prefix-match the brand name OR the salt, so a
+    // composition query still surfaces the brands that carry it.
+    const prefix = `^${escapeRegex(params.q)}`;
     const results = await Product.find(
-      { isActive: true, isDiscontinued: false, name: { $regex: `^${escapeRegex(params.q)}`, $options: 'i' } },
+      {
+        isActive: true,
+        isDiscontinued: false,
+        $or: [
+          { name: { $regex: prefix, $options: 'i' } },
+          { 'salts.name': { $regex: prefix, $options: 'i' } },
+        ],
+      },
       { name: 1, slug: 1, form: 1, price: 1, unitPrice: 1, packSize: 1, packUnit: 1 }
     )
       .limit(params.limit)
       .lean();
-    return { data: (results as Record<string, unknown>[]).map(serialize) };
+    data = (results as Record<string, unknown>[]).map(serialize);
   }
+
+  suggestCache.set(cacheKey, { at: Date.now(), data });
+  if (suggestCache.size > SUGGEST_CACHE_MAX) {
+    const oldest = suggestCache.keys().next().value;
+    if (oldest !== undefined) suggestCache.delete(oldest);
+  }
+  return { data };
 }
 
 function escapeRegex(s: string): string {

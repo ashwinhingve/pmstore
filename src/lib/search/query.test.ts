@@ -134,10 +134,31 @@ describe('sortSpec', () => {
 });
 
 describe('buildSuggestPipeline', () => {
-  it('uses the autocomplete operator on name', () => {
+  it('prefix-matches the brand name with the autocomplete operator', () => {
     const search = searchStage(buildSuggestPipeline({ q: 'para' }));
     expect(search.index).toBe(SEARCH_INDEX);
-    expect(search.autocomplete.path).toBe('name');
+    expect(search.compound.minimumShouldMatch).toBe(1);
+    const auto = search.compound.should.find((c: any) => c.autocomplete);
+    expect(auto.autocomplete.path).toBe('name');
+  });
+
+  it('also token-matches the salt so a composition query suggests brands', () => {
+    const search = searchStage(buildSuggestPipeline({ q: 'paracetamol' }));
+    const saltClauses = search.compound.should.filter(
+      (c: any) => c.text && c.text.path === 'salts.name'
+    );
+    expect(saltClauses.length).toBeGreaterThanOrEqual(1);
+    // One salt clause carries synonyms for alias expansion.
+    expect(saltClauses.some((c: any) => c.text.synonyms === 'salt_synonyms')).toBe(true);
+  });
+
+  it('boosts brand-name suggestions above salt suggestions', () => {
+    const search = searchStage(buildSuggestPipeline({ q: 'dolo' }));
+    const nameBoost = search.compound.should.find((c: any) => c.autocomplete).autocomplete.score.boost.value;
+    const saltBoost = search.compound.should.find(
+      (c: any) => c.text && c.text.path === 'salts.name'
+    ).text.score.boost.value;
+    expect(nameBoost).toBeGreaterThan(saltBoost);
   });
 
   it('never returns more than 8 suggestions', () => {

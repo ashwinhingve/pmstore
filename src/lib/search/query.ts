@@ -190,19 +190,50 @@ export function buildSuggestPipeline(params: SuggestParams): Record<string, unkn
   const { q } = params;
   const limit = clampLimit(params.limit, SUGGEST_LIMIT, SUGGEST_LIMIT);
   const fuzzy = fuzzyForQuery(q);
+  const fuzzyPart = fuzzy ? { fuzzy } : {};
 
   return [
     {
+      // Prefix-match the brand name (autocomplete) AND token-match the salt, so
+      // typing a composition like "paracetamol" surfaces the brands that carry
+      // it — not just brands whose name starts with those letters. Brand-name
+      // hits outrank salt hits via the boosts. A separate synonyms clause covers
+      // aliases (Atlas bars fuzzy + synonyms in one operator).
       $search: {
         index: SEARCH_INDEX,
-        autocomplete: {
-          query: q,
-          path: 'name',
-          ...(fuzzy ? { fuzzy } : {}),
+        compound: {
+          should: [
+            {
+              autocomplete: {
+                query: q,
+                path: 'name',
+                score: { boost: { value: BOOST_NAME } },
+                ...fuzzyPart,
+              },
+            },
+            {
+              text: {
+                query: q,
+                path: 'salts.name',
+                score: { boost: { value: BOOST_SALT } },
+                ...fuzzyPart,
+              },
+            },
+            {
+              text: {
+                query: q,
+                path: 'salts.name',
+                synonyms: SYNONYM_MAPPING,
+                score: { boost: { value: BOOST_SALT } },
+              },
+            },
+          ],
+          minimumShouldMatch: 1,
         },
       },
     },
-    // Post-filter: autocomplete has no compound.filter, so gate visibility here.
+    // Post-filter: gate visibility here (kept out of compound.filter so the
+    // shape matches the fallback's expectations and stays easy to reason about).
     { $match: { isActive: true, isDiscontinued: false } },
     { $limit: limit },
     {
