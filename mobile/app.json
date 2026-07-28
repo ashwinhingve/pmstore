@@ -37,11 +37,6 @@
           "cameraPermission": "The app needs camera access to capture prescriptions."
         }
       ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "TODO-set-eas-project-id"
-      }
-    }
+    ]
   }
 }
