@@ -229,11 +229,6 @@ const styles = StyleSheet.create({
   },
 });
 
-interface AlternativeWithBadges extends ProductCard {
-  isCheapest?: boolean;
-  isTopRated?: boolean;
-}
-
 export default function ProductDetailScreen(): React.ReactElement {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const [selectedProduct, setSelectedProduct] = useState<ProductCard | null>(null);
@@ -291,7 +286,7 @@ export default function ProductDetailScreen(): React.ReactElement {
   };
 
   const renderAlternative = (
-    { item, index }: ListRenderItemInfo<ProductCard>,
+    { item }: ListRenderItemInfo<ProductCard>,
     selected: ProductCard | null
   ): React.ReactElement => {
     const isSelected = selected?._id === item._id;

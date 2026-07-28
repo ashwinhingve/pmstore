@@ -18,7 +18,6 @@ import {
   Platform,
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import { apiClient } from '@/lib/api/client';
 import { useAuthStore } from '@/store/auth';
 import { LoginResult } from '@/lib/api/types';

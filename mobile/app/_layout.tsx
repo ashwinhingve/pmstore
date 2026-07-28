@@ -63,9 +63,9 @@ async function loadFonts(): Promise<void> {
 /**
  * Root component that handles app initialization.
  */
-export default function RootLayout(): React.ReactElement {
+export default function RootLayout(): React.ReactElement | null {
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const { isSignedIn, setUser, clearUser } = useAuthStore();
+  const { isSignedIn, clearUser } = useAuthStore();
 
   useEffect(() => {
     // Load fonts
@@ -118,7 +118,6 @@ export default function RootLayout(): React.ReactElement {
             <Stack
               screenOptions={{
                 headerShown: false,
-                animationEnabled: false,
               }}
             >
               <Stack.Screen name="auth/login" />
