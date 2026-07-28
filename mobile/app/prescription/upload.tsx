@@ -29,6 +29,7 @@ import { useMutation } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { apiClient } from '@/lib/api/client';
 import { Prescription } from '@/lib/api/types';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 import { theme } from '@/lib/theme';
 
 const styles = StyleSheet.create({
@@ -188,15 +189,13 @@ async function compressImage(uri: string): Promise<string> {
 
 export default function PrescriptionUploadScreen(): React.ReactElement {
   const [images, setImages] = useState<string[]>([]);
-  const [uploading, setUploading] = useState(false);
 
   const uploadMutation = useMutation({
     mutationFn: async (imageUris: string[]): Promise<Prescription> => {
-      // TODO: Upload images to Cloudinary and get URLs
-      // For now, this is a placeholder that calls the API with image URLs
-      return apiClient.post<Prescription>('/prescriptions', {
-        imageUrls: imageUris,
-      });
+      // Upload each image straight to Cloudinary (unsigned), then register the
+      // resulting URLs with the API. Never log the URLs — health data.
+      const imageUrls = await Promise.all(imageUris.map(uploadToCloudinary));
+      return apiClient.post<Prescription>('/prescriptions', { imageUrls });
     },
     onSuccess: () => {
       Alert.alert('Success', 'Prescription uploaded successfully.', [
@@ -284,7 +283,7 @@ export default function PrescriptionUploadScreen(): React.ReactElement {
             <TouchableOpacity
               style={[styles.button, styles.primaryButton]}
               onPress={() => handlePickImage('camera')}
-              disabled={uploading}
+              disabled={uploadMutation.isPending}
               activeOpacity={0.7}
             >
               <Text style={[styles.buttonText, styles.primaryButtonText]}>📷 Camera</Text>
@@ -292,7 +291,7 @@ export default function PrescriptionUploadScreen(): React.ReactElement {
             <TouchableOpacity
               style={[styles.button, styles.secondaryButton]}
               onPress={() => handlePickImage('gallery')}
-              disabled={uploading}
+              disabled={uploadMutation.isPending}
               activeOpacity={0.7}
             >
               <Text style={[styles.buttonText, styles.secondaryButtonText]}>🖼️ Gallery</Text>
@@ -331,10 +330,10 @@ export default function PrescriptionUploadScreen(): React.ReactElement {
         <TouchableOpacity
           style={styles.continueButton}
           onPress={handleUpload}
-          disabled={uploading}
+          disabled={uploadMutation.isPending}
           activeOpacity={0.7}
         >
-          {uploading ? (
+          {uploadMutation.isPending ? (
             <ActivityIndicator color={theme.colors.paper} />
           ) : (
             <Text style={styles.continueButtonText}>

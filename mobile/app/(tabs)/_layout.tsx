@@ -8,6 +8,7 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import { useCartStore } from '@/store/cart';
 import { theme } from '@/lib/theme';
 
@@ -85,29 +86,32 @@ const defaultTabOptions: BottomTabNavigationOptions = {
 };
 
 /**
- * Icon components (using simple text for now; replace with proper icon library).
+ * Tab icons via Ionicons (bundled with Expo). Filled when focused, outline
+ * otherwise; colour comes from the tab bar's active/inactive tint.
  */
-const HomeIcon = ({ focused }: { focused: boolean }): React.ReactElement => (
-  <Text style={{ fontSize: 24, opacity: focused ? 1 : 0.5 }}>🏠</Text>
+type IconProps = { focused: boolean; color: string };
+
+const HomeIcon = ({ focused, color }: IconProps): React.ReactElement => (
+  <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
 );
 
-const SearchIcon = ({ focused }: { focused: boolean }): React.ReactElement => (
-  <Text style={{ fontSize: 24, opacity: focused ? 1 : 0.5 }}>🔍</Text>
+const SearchIcon = ({ focused, color }: IconProps): React.ReactElement => (
+  <Ionicons name={focused ? 'search' : 'search-outline'} size={24} color={color} />
 );
 
-const CartIcon = ({ focused }: { focused: boolean }): React.ReactElement => (
+const CartIcon = ({ focused, color }: IconProps): React.ReactElement => (
   <View style={{ position: 'relative' }}>
-    <Text style={{ fontSize: 24, opacity: focused ? 1 : 0.5 }}>🛒</Text>
+    <Ionicons name={focused ? 'cart' : 'cart-outline'} size={24} color={color} />
     <CartTabBadge />
   </View>
 );
 
-const OrdersIcon = ({ focused }: { focused: boolean }): React.ReactElement => (
-  <Text style={{ fontSize: 24, opacity: focused ? 1 : 0.5 }}>📦</Text>
+const OrdersIcon = ({ focused, color }: IconProps): React.ReactElement => (
+  <Ionicons name={focused ? 'receipt' : 'receipt-outline'} size={24} color={color} />
 );
 
-const AccountIcon = ({ focused }: { focused: boolean }): React.ReactElement => (
-  <Text style={{ fontSize: 24, opacity: focused ? 1 : 0.5 }}>👤</Text>
+const AccountIcon = ({ focused, color }: IconProps): React.ReactElement => (
+  <Ionicons name={focused ? 'person' : 'person-outline'} size={24} color={color} />
 );
 
 export default function TabsLayout(): React.ReactElement {
