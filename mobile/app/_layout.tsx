@@ -45,16 +45,19 @@ const queryClient = new QueryClient({
  * - Martian Mono: https://fonts.google.com/specimen/Martian+Mono
  */
 async function loadFonts(): Promise<void> {
-  try {
-    await Font.loadAsync({
-      BricolageGrotesque: require('@/assets/fonts/BricolageGrotesque-800.ttf'),
-      PublicSans: require('@/assets/fonts/PublicSans-400.ttf'),
-      PublicSansSemibold: require('@/assets/fonts/PublicSans-600.ttf'),
-      MartianMono: require('@/assets/fonts/MartianMono-400.ttf'),
-    });
-  } catch (error) {
-    console.error('Failed to load fonts:', error);
-  }
+  // Preview build (branch chore/mobile-preview-apk): the branded .ttf files are
+  // gitignored and not present, and a require() of a missing file is a hard
+  // Metro bundling error (the try/catch can't catch it — it fails at build
+  // time). So we skip them and fall back to the system font. To restore the
+  // branded fonts, drop the four files into assets/fonts/ and pass them to
+  // loadAsync as before (see BUILD-RUNBOOK.md step 3):
+  //   await Font.loadAsync({
+  //     BricolageGrotesque: require('@/assets/fonts/BricolageGrotesque-800.ttf'),
+  //     PublicSans: require('@/assets/fonts/PublicSans-400.ttf'),
+  //     PublicSansSemibold: require('@/assets/fonts/PublicSans-600.ttf'),
+  //     MartianMono: require('@/assets/fonts/MartianMono-400.ttf'),
+  //   });
+  await Font.loadAsync({});
 }
 
 /**

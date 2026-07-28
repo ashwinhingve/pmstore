@@ -4,19 +4,13 @@
     "slug": "pmstore",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FBFAF7"
-    },
     "scheme": "pmstore",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
+    "_comment": "Preview build (branch chore/mobile-preview-apk): custom icon/splash, push (expo-notifications + googleServicesFile) and branded fonts are removed so the app builds without the gitignored assets. Restore them from git history + BUILD-RUNBOOK.md for the production build.",
     "ios": {
-      "supportsTabletMode": true,
+      "supportsTablet": true,
       "bundleIdentifier": "com.pratigyamedicalstore.app",
-      "deploymentTarget": "14.0",
       "infoPlist": {
         "NSCameraUsageDescription": "We need camera access to capture prescriptions.",
         "NSPhotoLibraryUsageDescription": "We need access to your photos to upload prescriptions.",
@@ -26,34 +20,16 @@
     "android": {
       "package": "com.pratigyamedicalstore.app",
       "versionCode": 1,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FBFAF7"
-      },
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE",
-        "com.google.android.c2dm.permission.RECEIVE"
-      ],
-      "googleServicesFile": "./google-services.json",
-      "targetApiLevel": 34,
-      "minSdkVersion": 21
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
-      "bundler": "metro",
-      "favicon": "./assets/favicon.png"
+      "bundler": "metro"
     },
     "plugins": [
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/notification-icon.png",
-          "color": "#16233A",
-          "sounds": ["./assets/notification.wav"],
-          "modes": "default"
-        }
-      ],
       [
         "expo-image-picker",
         {
