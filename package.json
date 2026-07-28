@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "check:tokens": "node scripts/check-design-tokens.mjs",
+    "check:integrations": "tsx scripts/check-integrations.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
