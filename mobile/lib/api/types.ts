@@ -124,18 +124,20 @@ export interface CartItem {
 }
 
 /**
- * Address — used for checkout and stored in the user's account.
+ * Address — matches the server Address model + /api/v1/addresses response.
  */
 export interface Address {
   _id: string;
-  type: 'home' | 'work' | 'other';
-  street: string;
+  type: 'shipping' | 'billing' | 'both';
+  fullName: string;
+  phoneNumber: string;
+  addressLine1: string;
+  addressLine2?: string;
   city: string;
   state: string;
   postalCode: string;
   country: string;
   isDefault: boolean;
-  createdAt: string;
 }
 
 /**
