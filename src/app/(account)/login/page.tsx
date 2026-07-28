@@ -7,10 +7,10 @@ import { AuthShell, AuthCard } from "@/components/account/AuthShell"
 import { Logo } from "@/components/shared/Logo"
 import { Button } from "@/components/ui/button"
 import { Tabs } from "@/components/ui/tabs"
-import { Mail, ArrowLeft, Phone, ShieldCheck, KeyRound, BadgeCheck } from "lucide-react"
+import { ArrowLeft, Phone, ShieldCheck, KeyRound, BadgeCheck } from "lucide-react"
 import { motion } from "framer-motion"
 
-type Tab = "google" | "email" | "mobile"
+type Tab = "google" | "mobile"
 type OtpStep = "input" | "otp"
 
 export default function LoginPage() {
@@ -21,12 +21,6 @@ export default function LoginPage() {
   const [error, setError] = useState("")
 
   const [activeTab, setActiveTab] = useState<Tab>("google")
-
-  // Email OTP state
-  const [emailOtpStep, setEmailOtpStep] = useState<OtpStep>("input")
-  const [email, setEmail] = useState("")
-  const [emailOtp, setEmailOtp] = useState("")
-  const [emailCooldown, setEmailCooldown] = useState(0)
 
   // Mobile OTP state
   const [mobileOtpStep, setMobileOtpStep] = useState<OtpStep>("input")
@@ -50,13 +44,7 @@ export default function LoginPage() {
     }
   }, [status, session, router, searchParams])
 
-  // Cooldown timers
-  useEffect(() => {
-    if (emailCooldown <= 0) return
-    const t = setTimeout(() => setEmailCooldown(emailCooldown - 1), 1000)
-    return () => clearTimeout(t)
-  }, [emailCooldown])
-
+  // Cooldown timer
   useEffect(() => {
     if (mobileCooldown <= 0) return
     const t = setTimeout(() => setMobileCooldown(mobileCooldown - 1), 1000)
@@ -80,43 +68,6 @@ export default function LoginPage() {
       }
     } catch {
       setError("An error occurred during sign in. Please try again.")
-      setIsLoading(false)
-    }
-  }
-
-  // ── Email OTP ────────────────────────────────────────────────────────────────
-  const handleSendEmailOtp = async () => {
-    if (!email) { setError("Please enter your email address."); return }
-    setIsLoading(true); setError("")
-    try {
-      const res = await fetch("/api/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      })
-      if (!res.ok && res.status === 400) {
-        const data = await res.json()
-        setError(data.message || "Invalid email address.")
-        setIsLoading(false)
-        return
-      }
-      setEmailOtpStep("otp")
-      setEmailCooldown(60)
-    } catch {
-      setError("Failed to send OTP. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleVerifyEmailOtp = async () => {
-    if (!emailOtp || emailOtp.length !== 6) { setError("Please enter the 6-digit code."); return }
-    setIsLoading(true); setError("")
-    try {
-      const result = await signIn("email-otp", { redirect: false, email, otp: emailOtp })
-      if (result?.error) { setError(result.error); setIsLoading(false) }
-    } catch {
-      setError("An error occurred. Please try again.")
       setIsLoading(false)
     }
   }
@@ -196,11 +147,6 @@ export default function LoginPage() {
               content: null, // Placeholder, will be rendered below
             },
             {
-              id: "email",
-              label: "Email OTP",
-              content: null, // Placeholder, will be rendered below
-            },
-            {
               id: "mobile",
               label: "Mobile OTP",
               content: null, // Placeholder, will be rendered below
@@ -255,99 +201,6 @@ export default function LoginPage() {
                   </>
                 )}
               </Button>
-            )}
-
-            {/* ── Email OTP Tab ── */}
-            {activeTab === "email" && emailOtpStep === "input" && (
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="email" className="mb-1 block text-sm font-medium text-[var(--ink-70)]">
-                    Email address
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSendEmailOtp()}
-                    placeholder="you@example.com"
-                    className={inputClass}
-                    disabled={isLoading}
-                  />
-                </div>
-                <Button
-                  onClick={handleSendEmailOtp}
-                  disabled={isLoading || !email}
-                  className="h-14 w-full gap-3 text-lg font-semibold"
-                >
-                  {isLoading ? (
-                    <span className="flex items-center gap-3">
-                      <span className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--paper-card)]/40 border-t-[var(--paper-card)]" />
-                      Sending code…
-                    </span>
-                  ) : (
-                    <><Mail className="h-5 w-5" /><span>Send OTP</span></>
-                  )}
-                </Button>
-              </div>
-            )}
-
-            {activeTab === "email" && emailOtpStep === "otp" && (
-              <div className="space-y-4">
-                <div className="mb-2 text-center">
-                  <p className="text-sm text-[var(--ink-70)]">
-                    We sent a 6-digit code to{" "}
-                    <strong className="text-[var(--ink)]">{email}</strong>
-                  </p>
-                </div>
-                <div>
-                  <label htmlFor="emailOtp" className="mb-1 block text-sm font-medium text-[var(--ink-70)]">
-                    Verification code
-                  </label>
-                  <input
-                    id="emailOtp"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={6}
-                    value={emailOtp}
-                    onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, ""))}
-                    onKeyDown={(e) => e.key === "Enter" && handleVerifyEmailOtp()}
-                    placeholder="000000"
-                    className={`${inputClass} text-center text-2xl tracking-[0.3em]`}
-                    style={{ fontFamily: "var(--font-data)" }}
-                    disabled={isLoading}
-                    autoFocus
-                  />
-                </div>
-                <Button
-                  onClick={handleVerifyEmailOtp}
-                  disabled={isLoading || emailOtp.length !== 6}
-                  className="h-14 w-full text-lg font-semibold"
-                >
-                  {isLoading ? (
-                    <span className="flex items-center gap-3">
-                      <span className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--paper-card)]/40 border-t-[var(--paper-card)]" />
-                      Verifying…
-                    </span>
-                  ) : "Verify and continue"}
-                </Button>
-                <div className="flex items-center justify-between text-sm">
-                  <button
-                    onClick={() => { setEmailOtpStep("input"); setEmailOtp(""); setError("") }}
-                    className="flex items-center gap-1 font-medium text-[var(--ink)] hover:underline"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                    Change email
-                  </button>
-                  <button
-                    onClick={() => { if (emailCooldown > 0) return; setEmailOtp(""); setError(""); handleSendEmailOtp() }}
-                    disabled={emailCooldown > 0}
-                    className={`font-medium ${emailCooldown > 0 ? "cursor-not-allowed text-[var(--ink-40)]" : "text-[var(--ink)] hover:underline"}`}
-                  >
-                    {emailCooldown > 0 ? `Resend in ${emailCooldown}s` : "Resend OTP"}
-                  </button>
-                </div>
-              </div>
             )}
 
             {/* ── Mobile OTP Tab ── */}
