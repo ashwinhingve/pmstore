@@ -12,7 +12,7 @@ export interface IShipment extends Document {
   orderId: mongoose.Types.ObjectId;
   waybill: string;
   courierName: string;
-  provider: 'delhivery' | 'shiprocket';
+  provider: 'delhivery' | 'shiprocket' | 'manual';
   /** Provider's internal ID used for API calls.
    *  Delhivery: same as waybill.
    *  Shiprocket: numeric shipment_id (required for tracking API). */
@@ -46,7 +46,7 @@ const ShipmentSchema = new Schema<IShipment>(
     },
     provider: {
       type: String,
-      enum: ['delhivery', 'shiprocket'],
+      enum: ['delhivery', 'shiprocket', 'manual'],
       default: 'delhivery',
     },
     providerShipmentId: {

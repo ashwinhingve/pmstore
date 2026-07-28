@@ -16,6 +16,7 @@ export default function PincodeValidator({
   const [checking, setChecking] = useState(false);
   const [serviceable, setServiceable] = useState<boolean | null>(null);
   const [estimatedDays, setEstimatedDays] = useState<number | undefined>();
+  const [manualDelivery, setManualDelivery] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function PincodeValidator({
       // Reset states
       setServiceable(null);
       setEstimatedDays(undefined);
+      setManualDelivery(false);
       setError(null);
 
       // Validate PIN code format
@@ -47,6 +49,7 @@ export default function PincodeValidator({
         if (data.serviceable) {
           setServiceable(true);
           setEstimatedDays(data.estimatedDays);
+          setManualDelivery(data.manualDelivery === true);
           onValidationChange?.(true, data.estimatedDays);
         } else {
           setServiceable(false);
@@ -95,11 +98,22 @@ export default function PincodeValidator({
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
           </svg>
           <div>
-            <p className="font-medium">Delivery available to this PIN code</p>
-            {showEstimatedDays && estimatedDays && (
-              <p className="text-xs text-[var(--ink-70)] mt-0.5">
-                Estimated delivery in {estimatedDays} days
-              </p>
+            {manualDelivery ? (
+              <>
+                <p className="font-medium">We deliver to this PIN code ourselves</p>
+                <p className="text-xs text-[var(--ink-70)] mt-0.5">
+                  Free local home delivery in Bhopal — our team will arrange it
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-medium">Delivery available to this PIN code</p>
+                {showEstimatedDays && estimatedDays && (
+                  <p className="text-xs text-[var(--ink-70)] mt-0.5">
+                    Estimated delivery in {estimatedDays} days
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>

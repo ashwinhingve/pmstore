@@ -6,6 +6,7 @@ import { getShippingProvider } from './providerFactory';
 import type { ShipmentCreationData } from './types';
 import { emailService } from '@/lib/notifications/email';
 import { smsService } from '@/lib/notifications/sms';
+import { isManualDeliveryPincode } from '@/lib/constants';
 
 /**
  * Create a shipment for a paid (or COD-confirmed) order using the specified provider.
@@ -46,6 +47,13 @@ export async function createShipmentForOrder(
     const shippingAddress = order.shippingAddressId as any;
     if (!shippingAddress) {
       return { success: false, error: 'No shipping address found for order' };
+    }
+
+    // Local hand-delivery zone (e.g. the store's own Bhopal pincode): the store
+    // delivers these itself, so never hand them to a courier. Record a 'manual'
+    // shipment so the order still tracks a status, and let admin fulfil it.
+    if (isManualDeliveryPincode(shippingAddress.postalCode)) {
+      return createManualShipment(order, shippingAddress, sendNotifications);
     }
 
     const shippingService = getShippingProvider(provider);
@@ -168,4 +176,64 @@ export async function createShipmentForOrder(
     console.error('Error in createShipmentForOrder:', error);
     return { success: false, error: error.message };
   }
+}
+
+/**
+ * Fulfilment path for local hand-delivery pincodes: no courier API is called.
+ * Records a 'manual' shipment and moves the order to processing so the customer
+ * sees progress and admin (who already badges these orders) can hand-deliver.
+ */
+async function createManualShipment(
+  order: any,
+  shippingAddress: any,
+  sendNotifications: boolean
+): Promise<{ success: boolean; waybill?: string; trackingUrl?: string; error?: string }> {
+  // Synthetic waybill keeps the Shipment.waybill unique constraint satisfied
+  // without a courier; orderNumber is itself unique.
+  const waybill = `LOCAL-${order.orderNumber}`;
+
+  await Shipment.create({
+    orderId: order._id,
+    waybill,
+    courierName: 'Local delivery',
+    provider: 'manual',
+    providerShipmentId: '',
+    shipmentStatus: 'Manual delivery',
+    scans: [
+      {
+        status: 'Manual delivery',
+        location: 'Local — Bhopal',
+        timestamp: new Date(),
+        remarks: 'Local hand-delivery by store staff (no courier)',
+      },
+    ],
+  });
+
+  order.shippingProvider = 'manual';
+  order.orderStatus = 'processing';
+  order.shipmentCreatedAt = new Date();
+  order.lastStatusUpdate = new Date();
+  // Local delivery is same/next day.
+  order.estimatedDeliveryDate = new Date(Date.now() + 86_400_000);
+  await order.save();
+
+  if (sendNotifications) {
+    try {
+      const phone = shippingAddress.phoneNumber;
+      if (phone) {
+        smsService.sendLocalDeliverySMS(phone, order.orderNumber).catch((err) => {
+          console.error('Error sending local-delivery SMS:', err);
+        });
+      }
+      const customerName = shippingAddress.fullName || 'Customer';
+      smsService.notifyAdminManualDelivery(order.orderNumber, customerName).catch((err) => {
+        console.error('Error sending admin manual-delivery SMS:', err);
+      });
+    } catch (err) {
+      console.error('Error sending manual-delivery notifications:', err);
+    }
+  }
+
+  console.log(`Manual (local) delivery recorded for order ${order.orderNumber}`);
+  return { success: true, waybill };
 }

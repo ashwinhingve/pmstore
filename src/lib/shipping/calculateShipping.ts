@@ -1,3 +1,5 @@
+import { isManualDeliveryPincode } from '@/lib/constants';
+
 export interface ShippingTier {
   name: 'free' | 'standard' | 'express';
   cost: number;
@@ -53,6 +55,15 @@ export function calculateShipping(
   cartWeight: number,
   postalCode: string
 ): ShippingCalculation {
+  // Local hand-delivery zone (store's own pincode): always free, same/next day,
+  // and never handed to a courier — bypass the value/weight/distance model.
+  if (isManualDeliveryPincode(postalCode)) {
+    return {
+      tier: { name: 'free', cost: 0, estimatedDays: 1 },
+      breakdown: { baseRate: 0, weightCharge: 0, distanceCharge: 0, total: 0 },
+    };
+  }
+
   // Find value tier
   const valueTier = VALUE_TIERS.find(
     tier => cartTotal >= tier.min && cartTotal < tier.max

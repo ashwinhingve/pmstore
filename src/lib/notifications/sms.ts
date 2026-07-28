@@ -77,6 +77,11 @@ class SMSService {
     return this.sendSMS(phone, message);
   }
 
+  async sendLocalDeliverySMS(phone: string, orderNumber: string): Promise<SMSResult> {
+    const message = `Your order ${orderNumber} is confirmed for local home delivery in Bhopal. Our team will contact you to arrange delivery. - ${SITE_NAME}`;
+    return this.sendSMS(phone, message);
+  }
+
   async sendDeliverySMS(phone: string, orderNumber: string): Promise<SMSResult> {
     const message = `Your order ${orderNumber} has been delivered! Thank you for shopping with ${SITE_NAME}.`;
     return this.sendSMS(phone, message);
@@ -132,6 +137,11 @@ class SMSService {
 
   async notifyAdminShipmentCreated(orderNumber: string, trackingNumber: string, customerName: string): Promise<SMSResult> {
     const message = `[PM Store] Order ${orderNumber} shipped. Tracking: ${trackingNumber}. Customer: ${customerName}.`;
+    return this.sendAdminSMS(message);
+  }
+
+  async notifyAdminManualDelivery(orderNumber: string, customerName: string): Promise<SMSResult> {
+    const message = `[PM Store] Order ${orderNumber} is a LOCAL delivery (Bhopal) — hand-deliver, no courier. Customer: ${customerName}.`;
     return this.sendAdminSMS(message);
   }
 

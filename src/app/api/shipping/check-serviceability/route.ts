@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { delhiveryService } from '@/lib/shipping/delhivery';
+import { isManualDeliveryPincode } from '@/lib/constants';
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,6 +22,17 @@ export async function GET(request: NextRequest) {
         { error: 'Invalid PIN code format. Must be 6 digits.' },
         { status: 400 }
       );
+    }
+
+    // Local hand-delivery zone: the store delivers these itself. Never ask the
+    // courier (it may report the shop's own pincode as non-serviceable).
+    if (isManualDeliveryPincode(cleanPincode)) {
+      return NextResponse.json({
+        serviceable: true,
+        manualDelivery: true,
+        estimatedDays: 1,
+        pincode: cleanPincode,
+      });
     }
 
     // Check serviceability with Delhivery
