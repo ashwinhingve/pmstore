@@ -10,6 +10,8 @@
     "typecheck": "tsc --noEmit",
     "check:tokens": "node scripts/check-design-tokens.mjs",
     "check:integrations": "tsx scripts/check-integrations.ts",
+    "images:scrape": "tsx scripts/scrape-old-site-images.ts",
+    "images:upload": "tsx scripts/upload-product-images.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
