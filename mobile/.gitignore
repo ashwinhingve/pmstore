@@ -1,0 +1,6 @@
+# Capacitor project — node deps are reinstalled from package-lock.json
+node_modules/
+.DS_Store
+
+# Local Capacitor CLI state
+.env

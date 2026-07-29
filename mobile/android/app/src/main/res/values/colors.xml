@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- PM Store brand: carton navy primary, warm-orange accent. colorPrimaryDark
+         paints the status bar navy (light icons via windowLightStatusBar=false). -->
+    <color name="colorPrimary">#16233A</color>
+    <color name="colorPrimaryDark">#16233A</color>
+    <color name="colorAccent">#F65A0F</color>
+</resources>

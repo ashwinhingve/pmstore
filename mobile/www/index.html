@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PM Store</title>
+    <style>
+      :root {
+        --brand: #f65a0f;
+        --brand-deep: #d8440a;
+        --ink: #16233a;
+        --ink-70: #56607a;
+        --paper: #fbfaf7;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        display: flex;
+        min-height: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 32px;
+        text-align: center;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .mark {
+        width: 72px;
+        height: 72px;
+        display: grid;
+        place-items: center;
+        border-radius: 18px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: -1px;
+      }
+      h1 { margin: 4px 0 0; font-size: 22px; }
+      p { margin: 0; max-width: 22rem; color: var(--ink-70); line-height: 1.55; }
+      button {
+        margin-top: 8px;
+        min-height: 48px;
+        padding: 0 28px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--brand);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      button:active { background: var(--brand-deep); }
+    </style>
+  </head>
+  <body>
+    <div class="mark">PM</div>
+    <h1>You're offline</h1>
+    <p>PM Store needs an internet connection to load. Check your connection and try again.</p>
+    <button onclick="location.replace('https://pratigyamedicalstore.com')">Try again</button>
+  </body>
+</html>
