@@ -205,6 +205,18 @@ export async function GET(request: NextRequest) {
           });
         }
 
+        // Increment discount usage inside the same transaction as the stock
+        // decrement — previously this ran after commit with a swallowed
+        // error, so an occasional failed increment would let a coupon's
+        // maxUsageTotal cap drift upward (undercounted usage) over time.
+        if (order.discountId) {
+          await Discount.findByIdAndUpdate(
+            order.discountId,
+            { $inc: { totalUsed: 1 } },
+            { session }
+          );
+        }
+
         // Commit the transaction
         await session.commitTransaction();
         logger.info(LogMessages.PAYMENT_SUCCESS, {
@@ -231,11 +243,6 @@ export async function GET(request: NextRequest) {
         throw error;
       } finally {
         session.endSession();
-      }
-
-      // Increment discount usage for online payments
-      if (order.discountId) {
-        Discount.findByIdAndUpdate(order.discountId, { $inc: { totalUsed: 1 } }).catch(() => {});
       }
 
       // Create shipment — sendNotifications:true so shipment tracking SMS/email fires.
@@ -502,7 +509,9 @@ export async function POST(request: NextRequest) {
 
           // Increment discount usage
           if (order.discountId) {
-            Discount.findByIdAndUpdate(order.discountId, { $inc: { totalUsed: 1 } }).catch(() => {});
+            Discount.findByIdAndUpdate(order.discountId, { $inc: { totalUsed: 1 } }).catch((err) => {
+              logger.error('Webhook: discount usage increment failed', err, { orderNumber });
+            });
           }
 
           // Create shipment — sendNotifications:true so shipment tracking fires.
