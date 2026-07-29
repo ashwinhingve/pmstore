@@ -29,13 +29,21 @@ npx cap open android              # open in Android Studio to build/run
 `server.url` means you do NOT rebuild the app when the website changes — only when native config,
 plugins, or icons change.
 
-## Must verify on a real device (not done in the setup PR)
-- **Payments**: Cashfree/UPI. `upi:`/`intent:` schemes may not open from the WebView by default —
-  if a UPI app doesn't launch, add a `WebViewClient.shouldOverrideUrlLoading` override in
-  `MainActivity` that `startActivity(Intent.parseUri(url, ...))` for non-http(s) schemes.
+## Native URL handling (implemented in MainActivity)
+Capacitor's default client already opens off-origin http(s) links and the `tel:`/`mailto:`/`upi:`
+schemes in the OS. Android `intent:` deep links (GPay/PhonePe UPI, some Razorpay/Cashfree redirects)
+are NOT parseable as plain URIs, so `MainActivity` overrides `shouldOverrideUrlLoading` to
+`Intent.parseUri(url, URI_INTENT_SCHEME)` them (honouring `browser_fallback_url`). The offline
+fallback (`www/index.html`) is wired via `server.errorPath` in `capacitor.config.js` — the default
+`onReceivedError` loads it on a main-frame network error. **Re-run `npx cap sync android` after
+editing the config so `errorPath` reaches the native `capacitor.config.json`.**
+
+## Must still verify on a real device
+- **Payments**: Cashfree/UPI end to end — confirm a UPI app opens from checkout and returns to the
+  order. The `intent:` handling above is untested on-device.
 - **Hardware back button**: should navigate WebView history and exit at the root (Capacitor
   default) — confirm it doesn't exit the app mid-flow.
-- **Offline**: `www/index.html` only shows if a native `onReceivedError` loads it — confirm/add.
+- **Offline**: pull the network and confirm `www/index.html` shows (not a blank page).
 - **Prescription upload**: WebView file/camera picker (permissions declared: CAMERA,
   READ_MEDIA_IMAGES).
 

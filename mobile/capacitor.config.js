@@ -9,13 +9,13 @@
  * a dynamic Next.js SSR app that cannot be statically exported — loading the
  * hosted origin is the only way to ship "the exact website" as an app.
  * Trade-offs: the app needs connectivity (offline falls back to www/index.html
- * via the native error handler), and JS-bridge plugins rely on the bridge that
+ * via `server.errorPath` below), and JS-bridge plugins rely on the bridge that
  * Capacitor injects into the remote page.
  *
  * `allowNavigation` keeps the store's own origin and the payment gateways inside
- * the WebView; every other http(s) link opens in the system browser, and
- * non-http schemes (tel:/mailto:/upi:/intent:) are handed to the OS in
- * MainActivity so checkout and UPI apps work.
+ * the WebView; every other http(s) link and the tel:/mailto:/upi: schemes are
+ * handed to the OS by Capacitor. Android `intent:` deep links need special
+ * parsing, so MainActivity handles those so UPI/checkout redirects work.
  *
  * Config file is .js (CommonJS) rather than .ts on purpose: the Capacitor 8 CLI
  * fails to parse a .ts config on Node 22 ("Cannot read properties of undefined
@@ -36,6 +36,9 @@ const config = {
       '*.razorpay.com',
       '*.cashfree.com',
     ],
+    // On a network error the WebView loads this bundled page (www/index.html,
+    // served from the local asset server) instead of a blank screen.
+    errorPath: 'index.html',
   },
   plugins: {
     SplashScreen: {
