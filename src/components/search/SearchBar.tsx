@@ -11,6 +11,7 @@ import { useEffect, useId, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Clock, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ProductVisual } from '@/components/products/ProductVisual';
 import { readRecent, addRecent, clearRecent } from '@/lib/search/recent-searches';
 
 interface Suggestion {
@@ -22,6 +23,7 @@ interface Suggestion {
   unitPrice?: number;
   packSize?: number;
   packUnit?: string;
+  images?: Array<{ url?: string }>;
 }
 
 const PLACEHOLDER = 'Dolo 650, paracetamol, blood pressure';
@@ -225,7 +227,14 @@ export function SearchBar({ className }: { className?: string }) {
                 {showingRecent ? (
                   <Clock className="h-4 w-4 shrink-0 text-[var(--ink-40)]" aria-hidden="true" />
                 ) : (
-                  <Search className="h-4 w-4 shrink-0 text-[var(--ink-40)]" aria-hidden="true" />
+                  <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)]">
+                    <ProductVisual
+                      imageUrl={s?.images?.[0]?.url ?? null}
+                      form={s?.form}
+                      name={s?.name ?? label}
+                      sizes="36px"
+                    />
+                  </span>
                 )}
                 <span className="flex-1 truncate">{label}</span>
                 {s?.unitPrice != null && (

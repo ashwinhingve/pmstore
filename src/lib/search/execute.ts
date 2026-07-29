@@ -144,7 +144,7 @@ export async function executeSuggest(params: SearchSuggestQuery): Promise<{ data
           { 'salts.name': { $regex: prefix, $options: 'i' } },
         ],
       },
-      { name: 1, slug: 1, form: 1, price: 1, unitPrice: 1, packSize: 1, packUnit: 1 }
+      { name: 1, slug: 1, form: 1, price: 1, unitPrice: 1, packSize: 1, packUnit: 1, images: 1 }
     )
       .limit(params.limit)
       .lean();

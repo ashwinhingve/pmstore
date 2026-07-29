@@ -245,6 +245,7 @@ export function buildSuggestPipeline(params: SuggestParams): Record<string, unkn
         unitPrice: 1,
         packSize: 1,
         packUnit: 1,
+        images: 1,
       },
     },
   ];
