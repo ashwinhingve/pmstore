@@ -101,7 +101,7 @@ export const authOptions: NextAuthOptions = {
             role: 'client',
             mobileVerified: true,
           });
-          console.log('New mobile user created:', phone);
+          console.log('New mobile user created');
           // No email for SMS-only users — skip welcome email
         } else {
           user.mobileVerified = true;
@@ -171,7 +171,7 @@ export const authOptions: NextAuthOptions = {
             provider: 'email',
             emailVerified: true,
           });
-          console.log('New email user created:', email);
+          console.log('New email user created');
           emailService.sendWelcomeEmail(email, null).catch(() => {});
         } else {
           user.lastLogin = new Date();
@@ -274,7 +274,7 @@ export const authOptions: NextAuthOptions = {
               emailVerified: true,
             });
 
-            console.log('New user created:', newUser.email);
+            console.log('New Google user created');
             emailService.sendWelcomeEmail(newUser.email, newUser.name || null).catch(() => {});
           } else {
             // Update existing user if needed
@@ -301,7 +301,7 @@ export const authOptions: NextAuthOptions = {
 
             if (updated) {
               await existingUser.save();
-              console.log('User updated:', existingUser.email);
+              console.log('Existing user updated on sign-in');
             }
           }
 
@@ -433,11 +433,12 @@ export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === 'development',
   useSecureCookies: process.env.NODE_ENV === 'production',
   events: {
-    async signIn({ user }) {
-      console.log('User signed in:', user.email);
+    // Do not log identifiers here — email/phone are PII (root rule #6).
+    async signIn() {
+      console.log('User signed in');
     },
-    async signOut({ token }) {
-      console.log('User signed out:', token.email);
+    async signOut() {
+      console.log('User signed out');
     },
   },
 };
