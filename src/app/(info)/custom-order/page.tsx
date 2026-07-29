@@ -21,7 +21,7 @@ export default function CustomOrderPage() {
   return (
     <div className="bg-[var(--paper)]">
       {/* Hero */}
-      <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-20">
+      <section className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16 md:py-20">
         <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--brand)]">Custom order</p>
         <h1 className="max-w-3xl text-[length:var(--step-3)] text-[var(--ink)]">
           Can&apos;t find your medicine? Request it.
@@ -48,7 +48,7 @@ export default function CustomOrderPage() {
 
       {/* How it works */}
       <section className="border-y border-[var(--foil-soft)] bg-[var(--paper-card)]">
-        <div className="mx-auto max-w-[1200px] px-4 py-16">
+        <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16">
           <h2 className="mb-8 text-[length:var(--step-2)] text-[var(--ink)]">How it works</h2>
           <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s, i) => {
@@ -70,27 +70,25 @@ export default function CustomOrderPage() {
         </div>
       </section>
 
-      {/* Request form */}
-      <section id="request" className="mx-auto max-w-[1200px] px-4 py-16 md:py-20">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.4fr]">
-          <div>
+      {/* Request form — spans the full rail */}
+      <section id="request" className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16 md:py-20">
+        <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
             <h2 className="text-[length:var(--step-2)] text-[var(--ink)]">Request a medicine</h2>
             <p className="mt-3 text-[var(--ink-70)]">
               Only your name, phone and the medicine you need are required. The more you tell us,
               the faster we can confirm.
             </p>
-            <div className="mt-6 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)]">
-              <div className="flex items-start gap-3">
-                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand)]" aria-hidden="true" />
-                <p className="text-sm text-[var(--ink-70)]">
-                  Prescription medicines (Schedule H / H1 / X) are dispensed only against a valid
-                  prescription. Tick the box in the form and we&apos;ll collect it before delivery.
-                </p>
-              </div>
-            </div>
           </div>
-          <CustomOrderForm />
+          <div className="flex max-w-md items-start gap-3 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-sm)]">
+            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand)]" aria-hidden="true" />
+            <p className="text-sm text-[var(--ink-70)]">
+              Prescription medicines (Schedule H / H1 / X) are dispensed only against a valid
+              prescription. Tick the box in the form and we&apos;ll collect it before delivery.
+            </p>
+          </div>
         </div>
+        <CustomOrderForm />
       </section>
     </div>
   )
