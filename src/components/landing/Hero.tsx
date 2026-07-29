@@ -31,7 +31,7 @@ export function Hero({ slides }: { slides?: HeroSlideView[] }) {
         <div className="absolute inset-x-0 bottom-0 h-px bg-[var(--foil-soft)]" />
       </div>
 
-      <div className="relative mx-auto grid max-w-[1200px] items-center gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:px-8 lg:py-24">
+      <div className="relative mx-auto grid max-w-[1600px] xl:w-4/5 items-center gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:px-8 lg:py-24">
         {/* Left — the words and the primary door (search) */}
         <div className="max-w-2xl">
           <motion.p

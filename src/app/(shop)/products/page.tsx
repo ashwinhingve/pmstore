@@ -340,7 +340,7 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-[var(--paper)]">
       {/* Page header — scrolls away; the category bar below stays sticky */}
       <div className="border-b border-[var(--foil-soft)] bg-[var(--paper-tint)]">
-        <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-6 sm:px-6 lg:px-8">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
             Catalogue
           </p>
@@ -366,7 +366,7 @@ export default function ProductsPage() {
 
       {/* Horizontal Category Bar */}
       <div className="sticky top-[72px] z-30 border-b border-[var(--foil-soft)] bg-[var(--paper-card)]/95 backdrop-blur">
-        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <div className="relative flex items-center">
             <button
               onClick={() => scrollCategories("left")}
@@ -422,7 +422,7 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 lg:flex-row">
           {/* Desktop Sidebar */}
           <aside className="hidden w-64 shrink-0 lg:block">

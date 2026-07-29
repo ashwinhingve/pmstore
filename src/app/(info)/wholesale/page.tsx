@@ -57,7 +57,7 @@ export default function WholesalePage() {
   return (
     <div className="bg-[var(--paper)]">
       {/* Hero */}
-      <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-20">
+      <section className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16 md:py-20">
         <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--brand)]">Wholesale</p>
         <h1 className="max-w-3xl text-[length:var(--step-3)] text-[var(--ink)]">
           Bulk supply for pharmacies, clinics and institutions
@@ -83,7 +83,7 @@ export default function WholesalePage() {
       </section>
 
       {/* Benefits */}
-      <section className="mx-auto max-w-[1200px] px-4 pb-16">
+      <section className="mx-auto max-w-[1600px] xl:w-4/5 px-4 pb-16">
         <h2 className="mb-8 text-[length:var(--step-2)] text-[var(--ink)]">Why buy wholesale from us</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {BENEFITS.map(({ icon: Icon, title, body }) => (
@@ -100,7 +100,7 @@ export default function WholesalePage() {
 
       {/* How it works */}
       <section className="border-y border-[var(--foil-soft)] bg-[var(--paper-card)]">
-        <div className="mx-auto max-w-[1200px] px-4 py-16">
+        <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16">
           <h2 className="mb-8 text-[length:var(--step-2)] text-[var(--ink)]">How it works</h2>
           <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s) => (
@@ -120,7 +120,7 @@ export default function WholesalePage() {
       </section>
 
       {/* Enquiry form */}
-      <section id="enquiry" className="mx-auto max-w-[1200px] px-4 py-16 md:py-20">
+      <section id="enquiry" className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16 md:py-20">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.4fr]">
           <div>
             <h2 className="text-[length:var(--step-2)] text-[var(--ink)]">Request a wholesale quote</h2>

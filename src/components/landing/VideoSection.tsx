@@ -43,7 +43,7 @@ export function VideoSection() {
   }, [inView, prefersReducedMotion]);
 
   return (
-    <section ref={ref} className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+    <section ref={ref} className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
       <div className="mb-8 text-center">
         <h2 className="text-[length:var(--step-2)] text-[var(--ink)]">
           See what we offer

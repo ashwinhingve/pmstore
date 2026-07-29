@@ -206,7 +206,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
         dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd) }}
       />
 
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[

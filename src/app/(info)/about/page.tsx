@@ -26,7 +26,7 @@ export default function AboutPage() {
     <main>
       {/* Hero Section — navy prescription-counter band */}
       <section className="relative overflow-hidden bg-[image:var(--surface-hero)] py-20 text-[var(--paper)] md:py-28">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <AnimatedSection direction="up" className="mx-auto max-w-3xl text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--brand-soft)]">
               About {SITE_SHORT_NAME}
@@ -46,7 +46,7 @@ export default function AboutPage() {
 
       {/* Mission & Vision */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             <AnimatedSection direction="left">
               <div className="bg-[var(--paper-card)] rounded-[var(--radius-md)] p-10 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] h-full group border border-[var(--foil-soft)]">
@@ -77,7 +77,7 @@ export default function AboutPage() {
 
       {/* Stats Section */}
       <section className="py-16 md:py-24 bg-[var(--paper)]">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-12">
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
               Our impact
@@ -116,7 +116,7 @@ export default function AboutPage() {
 
       {/* Why Choose Us */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
               Why choose us
@@ -141,7 +141,7 @@ export default function AboutPage() {
 
       {/* Core Values */}
       <section className="py-16 md:py-24 bg-[var(--paper)]">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-12">
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
               Our values
@@ -228,7 +228,7 @@ export default function AboutPage() {
 
       {/* Compliance & License */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-12">
             <h2 className="text-[length:var(--step-2)] mb-2 text-[var(--ink)]">
               Government approved
@@ -281,7 +281,7 @@ export default function AboutPage() {
 
       {/* CTA Section */}
       <section className="py-16 md:py-24 bg-[var(--paper)]">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
             <h2 className="text-[length:var(--step-2)] mb-6 text-[var(--ink)]">
               Start saving on medicines today

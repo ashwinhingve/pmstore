@@ -35,7 +35,7 @@ export function Footer() {
 
   return (
     <footer className="w-full bg-[image:var(--surface-hero)] text-[var(--paper)]">
-      <div className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-14 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
         <div className="mb-10 grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           {/* Company Info */}

@@ -149,7 +149,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-[var(--paper)]">
       {/* Page header */}
       <section className="border-b border-[var(--foil-soft)] bg-[var(--paper)] py-8 md:py-10">
-        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <AnimatedSection direction="up">
             <h1 className="text-[length:var(--step-2)] text-[var(--ink)]">Your cart</h1>
             <p className="data mt-1 text-[var(--ink-70)]">
@@ -159,7 +159,7 @@ export default function CartPage() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2">

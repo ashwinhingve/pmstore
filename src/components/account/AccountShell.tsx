@@ -28,7 +28,7 @@ export function AccountShell({
   const pathname = usePathname();
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6">
         <h1 className="text-[length:var(--step-2)] text-[var(--ink)]">{title}</h1>
         {description && <p className="mt-1 text-[var(--ink-70)]">{description}</p>}

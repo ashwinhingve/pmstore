@@ -56,7 +56,7 @@ export function Header() {
             : "border-transparent"
         )}
       >
-        <div className="mx-auto flex h-18 max-w-[1200px] items-center gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-18 max-w-[1600px] xl:w-4/5 items-center gap-4 px-4 sm:px-6 lg:px-8">
         {/* Logo and Brand */}
         <Link
           href="/"

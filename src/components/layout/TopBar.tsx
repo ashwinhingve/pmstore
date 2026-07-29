@@ -9,7 +9,7 @@ import { CONTACT } from "@/lib/constants";
 export function TopBar() {
   return (
     <div className="hidden bg-[var(--brand-deep)] text-[var(--brand-ink)]/85 md:block">
-      <div className="mx-auto flex h-9 max-w-[1200px] items-center justify-between px-4 text-xs sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-9 max-w-[1600px] xl:w-4/5 items-center justify-between px-4 text-xs sm:px-6 lg:px-8">
         <div className="flex items-center gap-5">
           <span className="inline-flex items-center gap-1.5">
             <Truck className="h-3.5 w-3.5 text-[var(--brand-ink)]" aria-hidden="true" />

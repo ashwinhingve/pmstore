@@ -88,7 +88,7 @@ export default async function SearchPage({
   const totalPages = Math.max(1, Math.ceil(meta.total / meta.limit));
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-8 sm:px-6 lg:px-8">
       <header className="mb-6">
         <h1 className="text-[length:var(--step-2)] text-[var(--ink)]">
           Results for <span className="text-[var(--mint)]">“{q}”</span>
@@ -312,7 +312,7 @@ function NoResults({ q }: { q: string }) {
 
 function EmptyPrompt({ invalid = false }: { invalid?: boolean }) {
   return (
-    <div className="mx-auto max-w-[1200px] px-4 py-20 text-center">
+    <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-20 text-center">
       <EmptySearchArt className="mx-auto mb-6 w-48" />
       <h1 className="text-[length:var(--step-2)] text-[var(--ink)]">
         {invalid ? 'Try a different search' : 'Search for a medicine'}

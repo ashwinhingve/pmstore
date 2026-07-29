@@ -98,7 +98,7 @@ export default function ContactPage() {
     <main>
       {/* Hero Section — navy prescription-counter band */}
       <section className="relative overflow-hidden bg-[image:var(--surface-hero)] py-20 text-[var(--paper)] md:py-28">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <AnimatedSection direction="up" className="mx-auto max-w-3xl text-center">
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--brand-soft)]">
               Contact
@@ -116,7 +116,7 @@ export default function ContactPage() {
 
       {/* Contact Info Cards */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             <StaggerItem>
               <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-[var(--dur-fast)] text-center h-full border border-[var(--foil-soft)]">
@@ -301,7 +301,7 @@ export default function ContactPage() {
 
       {/* FAQ Section */}
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] xl:w-4/5 px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-12">
             <h2 className="text-[length:var(--step-2)] mb-4 text-[var(--ink)]">
               Frequently asked questions
