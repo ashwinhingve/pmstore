@@ -25,7 +25,9 @@ const buttonVariants = cva(
       },
       size: {
         default: "h-11 px-5 py-2",
-        sm: "h-9 rounded-[var(--radius-sm)] px-3",
+        // 44px minimum touch target (src/components/CLAUDE.md) — narrower
+        // padding is what makes this read as "smaller", not a shorter height.
+        sm: "h-11 rounded-[var(--radius-sm)] px-3",
         lg: "h-12 rounded-[var(--radius-sm)] px-8",
         icon: "h-11 w-11",
       },

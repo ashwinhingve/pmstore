@@ -125,11 +125,22 @@ export function AddressStep({ onNext, disabled }: AddressStepProps) {
         <p className="text-[var(--ink-70)]">Select or add a delivery address</p>
       </div>
 
-      {/* Loading State */}
+      {/* Loading State — skeleton matching the address card layout, not a spinner (avoids CLS) */}
       {isLoading && (
-        <div className="text-center py-8">
-          <div className="inline-block w-8 h-8 border-4 border-[var(--ink)] border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-2 text-[var(--ink-70)]">Loading addresses...</p>
+        <div className="space-y-4" aria-hidden="true">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="animate-pulse rounded-lg border-2 border-[var(--foil-soft)] p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-1/3 rounded bg-[var(--foil-soft)]" />
+                  <div className="h-3.5 w-2/3 rounded bg-[var(--foil-soft)]" />
+                  <div className="h-3.5 w-1/2 rounded bg-[var(--foil-soft)]" />
+                  <div className="h-3.5 w-1/3 rounded bg-[var(--foil-soft)]" />
+                </div>
+                <div className="mt-1 h-4 w-4 shrink-0 rounded-full bg-[var(--foil-soft)]" />
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

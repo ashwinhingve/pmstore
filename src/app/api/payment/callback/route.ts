@@ -483,7 +483,18 @@ export async function POST(request: NextRequest) {
             const webhookOrderItems = await OrderItem.find({ orderId: order._id });
             for (const item of webhookOrderItems) {
               const { filter, update } = buildStockDecrement(item);
-              await Product.findOneAndUpdate(filter, update);
+              const updated = await Product.findOneAndUpdate(filter, update);
+              if (!updated) {
+                // A null result means the stock guard didn't match — a
+                // concurrent order already took the last unit. This order is
+                // still confirmed (payment succeeded); flag it for manual
+                // stock reconciliation rather than silently under-counting.
+                logger.error('Webhook: stock race — order confirmed with insufficient stock', null, {
+                  orderNumber,
+                  productId: String(item.productId),
+                  quantity: item.quantity,
+                });
+              }
             }
           } catch (stockErr) {
             logger.error('Webhook: stock deduction failed', stockErr as Error, { orderNumber });

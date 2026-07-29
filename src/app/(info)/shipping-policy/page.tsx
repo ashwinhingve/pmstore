@@ -1,6 +1,3 @@
-"use client"
-
-import React from "react"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { CONTACT } from "@/lib/constants"
 import { Truck, MapPin, Clock, Package, Phone, Mail, IndianRupee, AlertCircle } from "lucide-react"
