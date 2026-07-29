@@ -5,8 +5,8 @@ Applies in addition to the root `CLAUDE.md`. Full contract in `docs/02-API-CONTR
 ## Handler shape
 
 Route handlers are thin. Authenticate, validate, call a lib function, format the response.
-Domain logic lives in `src/lib/`, not here — it needs to be shared with `/api/v1` and testable
-without HTTP.
+Domain logic lives in `src/lib/`, not here — so it stays testable without HTTP and reusable
+across routes.
 
 ```ts
 export async function POST(req: NextRequest) {
@@ -34,12 +34,6 @@ export async function POST(req: NextRequest) {
 - Never log prescription URLs, phone numbers, addresses, OTPs, tokens or payment signatures.
 - `.lean()` on reads that feed React. Serialize `_id` to string at the boundary.
 - Rate limit anything that sends mail, accepts an upload, or creates an order.
-
-## `/api/v1/*` — mobile
-
-Same libs, different auth (`Authorization: Bearer`) and thinner payloads — send only what the
-screen renders. Every response carries `"apiVersion": 1`. Breaking changes go to `/api/v2`;
-v1 stays alive at least 90 days because you cannot force an app update.
 
 ## Payments
 

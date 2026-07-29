@@ -4,7 +4,7 @@
  * Schedule H / H1 / X products cannot be checked out without a prescription.
  * This is enforced here, called from the checkout route — a disabled button in
  * the UI is not access control. Kept as a pure function over already-loaded
- * documents so it is shared by web + `/api/v1` and unit-testable without HTTP.
+ * documents so it is reusable across web routes and unit-testable without HTTP.
  *
  * A pharmacy treats a paper prescription as valid for ~6 months; an attached
  * prescription in `pending` or `verified` state lets the order proceed (staff

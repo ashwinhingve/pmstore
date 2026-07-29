@@ -1,13 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-// Origins allowed to call the mobile API surface (/api/v1/*) with credentials.
-// Native/Expo clients send no Origin header, so they are unaffected by this list.
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? "")
-  .split(",")
-  .map((o) => o.trim())
-  .filter(Boolean);
-
 // Routes that require authentication but no particular role.
 const PROTECTED_ROUTES = [
   "/account",
@@ -99,16 +92,6 @@ export async function middleware(request: NextRequest) {
     response = NextResponse.next({ request: { headers: requestHeaders } });
   } else {
     response = NextResponse.next();
-  }
-
-  // --- CORS: only the mobile API surface, only for allow-listed origins ---
-  if (pathname.startsWith("/api/v1")) {
-    const origin = request.headers.get("origin");
-    if (origin && ALLOWED_ORIGINS.includes(origin)) {
-      response.headers.set("Access-Control-Allow-Origin", origin);
-      response.headers.set("Access-Control-Allow-Credentials", "true");
-      response.headers.set("Vary", "Origin");
-    }
   }
 
   return response;

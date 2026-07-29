@@ -1,9 +1,8 @@
 import { z } from 'zod';
 
 /**
- * Address validation — shared by the mobile `/api/v1/addresses` routes.
- * Mirrors the field rules the web `/api/addresses` route enforces inline
- * (Indian 10-digit mobile, 6-digit PIN) so both platforms agree.
+ * Address validation for the web `/api/addresses` route
+ * (Indian 10-digit mobile, 6-digit PIN).
  */
 const phoneNumber = z
   .string()

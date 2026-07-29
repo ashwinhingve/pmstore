@@ -3,8 +3,7 @@
  *
  * The pure pipeline builders live in `./query`; this module runs them against
  * the Product collection and shapes the response. Kept out of the route handler
- * so `/api/search` and `/api/v1/search` share one implementation (see
- * src/app/api/CLAUDE.md).
+ * so the search entry points share one implementation.
  *
  * Atlas Search is the primary path. When the Atlas index isn't reachable (local
  * dev without a cluster, or before the index is built) it falls back to the

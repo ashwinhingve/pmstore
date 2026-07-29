@@ -63,8 +63,7 @@ const nextConfig = {
       {
         source: '/:path*',
         headers: [
-          // CORS is intentionally NOT set globally. It is scoped to the mobile
-          // API surface (/api/v1/*) with an origin allow-list in middleware.ts.
+          // CORS is intentionally NOT set globally — the site is same-origin only.
           {
             key: 'Content-Security-Policy',
             value: [
