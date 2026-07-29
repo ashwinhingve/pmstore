@@ -59,5 +59,18 @@ const DiscountSchema = new Schema<IDiscount>(
 DiscountSchema.index({ code: 1 });
 DiscountSchema.index({ type: 1, isActive: 1 });
 
+const DISCOUNT_MONEY_FIELDS = ['discountValue', 'maxDiscountAmount', 'minOrderValue'] as const;
+
+// Money is stored in rupees rounded to 2 decimals at write time (root CLAUDE.md).
+DiscountSchema.pre('save', function (next) {
+  for (const field of DISCOUNT_MONEY_FIELDS) {
+    const value = this[field];
+    if (typeof value === 'number' && this.isModified(field)) {
+      this[field] = Math.round(value * 100) / 100;
+    }
+  }
+  next();
+});
+
 export default mongoose.models.Discount ||
   mongoose.model<IDiscount>('Discount', DiscountSchema);

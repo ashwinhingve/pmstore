@@ -47,6 +47,9 @@ const categorySchema = new Schema<ICategory>(
   { timestamps: true }
 );
 
+// Category listings filter by active + sort by display order.
+categorySchema.index({ isActive: 1, order: 1 });
+
 const Category =
   mongoose.models.Category || mongoose.model<ICategory>('Category', categorySchema);
 

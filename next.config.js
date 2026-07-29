@@ -68,16 +68,16 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Next.js runtime needs inline/eval; payment SDKs load their own scripts.
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.razorpay.com https://*.cashfree.com",
+              // Next.js runtime needs inline/eval; Cashfree loads its own script.
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.cashfree.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               // Cloudinary + other remote image hosts (see images.remotePatterns).
               "img-src 'self' data: blob: https:",
-              "connect-src 'self' https://res.cloudinary.com https://*.razorpay.com https://*.cashfree.com",
-              // Payment gateways render in iframes; the contact page embeds a
+              "connect-src 'self' https://res.cloudinary.com https://*.cashfree.com",
+              // Cashfree renders in an iframe; the contact page embeds a
               // Google Maps location frame.
-              "frame-src 'self' https://*.razorpay.com https://*.cashfree.com https://www.google.com",
+              "frame-src 'self' https://*.cashfree.com https://www.google.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // 2. Parse request body
     const body = await request.json();
-    const { reason } = body;
+    const reason = typeof body.reason === 'string' ? body.reason.trim().slice(0, 500) : undefined;
 
     // 3. Connect to database
     await connectDB();

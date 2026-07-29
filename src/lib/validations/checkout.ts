@@ -18,14 +18,23 @@ export const addressSchema = z.object({
 
 /**
  * Checkout validation schema
+ *
+ * `price` may arrive from the client cart but is never read by the route —
+ * every price is recomputed server-side from the DB (root CLAUDE.md rule).
+ * It's accepted here only so Zod's default "strip unknown keys" doesn't
+ * reject an otherwise-valid request.
  */
 export const checkoutSchema = z.object({
   items: z.array(z.object({
     productId: z.string(),
+    variantId: z.string().optional(),
     quantity: z.number().min(1, 'Quantity must be at least 1'),
+    price: z.number().optional(),
   })).min(1, 'Cart cannot be empty'),
   shippingAddressId: z.string().min(1, 'Shipping address is required'),
   billingAddressId: z.string().optional(),
+  discountId: z.string().optional(),
+  prescriptionId: z.string().optional(),
   notes: z.string().max(500, 'Notes must be less than 500 characters').optional(),
 });
 

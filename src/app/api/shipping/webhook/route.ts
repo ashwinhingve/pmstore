@@ -102,8 +102,6 @@ export async function POST(request: NextRequest) {
     // 3. Parse and validate webhook payload
     const webhookData = JSON.parse(body);
 
-    console.log('Delhivery webhook received:', webhookData);
-
     // Validate webhook payload using Zod schema
     const validationResult = delhiveryWebhookSchema.safeParse(webhookData);
 
@@ -117,6 +115,9 @@ export async function POST(request: NextRequest) {
 
     const { waybill, status, location, timestamp: webhookTimestamp, scan_type, instructions } =
       validationResult.data;
+
+    // Log only the tracking-scan fields — never the raw payload (CLAUDE.md rule #6).
+    console.log('Delhivery webhook received:', { waybill, status, scan_type });
 
     // 4. Connect to database
     await connectDB();

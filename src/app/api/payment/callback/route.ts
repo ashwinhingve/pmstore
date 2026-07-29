@@ -43,7 +43,12 @@ export async function GET(request: NextRequest) {
     // Verify payment with Cashfree API
     const verificationResult = await cashfreeService.verifyPayment(orderNumber);
 
-    console.log('Cashfree verification result:', verificationResult);
+    logger.info('Cashfree verification result', {
+      orderNumber,
+      status: verificationResult.status,
+      success: verificationResult.success,
+      transactionId: verificationResult.transactionId,
+    });
 
     // Idempotency check
     const idempotencyKey = generatePaymentIdempotencyKey(
