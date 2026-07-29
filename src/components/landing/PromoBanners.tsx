@@ -13,7 +13,7 @@ import { PROMO_BANNERS } from '@/lib/landing-images';
 export function PromoBanners() {
   return (
     <section className="bg-[var(--brand-tint)]">
-      <Container className="py-14 sm:py-16">
+      <Container className="py-16 sm:py-24">
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
           {PROMO_BANNERS.map((banner) => (
             <article
@@ -27,11 +27,9 @@ export function PromoBanners() {
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover transition-transform duration-[var(--dur-slow)] ease-[var(--ease-out)] group-hover:scale-105"
               />
-              {/* Photography leads: a dark ink scrim anchors the text on the left
-                  and fades to reveal the photo on the right, with a light warm
-                  brand tint so the banner still reads on-brand. */}
+              {/* Photography leads: one ink scrim anchors the text on the left and
+                  fades to reveal the photo on the right. */}
               <div className="absolute inset-0 bg-gradient-to-r from-[var(--ink)]/88 via-[var(--ink)]/45 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-[var(--brand-deep)]/35 via-transparent to-transparent" />
 
               <div className="relative max-w-sm text-[var(--brand-ink)]">
                 <span className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-ink)]/85">

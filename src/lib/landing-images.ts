@@ -1,15 +1,14 @@
 /**
  * Curated marketing imagery for the landing page.
  *
- * Hosts are limited to `images.unsplash.com` and `images.pexels.com` — the only
- * external image hosts whitelisted in `next.config.js` (CSP `img-src https:`
- * also permits them). Every URL here was verified to return HTTP 200 before it
- * shipped; a broken image is worse than none.
+ * Served locally from `public/landing/` (not hotlinked) — download them with
+ * `npx tsx scripts/fetch-landing-images.ts`. Local files are optimized by
+ * next/image and never blank out from third-party throttling, which matters
+ * because the Capacitor app is a WebView of this exact site.
  *
- * All Unsplash photos are royalty-free for commercial use, no attribution
- * required (Unsplash License). Sizes are baked into the query string per use
- * (hero ~1920px, banner ~1600px, category ~800px, testimonial ~400px). This is
- * the single place to swap the landing photography — no component changes needed.
+ * All photos are Unsplash-licence (royalty-free, commercial, no attribution
+ * required). This is the single place to swap the landing photography — update
+ * a path here and, if the source changes, the mapping in the fetch script.
  */
 
 export interface LandingImage {
@@ -20,26 +19,11 @@ export interface LandingImage {
 
 /** Hero slider backgrounds (full-bleed). */
 export const HERO_IMAGES: LandingImage[] = [
-  {
-    url: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Well-stocked pharmacy shelves',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Pharmacist assisting a customer',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1580281657527-47f249e8f4df?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Healthcare worker holding a medicine box',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1625690987114-86f5af994b49?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Couple enjoying good health together',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Colourful capsules spilling from a bottle',
-  },
+  { url: '/landing/hero-1.jpg', alt: 'Well-stocked pharmacy shelves' },
+  { url: '/landing/hero-2.jpg', alt: 'Pharmacist assisting a customer' },
+  { url: '/landing/hero-3.jpg', alt: 'Healthcare worker holding a medicine box' },
+  { url: '/landing/hero-4.jpg', alt: 'Couple enjoying good health together' },
+  { url: '/landing/hero-5.jpg', alt: 'Colourful capsules spilling from a bottle' },
 ];
 
 /**
@@ -47,50 +31,17 @@ export const HERO_IMAGES: LandingImage[] = [
  * A missing slug is fine — Categories.tsx falls back to a tinted card.
  */
 export const CATEGORY_IMAGES: Record<string, LandingImage> = {
-  'pain-relief': {
-    url: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?auto=format&fit=crop&w=800&q=80',
-    alt: 'Assorted pain-relief tablets',
-  },
-  'cardiac-care': {
-    url: 'https://images.unsplash.com/photo-1690787628851-d36e285c29b0?auto=format&fit=crop&w=800&q=80',
-    alt: 'Stethoscope with a red heart',
-  },
-  'diabetes-care': {
-    url: 'https://images.unsplash.com/photo-1685485276223-0bb0226dcca8?auto=format&fit=crop&w=800&q=80',
-    alt: 'Checking blood sugar with a glucose meter',
-  },
-  'antibiotics': {
-    url: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=800&q=80',
-    alt: 'Orange and white medicine capsules',
-  },
-  'respiratory-allergy': {
-    url: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80',
-    alt: 'Stethoscope for respiratory care',
-  },
-  'gastro': {
-    url: 'https://images.unsplash.com/photo-1576602975754-efdf313b9342?auto=format&fit=crop&w=800&q=80',
-    alt: 'Digestive-care medicines',
-  },
-  'vitamins-supplements': {
-    url: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=800&q=80',
-    alt: 'Multicoloured vitamin capsules',
-  },
-  'neuro-psychiatry': {
-    url: 'https://images.unsplash.com/photo-1526724038726-3007ffb8025f?auto=format&fit=crop&w=800&q=80',
-    alt: 'Woman meditating by the sea',
-  },
-  'ortho-muscle-care': {
-    url: 'https://images.unsplash.com/photo-1778826393424-2e063bf5fd64?auto=format&fit=crop&w=800&q=80',
-    alt: 'Person holding a sore knee',
-  },
-  'derma-skin': {
-    url: 'https://images.unsplash.com/photo-1730288951113-9cc087c14b83?auto=format&fit=crop&w=800&q=80',
-    alt: 'Woman with healthy, glowing skin',
-  },
-  'general-otc': {
-    url: 'https://images.unsplash.com/photo-1562243061-204550d8a2c9?auto=format&fit=crop&w=800&q=80',
-    alt: 'Prescription bottle with capsules',
-  },
+  'pain-relief': { url: '/landing/category-pain-relief.jpg', alt: 'Assorted pain-relief tablets' },
+  'cardiac-care': { url: '/landing/category-cardiac-care.jpg', alt: 'Stethoscope with a red heart' },
+  'diabetes-care': { url: '/landing/category-diabetes-care.jpg', alt: 'Checking blood sugar with a glucose meter' },
+  'antibiotics': { url: '/landing/category-antibiotics.jpg', alt: 'Orange and white medicine capsules' },
+  'respiratory-allergy': { url: '/landing/category-respiratory-allergy.jpg', alt: 'Stethoscope for respiratory care' },
+  'gastro': { url: '/landing/category-gastro.jpg', alt: 'Digestive-care medicines' },
+  'vitamins-supplements': { url: '/landing/category-vitamins-supplements.jpg', alt: 'Multicoloured vitamin capsules' },
+  'neuro-psychiatry': { url: '/landing/category-neuro-psychiatry.jpg', alt: 'Woman meditating by the sea' },
+  'ortho-muscle-care': { url: '/landing/category-ortho-muscle-care.jpg', alt: 'Person holding a sore knee' },
+  'derma-skin': { url: '/landing/category-derma-skin.jpg', alt: 'Woman with healthy, glowing skin' },
+  'general-otc': { url: '/landing/category-general-otc.jpg', alt: 'Prescription bottle with capsules' },
 };
 
 /** Feature promo banners (wide). CTAs point at real features only. */
@@ -104,7 +55,7 @@ export interface PromoBanner extends LandingImage {
 
 export const PROMO_BANNERS: PromoBanner[] = [
   {
-    url: 'https://images.unsplash.com/photo-1580281658223-9b93f18ae9ae?auto=format&fit=crop&w=1600&q=80',
+    url: '/landing/promo-rx.jpg',
     alt: 'Healthcare worker with a prescription',
     eyebrow: 'Prescription orders',
     title: 'Upload your prescription',
@@ -113,7 +64,7 @@ export const PROMO_BANNERS: PromoBanner[] = [
     ctaHref: '/prescriptions',
   },
   {
-    url: 'https://images.unsplash.com/photo-1758691031621-f6870f9f998a?auto=format&fit=crop&w=1600&q=80',
+    url: '/landing/promo-reorder.jpg',
     alt: 'Person happily opening a delivery box',
     eyebrow: 'Refills made easy',
     title: 'Reorder in one tap',
@@ -125,32 +76,7 @@ export const PROMO_BANNERS: PromoBanner[] = [
 
 /** Trust / lifestyle supporting images. */
 export const TRUST_IMAGES: LandingImage[] = [
-  {
-    url: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=1200&q=80',
-    alt: 'Pharmacist at the counter',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1576671081837-49000212a370?auto=format&fit=crop&w=1200&q=80',
-    alt: 'Precise quality check in a lab',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1559234938-b60fff04894d?auto=format&fit=crop&w=1200&q=80',
-    alt: 'Couple walking outdoors',
-  },
-];
-
-/** Testimonial avatar portraits (~400px square). */
-export const TESTIMONIAL_IMAGES: LandingImage[] = [
-  {
-    url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-    alt: 'Customer portrait',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
-    alt: 'Customer portrait',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-    alt: 'Customer portrait',
-  },
+  { url: '/landing/trust-1.jpg', alt: 'Pharmacist at the counter' },
+  { url: '/landing/trust-2.jpg', alt: 'Precise quality check in a lab' },
+  { url: '/landing/trust-3.jpg', alt: 'Couple walking outdoors' },
 ];

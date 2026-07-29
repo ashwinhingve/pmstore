@@ -8,7 +8,14 @@ import { ChevronLeft, ChevronRight, ShieldCheck, Truck, BadgeCheck } from 'lucid
 import { Container } from '@/components/shared/Container';
 import { SearchBar } from '@/components/search/SearchBar';
 import { HERO_IMAGES } from '@/lib/landing-images';
-import type { HeroSlideView } from './HeroCarousel';
+
+/** An admin-configured hero slide (SiteSettings.heroSlider). */
+export interface HeroSlideView {
+  _id?: string;
+  image: string;
+  title?: string;
+  subtitle?: string;
+}
 
 /**
  * HeroSlider — the landing page's full-bleed, near-full-screen image slider.
@@ -63,7 +70,7 @@ export function HeroSlider({ slides }: { slides?: HeroSlideView[] }) {
 
   return (
     <section
-      className="relative isolate flex min-h-[560px] w-full items-center overflow-hidden [height:82svh] lg:[height:86svh]"
+      className="relative isolate flex min-h-[460px] w-full items-center overflow-hidden [height:72svh] sm:[height:80svh] lg:[height:84svh]"
       role="group"
       aria-roledescription="carousel"
       aria-label="Pratigya Medical Store highlights"
@@ -100,10 +107,10 @@ export function HeroSlider({ slides }: { slides?: HeroSlideView[] }) {
             </motion.div>
           </motion.div>
         </AnimatePresence>
-        {/* Dark scrim for text legibility over any photo… */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/80 via-[var(--ink)]/35 to-[var(--ink)]/45" />
-        {/* …plus a warm brand wash from the content side. */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-deep)]/55 via-[var(--brand-deep)]/10 to-transparent" />
+        {/* A single ink scrim: dark at the bottom, clearing toward the top so the
+            photo breathes, plus a light warm brand tint only on the content side. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/85 via-[var(--ink)]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-deep)]/30 via-transparent to-transparent" />
       </div>
 
       <Container className="relative z-10 py-12 sm:py-16">

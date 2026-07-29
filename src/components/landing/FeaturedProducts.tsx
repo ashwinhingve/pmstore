@@ -61,9 +61,12 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
   }, [products, checkScroll]);
 
   const scroll = (direction: 'left' | 'right') => {
-    if (!scrollRef.current) return;
-    const distance = 320; // card width + gap
-    scrollRef.current.scrollBy({
+    const el = scrollRef.current;
+    if (!el) return;
+    // Advance by one card so the snap lands cleanly at any width.
+    const card = el.firstElementChild as HTMLElement | null;
+    const distance = card ? card.offsetWidth + 16 : 304; // card width + gap
+    el.scrollBy({
       left: direction === 'left' ? -distance : distance,
       behavior: reduceMotion ? 'auto' : 'smooth',
     });
@@ -124,12 +127,12 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-auto scroll-smooth pb-4 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
             {products.map((product) => (
               <div
                 key={product._id}
-                className="w-72 shrink-0 rounded focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--ink)]"
+                className="w-[80vw] max-w-[300px] shrink-0 snap-start rounded focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--ink)] sm:w-72"
               >
                 <ProductCard product={product} />
               </div>

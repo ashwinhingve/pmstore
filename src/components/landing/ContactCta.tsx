@@ -20,7 +20,7 @@ export function ContactCta() {
 
   return (
     <section className="bg-[image:var(--surface-brand)]">
-      <Container className="py-14 sm:py-20">
+      <Container className="py-16 sm:py-24">
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}

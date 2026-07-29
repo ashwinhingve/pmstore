@@ -5,19 +5,15 @@ import { authOptions } from '@/lib/auth';
 import Product from '@/models/Product';
 import SiteSettings from '@/models/SiteSettings';
 import { SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants';
-// Legacy split hero (Hero + HeroCarousel) is retained in the repo but no longer
-// rendered — replaced by the full-screen HeroSlider below.
 import { HeroSlider } from '@/components/landing/HeroSlider';
-import type { HeroSlideView } from '@/components/landing/HeroCarousel';
+import type { HeroSlideView } from '@/components/landing/HeroSlider';
 import { PromoBar } from '@/components/landing/PromoBar';
 import { QuickActions } from '@/components/landing/QuickActions';
 import { Categories } from '@/components/landing/Categories';
 import { PromoBanners } from '@/components/landing/PromoBanners';
 import { FeaturedProducts } from '@/components/landing/FeaturedProducts';
-// VideoSection is retained in the repo but left off the landing for a cleaner,
-// more focused flow. Re-add <VideoSection /> below to bring it back.
 import { TrustBand } from '@/components/landing/TrustBand';
-import { Testimonials } from '@/components/landing/Testimonials';
+import { WhyChooseUs } from '@/components/landing/WhyChooseUs';
 import { FaqPreview } from '@/components/landing/FaqPreview';
 import { ContactCta } from '@/components/landing/ContactCta';
 
@@ -61,16 +57,17 @@ interface Product {
  * Home — premium marketing landing page for Pratigya Medical Store.
  * Server-fetches featured products, respects user session.
  *
- * Sections:
- * 1. Hero — premium gradient, search bar, CTAs
- * 2. VideoSection — local mp4, lazy-loads on intersection
- * 3. QuickActions — search / order again / upload prescription
- * 4. Categories — curated pharma categories
- * 5. FeaturedProducts — carousel of bestsellers
- * 6. TrustBand — stats + VALUE_PROPS + marketplace logos
- * 7. Testimonials — sample customer feedback
- * 8. FaqPreview — 4 FAQs using Accordion
- * 9. ContactCta — contact info + WhatsApp + contact form link
+ * Sections (in render order):
+ *  1. HeroSlider — full-bleed image slider with search + CTAs
+ *  2. PromoBar — compact headline-offers band
+ *  3. Categories — image-backed pharma category grid
+ *  4. QuickActions — search / order again / upload prescription
+ *  5. FeaturedProducts — carousel of bestsellers
+ *  6. PromoBanners — prescription-upload + reorder feature banners
+ *  7. TrustBand — stats + VALUE_PROPS + credentials
+ *  8. WhyChooseUs — three photography-led reasons to trust the store
+ *  9. FaqPreview — 4 FAQs using Accordion
+ * 10. ContactCta — contact info + WhatsApp + contact form link
  */
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -134,7 +131,7 @@ export default async function Home() {
       <FeaturedProducts products={featuredProducts} />
       <PromoBanners />
       <TrustBand />
-      <Testimonials />
+      <WhyChooseUs />
       <FaqPreview />
       <ContactCta />
     </div>

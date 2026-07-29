@@ -38,7 +38,7 @@ export function FaqPreview() {
 
   return (
     <section className="bg-[var(--paper-tint)]">
-      <Container className="py-14 sm:py-20">
+      <Container className="py-16 sm:py-24">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

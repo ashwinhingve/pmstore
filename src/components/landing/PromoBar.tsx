@@ -42,10 +42,7 @@ export function PromoBar() {
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <span className="min-w-0">
-                  <span
-                    className="block truncate font-[family-name:var(--font-display)] text-[length:var(--step-1)] font-bold leading-tight text-[var(--ink)]"
-                    style={{ fontVariantNumeric: 'tabular-nums' }}
-                  >
+                  <span className="data block truncate text-[length:var(--step-1)] font-bold leading-tight text-[var(--ink)]">
                     {value}
                   </span>
                   <span className="block truncate text-sm text-[var(--ink-70)]">{label}</span>

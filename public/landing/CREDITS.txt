@@ -1,5 +1,11 @@
-Landing-page photography. Source: Pexels (https://www.pexels.com) — free to
-use for commercial purposes, no attribution required. Kept here for provenance.
+Landing-page photography.
 
-hero-pharmacy.jpg   pexels.com/photo/9629685   (pharmacist facing a stocked medicine shelf)
-pharmacist.jpg      pexels.com/photo/14797855  (pharmacist checking a medicine pack)
+Source: Unsplash (https://unsplash.com) — Unsplash Licence, free for commercial
+use, no attribution required. Downloaded locally with `npx tsx
+scripts/fetch-landing-images.ts` (that script holds the source URL for each file).
+Kept here for provenance.
+
+hero-1.jpg .. hero-5.jpg              hero slider backgrounds
+category-*.jpg                        one per pharma category (keyed by slug)
+promo-rx.jpg, promo-reorder.jpg       feature promo banners
+trust-1.jpg .. trust-3.jpg            trust / lifestyle supporting images

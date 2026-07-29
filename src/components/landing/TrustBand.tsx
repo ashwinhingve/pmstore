@@ -15,10 +15,12 @@ import { TRUST_IMAGES } from '@/lib/landing-images';
 export function TrustBand() {
   const reduceMotion = useReducedMotion();
 
+  // Defensible claims only — the store's real longevity plus promises the site
+  // stands behind everywhere else. Swap in real figures once the client confirms.
   const stats = [
     { label: 'Years trusted', value: 20, suffix: '+' },
-    { label: 'Medicines', value: 5000, suffix: '+' },
-    { label: 'Happy customers', value: 10000, suffix: '+' },
+    { label: 'Genuine medicines', value: 100, suffix: '%' },
+    { label: 'Pharmacist-checked', value: 100, suffix: '%' },
   ];
 
   const credentials = [
@@ -57,7 +59,7 @@ export function TrustBand() {
           </motion.div>
 
           <div>
-            <SectionHeading title="Why Pratigya Medical Store" className="mb-6" />
+            <SectionHeading title="What sets us apart" className="mb-6" />
             <ul className="grid gap-3 sm:grid-cols-2">
               {VALUE_PROPS.map((prop, i) => (
                 <motion.li
