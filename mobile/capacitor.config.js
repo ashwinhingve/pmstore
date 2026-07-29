@@ -12,9 +12,9 @@
  * via `server.errorPath` below), and JS-bridge plugins rely on the bridge that
  * Capacitor injects into the remote page.
  *
- * `allowNavigation` keeps the store's own origin and the payment gateways inside
- * the WebView; every other http(s) link and the tel:/mailto:/upi: schemes are
- * handed to the OS by Capacitor. Android `intent:` deep links need special
+ * `allowNavigation` keeps the store's own origin and the Cashfree payment gateway
+ * inside the WebView; every other http(s) link and the tel:/mailto:/upi: schemes
+ * are handed to the OS by Capacitor. Android `intent:` deep links need special
  * parsing, so MainActivity handles those so UPI/checkout redirects work.
  *
  * Config file is .js (CommonJS) rather than .ts on purpose: the Capacitor 8 CLI
@@ -33,7 +33,6 @@ const config = {
     allowNavigation: [
       'pratigyamedicalstore.com',
       '*.pratigyamedicalstore.com',
-      '*.razorpay.com',
       '*.cashfree.com',
     ],
     // On a network error the WebView loads this bundled page (www/index.html,
