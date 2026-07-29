@@ -30,7 +30,7 @@ export function TrustBand() {
 
   return (
     <section className="bg-[var(--brand-tint)]">
-      <Container className="py-14 sm:py-20">
+      <Container className="py-16 sm:py-24">
         {/* Stats */}
         <div className="mb-14 grid gap-8 sm:grid-cols-3">
           {stats.map((stat) => (

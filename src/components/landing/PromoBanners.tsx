@@ -27,8 +27,11 @@ export function PromoBanners() {
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover transition-transform duration-[var(--dur-slow)] ease-[var(--ease-out)] group-hover:scale-105"
               />
-              {/* Warm brand wash, heavier on the content side for legibility. */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-deep)]/92 via-[var(--brand)]/70 to-[var(--brand)]/25" />
+              {/* Photography leads: a dark ink scrim anchors the text on the left
+                  and fades to reveal the photo on the right, with a light warm
+                  brand tint so the banner still reads on-brand. */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[var(--ink)]/88 via-[var(--ink)]/45 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[var(--brand-deep)]/35 via-transparent to-transparent" />
 
               <div className="relative max-w-sm text-[var(--brand-ink)]">
                 <span className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-ink)]/85">

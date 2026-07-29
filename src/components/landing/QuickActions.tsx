@@ -46,7 +46,7 @@ export function QuickActions({ signedIn }: QuickActionsProps) {
 
   return (
     <section className="bg-[var(--paper-tint)]">
-      <Container className="py-14 sm:py-20">
+      <Container className="py-16 sm:py-24">
         <div className="grid gap-4 sm:grid-cols-3">
           {actions.map((action, i) => {
             const Icon = action.icon;

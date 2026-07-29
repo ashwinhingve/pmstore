@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, LayoutGrid } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Container } from '@/components/shared/Container';
 import { SectionHeading } from '@/components/shared/SectionHeading';
@@ -25,7 +25,7 @@ export function Categories() {
 
   return (
     <section className="bg-[var(--paper)]">
-      <Container className="py-14 sm:py-20">
+      <Container className="py-16 sm:py-24">
         <SectionHeading
           align="center"
           eyebrow="Catalogue"
@@ -34,7 +34,7 @@ export function Categories() {
           className="mb-10"
         />
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
           {PHARMA_CATEGORIES.map((category, i) => {
             const Icon = category.icon;
             const tint = getCategoryTint(category.name);
@@ -90,16 +90,32 @@ export function Categories() {
               </motion.div>
             );
           })}
-        </div>
 
-        <div className="mt-10 text-center">
-          <Link
-            href="/products"
-            className="inline-flex items-center gap-2 rounded-[var(--radius-pill)] border-2 border-[var(--brand)] px-6 py-2.5 font-semibold text-[var(--brand-deep)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--brand-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+          {/* Browse-all tile — fills the grid and gives one clear catalogue door. */}
+          <motion.div
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.4, delay: reduceMotion ? 0 : 0.05 }}
+            viewport={{ once: true, margin: '0px 0px -60px 0px' }}
           >
-            View all medicines
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+            <Link
+              href="/products"
+              className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[var(--radius-lg)] bg-[image:var(--surface-brand)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+            >
+              <LayoutGrid
+                className="absolute -bottom-5 -right-4 h-28 w-28 text-[var(--brand-ink)]/20"
+                strokeWidth={1.25}
+                aria-hidden="true"
+              />
+              <div className="relative flex items-center justify-between gap-2 p-3.5 text-[var(--brand-ink)] sm:p-4">
+                <h3 className="text-[0.9375rem] font-semibold leading-tight">All medicines</h3>
+                <ArrowRight
+                  className="h-5 w-5 transition-transform duration-[var(--dur-fast)] group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </div>
+            </Link>
+          </motion.div>
         </div>
       </Container>
     </section>
