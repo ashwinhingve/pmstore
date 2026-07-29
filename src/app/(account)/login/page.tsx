@@ -13,6 +13,34 @@ import { motion } from "framer-motion"
 type Tab = "google" | "mobile"
 type OtpStep = "input" | "otp"
 
+/** True when running inside the Capacitor native app (vs a normal browser). */
+function isNativeApp(): boolean {
+  if (typeof window === "undefined") return false
+  const cap = (window as unknown as {
+    Capacitor?: { isNativePlatform?: () => boolean }
+  }).Capacitor
+  return cap?.isNativePlatform?.() === true
+}
+
+/**
+ * In-app Google sign-in. Google blocks OAuth inside WebViews, so we use the
+ * native Google SDK (imported only in the app) and return the resulting idToken
+ * for the `google-native` NextAuth provider to verify server-side.
+ */
+async function nativeGoogleIdToken(): Promise<string> {
+  const { SocialLogin } = await import("@capgo/capacitor-social-login")
+  const webClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+  if (!webClientId) throw new Error("Google sign-in is not configured")
+  await SocialLogin.initialize({ google: { webClientId } })
+  const res = await SocialLogin.login({
+    provider: "google",
+    options: { scopes: ["profile", "email"] },
+  })
+  const result = res.result as { idToken?: string | null }
+  if (!result.idToken) throw new Error("No Google idToken returned")
+  return result.idToken
+}
+
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -61,6 +89,16 @@ export default function LoginPage() {
     setIsLoading(true)
     setError("")
     try {
+      if (isNativeApp()) {
+        // In-app: native Google SDK -> idToken -> same-origin session.
+        const idToken = await nativeGoogleIdToken()
+        const result = await signIn("google-native", { redirect: false, idToken })
+        if (result?.error) {
+          setError("Failed to sign in with Google. Please try again.")
+          setIsLoading(false)
+        }
+        return
+      }
       const result = await signIn("google", { redirect: false })
       if (result?.error) {
         setError("Failed to sign in with Google. Please try again.")

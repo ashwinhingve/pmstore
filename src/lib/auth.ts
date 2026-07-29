@@ -2,6 +2,7 @@ import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
+import { OAuth2Client } from 'google-auth-library';
 import { connectDB } from './mongodb';
 import User from '@/models/User';
 import Otp from '@/models/Otp';
@@ -180,6 +181,66 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user._id.toString(),
           email: user.email,
+          name: user.name || user.fullName || null,
+          image: user.image || null,
+        };
+      },
+    }),
+    CredentialsProvider({
+      // In-app Google sign-in. Google blocks OAuth inside WebViews, so the
+      // Capacitor app signs in with the native Google SDK and posts the
+      // resulting idToken here. We verify it and establish the SAME session as
+      // web Google — the jwt/session callbacks below resolve role/id by email.
+      id: 'google-native',
+      name: 'Google (app)',
+      credentials: {
+        idToken: { label: 'idToken', type: 'text' },
+      },
+      async authorize(credentials) {
+        const idToken = credentials?.idToken;
+        if (!idToken) throw new Error('Missing Google token');
+
+        const audience = [
+          process.env.GOOGLE_CLIENT_ID,
+          process.env.GOOGLE_ANDROID_CLIENT_ID,
+        ].filter(Boolean) as string[];
+        if (audience.length === 0) throw new Error('Google sign-in is not configured');
+
+        const ticket = await new OAuth2Client().verifyIdToken({ idToken, audience });
+        const payload = ticket.getPayload();
+        if (!payload?.email || !payload.email_verified) {
+          throw new Error('Google account could not be verified');
+        }
+
+        await connectDB();
+
+        // Same upsert as the web Google provider (mirrors the signIn callback).
+        let user = await User.findOne({
+          $or: [{ email: payload.email }, { googleId: payload.sub }],
+        });
+
+        if (!user) {
+          user = await User.create({
+            email: payload.email,
+            name: payload.name,
+            fullName: payload.name,
+            image: payload.picture,
+            provider: 'google',
+            googleId: payload.sub,
+            emailVerified: true,
+          });
+          emailService.sendWelcomeEmail(user.email, user.name || null).catch(() => {});
+        } else {
+          if (!user.googleId && payload.sub) user.googleId = payload.sub;
+          if (payload.picture && user.image !== payload.picture) user.image = payload.picture;
+          if (!user.emailVerified) user.emailVerified = true;
+          user.lastLogin = new Date();
+          await user.save();
+        }
+
+        return {
+          id: user._id.toString(),
+          email: user.email || null,
           name: user.name || user.fullName || null,
           image: user.image || null,
         };
