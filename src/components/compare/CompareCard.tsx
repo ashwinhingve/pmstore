@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/shared/Badge';
 import { RxBadge } from '@/components/shared/RxBadge';
+import { ProductVisual } from '@/components/products/ProductVisual';
 import { formatINR, packUnitShort, type ScheduleClass } from '@/lib/pharma/format';
 import type { CompareProduct } from '@/lib/pharma/compare';
 
@@ -29,6 +30,17 @@ export function CompareCard({ product, isBest }: { product: CompareProduct; isBe
         {isBest && <Badge tone="brand">Best option</Badge>}
         {product.scheduleClass && <RxBadge scheduleClass={product.scheduleClass as ScheduleClass} />}
         {outOfStock && <Badge tone="muted">Out of stock</Badge>}
+      </div>
+
+      {/* Thumbnail — real photo when available, else the designed tile. */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-tint)]">
+        <ProductVisual
+          imageUrl={product.image}
+          form={product.form}
+          name={product.name}
+          fit="contain"
+          sizes="(max-width: 640px) 100vw, 40vw"
+        />
       </div>
 
       <div>

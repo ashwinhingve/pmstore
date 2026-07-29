@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { formatINR, packUnitShort } from '@/lib/pharma/format';
 import { Badge } from '@/components/shared/Badge';
+import { ProductVisual } from '@/components/products/ProductVisual';
 import type { StripViewModel } from '@/lib/pharma/strip';
 import type { RankedAlternative } from '@/lib/pharma/composition';
 
@@ -85,6 +86,11 @@ function Pill({ alt }: { alt: RankedAlternative }) {
         outOfStock && 'opacity-60'
       )}
     >
+      {/* Thumbnail — a real photo when we have one, else the honest designed tile. */}
+      <div className="relative mb-1 aspect-square w-full overflow-hidden rounded-[var(--radius-sm)] border border-[var(--foil-soft)]">
+        <ProductVisual imageUrl={alt.image} form={alt.form} name={alt.name} sizes="128px" />
+      </div>
+
       <div className="flex min-h-5 flex-wrap gap-1">
         {isCurrent && <Badge tone="ink">Viewing</Badge>}
         {!isCurrent && alt.badges.includes('cheapest') && <Badge tone="mint">Cheapest</Badge>}

@@ -30,6 +30,8 @@ export interface CompareProduct {
   compositionKey: string;
   salts: Salt[];
   form: DosageForm;
+  /** First product image URL (or null) — for the side-by-side compare thumbnail. */
+  image?: string | null;
 }
 
 export interface CompareVerdict {

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Check } from 'lucide-react';
 import { computeUnitPrice, savingsVs, formatComposition, type Salt } from '@/lib/pharma/composition';
+import { ProductVisual } from '@/components/products/ProductVisual';
 
 /**
  * Same-composition comparison, surfaced from the current search results.
@@ -27,6 +28,8 @@ interface CompareProduct {
   compositionKey: string;
   salts: Salt[];
   prescriptionRequired: boolean;
+  image: string | null;
+  form?: string;
 }
 
 const money = (n: number) => `₹${n.toFixed(2)}`;
@@ -42,6 +45,7 @@ function coerce(raw: Record<string, unknown>): CompareProduct | null {
   const price = typeof raw.price === 'number' ? raw.price : 0;
   const packSize = typeof raw.packSize === 'number' && raw.packSize > 0 ? raw.packSize : 1;
   const unitPrice = typeof raw.unitPrice === 'number' ? raw.unitPrice : computeUnitPrice(price, packSize);
+  const images = Array.isArray(raw.images) ? (raw.images as { url?: string }[]) : [];
 
   return {
     _id: String(raw._id ?? slug),
@@ -57,6 +61,8 @@ function coerce(raw: Record<string, unknown>): CompareProduct | null {
     compositionKey,
     salts: Array.isArray(raw.salts) ? (raw.salts as Salt[]) : [],
     prescriptionRequired: raw.prescriptionRequired === true,
+    image: images[0]?.url ?? null,
+    form: typeof raw.form === 'string' ? raw.form : undefined,
   };
 }
 
@@ -159,11 +165,16 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
           {bestValue.stock <= 0 && <OutOfStock />}
         </div>
         <div className="flex items-end justify-between gap-3">
-          <div className="min-w-0">
-            <p className="truncate font-semibold text-[var(--ink)] group-hover:underline">
-              {bestValue.name}
-            </p>
-            <p className="truncate text-xs text-[var(--ink-70)]">{bestValue.manufacturer || '—'}</p>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)]">
+              <ProductVisual imageUrl={bestValue.image} form={bestValue.form} name={bestValue.name} sizes="48px" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate font-semibold text-[var(--ink)] group-hover:underline">
+                {bestValue.name}
+              </p>
+              <p className="truncate text-xs text-[var(--ink-70)]">{bestValue.manufacturer || '—'}</p>
+            </div>
           </div>
           <div className="shrink-0 text-right">
             <p className="leading-none">
@@ -192,18 +203,23 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
                   out ? 'opacity-60' : ''
                 }`}
               >
-                <div className="min-w-0">
-                  <p className="flex items-center gap-2">
-                    <span className="truncate font-medium text-[var(--ink)]">{p.name}</span>
-                    {p.prescriptionRequired && <RxPill />}
-                  </p>
-                  <p className="truncate text-xs text-[var(--ink-70)]">
-                    {p.manufacturer || '—'}
-                    {p._id === lowestPack._id && p._id !== bestValue._id && (
-                      <span className="ml-1.5 text-[var(--ink-40)]">· lowest pack price</span>
-                    )}
-                    {out && <OutOfStock inline />}
-                  </p>
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)]">
+                    <ProductVisual imageUrl={p.image} form={p.form} name={p.name} sizes="40px" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="flex items-center gap-2">
+                      <span className="truncate font-medium text-[var(--ink)]">{p.name}</span>
+                      {p.prescriptionRequired && <RxPill />}
+                    </p>
+                    <p className="truncate text-xs text-[var(--ink-70)]">
+                      {p.manufacturer || '—'}
+                      {p._id === lowestPack._id && p._id !== bestValue._id && (
+                        <span className="ml-1.5 text-[var(--ink-40)]">· lowest pack price</span>
+                      )}
+                      {out && <OutOfStock inline />}
+                    </p>
+                  </div>
                 </div>
                 <div className="shrink-0 text-right">
                   <p className="leading-none">

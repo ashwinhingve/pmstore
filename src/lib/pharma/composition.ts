@@ -158,6 +158,10 @@ export interface AlternativeCandidate {
   averageRating: number;
   totalReviews: number;
   orderCount?: number;
+  /** First product image URL (or null) — carried through for the Strip thumbnail. */
+  image?: string | null;
+  /** Dosage form — drives the fallback designed tile when there is no photo. */
+  form?: string;
 }
 
 export type AlternativeBadge = 'cheapest' | 'best-rated' | 'most-popular' | 'current';

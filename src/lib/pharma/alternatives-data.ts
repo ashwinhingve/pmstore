@@ -11,7 +11,7 @@ import Product from '@/models/Product';
 import { buildStrip, type StripProductInput, type StripViewModel } from './strip';
 
 const STRIP_FIELDS =
-  '_id name slug manufacturer price mrp packSize packUnit unitPrice stock averageRating totalReviews orderCount salts form compositionKey';
+  '_id name slug manufacturer price mrp packSize packUnit unitPrice stock averageRating totalReviews orderCount salts form compositionKey images';
 
 export async function getAlternatives(slug: string): Promise<StripViewModel | null> {
   await connectDB();

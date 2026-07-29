@@ -33,6 +33,7 @@ export interface StripProductInput {
   orderCount?: number;
   salts?: Salt[];
   form?: DosageForm;
+  images?: { url?: string }[];
 }
 
 export interface StripViewModel {
@@ -57,6 +58,8 @@ function toCandidate(p: StripProductInput): AlternativeCandidate {
     averageRating: p.averageRating ?? 0,
     totalReviews: p.totalReviews ?? 0,
     orderCount: p.orderCount ?? 0,
+    image: p.images?.[0]?.url ?? null,
+    form: p.form,
   };
 }
 
