@@ -117,13 +117,14 @@ src/
   models/            Mongoose schemas
   store/             Zustand
   styles/tokens.css  design tokens
-mobile/              Expo app (from week 7)
+mobile/              Capacitor Android shell — wraps the live site (see SETUP.md §7)
 ```
 
 ## Documentation index
 
 | Read this | When |
 |---|---|
+| `SETUP.md` | **Running it end to end** — tools, env vars, external APIs, catalogue import, deploy, the app |
 | `docs/04-ROADMAP.md` | **Start here each week.** Tasks + acceptance criteria, weeks 1–10 |
 | `docs/00-ARCHITECTURE.md` | System design, request flows, why decisions were made |
 | `docs/01-DATA-MODEL.md` | Every collection, field, index, derived-value rule |

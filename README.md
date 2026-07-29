@@ -2,6 +2,10 @@
 
 Everything Claude Code needs to build the PMStore pharmacy platform end to end, weeks 1 to 10.
 
+> **Setting it up?** Read **[`SETUP.md`](./SETUP.md)** — the single end-to-end guide for running the
+> website and the Android app: tools, every environment variable, the external APIs to sign up for,
+> catalogue import, and deployment.
+
 ## How to use this
 
 This bundle is an **overlay**. Unzip it over a fresh fork of the Taptifs repo and every file
