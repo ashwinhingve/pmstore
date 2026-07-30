@@ -3,6 +3,7 @@ import { verifyStaffAccess } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
 import Prescription from '@/models/Prescription';
 import { Errors, createErrorResponse } from '@/lib/utils/errorHandler';
+import { signedImageUrl } from '@/lib/cloudinary/config';
 
 /**
  * GET /api/admin/prescriptions
@@ -59,6 +60,7 @@ export async function GET(req: NextRequest) {
     const serialized = data.map((doc) => ({
       ...doc,
       _id: String(doc._id),
+      images: doc.images.map((img) => ({ ...img, url: signedImageUrl(img.publicId) })),
       userId: doc.userId
         ? { ...doc.userId, _id: String(doc.userId._id) }
         : null,

@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { connectDB } from '@/lib/mongodb';
 import Prescription from '@/models/Prescription';
-import cloudinary, { CLOUDINARY_FOLDERS, UPLOAD_CONFIG } from '@/lib/cloudinary/config';
+import cloudinary, { CLOUDINARY_FOLDERS, UPLOAD_CONFIG, signedImageUrl } from '@/lib/cloudinary/config';
 import { applyRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimit';
 import { prescriptionMetaSchema } from '@/lib/validations/prescription';
 
@@ -89,7 +89,13 @@ export async function POST(req: NextRequest) {
           (resolve, reject) => {
             cloudinary.uploader
               .upload_stream(
-                { folder: CLOUDINARY_FOLDERS.PRESCRIPTIONS, resource_type: 'image' },
+                {
+                  folder: CLOUDINARY_FOLDERS.PRESCRIPTIONS,
+                  resource_type: 'image',
+                  // Health data (root CLAUDE.md rule #6) — not publicly retrievable
+                  // by URL. Display always goes through signedImageUrl().
+                  access_mode: 'authenticated',
+                },
                 (error, res) =>
                   error || !res
                     ? reject(error || new Error('Image upload failed'))
@@ -149,7 +155,10 @@ export async function GET() {
     const data = prescriptions.map((p) => ({
       id: String(p._id),
       status: p.status,
-      images: p.images,
+      images: p.images.map((img: { url: string; publicId: string }) => ({
+        ...img,
+        url: signedImageUrl(img.publicId),
+      })),
       patientName: p.patientName ?? null,
       doctorName: p.doctorName ?? null,
       issueDate: p.issueDate ?? null,
