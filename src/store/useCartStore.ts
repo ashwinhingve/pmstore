@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { ProductData } from '@/data/products';
 import type { ScheduleClass } from '@/lib/pharma/format';
 
 // Cart product supports both DB objects (with _id) and static data (with id)
@@ -43,7 +42,7 @@ export interface AppliedDiscount {
 interface CartStore {
   items: CartItem[];
   discount: AppliedDiscount | null;
-  addItem: (product: CartProduct | ProductData | any, quantity?: number) => void;
+  addItem: (product: CartProduct | any, quantity?: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;

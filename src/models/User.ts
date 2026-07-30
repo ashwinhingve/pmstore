@@ -29,9 +29,9 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>(
   {
     email: {
+      // unique+sparse enforced by the explicit UserSchema.index() below —
+      // declaring it here too would register the same index twice.
       type: String,
-      unique: true,
-      sparse: true,
       lowercase: true,
       trim: true,
     },

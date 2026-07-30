@@ -12,8 +12,8 @@ iOS is a later `npx cap add ios`.
   It's `.js` (CommonJS) not `.ts` on purpose: the Capacitor 8 CLI fails to parse a `.ts` config
   on Node 22 (`Cannot read properties of undefined (reading 'CommonJS')`).
 - `www/index.html` is the offline fallback (brand-styled). `webDir: www`.
-- `server.allowNavigation` keeps the store origin + Razorpay/Cashfree inside the WebView; other
-  http(s) links open in the system browser.
+- `server.allowNavigation` keeps the store origin + Cashfree inside the WebView; other http(s)
+  links open in the system browser.
 - App id `com.pratigyamedicalstore.app`, name "PM Store". Icon/splash generated from
   `assets/icon.png` (1024) + `assets/splash.png` (2732), themselves rasterized from
   `public/app-icon.svg`.

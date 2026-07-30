@@ -1,6 +1,3 @@
-"use client"
-
-import React from "react"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { SITE_NAME, CONTACT, SITE_URL } from "@/lib/constants"
 import { FileText, ShoppingCart, CreditCard, Package, Scale, Mail } from "lucide-react"

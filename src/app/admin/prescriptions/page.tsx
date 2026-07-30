@@ -1,6 +1,8 @@
+import Image from 'next/image';
 import { requireStaff } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
 import Prescription from '@/models/Prescription';
+import { signedImageUrl } from '@/lib/cloudinary/config';
 import { PrescriptionActions } from '@/components/admin/PrescriptionActions';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 
@@ -31,10 +33,12 @@ export default async function AdminPrescriptionsPage() {
     .populate('userId', 'name email')
     .lean<PrescriptionQueueItem[]>();
 
-  // Serialize ObjectIds
+  // Serialize ObjectIds and mint a fresh signed URL per image — the stored
+  // `url` is never directly browsable (health data, root CLAUDE.md rule #6).
   const serialized = prescriptions.map((rx) => ({
     ...rx,
     _id: String(rx._id),
+    images: rx.images.map((img) => ({ ...img, url: signedImageUrl(img.publicId) })),
     userId: rx.userId
       ? { ...rx.userId, _id: String(rx.userId._id) }
       : null,
@@ -85,7 +89,31 @@ export default async function AdminPrescriptionsPage() {
                       timeZone: 'Asia/Kolkata',
                     })}
                   </td>
-                  <td className="px-4 py-3 text-center text-[var(--ink)]">{rx.images.length}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-center gap-1.5">
+                      {rx.images.slice(0, 3).map((img, i) => (
+                        <a
+                          key={img.publicId}
+                          href={img.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="relative block h-11 w-11 shrink-0 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--foil-soft)] outline-offset-2 hover:border-[var(--brand)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--brand)]"
+                          aria-label={`Open prescription image ${i + 1} of ${rx.images.length}`}
+                        >
+                          <Image
+                            src={img.url}
+                            alt={`Prescription image ${i + 1} for ${rx.patientName || 'patient'}`}
+                            fill
+                            sizes="44px"
+                            className="object-cover"
+                          />
+                        </a>
+                      ))}
+                      {rx.images.length > 3 && (
+                        <span className="text-xs text-[var(--ink-70)]">+{rx.images.length - 3}</span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-center">
                     {rx.buildCartRequested ? (
                       <span className="inline-block rounded bg-[var(--mint-soft)] px-2 py-1 text-xs font-semibold text-[var(--mint)]">

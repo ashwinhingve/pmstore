@@ -1,41 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { ZodError } from 'zod';
+import { verifyAuthentication } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
 import Address from '@/models/Address';
+import { createAddressSchema } from '@/lib/validations/address';
 
 /**
  * GET /api/addresses
- * Get all addresses for the authenticated user
+ * Get all addresses for the authenticated user.
+ *
+ * Auth comes ONLY from the verified session — never from a request header.
+ * A previous version trusted an `x-user-id` header, which let an
+ * unauthenticated caller read another user's addresses (name, phone, full
+ * address) by spoofing the header (CLAUDE.md rules #4 and #6).
  */
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    let userId = req.headers.get('x-user-id') || null;
-    if (!userId || userId === 'undefined') {
-      userId = null;
-      try {
-        const session = await getServerSession(authOptions);
-        userId = session?.user?.id ?? null;
-      } catch {
-        // getServerSession can throw when NEXTAUTH_URL doesn't match origin
-      }
-    }
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    const auth = await verifyAuthentication();
+    if (auth.error) return auth.error;
+    const userId = auth.session.user.id as string;
 
     await connectDB();
 
     const addresses = await Address.find({ userId })
-      .sort({ isDefault: -1, createdAt: -1 });
+      .sort({ isDefault: -1, createdAt: -1 })
+      .lean();
 
-    return NextResponse.json(addresses, { status: 200 });
+    // Serialize ObjectIds to strings at the boundary.
+    const serialized = addresses.map((a) => ({
+      ...a,
+      _id: String(a._id),
+      userId: String(a.userId),
+    }));
+
+    return NextResponse.json(serialized, { status: 200 });
   } catch (error) {
-    console.error('❌ Get addresses error:', error);
+    console.error('Get addresses error');
     return NextResponse.json(
       { error: 'Failed to fetch addresses' },
       { status: 500 }
@@ -45,95 +45,52 @@ export async function GET(req: NextRequest) {
 
 /**
  * POST /api/addresses
- * Create a new address for the authenticated user
+ * Create a new address for the authenticated user.
  */
 export async function POST(req: NextRequest) {
   try {
-    let userId = req.headers.get('x-user-id') || null;
-    if (!userId || userId === 'undefined') {
-      userId = null;
-      try {
-        const session = await getServerSession(authOptions);
-        userId = session?.user?.id ?? null;
-      } catch {
-        // getServerSession can throw when NEXTAUTH_URL doesn't match origin
-      }
-    }
+    const auth = await verifyAuthentication();
+    if (auth.error) return auth.error;
+    const userId = auth.session.user.id as string;
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const body = await req.json();
-
-    // Validate required fields
-    const requiredFields = ['fullName', 'phoneNumber', 'addressLine1', 'city', 'state', 'postalCode'];
-    for (const field of requiredFields) {
-      if (!body[field]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Validate phone number (Indian format)
-    const phoneRegex = /^[6-9]\d{9}$/;
-    if (!phoneRegex.test(body.phoneNumber)) {
-      return NextResponse.json(
-        { error: 'Invalid phone number. Must be 10 digits starting with 6-9' },
-        { status: 400 }
-      );
-    }
-
-    // Validate PIN code (Indian format)
-    const pinRegex = /^\d{6}$/;
-    if (!pinRegex.test(body.postalCode)) {
-      return NextResponse.json(
-        { error: 'Invalid PIN code. Must be 6 digits' },
-        { status: 400 }
-      );
-    }
+    const data = createAddressSchema.parse(await req.json());
 
     await connectDB();
 
-    // If this is set as default, unset other default addresses
-    if (body.isDefault) {
-      await Address.updateMany(
-        { userId: userId },
-        { $set: { isDefault: false } }
-      );
+    // If this is set as default, unset other defaults first.
+    if (data.isDefault) {
+      await Address.updateMany({ userId }, { $set: { isDefault: false } });
     }
 
-    // If this is the first address, make it default
-    const addressCount = await Address.countDocuments({ userId: userId });
-    const isDefault = addressCount === 0 ? true : (body.isDefault || false);
+    // The first address a user saves is always the default.
+    const addressCount = await Address.countDocuments({ userId });
+    const isDefault = addressCount === 0 ? true : data.isDefault ?? false;
 
     const address = await Address.create({
-      userId: userId,
-      fullName: body.fullName,
-      phoneNumber: body.phoneNumber,
-      addressLine1: body.addressLine1,
-      addressLine2: body.addressLine2 || '',
-      city: body.city,
-      state: body.state,
-      postalCode: body.postalCode,
-      country: body.country || 'India',
-      type: body.type || 'shipping',
+      userId,
+      fullName: data.fullName,
+      phoneNumber: data.phoneNumber,
+      addressLine1: data.addressLine1,
+      addressLine2: data.addressLine2 || '',
+      city: data.city,
+      state: data.state,
+      postalCode: data.postalCode,
+      country: data.country || 'India',
+      type: data.type || 'shipping',
       isDefault,
     });
 
     return NextResponse.json(address, { status: 201 });
-  } catch (error: any) {
-    console.error('❌ Create address error:', error);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        { error: error.issues[0]?.message ?? 'Invalid address' },
+        { status: 400 }
+      );
+    }
+    console.error('Create address error');
     return NextResponse.json(
-      {
-        error: 'Failed to create address',
-        details: error.message
-      },
+      { error: 'Failed to create address' },
       { status: 500 }
     );
   }

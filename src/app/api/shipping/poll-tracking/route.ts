@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { connectDB } from '@/lib/mongodb';
@@ -9,7 +10,17 @@ import { getShippingProvider } from '@/lib/shipping/providerFactory';
 import { emailService } from '@/lib/notifications/email';
 import { smsService } from '@/lib/notifications/sms';
 
-const POLL_SECRET = process.env.DELHIVERY_WEBHOOK_SECRET || '';
+// A dedicated secret so a leaked poll-cron trigger (passed as a URL query
+// param — more exposure-prone than a header: server/proxy logs, cron
+// dashboards, browser history) can't also be used to forge Delhivery webhook
+// HMAC signatures. Falls back to the webhook secret only if the dedicated
+// one hasn't been configured yet.
+const POLL_SECRET = process.env.SHIPPING_POLL_SECRET || process.env.DELHIVERY_WEBHOOK_SECRET || '';
+
+function timingSafeStringEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(Buffer.from(a), Buffer.from(b));
+}
 // Include both Delhivery (title-case) and Shiprocket (UPPER_CASE) terminal status strings
 const TERMINAL_STATUSES = [
   'Delivered', 'RTO Delivered', 'Cancelled', 'Lost', 'Damaged',
@@ -27,7 +38,7 @@ export async function GET(request: NextRequest) {
   try {
     // Auth: check secret param (cron) OR admin session
     const secret = request.nextUrl.searchParams.get('secret');
-    const hasValidSecret = secret && POLL_SECRET && secret === POLL_SECRET;
+    const hasValidSecret = !!secret && !!POLL_SECRET && timingSafeStringEqual(secret, POLL_SECRET);
 
     if (!hasValidSecret) {
       // Check admin session

@@ -26,6 +26,28 @@ export const UPLOAD_CONFIG = {
   MAX_IMAGES_PER_PRODUCT: 4,
 };
 
+/**
+ * Signed delivery URL for an access-restricted asset (prescriptions).
+ *
+ * Prescription images upload with `access_mode: 'authenticated'` — the plain
+ * `/image/upload/<public_id>` URL returns 401 for anyone who doesn't have a
+ * correctly signed request. This mints that signature server-side (using the
+ * API secret, never exposed to the client) so only our own authenticated API
+ * responses can produce a working link. Health data (root CLAUDE.md rule #6).
+ *
+ * Safe to call for pre-migration assets too: signing a request for an asset
+ * that's still `access_mode: 'public'` works identically to an unsigned one,
+ * so this can be adopted immediately without waiting on the migration script.
+ */
+export function signedImageUrl(publicId: string): string {
+  return cloudinary.url(publicId, {
+    resource_type: 'image',
+    type: 'upload',
+    sign_url: true,
+    secure: true,
+  });
+}
+
 // Image transformation presets
 export const IMAGE_TRANSFORMATIONS = {
   PRODUCT_MAIN: {

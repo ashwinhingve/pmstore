@@ -18,6 +18,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { ShippingArt } from '@/components/illustrations';
+import { ReorderButton } from '@/components/orders/ReorderButton';
 import { format } from 'date-fns';
 
 interface Order {
@@ -422,6 +423,9 @@ export default function OrdersPage() {
                             <Button className="w-full bg-[var(--ink)] text-[var(--paper-card)] hover:bg-[var(--ink-deep)]">
                               Retry payment
                             </Button>
+                          )}
+                          {order.orderStatus !== 'cancelled' && (
+                            <ReorderButton orderId={order._id} />
                           )}
                         </div>
                       </div>

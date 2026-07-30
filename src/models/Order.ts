@@ -210,8 +210,14 @@ const OrderSchema = new Schema<IOrder>(
 
 // Indexes (orderNumber already indexed via unique: true)
 OrderSchema.index({ userId: 1, createdAt: -1 });
-OrderSchema.index({ orderStatus: 1 });
+OrderSchema.index({ userId: 1, orderStatus: 1 });
+OrderSchema.index({ orderStatus: 1, createdAt: -1 });
 OrderSchema.index({ paymentStatus: 1 });
+
+const MONEY_FIELDS = [
+  'subtotal', 'shippingCost', 'taxAmount', 'cgst', 'sgst', 'igst',
+  'discountAmount', 'totalAmount', 'refundAmount',
+] as const;
 
 // Auto-generate order number before save if not exists
 OrderSchema.pre('save', async function (next) {
@@ -219,6 +225,15 @@ OrderSchema.pre('save', async function (next) {
     const timestamp = Date.now().toString(36).toUpperCase();
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
     this.orderNumber = `ORD-${timestamp}-${random}`;
+  }
+  // Money is stored in rupees rounded to 2 decimals at write time (root
+  // CLAUDE.md). Every caller already rounds before setting these, but this
+  // is the backstop — the single place it's guaranteed regardless of caller.
+  for (const field of MONEY_FIELDS) {
+    const value = this[field];
+    if (typeof value === 'number' && this.isModified(field)) {
+      this[field] = Math.round(value * 100) / 100;
+    }
   }
   next();
 });

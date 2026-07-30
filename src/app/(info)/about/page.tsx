@@ -1,6 +1,3 @@
-"use client"
-
-import React from "react"
 import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/shared/AnimatedSection"
 import { CountUpStat } from "@/components/shared/CountUpStat"
 import { CertificationBadge } from "@/components/shared/CertificationBadge"

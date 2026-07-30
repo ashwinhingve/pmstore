@@ -104,10 +104,11 @@ export default function OrderActions({
             </p>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-[var(--ink)] mb-2">
+              <label htmlFor="cancelReason" className="block text-sm font-medium text-[var(--ink)] mb-2">
                 Reason (Optional)
               </label>
               <textarea
+                id="cancelReason"
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
                 className="w-full border border-[var(--foil-soft)] rounded-lg p-2 text-sm text-[var(--ink)]"

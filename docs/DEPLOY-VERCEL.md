@@ -26,8 +26,6 @@ Set these for the **Production** and **Preview** environments. `.env.example` is
 | `NEXT_PUBLIC_SITE_URL` | the Vercel URL |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | from Google Cloud OAuth |
 | `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Cloudinary |
-| `MOBILE_JWT_SECRET` / `MOBILE_JWT_REFRESH_SECRET` | random strings (mobile app auth) |
-| `ALLOWED_ORIGINS` | include the Vercel URL (mobile `/api/v1` CORS) |
 
 **Payments — Cashfree (sandbox for preview)**
 `CASHFREE_APP_ID`, `CASHFREE_SECRET_KEY`, `CASHFREE_ENV=sandbox`,

@@ -43,7 +43,12 @@ export async function GET(request: NextRequest) {
     // Verify payment with Cashfree API
     const verificationResult = await cashfreeService.verifyPayment(orderNumber);
 
-    console.log('Cashfree verification result:', verificationResult);
+    logger.info('Cashfree verification result', {
+      orderNumber,
+      status: verificationResult.status,
+      success: verificationResult.success,
+      transactionId: verificationResult.transactionId,
+    });
 
     // Idempotency check
     const idempotencyKey = generatePaymentIdempotencyKey(
@@ -200,6 +205,18 @@ export async function GET(request: NextRequest) {
           });
         }
 
+        // Increment discount usage inside the same transaction as the stock
+        // decrement — previously this ran after commit with a swallowed
+        // error, so an occasional failed increment would let a coupon's
+        // maxUsageTotal cap drift upward (undercounted usage) over time.
+        if (order.discountId) {
+          await Discount.findByIdAndUpdate(
+            order.discountId,
+            { $inc: { totalUsed: 1 } },
+            { session }
+          );
+        }
+
         // Commit the transaction
         await session.commitTransaction();
         logger.info(LogMessages.PAYMENT_SUCCESS, {
@@ -226,11 +243,6 @@ export async function GET(request: NextRequest) {
         throw error;
       } finally {
         session.endSession();
-      }
-
-      // Increment discount usage for online payments
-      if (order.discountId) {
-        Discount.findByIdAndUpdate(order.discountId, { $inc: { totalUsed: 1 } }).catch(() => {});
       }
 
       // Create shipment — sendNotifications:true so shipment tracking SMS/email fires.
@@ -478,7 +490,18 @@ export async function POST(request: NextRequest) {
             const webhookOrderItems = await OrderItem.find({ orderId: order._id });
             for (const item of webhookOrderItems) {
               const { filter, update } = buildStockDecrement(item);
-              await Product.findOneAndUpdate(filter, update);
+              const updated = await Product.findOneAndUpdate(filter, update);
+              if (!updated) {
+                // A null result means the stock guard didn't match — a
+                // concurrent order already took the last unit. This order is
+                // still confirmed (payment succeeded); flag it for manual
+                // stock reconciliation rather than silently under-counting.
+                logger.error('Webhook: stock race — order confirmed with insufficient stock', null, {
+                  orderNumber,
+                  productId: String(item.productId),
+                  quantity: item.quantity,
+                });
+              }
             }
           } catch (stockErr) {
             logger.error('Webhook: stock deduction failed', stockErr as Error, { orderNumber });
@@ -486,7 +509,9 @@ export async function POST(request: NextRequest) {
 
           // Increment discount usage
           if (order.discountId) {
-            Discount.findByIdAndUpdate(order.discountId, { $inc: { totalUsed: 1 } }).catch(() => {});
+            Discount.findByIdAndUpdate(order.discountId, { $inc: { totalUsed: 1 } }).catch((err) => {
+              logger.error('Webhook: discount usage increment failed', err, { orderNumber });
+            });
           }
 
           // Create shipment — sendNotifications:true so shipment tracking fires.

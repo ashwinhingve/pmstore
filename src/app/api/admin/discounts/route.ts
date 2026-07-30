@@ -42,6 +42,12 @@ export async function POST(request: NextRequest) {
     if (body.type === 'coupon' && !body.code?.trim()) {
       return NextResponse.json({ error: 'Coupon code is required for coupon type' }, { status: 400 });
     }
+    for (const numField of ['maxDiscountAmount', 'minOrderValue', 'maxUsageTotal', 'maxUsagePerUser'] as const) {
+      const v = body[numField];
+      if (v !== undefined && (typeof v !== 'number' || !Number.isFinite(v) || v < 0)) {
+        return NextResponse.json({ error: `Invalid ${numField}` }, { status: 400 });
+      }
+    }
 
     // Ensure unique coupon code
     if (body.code?.trim()) {

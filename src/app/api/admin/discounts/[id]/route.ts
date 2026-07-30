@@ -17,12 +17,46 @@ export async function PATCH(
 
     const body = await request.json();
 
-    // Whitelist updatable fields — never allow totalUsed or _id to be overwritten
+    // Whitelist updatable fields — never allow totalUsed or _id to be overwritten.
+    // Field names must match the Discount schema (src/models/Discount.ts) exactly —
+    // a previous mismatch here ('value'/'minOrderAmount' vs the real
+    // 'discountValue'/'minOrderValue') silently dropped edits to a coupon's
+    // amount, type, and minimum while the UI reported success.
     const update: Record<string, unknown> = {};
-    const allowed = ['name', 'code', 'type', 'value', 'minOrderAmount', 'maxDiscountAmount',
-      'maxUsageTotal', 'maxUsagePerUser', 'validFrom', 'validTo', 'isActive', 'applicableProducts'];
+    const allowed = ['name', 'code', 'type', 'discountType', 'discountValue', 'minOrderValue',
+      'maxDiscountAmount', 'maxUsageTotal', 'maxUsagePerUser', 'validFrom', 'validTo', 'isActive',
+      'applicableProducts'];
     for (const key of allowed) {
       if (body[key] !== undefined) update[key] = body[key];
+    }
+
+    if (update.discountType !== undefined && !['fixed', 'percentage'].includes(update.discountType as string)) {
+      return NextResponse.json({ error: 'Invalid discount type' }, { status: 400 });
+    }
+    if (update.discountValue !== undefined) {
+      if (typeof update.discountValue !== 'number' || !Number.isFinite(update.discountValue) || update.discountValue < 0) {
+        return NextResponse.json({ error: 'Invalid discount value' }, { status: 400 });
+      }
+      const effectiveType = (update.discountType as string) ?? undefined;
+      if (effectiveType === 'percentage' && update.discountValue > 100) {
+        return NextResponse.json({ error: 'Percentage cannot exceed 100' }, { status: 400 });
+      }
+    }
+    for (const numField of ['maxDiscountAmount', 'minOrderValue', 'maxUsageTotal', 'maxUsagePerUser'] as const) {
+      if (update[numField] !== undefined) {
+        const v = update[numField];
+        if (typeof v !== 'number' || !Number.isFinite(v) || v < 0) {
+          return NextResponse.json({ error: `Invalid ${numField}` }, { status: 400 });
+        }
+      }
+    }
+    // Money is stored in rupees rounded to 2 decimals at write time (root
+    // CLAUDE.md). findByIdAndUpdate skips the model's pre('save') hook, so
+    // round explicitly here.
+    for (const moneyField of ['discountValue', 'maxDiscountAmount', 'minOrderValue'] as const) {
+      if (typeof update[moneyField] === 'number') {
+        update[moneyField] = Math.round((update[moneyField] as number) * 100) / 100;
+      }
     }
 
     if (update.code !== undefined) {

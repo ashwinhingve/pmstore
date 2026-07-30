@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { ZodError } from 'zod';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb/connection';
 import Order from '@/models/Order';
@@ -10,6 +11,8 @@ import Discount from '@/models/Discount';
 import Prescription from '@/models/Prescription';
 import { calculateShipping } from '@/lib/shipping/calculateShipping';
 import { calculateOrderGST } from '@/lib/gst';
+import { checkoutSchema } from '@/lib/validations/checkout';
+import { applyRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimit';
 import {
   assertPrescriptionForCart,
   cartRequiresPrescription,
@@ -23,6 +26,10 @@ import {
  */
 export async function POST(req: NextRequest) {
   try {
+    // Order creation is rate-limited per docs/02-API-CONTRACT.md (10/hour).
+    const rateLimitResponse = await applyRateLimit(req, RateLimitPresets.CREATE_ORDER);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
@@ -32,22 +39,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-
-    // Validate input
-    if (!body.items || !Array.isArray(body.items) || body.items.length === 0) {
-      return NextResponse.json(
-        { error: 'Cart is empty' },
-        { status: 400 }
-      );
-    }
-
-    if (!body.shippingAddressId) {
-      return NextResponse.json(
-        { error: 'Shipping address is required' },
-        { status: 400 }
-      );
-    }
+    const body = checkoutSchema.parse(await req.json());
 
     await connectDB();
 
@@ -347,13 +339,16 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        { error: error.issues[0]?.message ?? 'Invalid checkout request' },
+        { status: 400 }
+      );
+    }
     console.error('❌ Create order error:', error);
     return NextResponse.json(
-      {
-        error: 'Failed to create order',
-        details: error.message,
-      },
+      { error: 'Failed to create order' },
       { status: 500 }
     );
   }

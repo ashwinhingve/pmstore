@@ -56,11 +56,22 @@ export async function POST(req: NextRequest) {
       await Discount.findByIdAndUpdate(order.discountId, { $inc: { totalUsed: 1 } });
     }
 
-    // Reduce product stock and bump orderCount (variant-aware)
+    // Reduce product stock and bump orderCount (variant-aware). A null result
+    // means a concurrent order already took the last unit — the stock guard
+    // in buildStockDecrement makes the update atomic, so this can't oversell,
+    // but it can leave this order confirmed against a product that's now out
+    // of stock. Flag it loudly so ops can catch it in logs and reconcile
+    // manually (this order volume doesn't warrant a full distributed
+    // transaction — see root CLAUDE.md scope guard on manual reconciliation).
     const orderItems = await OrderItem.find({ orderId: order._id });
     for (const item of orderItems) {
       const { filter, update } = buildStockDecrement(item);
-      await Product.findOneAndUpdate(filter, update);
+      const updated = await Product.findOneAndUpdate(filter, update);
+      if (!updated) {
+        console.error(
+          `COD confirm: stock race — order ${order.orderNumber} confirmed but product ${item.productId} had insufficient stock for qty ${item.quantity}. Needs manual stock reconciliation.`
+        );
+      }
     }
 
     // Send notifications (non-blocking)

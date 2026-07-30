@@ -34,11 +34,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  // Log payload on first deploys to validate field names
-  console.log('Shiprocket webhook event:', JSON.stringify(event));
-
   const awb: string = event.awb || event.awb_code || '';
   const currentStatus: string = event.current_status || event.status || '';
+
+  // Log only the tracking-scan fields — never the raw payload, which can
+  // carry the customer's address (CLAUDE.md rule #6).
+  console.log('Shiprocket webhook event:', { awb, currentStatus });
 
   if (!awb) {
     return NextResponse.json({ received: true, skipped: 'no awb' });

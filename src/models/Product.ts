@@ -343,6 +343,14 @@ ProductSchema.pre('validate', function (next) {
   if (this.salts?.length && (this.isModified('salts') || this.isModified('form'))) {
     this.compositionKey = buildCompositionKey(this.salts, this.form);
   }
+  // Money is stored in rupees rounded to 2 decimals at write time (root CLAUDE.md).
+  if (this.isModified('price')) this.price = Math.round(this.price * 100) / 100;
+  if (this.isModified('originalPrice') && this.originalPrice != null) {
+    this.originalPrice = Math.round(this.originalPrice * 100) / 100;
+  }
+  if (this.isModified('mrp') && this.mrp != null) {
+    this.mrp = Math.round(this.mrp * 100) / 100;
+  }
   if (this.isModified('price') || this.isModified('packSize')) {
     this.unitPrice = computeUnitPrice(this.price, this.packSize);
   }

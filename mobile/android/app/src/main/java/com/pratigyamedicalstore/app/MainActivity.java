@@ -17,7 +17,7 @@ import com.getcapacitor.BridgeWebViewClient;
  * The one native customisation is WebView URL routing. Capacitor's default
  * client already hands off-origin http(s) links and the tel:/mailto:/upi:
  * schemes to the OS, but Android's {@code intent:} deep links — used by UPI apps
- * (GPay, PhonePe) and the Razorpay/Cashfree redirects — are not parseable as
+ * (GPay, PhonePe) and the Cashfree redirects — are not parseable as
  * plain URIs, so ACTION_VIEW fails and checkout dies inside the WebView. We
  * parse those with {@code URI_INTENT_SCHEME}, launch the target app, and honour
  * any {@code browser_fallback_url}. Everything else defers to the default
