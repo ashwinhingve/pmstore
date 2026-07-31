@@ -1,29 +1,12 @@
 name: Scheduled jobs
 
 on:
-  schedule:
-    - cron: '30 3 * * *'    # 09:00 IST — refill reminders
-    - cron: '0 * * * *'     # hourly — payment reconciliation
   workflow_dispatch:
 
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - name: Refill reminders
-        if: github.event.schedule == '30 3 * * *'
-        run: |
-          curl -sS -X POST "$APP_URL/api/cron/refill-reminders" \
-            -H "Authorization: Bearer $CRON_SECRET" --fail
-        env:
-          APP_URL: ${{ secrets.APP_URL }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-
-      - name: Payment reconciliation
-        if: github.event.schedule == '0 * * * *'
-        run: |
-          curl -sS -X POST "$APP_URL/api/cron/reconcile-payments" \
-            -H "Authorization: Bearer $CRON_SECRET" --fail
-        env:
-          APP_URL: ${{ secrets.APP_URL }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      - name: Disabled scheduled automation
+        run: echo "Scheduled cron jobs are disabled."
+         
