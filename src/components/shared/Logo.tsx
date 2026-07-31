@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { SITE_SHORT_NAME, SITE_SLOGAN } from "@/lib/constants";
 
 interface LogoProps {
@@ -9,18 +10,17 @@ interface LogoProps {
 }
 
 /**
- * PM Store logo — a medical cross whose vertical bar is a pharmaceutical
- * capsule. Navy cross + mint pill: pharmacy at a glance, premium and legible
- * from favicon to hero.
+ * PM Store logo — the brand lockup (the PM monogram cradled in hands, with a
+ * medical cross and leaf). Rendered from the raster artwork
+ * (public/pmstore-logo.png) — the same image behind the favicon, PWA icons and
+ * social cards, so the brand reads identically from a browser tab to the hero.
  *
- * - `mark`: symbol only (nav, favicon, footer).
- * - `full`: symbol + "PM Store" wordmark ("PM" emphasised), optionally the slogan.
+ * - `mark`: the logo in a clean white rounded badge, so it sits well on the
+ *   orange header, the navy footer and paper alike.
+ * - `full`: the badge plus the "PM Store" wordmark, optionally the slogan.
  *
- * The pill is always mint (`--mint`) — legible on both paper and the navy footer
- * band. The cross arms and wordmark use `currentColor`, so they turn navy on
- * light surfaces and paper on dark ones — set the surrounding text color and the
- * logo adapts. The static assets (public/logo.svg, app-icon.svg, src/app/icon.svg)
- * mirror this artwork.
+ * The badge background is always `--paper-card` (white) to match the artwork's
+ * own backdrop; the wordmark uses `currentColor`, so it adapts to the surface.
  */
 export function Logo({
   size = 40,
@@ -29,25 +29,18 @@ export function Logo({
   className = "",
 }: LogoProps) {
   const mark = (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      role="img"
-      aria-label={`${SITE_SHORT_NAME} mark`}
+    <span
+      className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-md)] bg-[var(--paper-card)] shadow-[var(--shadow-xs)] ${className}`}
+      style={{ width: size, height: size }}
     >
-      {/* Cross arm — horizontal, adapts to the surface. */}
-      <rect x="11" y="26" width="42" height="12" rx="6" fill="currentColor" />
-      {/* Pill — the vertical bar of the cross, always mint. */}
-      <rect x="26" y="8" width="12" height="48" rx="6" className="fill-[var(--mint)]" />
-      {/* Capsule seam. */}
-      <rect x="26.8" y="30.8" width="10.4" height="2.2" rx="1" className="fill-[var(--paper-card)]" opacity="0.9" />
-      {/* Soft highlight for a glassy, premium finish. */}
-      <rect x="28.6" y="12" width="2.6" height="13" rx="1.3" className="fill-[var(--paper-card)]" opacity="0.4" />
-    </svg>
+      <Image
+        src="/pmstore-logo.png"
+        alt={`${SITE_SHORT_NAME} logo`}
+        width={size}
+        height={size}
+        className="h-full w-full object-contain"
+      />
+    </span>
   );
 
   if (variant === "full") {

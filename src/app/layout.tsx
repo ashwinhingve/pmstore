@@ -51,9 +51,9 @@ export const metadata: Metadata = {
     description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, upload a prescription, and reorder in one tap.",
     images: [
       {
-        url: "/logo.svg",
-        width: 512,
-        height: 512,
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
         alt: "PM Store — Pratigya Medical Store",
       },
     ],
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PM Store — Pratigya Medical Store | Online Pharmacy",
     description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, and upload a prescription.",
-    images: ["/logo.svg"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -90,7 +90,7 @@ const orgJsonLd = {
   "url": SITE_URL,
   "logo": {
     "@type": "ImageObject",
-    "url": `${SITE_URL}/logo.svg`,
+    "url": `${SITE_URL}/pmstore-logo.png`,
     "width": 512,
     "height": 512,
   },
