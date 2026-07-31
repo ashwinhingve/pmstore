@@ -31,6 +31,15 @@
   --brand-tint:   #FFF3EC;   /* section-background wash */
   --brand-ink:    #FFFFFF;   /* text / icons on orange surfaces */
 
+  /* Accent — medical trust blue. A deliberate cool contrast to the warm brand
+     orange, reserved for the search surface (border, focus ring, icon) and small
+     informational accents so search reads as the primary way in. Never used for
+     prescription flags (that stays --rx red) or savings (that stays --mint). */
+  --accent:      #1C6DD0;   /* search border/ring, icon, info accents */
+  --accent-deep: #1657AB;   /* hover / pressed / on-blue button bg */
+  --accent-soft: #E8F1FC;   /* soft fill, active suggestion row */
+  --accent-ink:  #FFFFFF;   /* text / icons on a blue surface */
+
   /* Type — families come from next/font via the --font-*-loaded variables */
   --font-display: var(--font-display-loaded), 'Bricolage Grotesque', system-ui, sans-serif;
   --font-body:    var(--font-body-loaded), 'Public Sans', system-ui, sans-serif;

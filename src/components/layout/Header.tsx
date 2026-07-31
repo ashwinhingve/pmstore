@@ -7,7 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { Navigation } from "./Navigation";
-import { TopBar } from "./TopBar";
+import { AnnouncementBar } from "./AnnouncementBar";
 import { MobileMenu } from "./MobileMenu";
 import { SearchBar } from "@/components/search/SearchBar";
 import { Logo } from "@/components/shared/Logo";
@@ -45,8 +45,8 @@ export function Header() {
 
   return (
     <>
-      {/* Utility bar — scrolls away, keeps the sticky header at a clean 72px */}
-      <TopBar />
+      {/* Announcement strip — scrolls away, keeps the sticky header at 72px */}
+      <AnnouncementBar />
 
       <header
         className={cn(
@@ -56,7 +56,7 @@ export function Header() {
             : "border-transparent"
         )}
       >
-        <div className="mx-auto flex h-18 max-w-[1600px] xl:w-4/5 items-center gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-18 max-w-[1600px] xl:w-4/5 items-center gap-5 px-4 sm:px-6 lg:px-8">
         {/* Logo and Brand */}
         <Link
           href="/"
@@ -85,7 +85,7 @@ export function Header() {
         </div>
 
         {/* Right Side Actions */}
-        <div className="ml-auto flex items-center gap-1 md:gap-2">
+        <div className="ml-auto flex items-center gap-1.5 md:gap-2.5">
           {/* Search — primary navigation (docs/03-DESIGN-SYSTEM.md) */}
           <div className="hidden w-56 md:block lg:w-80">
             <SearchBar />

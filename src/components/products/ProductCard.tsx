@@ -106,7 +106,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const inCart = mounted && itemQuantity > 0;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-[box-shadow,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--brand)] hover:shadow-[var(--shadow-md)]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-[box-shadow,border-color,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--brand)] hover:shadow-[var(--shadow-md)]">
       {/* Visual */}
       <div className={`relative aspect-square overflow-hidden border-b border-[var(--foil-soft)] ${outOfStock ? "opacity-70" : ""}`}>
         <ProductVisual

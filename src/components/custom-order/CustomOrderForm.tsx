@@ -98,13 +98,11 @@ export function CustomOrderForm() {
         </div>
       )}
 
-      <div className="grid gap-x-8 gap-y-8 lg:grid-cols-2">
-        <div>
-      {/* Your details */}
+      {/* Your details — full width, fields flow across the available columns */}
       <h3 className="mb-4 text-[length:var(--step-0)] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
         Your details
       </h3>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <FormField label="Your name" required htmlFor="name">
           <Input id="name" {...register("name")} error={errors.name?.message} placeholder="Full name" />
         </FormField>
@@ -121,11 +119,9 @@ export function CustomOrderForm() {
           <Input id="pincode" inputMode="numeric" {...register("pincode")} error={errors.pincode?.message} placeholder="6 digits" />
         </FormField>
       </div>
-        </div>
 
-        <div>
-      {/* What you need */}
-      <h3 className="mb-4 text-[length:var(--step-0)] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
+      {/* What you need — full width */}
+      <h3 className="mb-4 mt-8 text-[length:var(--step-0)] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
         What you need
       </h3>
       <div className="grid grid-cols-1 gap-4">
@@ -149,8 +145,6 @@ export function CustomOrderForm() {
         <FormField label="Anything else" htmlFor="notes">
           <Textarea id="notes" {...register("notes")} error={errors.notes?.message} placeholder="Optional — timing, alternatives you're open to, etc." />
         </FormField>
-      </div>
-        </div>
       </div>
 
       {/* Honeypot — hidden from users, catches bots */}

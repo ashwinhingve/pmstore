@@ -71,7 +71,7 @@ export default function CustomOrderPage() {
       </section>
 
       {/* Request form — spans the full rail */}
-      <section id="request" className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16 md:py-20">
+      <section id="request" className="mx-auto max-w-[1600px] px-4 py-16 md:py-20">
         <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <h2 className="text-[length:var(--step-2)] text-[var(--ink)]">Request a medicine</h2>

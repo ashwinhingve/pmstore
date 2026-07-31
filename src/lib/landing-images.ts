@@ -42,6 +42,7 @@ export const CATEGORY_IMAGES: Record<string, LandingImage> = {
   'ortho-muscle-care': { url: '/landing/category-ortho-muscle-care.jpg', alt: 'Person holding a sore knee' },
   'derma-skin': { url: '/landing/category-derma-skin.jpg', alt: 'Woman with healthy, glowing skin' },
   'general-otc': { url: '/landing/category-general-otc.jpg', alt: 'Prescription bottle with capsules' },
+  'pet-care': { url: '/landing/category-pet-care.jpg', alt: 'A cat and dog resting together outdoors' },
 };
 
 /** Feature promo banners (wide). CTAs point at real features only. */

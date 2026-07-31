@@ -70,7 +70,7 @@ export function HeroSlider({ slides }: { slides?: HeroSlideView[] }) {
 
   return (
     <section
-      className="relative isolate flex min-h-[460px] w-full items-center overflow-hidden [height:72svh] sm:[height:80svh] lg:[height:84svh]"
+      className="relative isolate flex min-h-[360px] w-full items-center overflow-hidden sm:min-h-[400px] lg:min-h-[440px]"
       role="group"
       aria-roledescription="carousel"
       aria-label="Pratigya Medical Store highlights"
@@ -107,24 +107,24 @@ export function HeroSlider({ slides }: { slides?: HeroSlideView[] }) {
             </motion.div>
           </motion.div>
         </AnimatePresence>
-        {/* A single ink scrim: dark at the bottom, clearing toward the top so the
-            photo breathes, plus a light warm brand tint only on the content side. */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/85 via-[var(--ink)]/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-deep)]/30 via-transparent to-transparent" />
+        {/* Legibility scrims: dark on the left where the copy sits, clearing to
+            the right so the photo breathes, plus a soft bottom fade for depth. */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--ink)]/85 via-[var(--ink)]/45 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/55 via-transparent to-transparent" />
       </div>
 
-      <Container className="relative z-10 py-12 sm:py-16">
+      <Container className="relative z-10 py-8 sm:py-10">
         <div className="max-w-xl text-[var(--brand-ink)]">
           <span className="inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--brand-ink)]/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide backdrop-blur-sm">
             <BadgeCheck className="h-4 w-4" aria-hidden="true" />
             Pratigya Medical Store
           </span>
 
-          <h1 className="mt-4 text-[length:var(--step-4)] text-[var(--brand-ink)]">
+          <h1 className="mt-3 text-[length:var(--step-3)] text-[var(--brand-ink)]">
             Genuine medicines, delivered across Bhopal
           </h1>
 
-          <p className="mt-4 text-[length:var(--step-1)] text-[var(--brand-ink)]/90">
+          <p className="mt-3 text-[length:var(--step-1)] text-[var(--brand-ink)]/90">
             Every price shown per tablet, so you compare brands fairly.
             Pharmacist-checked and government-approved.
           </p>
@@ -151,7 +151,7 @@ export function HeroSlider({ slides }: { slides?: HeroSlideView[] }) {
             </Link>
           </div>
 
-          <ul className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-[var(--brand-ink)]/90">
+          <ul className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-[var(--brand-ink)]/90">
             <li className="inline-flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4" aria-hidden="true" />
               Government-approved
@@ -193,7 +193,7 @@ export function HeroSlider({ slides }: { slides?: HeroSlideView[] }) {
             <ChevronRight className="h-5 w-5" aria-hidden="true" />
           </button>
 
-          <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-1.5">
+          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1.5">
             {frames.map((frame, i) => {
               const isActive = i === index;
               return (

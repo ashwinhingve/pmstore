@@ -129,9 +129,9 @@ export function SearchBar({ className }: { className?: string }) {
       <label htmlFor={`${listboxId}-input`} className="sr-only">
         Search medicines by brand or salt
       </label>
-      <div className="relative">
+      <div className="group relative">
         <Search
-          className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--ink-40)]"
+          className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--ink-40)] transition-colors duration-[var(--dur-fast)] group-focus-within:text-[var(--accent)]"
           aria-hidden="true"
         />
         <input
@@ -153,7 +153,7 @@ export function SearchBar({ className }: { className?: string }) {
           }}
           onFocus={openWithRecent}
           onKeyDown={onKeyDown}
-          className="h-12 w-full rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] pl-11 pr-10 text-base text-[var(--ink)] placeholder:text-[var(--ink-40)]"
+          className="h-12 w-full rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] pl-11 pr-10 text-base text-[var(--ink)] shadow-[var(--shadow-xs)] transition-[border-color,box-shadow] duration-[var(--dur-fast)] placeholder:text-[var(--ink-40)] hover:border-[var(--accent)]/50 focus:border-[var(--accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/35"
         />
         {query && (
           <button
@@ -221,7 +221,7 @@ export function SearchBar({ className }: { className?: string }) {
                 }}
                 className={cn(
                   'flex min-h-11 cursor-pointer items-center gap-3 px-4 py-2 text-sm',
-                  activeIndex === i ? 'bg-[var(--brand-soft)] text-[var(--ink)]' : 'text-[var(--ink)]'
+                  activeIndex === i ? 'bg-[var(--accent-soft)] text-[var(--ink)]' : 'text-[var(--ink)]'
                 )}
               >
                 {showingRecent ? (

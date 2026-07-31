@@ -51,7 +51,13 @@ export function Categories() {
                 viewport={{ once: true, margin: '0px 0px -60px 0px' }}
               >
                 <Link
-                  href={`/products?category=${encodeURIComponent(category.name)}`}
+                  href={
+                    // Pet Care has no SKUs yet, so route to the request form
+                    // rather than dead-end on an empty /products filter.
+                    category.slug === 'pet-care'
+                      ? '/custom-order'
+                      : `/products?category=${encodeURIComponent(category.name)}`
+                  }
                   className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
                 >
                   {img ? (

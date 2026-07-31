@@ -23,9 +23,9 @@ export function PromoBar() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="border-b border-[var(--foil-soft)] bg-[var(--paper-card)]" aria-label="Store offers">
-      <Container className="py-5">
-        <ul className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-4">
+    <section className="border-b border-[var(--foil-soft)] bg-[var(--paper-tint)]" aria-label="Store offers">
+      <Container className="py-6">
+        <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {PROMOS.map(({ icon: Icon, value, label, href }, i) => (
             <motion.li
               key={label}
@@ -36,7 +36,7 @@ export function PromoBar() {
             >
               <Link
                 href={href}
-                className="group flex items-center gap-3 rounded-[var(--radius-md)] px-1 py-1 transition-colors duration-[var(--dur-fast)]"
+                className="group flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 py-3.5 shadow-[var(--shadow-xs)] transition-[box-shadow,border-color,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--brand)] hover:shadow-[var(--shadow-sm)]"
               >
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--brand-soft)] text-[var(--brand-deep)] transition-colors duration-[var(--dur-fast)] group-hover:bg-[var(--brand)] group-hover:text-[var(--brand-ink)]">
                   <Icon className="h-5 w-5" aria-hidden="true" />

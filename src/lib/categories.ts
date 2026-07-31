@@ -10,6 +10,7 @@ import {
   Bone,
   Sparkles,
   Stethoscope,
+  PawPrint,
   type LucideIcon,
 } from "lucide-react";
 
@@ -54,6 +55,12 @@ export const PHARMA_CATEGORIES: PharmaCategory[] = [
   { name: "Ortho & Muscle Care", slug: "ortho-muscle-care", icon: Bone, tint: "slate" },
   { name: "Derma & Skin", slug: "derma-skin", icon: Sparkles, tint: "amber" },
   { name: "General & OTC", slug: "general-otc", icon: Stethoscope, tint: "teal" },
+  // Pet Care is the one intentional exception to the "must have products" rule
+  // above: the store wants the tile now but has no pet SKUs yet. Its card links
+  // to /custom-order (a request), NOT /products, so it never dead-ends on the
+  // empty state — see the pet-care special case in Categories.tsx. When pet
+  // products are imported, drop that special case so it filters like the rest.
+  { name: "Pet Care", slug: "pet-care", icon: PawPrint, tint: "sage" },
 ];
 
 /** Lookup an icon by category name, for lists driven off the DB `/api/categories`. */
