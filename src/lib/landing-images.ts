@@ -31,6 +31,8 @@ export const HERO_IMAGES: LandingImage[] = [
  * A missing slug is fine — Categories.tsx falls back to a tinted card.
  */
 export const CATEGORY_IMAGES: Record<string, LandingImage> = {
+  'ayurveda': { url: '/landing/category-ayurveda.jpg', alt: 'Herbal tea with botanicals and Ayurvedic spices' },
+  'homeopathy': { url: '/landing/category-homeopathy.jpg', alt: 'Homeopathic remedy bottles with white globules' },
   'pain-relief': { url: '/landing/category-pain-relief.jpg', alt: 'Assorted pain-relief tablets' },
   'cardiac-care': { url: '/landing/category-cardiac-care.jpg', alt: 'Stethoscope with a red heart' },
   'diabetes-care': { url: '/landing/category-diabetes-care.jpg', alt: 'Checking blood sugar with a glucose meter' },

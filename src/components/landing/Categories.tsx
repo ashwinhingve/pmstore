@@ -85,7 +85,7 @@ export function Categories() {
                     </span>
                     <h3
                       className={cn(
-                        'text-[0.9375rem] font-semibold leading-tight',
+                        'font-[family-name:var(--font-display)] text-base font-extrabold leading-tight tracking-tight',
                         img ? 'text-[var(--brand-ink)]' : 'text-[var(--ink)]',
                       )}
                     >
@@ -114,7 +114,7 @@ export function Categories() {
                 aria-hidden="true"
               />
               <div className="relative flex items-center justify-between gap-2 p-3.5 text-[var(--brand-ink)] sm:p-4">
-                <h3 className="text-[0.9375rem] font-semibold leading-tight">All medicines</h3>
+                <h3 className="font-[family-name:var(--font-display)] text-base font-extrabold leading-tight tracking-tight">All medicines</h3>
                 <ArrowRight
                   className="h-5 w-5 transition-transform duration-[var(--dur-fast)] group-hover:translate-x-0.5"
                   aria-hidden="true"

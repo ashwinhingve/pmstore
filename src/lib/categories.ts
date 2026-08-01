@@ -1,7 +1,7 @@
 import {
-  Pill,
+  Sprout,
   HeartPulse,
-  ShieldPlus,
+  FlaskConical,
   Droplets,
   Soup,
   Wind,
@@ -21,15 +21,15 @@ import {
  *
  * `name` MUST match the category `name` stored in MongoDB exactly, because the
  * products page filters client-side by name (`catName(p) === selectedCategory`)
- * and category links point at `/products?category=<name>`. These are the 11
- * categories that actually have imported products (verified against the DB);
- * the authoritative list at runtime is `GET /api/categories`. Do not add a
- * category here that has no products — the link would dead-end on the empty
- * state (the exact bug this file was created to fix).
+ * and category links point at `/products?category=<name>`. Every category here
+ * must have at least a few products in the DB, or its tile dead-ends on the
+ * empty state; the authoritative list at runtime is `GET /api/categories`.
  *
- * A previous version of the nav used guessed names ("Heart & BP", "Baby Care",
- * "Ayurveda") that matched no products — every category link dead-ended on the
- * empty state. Keep this list aligned with the DB.
+ * Ayurveda and Homeopathy are seeded with starter products by
+ * `scripts/seed-ayurveda-homeopathy.ts` (the shop refines them later), so their
+ * names must stay in sync with the Category docs that script creates. Do not add
+ * a category here without also seeding products for it — an earlier nav used
+ * guessed names ("Heart & BP", "Baby Care") that matched nothing and dead-ended.
  */
 /** Decorative tile-tint keys (defined in src/styles/tokens.css, never red). */
 export type TintName =
@@ -44,10 +44,10 @@ export interface PharmaCategory {
 }
 
 export const PHARMA_CATEGORIES: PharmaCategory[] = [
-  { name: "Pain Relief", slug: "pain-relief", icon: Pill, tint: "clay" },
+  { name: "Ayurveda", slug: "ayurveda", icon: Sprout, tint: "clay" },
   { name: "Cardiac Care", slug: "cardiac-care", icon: HeartPulse, tint: "plum" },
   { name: "Diabetes Care", slug: "diabetes-care", icon: Droplets, tint: "sky" },
-  { name: "Antibiotics", slug: "antibiotics", icon: ShieldPlus, tint: "slate" },
+  { name: "Homeopathy", slug: "homeopathy", icon: FlaskConical, tint: "slate" },
   { name: "Respiratory & Allergy", slug: "respiratory-allergy", icon: Wind, tint: "teal" },
   { name: "Gastro", slug: "gastro", icon: Soup, tint: "amber" },
   { name: "Vitamins & Supplements", slug: "vitamins-supplements", icon: Leaf, tint: "sage" },

@@ -41,6 +41,8 @@ const IMAGES: Record<string, string> = {
   'category-derma-skin.jpg': `${U}/photo-1730288951113-9cc087c14b83?auto=format&fit=crop&w=800&q=80`,
   'category-general-otc.jpg': `${U}/photo-1562243061-204550d8a2c9?auto=format&fit=crop&w=800&q=80`,
   'category-pet-care.jpg': `${U}/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=800&q=80`,
+  'category-ayurveda.jpg': `${U}/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=800&q=80`,
+  'category-homeopathy.jpg': `${U}/photo-1725267882596-2d08e560b250?auto=format&fit=crop&w=800&q=80`,
 
   // Promo banners (~1600px)
   'promo-rx.jpg': `${U}/photo-1580281658223-9b93f18ae9ae?auto=format&fit=crop&w=1600&q=80`,
