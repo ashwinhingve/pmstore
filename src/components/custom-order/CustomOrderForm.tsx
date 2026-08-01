@@ -1,18 +1,30 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useDropzone } from "react-dropzone"
+import Image from "next/image"
 import { customOrderSchema, type CustomOrderInput } from "@/lib/validations/custom-order"
+import { compressImage } from "@/lib/utils/compress-image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { FormField } from "@/components/ui/form-field"
-import { CheckCircle2 } from "lucide-react"
+import { CheckCircle2, Upload, X } from "lucide-react"
+
+const MAX_IMAGES = 5
+
+interface LocalImage {
+  file: File
+  preview: string
+}
 
 export function CustomOrderForm() {
   const [submitted, setSubmitted] = useState(false)
   const [serverError, setServerError] = useState("")
+  const [images, setImages] = useState<LocalImage[]>([])
+  const [imageError, setImageError] = useState("")
 
   const {
     register,
@@ -35,13 +47,60 @@ export function CustomOrderForm() {
     },
   })
 
+  // Release object URLs when the component unmounts.
+  useEffect(() => {
+    return () => {
+      images.forEach((img) => URL.revokeObjectURL(img.preview))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const onDrop = useCallback(
+    async (accepted: File[]) => {
+      setImageError("")
+      const room = MAX_IMAGES - images.length
+      if (room <= 0) {
+        setImageError(`You can attach up to ${MAX_IMAGES} images.`)
+        return
+      }
+      const next = await Promise.all(
+        accepted.slice(0, room).map(async (file) => {
+          const compressed = await compressImage(file)
+          return { file: compressed, preview: URL.createObjectURL(compressed) }
+        }),
+      )
+      setImages((prev) => [...prev, ...next].slice(0, MAX_IMAGES))
+    },
+    [images.length],
+  )
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/jpeg": [], "image/png": [], "image/webp": [] },
+    maxFiles: MAX_IMAGES,
+    disabled: isSubmitting || images.length >= MAX_IMAGES,
+  })
+
+  const removeImage = (index: number) => {
+    setImages((prev) => {
+      URL.revokeObjectURL(prev[index].preview)
+      return prev.filter((_, i) => i !== index)
+    })
+  }
+
   const onSubmit = async (values: CustomOrderInput) => {
     setServerError("")
     try {
+      const fd = new FormData()
+      Object.entries(values).forEach(([key, value]) => {
+        if (value === undefined || value === null) return
+        fd.append(key, typeof value === "boolean" ? String(value) : String(value))
+      })
+      images.forEach((img) => fd.append("images", img.file))
+
       const res = await fetch("/api/custom-order", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: fd,
       })
       if (!res.ok) {
         const data = await res.json().catch(() => null)
@@ -51,6 +110,8 @@ export function CustomOrderForm() {
         )
         return
       }
+      images.forEach((img) => URL.revokeObjectURL(img.preview))
+      setImages([])
       setSubmitted(true)
       reset()
     } catch {
@@ -131,6 +192,72 @@ export function CustomOrderForm() {
         <FormField label="How much / how often" htmlFor="quantity">
           <Input id="quantity" {...register("quantity")} error={errors.quantity?.message} placeholder="e.g. 1 inhaler, or 2 strips a month" />
         </FormField>
+
+        {/* Photos — optional. A pack shot or a photo of the doctor's list often
+            tells us more than the typed name. */}
+        <div>
+          <p className="mb-1.5 text-sm font-medium text-[var(--ink)]">Add photos (optional)</p>
+          <div
+            {...getRootProps()}
+            className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[var(--radius-md)] border-2 border-dashed px-6 py-7 text-center transition-colors duration-[var(--dur-fast)] ${
+              images.length >= MAX_IMAGES
+                ? "cursor-not-allowed border-[var(--foil-soft)] opacity-60"
+                : isDragActive
+                  ? "border-[var(--brand)] bg-[var(--brand-soft)]"
+                  : "border-[var(--foil-soft)] hover:border-[var(--ink)]"
+            }`}
+            aria-label="Add photos of the medicine, your list, or a prescription"
+          >
+            <input {...getInputProps()} />
+            <Upload
+              className={`h-6 w-6 ${isDragActive ? "text-[var(--brand)]" : "text-[var(--ink-70)]"}`}
+              aria-hidden="true"
+            />
+            <p className="text-[var(--ink)]">
+              {isDragActive ? "Drop the images here" : "Tap to add a photo, or drag images here"}
+            </p>
+            <p className="text-sm text-[var(--ink-70)]">
+              A photo of the medicine, your list, or a prescription · JPG, PNG or WebP · up to {MAX_IMAGES} ·{" "}
+              {images.length} added
+            </p>
+          </div>
+
+          {images.length > 0 && (
+            <ul className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
+              {images.map((img, i) => (
+                <li
+                  key={img.preview}
+                  className="relative aspect-square overflow-hidden rounded-[var(--radius-md)] border border-[var(--foil-soft)]"
+                >
+                  <Image
+                    src={img.preview}
+                    alt={`Attached image ${i + 1}`}
+                    fill
+                    sizes="(max-width: 640px) 33vw, 25vw"
+                    className="object-cover"
+                    unoptimized
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                    disabled={isSubmitting}
+                    aria-label={`Remove image ${i + 1}`}
+                    className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--ink)]/80 text-white hover:bg-[var(--ink)]"
+                  >
+                    <X className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {imageError && (
+            <p className="mt-2 text-sm text-[var(--rx)]" role="alert">
+              {imageError}
+            </p>
+          )}
+        </div>
+
         <label className="flex items-start gap-3 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-tint)] p-4">
           <input
             type="checkbox"

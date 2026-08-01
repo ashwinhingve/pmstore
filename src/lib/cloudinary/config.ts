@@ -17,6 +17,7 @@ export const CLOUDINARY_FOLDERS = {
   TEAM: 'pmstore/team',
   REVIEWS: 'pmstore/reviews',
   PRESCRIPTIONS: 'pmstore/prescriptions',
+  CUSTOM_ORDERS: 'pmstore/custom-orders',
 };
 
 // Upload configuration

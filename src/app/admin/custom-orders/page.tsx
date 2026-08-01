@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/auth-helpers';
 import { connectDB } from '@/lib/mongodb';
 import CustomOrder from '@/models/CustomOrder';
+import { signedImageUrl } from '@/lib/cloudinary/config';
 import { CUSTOM_ORDER_STATUSES } from '@/lib/validations/custom-order';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import CustomOrdersTable from '@/components/admin/CustomOrdersTable';
@@ -57,6 +58,10 @@ export default async function AdminCustomOrdersPage({
     deliveryArea: [o.deliveryArea, o.pincode].filter(Boolean).join(', '),
     hasPrescription: !!o.hasPrescription,
     notes: o.notes || '',
+    // Images are stored private — sign each so staff can view it. Never log URLs.
+    images: (o.images || [])
+      .map((im: any) => (im?.publicId ? signedImageUrl(im.publicId) : im?.url))
+      .filter(Boolean) as string[],
     status: (o.status || 'new') as 'new' | 'contacted' | 'closed',
     createdAt: o.createdAt ? new Date(o.createdAt).toISOString() : '',
   }));

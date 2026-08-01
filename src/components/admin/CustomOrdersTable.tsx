@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
   Search,
   ChevronLeft,
@@ -26,6 +27,7 @@ interface Order {
   deliveryArea: string;
   hasPrescription: boolean;
   notes: string;
+  images: string[];
   status: 'new' | 'contacted' | 'closed';
   createdAt: string;
 }
@@ -273,6 +275,34 @@ export default function CustomOrdersTable({
                               <FileText className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--ink-40)]" aria-hidden="true" />
                               <span className="whitespace-pre-wrap">{o.notes}</span>
                             </span>
+                          </Field>
+                        </div>
+                      )}
+                      {o.images.length > 0 && (
+                        <div className="sm:col-span-2">
+                          <Field label={`Photos (${o.images.length})`}>
+                            <ul className="mt-1 flex flex-wrap gap-2">
+                              {o.images.map((src, i) => (
+                                <li key={src}>
+                                  <a
+                                    href={src}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={`Open photo ${i + 1} in a new tab`}
+                                    className="relative block h-20 w-20 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--foil-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+                                  >
+                                    <Image
+                                      src={src}
+                                      alt={`Custom order photo ${i + 1}`}
+                                      fill
+                                      sizes="80px"
+                                      className="object-cover"
+                                      unoptimized
+                                    />
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
                           </Field>
                         </div>
                       )}

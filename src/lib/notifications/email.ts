@@ -991,6 +991,7 @@ class EmailService {
     pincode?: string;
     hasPrescription?: boolean;
     notes?: string;
+    imageUrls?: string[];
   }) {
     const to = process.env.ADMIN_EMAIL || CONTACT_EMAIL;
 
@@ -1031,6 +1032,13 @@ class EmailService {
                 ${row('Has a prescription', order.hasPrescription ? 'Yes' : 'No')}
                 ${row('Notes', order.notes)}
               </div>
+              ${
+                order.imageUrls && order.imageUrls.length
+                  ? `<div class="box"><p class="label">Photos attached (${order.imageUrls.length})</p>${order.imageUrls
+                      .map((u, i) => `<p class="value"><a href="${escapeHtml(u)}">View photo ${i + 1}</a></p>`)
+                      .join('')}</div>`
+                  : ''
+              }
             </div>
             <div class="footer"><p>${SITE_NAME} - custom order request</p></div>
           </div>

@@ -16,6 +16,8 @@ export interface ICustomOrder extends Document {
   pincode?: string;
   hasPrescription: boolean;
   notes?: string;
+  /** Photos the customer attached (medicine pack, list, or prescription). */
+  images: { url: string; publicId: string }[];
   status: 'new' | 'contacted' | 'closed';
   createdAt: Date;
   updatedAt: Date;
@@ -32,6 +34,17 @@ const CustomOrderSchema = new Schema<ICustomOrder>(
     pincode: { type: String, trim: true },
     hasPrescription: { type: Boolean, default: false },
     notes: { type: String, trim: true },
+    // Stored private (Cloudinary access_mode: 'authenticated'); shown to staff
+    // via signedImageUrl(). URLs are never logged (root CLAUDE.md rule #6).
+    images: {
+      type: [
+        {
+          url: { type: String, required: true },
+          publicId: { type: String, required: true },
+        },
+      ],
+      default: [],
+    },
     status: {
       type: String,
       enum: ['new', 'contacted', 'closed'],
