@@ -1,5 +1,11 @@
 # Mobile app — weeks 7 to 10
 
+> ⚠️ **Outdated — kept for history only.** This describes the old **Expo** app, which was removed.
+> The mobile app is now a **Capacitor wrapper** of the live site. To build or ship the Android app,
+> see **`docs/10-ANDROID-RELEASE.md`** (build + Play Store) and **`SETUP.md` §7** (short loop).
+> The `mobile/BUILD-RUNBOOK.md` and `mobile/IMPLEMENTATION-SUMMARY.md` files referenced below no
+> longer exist.
+
 Expo React Native, Android first, structured so iOS is a build target and not a rewrite. Lives
 in `mobile/` in the same repo so types and validation schemas are shared with the web.
 

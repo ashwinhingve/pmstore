@@ -228,6 +228,10 @@ Generate a release keystore, add a `signingConfig` in `android/app/build.gradle`
 under the **client's** developer account; declare prescription images as collected health data in
 the Data Safety form.
 
+**Full step-by-step** — keystore generation, the `signingConfig`/`keystore.properties` pattern, the
+Play App Signing SHA-1 gotcha, versioning, and the whole Play Console submission (Data Safety,
+content rating, pharmacy policy): **`docs/10-ANDROID-RELEASE.md`**.
+
 ### Verify on a real device
 
 Payments end-to-end (UPI app opens and returns), hardware back navigates WebView history, offline
