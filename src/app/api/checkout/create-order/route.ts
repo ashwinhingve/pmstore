@@ -13,11 +13,6 @@ import { calculateShipping } from '@/lib/shipping/calculateShipping';
 import { calculateOrderGST } from '@/lib/gst';
 import { checkoutSchema } from '@/lib/validations/checkout';
 import { applyRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimit';
-import {
-  assertPrescriptionForCart,
-  cartRequiresPrescription,
-  PrescriptionRequiredError,
-} from '@/lib/checkout/prescription-guard';
 
 /**
  * POST /api/checkout/create-order
@@ -67,23 +62,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Prescription enforcement (root CLAUDE.md rule #3, non-negotiable) ──
-    // Schedule H/H1/X items need a valid prescription attached. Enforced here,
-    // server-side, before any order exists — the UI gate is not access control.
+    // ── Prescription (optional at checkout — client policy, 2026-08-01) ──
+    // We never block an order for a missing prescription; scheduled medicines
+    // are verified by the pharmacist before delivery, not gated here. If the
+    // buyer attached one of their own that is still usable, link it to the order
+    // for the Rx audit trail.
     let prescriptionId: string | undefined;
-    if (cartRequiresPrescription(products)) {
-      const prescription = body.prescriptionId
-        ? await Prescription.findOne({ _id: body.prescriptionId, userId: session.user.id })
-        : null;
-      try {
-        assertPrescriptionForCart(products, prescription, session.user.id);
-      } catch (err) {
-        if (err instanceof PrescriptionRequiredError) {
-          return NextResponse.json({ error: err.message }, { status: err.status });
-        }
-        throw err;
+    if (body.prescriptionId) {
+      const prescription = await Prescription.findOne({
+        _id: body.prescriptionId,
+        userId: session.user.id,
+      });
+      if (prescription && ['pending', 'verified'].includes(prescription.status)) {
+        prescriptionId = String(prescription._id);
       }
-      prescriptionId = String(prescription!._id);
     }
 
     // Check stock availability

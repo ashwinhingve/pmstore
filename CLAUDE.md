@@ -49,9 +49,12 @@ These cause real harm if broken. Do not deviate without asking.
    `updateMany` on products — it skips the hook and silently breaks the Strip. Use `save()` or
    `bulkWrite` with explicitly computed values.
 
-3. **Schedule H / H1 / X products cannot be checked out without a verified prescription.**
-   Enforce this server-side in the checkout route, not just in the UI. A hidden button is not
-   access control.
+3. **Prescription upload is OPTIONAL at checkout (client decision, 2026-08-01).** Any order may
+   be placed without attaching a prescription; scheduled (H/H1/X) medicines are verified by the
+   pharmacist before delivery instead of being gated at checkout. The old hard block was removed
+   from `/api/checkout/create-order` at the client's request — do **not** re-add it without their
+   sign-off. (`src/lib/checkout/prescription-guard.ts` still holds the enforcement logic, retained
+   and tested, if the pharmacy ever reinstates the gate.)
 
 4. **Never trust the JWT role for destructive admin actions.** Re-read the user's role from the
    database inside the handler. A stale token must not be able to delete products.
@@ -131,9 +134,10 @@ mobile/              Capacitor Android shell — wraps the live site (see SETUP.
 | `docs/02-API-CONTRACT.md` | Route list, request/response shapes, error format |
 | `docs/03-DESIGN-SYSTEM.md` | Tokens, type rules, component specs, copy voice |
 | `docs/05-SETUP.md` | Local dev, Atlas, Atlas Search, deployment |
-| `docs/06-MOBILE-APP.md` | Expo app plan — weeks 7–10 |
+| `docs/06-MOBILE-APP.md` | ⚠️ Superseded (old Expo plan). The app is now a Capacitor wrapper → see below |
 | `docs/07-TESTING.md` | What to test and in what order |
 | `docs/08-LAUNCH-CHECKLIST.md` | Security, SEO, performance, go-live |
+| `docs/10-ANDROID-RELEASE.md` | **Building & shipping the Android app** — preview APK, signing, Play Store submission |
 | `docs/PHASE-0-PATCHES.md` | Week 1 manual patches (CORS, RBAC, Product schema) |
 
 Nested `CLAUDE.md` files exist in `src/app/api/`, `src/components/` and `mobile/` with rules

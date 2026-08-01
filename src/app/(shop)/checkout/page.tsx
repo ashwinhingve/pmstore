@@ -63,11 +63,9 @@ export default function CheckoutPage() {
   }
 
   const handleAddressNext = async (addressId: string) => {
-    // Server enforces this too; this is the fast, friendly guard.
-    if (hasRxItems && !prescriptionId) {
-      setOrderError('Attach a prescription for the prescription-only items before continuing.');
-      return;
-    }
+    // Prescription is optional at checkout (client policy, 2026-08-01) — never
+    // block placing the order. If one is attached it rides along; scheduled
+    // medicines are verified by the pharmacist before delivery.
     setSelectedAddressId(addressId);
     setCreatingOrder(true);
     setOrderError(null);
@@ -218,11 +216,12 @@ export default function CheckoutPage() {
                     {hasRxItems && (
                       <div className="mb-6 border-b border-[var(--foil-soft)] pb-6">
                         <h2 className="mb-1 text-lg font-semibold text-[var(--ink)]">
-                          Prescription
+                          Prescription <span className="font-normal text-[var(--ink-70)]">(optional)</span>
                         </h2>
                         <p className="mb-4 text-sm text-[var(--ink-70)]">
-                          Your cart includes prescription-only medicines. Attach a clear photo of the
-                          prescription — our pharmacist verifies it before dispatch.
+                          Some items in your cart are prescription medicines. Attach a clear photo if
+                          you have one — or place the order now and share it at delivery. Our
+                          pharmacist verifies scheduled medicines before dispatch.
                         </p>
                         <PrescriptionUpload onUploaded={setPrescriptionId} />
                       </div>

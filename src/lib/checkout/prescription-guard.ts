@@ -1,10 +1,15 @@
 /**
- * Server-side prescription enforcement (root CLAUDE.md rule #3, non-negotiable).
+ * Server-side prescription helpers.
  *
- * Schedule H / H1 / X products cannot be checked out without a prescription.
- * This is enforced here, called from the checkout route — a disabled button in
- * the UI is not access control. Kept as a pure function over already-loaded
- * documents so it is reusable across web routes and unit-testable without HTTP.
+ * NOTE (2026-08-01): per client policy, prescription upload is now OPTIONAL at
+ * checkout — `create-order` no longer calls `assertPrescriptionForCart`, so this
+ * no longer blocks any order (see CLAUDE.md rule #3). The functions below are
+ * retained, still tested, and ready to re-enable if the pharmacy reinstates the
+ * hard gate; do not delete them.
+ *
+ * Schedule H / H1 / X products historically could not be checked out without a
+ * prescription. Kept as pure functions over already-loaded documents so they are
+ * reusable across web routes and unit-testable without HTTP.
  *
  * A pharmacy treats a paper prescription as valid for ~6 months; an attached
  * prescription in `pending` or `verified` state lets the order proceed (staff
