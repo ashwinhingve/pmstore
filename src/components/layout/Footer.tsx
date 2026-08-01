@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { MessageCircle, Mail, Phone, MapPin } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
-import { NewsletterForm } from "./NewsletterForm";
-import { SITE_NAME, SITE_SHORT_NAME, SITE_SLOGAN, SITE_DESCRIPTION, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
+import { SITE_NAME, SITE_DESCRIPTION, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
 
 const shopLinks = [
   { href: "/products", label: "All medicines" },
@@ -35,17 +34,18 @@ export function Footer() {
 
   return (
     <footer className="w-full bg-[image:var(--surface-hero)] text-[var(--paper)]">
+      <div aria-hidden="true" className="h-1 w-full bg-[image:var(--surface-brand)]" />
       <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-14 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
         <div className="mb-10 grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           {/* Company Info */}
           <div className="space-y-4">
-            <Link href="/" className="inline-block transition-opacity duration-[var(--dur-fast)] hover:opacity-80">
-              <div className="mb-2 text-[var(--paper)]">
-                <Logo size={40} variant="mark" />
-              </div>
-              <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--paper)]">{SITE_SHORT_NAME}</h3>
-              <p className="text-xs font-medium text-[var(--foil)]">{SITE_SLOGAN}</p>
+            <Link
+              href="/"
+              className="inline-block text-[var(--paper)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+              aria-label={`${SITE_NAME} — Home`}
+            >
+              <Logo size={46} variant="full" withSlogan />
             </Link>
             <p className="max-w-sm text-sm leading-relaxed text-[var(--foil)]">
               {SITE_DESCRIPTION}
@@ -108,19 +108,6 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
-        </div>
-
-        {/* Newsletter — light card floating on the navy band */}
-        <div className="mb-10 rounded-[var(--radius-lg)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-md)] sm:p-8">
-          <div className="grid items-center gap-6 md:grid-cols-2">
-            <div>
-              <h3 className="text-[length:var(--step-1)] text-[var(--ink)]">Stay updated</h3>
-              <p className="mt-1 text-sm text-[var(--ink-70)]">
-                Get news about new medicines and offers.
-              </p>
-            </div>
-            <NewsletterForm />
           </div>
         </div>
 

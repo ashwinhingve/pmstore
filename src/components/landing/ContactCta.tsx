@@ -18,6 +18,9 @@ export function ContactCta() {
   const cardClass =
     'flex flex-col items-center gap-3 rounded-[var(--radius-md)] border border-[var(--paper)]/15 bg-[var(--paper)]/5 p-6 transition-colors duration-[var(--dur-fast)]';
 
+  const badgeClass =
+    'flex h-12 w-12 items-center justify-center rounded-full bg-[var(--paper)]/12 ring-1 ring-inset ring-[var(--paper)]/25';
+
   return (
     <section className="bg-[image:var(--surface-brand)]">
       <Container className="py-16 sm:py-24">
@@ -39,19 +42,25 @@ export function ContactCta() {
 
           <div className="grid gap-5 sm:grid-cols-3">
             <a href={CONTACT.phoneHref} className={`${cardClass} hover:border-[var(--brand-ink)]`}>
-              <Phone className="h-6 w-6 text-[var(--brand-ink)]" aria-hidden="true" />
+              <span className={badgeClass}>
+                <Phone className="h-5 w-5 text-[var(--brand-ink)]" aria-hidden="true" />
+              </span>
               <span className="font-semibold text-[var(--paper)]">Call us</span>
               <span className="data text-sm text-[var(--brand-ink)]/85">{CONTACT.phone}</span>
             </a>
 
             <a href={CONTACT.emailHref} className={`${cardClass} hover:border-[var(--brand-ink)]`}>
-              <Mail className="h-6 w-6 text-[var(--brand-ink)]" aria-hidden="true" />
+              <span className={badgeClass}>
+                <Mail className="h-5 w-5 text-[var(--brand-ink)]" aria-hidden="true" />
+              </span>
               <span className="font-semibold text-[var(--paper)]">Email us</span>
               <span className="break-all text-sm text-[var(--brand-ink)]/85">{CONTACT.email}</span>
             </a>
 
             <div className={cardClass}>
-              <MapPin className="h-6 w-6 text-[var(--brand-ink)]" aria-hidden="true" />
+              <span className={badgeClass}>
+                <MapPin className="h-5 w-5 text-[var(--brand-ink)]" aria-hidden="true" />
+              </span>
               <span className="font-semibold text-[var(--paper)]">Visit us</span>
               <span className="text-center text-sm text-[var(--brand-ink)]/85">
                 {CONTACT.address.line1}, {CONTACT.address.city}

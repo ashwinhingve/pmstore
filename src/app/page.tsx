@@ -10,6 +10,7 @@ import type { HeroSlideView } from '@/components/landing/HeroSlider';
 import { PromoBar } from '@/components/landing/PromoBar';
 import { QuickActions } from '@/components/landing/QuickActions';
 import { Categories } from '@/components/landing/Categories';
+import { CustomOrderCta } from '@/components/landing/CustomOrderCta';
 import { PromoBanners } from '@/components/landing/PromoBanners';
 import { FeaturedProducts } from '@/components/landing/FeaturedProducts';
 import { TrustBand } from '@/components/landing/TrustBand';
@@ -61,13 +62,14 @@ interface Product {
  *  1. HeroSlider — full-bleed image slider with search + CTAs
  *  2. PromoBar — compact headline-offers band
  *  3. Categories — image-backed pharma category grid
- *  4. QuickActions — search / order again / upload prescription
- *  5. FeaturedProducts — carousel of bestsellers
- *  6. PromoBanners — prescription-upload + reorder feature banners
- *  7. TrustBand — stats + VALUE_PROPS + credentials
- *  8. WhyChooseUs — three photography-led reasons to trust the store
- *  9. FaqPreview — 4 FAQs using Accordion
- * 10. ContactCta — contact info + WhatsApp + contact form link
+ *  4. CustomOrderCta — request-a-medicine band (routes to /custom-order)
+ *  5. QuickActions — search / order again / upload prescription
+ *  6. FeaturedProducts — carousel of bestsellers
+ *  7. PromoBanners — prescription-upload + reorder feature banners
+ *  8. TrustBand — stats + VALUE_PROPS + credentials
+ *  9. WhyChooseUs — three photography-led reasons to trust the store
+ * 10. FaqPreview — 4 FAQs using Accordion
+ * 11. ContactCta — contact info + WhatsApp + contact form link
  */
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -114,7 +116,6 @@ export default async function Home() {
         _id: String(s._id),
         image: s.image as string,
         title: s.title || undefined,
-        subtitle: s.subtitle || undefined,
       }));
   } catch (error) {
     // Silent fail — if catalogue is unseeded, we show empty state gracefully
@@ -127,6 +128,7 @@ export default async function Home() {
       <HeroSlider slides={heroSlides} />
       <PromoBar />
       <Categories />
+      <CustomOrderCta />
       <QuickActions signedIn={signedIn} />
       <FeaturedProducts products={featuredProducts} />
       <PromoBanners />

@@ -66,7 +66,7 @@ export function Header() {
           <div className="shrink-0 text-[var(--brand-ink)]">
             <Logo size={44} variant="mark" />
           </div>
-          <span className="hidden font-[family-name:var(--font-display)] text-lg leading-tight tracking-tight text-[var(--brand-ink)] sm:inline md:text-xl lg:hidden xl:inline">
+          <span className="inline font-[family-name:var(--font-display)] text-2xl leading-tight tracking-tight text-[var(--brand-ink)] sm:text-xl md:text-xl lg:hidden xl:inline">
             {(() => {
               const [first, ...rest] = SITE_SHORT_NAME.split(" ");
               return (
@@ -96,7 +96,7 @@ export function Header() {
             <Link href="/admin/dashboard" className="hidden sm:inline-flex">
               <Button
                 size="sm"
-                className="gap-1.5 bg-[var(--brand-ink)] text-[var(--brand-deep)] hover:bg-[var(--brand-ink)]/90"
+                className="gap-1.5 rounded-[var(--radius-pill)] bg-[var(--brand-ink)] font-semibold text-[var(--brand-deep)] shadow-[var(--shadow-sm)] ring-1 ring-inset ring-[var(--brand-deep)]/15 transition-[transform,box-shadow] duration-[var(--dur-fast)] hover:-translate-y-0.5 hover:bg-[var(--brand-ink)] hover:shadow-[var(--shadow-md)]"
               >
                 <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
                 Admin

@@ -129,8 +129,8 @@ export default function HeroSliderManager({ initialSlides }: Props) {
 
   // ── Add slide ─────────────────────────────────────────────────
   async function handleAdd() {
-    if (!addForm.title.trim()) {
-      toast.error('Enter a title before saving.');
+    if (!addForm.image) {
+      toast.error('Add an image before saving.');
       return;
     }
     const updated = await apiCall('/api/admin/hero-slider', 'POST', addForm);
@@ -190,7 +190,7 @@ export default function HeroSliderManager({ initialSlides }: Props) {
         <div>
           <h2 className="text-lg font-bold text-[var(--ink)]">Hero Slider</h2>
           <p className="text-sm text-[var(--ink-40)] mt-0.5">
-            Manage homepage banner slides — images, text &amp; buttons
+            Banner images shown at the top of the homepage — same image on desktop and mobile
           </p>
         </div>
         <Button
@@ -298,9 +298,10 @@ function SlideRow({
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-[var(--ink)] truncate">{slide.title || '(No title)'}</p>
-        <p className="text-sm text-[var(--ink-70)] truncate">{slide.subtitle}</p>
-        <p className="text-xs text-[var(--ink-40)] mt-0.5 truncate">{slide.ctaText} → {slide.ctaLink}</p>
+        <p className="font-semibold text-[var(--ink)] truncate">{slide.title || 'Banner image'}</p>
+        <p className="text-xs text-[var(--ink-40)] mt-0.5">
+          {slide.isActive ? 'Visible on homepage' : 'Hidden'}
+        </p>
       </div>
 
       {/* Slide number */}
@@ -392,8 +393,8 @@ function SlideForm({
     <div className="border-2 border-[var(--foil-soft)] rounded-xl p-5 bg-[var(--foil-soft)]">
       <h3 className="font-semibold text-[var(--ink)] mb-4">{title}</h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Left: Image */}
+      <div className="space-y-5">
+        {/* Image */}
         <div>
           <label className="block text-sm font-medium text-[var(--ink)] mb-2">Slide Image</label>
           <div
@@ -418,7 +419,7 @@ function SlideForm({
                   <>
                     <Upload className="w-8 h-8 mb-2" />
                     <span className="text-sm font-medium">Click to upload image</span>
-                    <span className="text-xs mt-1">JPG, PNG, WebP · Max 5MB</span>
+                    <span className="text-xs mt-1">Wide banner · about 16:7 · JPG, PNG, WebP · Max 5MB</span>
                   </>
                 )}
               </div>
@@ -457,64 +458,17 @@ function SlideForm({
           </div>
         </div>
 
-        {/* Right: Text fields */}
-        <div className="space-y-3">
-          <div>
-            <label className="block text-xs font-medium text-[var(--ink-70)] mb-1">Title *</label>
-            <Input
-              value={f('title')}
-              onChange={(e) => onChange({ ...form, title: e.target.value })}
-              placeholder="e.g., Welcome to PM Store"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-[var(--ink-70)] mb-1">Subtitle / Badge text</label>
-            <Input
-              value={f('subtitle')}
-              onChange={(e) => onChange({ ...form, subtitle: e.target.value })}
-              placeholder="e.g., Premium Quality, Naturally Pure"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-[var(--ink-70)] mb-1">Description</label>
-            <textarea
-              value={f('description')}
-              onChange={(e) => onChange({ ...form, description: e.target.value })}
-              placeholder="Short description displayed on the slide..."
-              rows={3}
-              className="w-full text-sm rounded-md border border-[var(--foil-soft)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--ink)] focus:border-transparent resize-none"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Buttons row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-        <div className="space-y-2 p-3 bg-white rounded-lg border border-[var(--foil-soft)]">
-          <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Primary Button</p>
+        {/* Image description / alt text — the only text a slide now carries */}
+        <div>
+          <label className="block text-sm font-medium text-[var(--ink)] mb-1">Image description</label>
           <Input
-            value={f('ctaText')}
-            onChange={(e) => onChange({ ...form, ctaText: e.target.value })}
-            placeholder="Button label e.g. Shop Now"
+            value={f('title')}
+            onChange={(e) => onChange({ ...form, title: e.target.value })}
+            placeholder="e.g., Monsoon health essentials banner"
           />
-          <Input
-            value={f('ctaLink')}
-            onChange={(e) => onChange({ ...form, ctaLink: e.target.value })}
-            placeholder="Link e.g. /products"
-          />
-        </div>
-        <div className="space-y-2 p-3 bg-white rounded-lg border border-[var(--foil-soft)]">
-          <p className="text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wide">Secondary Button (optional)</p>
-          <Input
-            value={f('ctaSecondaryText')}
-            onChange={(e) => onChange({ ...form, ctaSecondaryText: e.target.value })}
-            placeholder="Button label (leave blank to hide)"
-          />
-          <Input
-            value={f('ctaSecondaryLink')}
-            onChange={(e) => onChange({ ...form, ctaSecondaryLink: e.target.value })}
-            placeholder="Link e.g. /products"
-          />
+          <p className="text-xs text-[var(--ink-40)] mt-1">
+            Read aloud by screen readers and shown if the image can&apos;t load. Optional but recommended.
+          </p>
         </div>
       </div>
 

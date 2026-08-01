@@ -30,8 +30,8 @@ function OfferList({ ariaHidden = false }: { ariaHidden?: boolean }) {
   return (
     <ul className="flex shrink-0 items-center gap-8 px-4" aria-hidden={ariaHidden || undefined}>
       {OFFERS.map(({ icon: Icon, text, value }, i) => (
-        <li key={i} className="flex items-center gap-1.5 whitespace-nowrap">
-          <Icon className="h-3.5 w-3.5 shrink-0 text-[var(--brand-ink)]/80" aria-hidden="true" />
+        <li key={i} className="flex items-center gap-2 whitespace-nowrap">
+          <Icon className="h-4 w-4 shrink-0 text-[var(--brand-ink)]/80 sm:h-5 sm:w-5" aria-hidden="true" />
           {value && <span className="data font-semibold text-[var(--brand-ink)]">{value}</span>}
           <span>{text}</span>
         </li>
@@ -64,8 +64,8 @@ export function AnnouncementBar() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-[image:var(--surface-hero)] text-xs text-[var(--brand-ink)]/90 print:hidden">
-      <div className="mx-auto flex h-9 max-w-[1600px] items-center">
+    <div className="relative overflow-hidden bg-[image:var(--surface-hero)] text-sm text-[var(--brand-ink)]/90 sm:text-base print:hidden">
+      <div className="mx-auto flex h-11 max-w-[1600px] items-center sm:h-12">
         {reduceMotion ? (
           <div className="flex-1 overflow-hidden" aria-label="Store offers" role="region">
             <OfferList />
@@ -82,9 +82,9 @@ export function AnnouncementBar() {
           type="button"
           onClick={dismiss}
           aria-label="Dismiss offers"
-          className="flex h-9 w-11 shrink-0 items-center justify-center text-[var(--brand-ink)]/70 transition-colors duration-[var(--dur-fast)] hover:text-[var(--brand-ink)]"
+          className="flex h-11 w-11 shrink-0 items-center justify-center text-[var(--brand-ink)]/70 transition-colors duration-[var(--dur-fast)] hover:text-[var(--brand-ink)] sm:h-12"
         >
-          <X className="h-4 w-4" aria-hidden="true" />
+          <X className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
         </button>
       </div>
     </div>

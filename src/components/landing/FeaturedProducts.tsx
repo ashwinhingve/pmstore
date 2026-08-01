@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { ProductCard } from '@/components/products/ProductCard';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { Container } from '@/components/shared/Container';
@@ -100,11 +100,20 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
           viewport={{ once: true, margin: '0px 0px -100px 0px' }}
         >
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading
-              eyebrow="Bestsellers"
-              title="Featured medicines"
-              description="Handpicked bestsellers and trusted essentials"
-            />
+            <div className="max-w-2xl">
+              <div className="mb-2 inline-flex items-center gap-2">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] bg-[var(--brand-soft)] text-[var(--brand-deep)]">
+                  <Sparkles className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <span className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
+                  Bestsellers
+                </span>
+              </div>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--step-2)] text-[var(--ink)]">
+                Featured medicines
+              </h2>
+              <p className="mt-3 text-[var(--ink-70)]">Handpicked bestsellers and trusted essentials</p>
+            </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => scroll('left')}
@@ -139,13 +148,16 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
             ))}
           </div>
 
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <Link
               href="/products"
-              className="inline-flex items-center gap-1.5 font-semibold text-[var(--brand-deep)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+              className="group inline-flex h-11 items-center gap-1.5 rounded-[var(--radius-pill)] border border-[var(--foil)] bg-[var(--paper-card)] px-6 font-semibold text-[var(--brand-deep)] shadow-[var(--shadow-xs)] transition-[transform,box-shadow,border-color] duration-[var(--dur-fast)] hover:-translate-y-0.5 hover:border-[var(--brand)] hover:shadow-[var(--shadow-sm)]"
             >
               View all medicines
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-[var(--dur-fast)] group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
             </Link>
           </div>
         </motion.div>
