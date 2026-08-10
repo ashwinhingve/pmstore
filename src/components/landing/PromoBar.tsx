@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { TrendingDown, Truck, FlaskConical, MessageCircle } from 'lucide-react';
 import { Container } from '@/components/shared/Container';
+import { SectionHeading } from '@/components/shared/SectionHeading';
 import { CONTACT } from '@/lib/constants';
 
 /**
- * PromoBar — a compact band of headline offers, mirroring the promos the store
- * leads with (save 60–70%, free delivery, pathology discount, WhatsApp ordering).
- * Deliberately a thin inline row so it reads as offers, distinct from the fuller
- * TrustBand card grid further down. Numbers use --font-data per the mono rule.
+ * PromoBar — the homepage's closing band of headline offers, mirroring the promos
+ * the store leads with (save 60–70%, free delivery, pathology discount, WhatsApp
+ * ordering). It rounds off the page as a calm, generously-spaced offers section
+ * that flows into the footer. Numbers use --font-data per the mono rule.
  */
 const PROMOS = [
   { icon: TrendingDown, value: '60–70%', label: 'off with generic brands', href: '/products' },
@@ -23,8 +24,15 @@ export function PromoBar() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="border-b border-[var(--foil-soft)] bg-[var(--paper-tint)]" aria-label="Store offers">
-      <Container className="py-6">
+    <section className="bg-[var(--paper-tint)]" aria-label="Store offers">
+      <Container className="py-14 sm:py-20">
+        <SectionHeading
+          align="center"
+          eyebrow="Everyday value"
+          title="Savings on every order"
+          description="Honest per-tablet pricing, free delivery, and quick WhatsApp ordering — the reasons patients keep coming back."
+          className="mb-10"
+        />
         <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {PROMOS.map(({ icon: Icon, value, label, href }, i) => (
             <motion.li

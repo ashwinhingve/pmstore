@@ -34,7 +34,7 @@ export function Categories() {
           className="mb-10"
         />
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
           {PHARMA_CATEGORIES.map((category, i) => {
             const Icon = category.icon;
             const tint = getCategoryTint(category.name);
@@ -53,12 +53,15 @@ export function Categories() {
                 <Link
                   href={
                     // Pet Care has no SKUs yet, so route to the request form
-                    // rather than dead-end on an empty /products filter.
+                    // rather than dead-end on an empty /products filter. Medicine
+                    // is the browse-all door, so it goes to the full catalogue.
                     category.slug === 'pet-care'
                       ? '/custom-order'
-                      : `/products?category=${encodeURIComponent(category.name)}`
+                      : category.slug === 'medicine'
+                        ? '/products'
+                        : `/products?category=${encodeURIComponent(category.name)}`
                   }
-                  className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+                  className="group relative flex aspect-[5/4] flex-col justify-end overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] sm:aspect-[4/3]"
                 >
                   {img ? (
                     <>
@@ -76,16 +79,16 @@ export function Categories() {
                     <div className="absolute inset-0" style={{ backgroundColor: tint.bg }} />
                   )}
 
-                  <div className="relative flex items-center gap-2.5 p-3.5 sm:p-4">
+                  <div className="relative flex items-center gap-2 p-3 sm:gap-2.5 sm:p-4">
                     <span
-                      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--brand-ink)]/95 shadow-[var(--shadow-xs)]"
+                      className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--brand-ink)]/95 shadow-[var(--shadow-xs)] sm:h-8 sm:w-8"
                       style={{ color: img ? 'var(--brand-deep)' : tint.fg }}
                     >
-                      <Icon className="h-4 w-4" aria-hidden="true" />
+                      <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
                     </span>
                     <h3
                       className={cn(
-                        'font-[family-name:var(--font-display)] text-base font-extrabold leading-tight tracking-tight',
+                        'min-w-0 font-[family-name:var(--font-display)] text-sm font-extrabold leading-tight tracking-tight line-clamp-2 sm:text-base',
                         img ? 'text-[var(--brand-ink)]' : 'text-[var(--ink)]',
                       )}
                     >
@@ -106,15 +109,15 @@ export function Categories() {
           >
             <Link
               href="/products"
-              className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[var(--radius-lg)] bg-[image:var(--surface-brand)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+              className="group relative flex aspect-[5/4] flex-col justify-end overflow-hidden rounded-[var(--radius-lg)] bg-[image:var(--surface-brand)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] sm:aspect-[4/3]"
             >
               <LayoutGrid
                 className="absolute -bottom-5 -right-4 h-28 w-28 text-[var(--brand-ink)]/20"
                 strokeWidth={1.25}
                 aria-hidden="true"
               />
-              <div className="relative flex items-center justify-between gap-2 p-3.5 text-[var(--brand-ink)] sm:p-4">
-                <h3 className="font-[family-name:var(--font-display)] text-base font-extrabold leading-tight tracking-tight">All medicines</h3>
+              <div className="relative flex items-center justify-between gap-2 p-3 text-[var(--brand-ink)] sm:p-4">
+                <h3 className="min-w-0 font-[family-name:var(--font-display)] text-sm font-extrabold leading-tight tracking-tight line-clamp-2 sm:text-base">All medicines</h3>
                 <ArrowRight
                   className="h-5 w-5 transition-transform duration-[var(--dur-fast)] group-hover:translate-x-0.5"
                   aria-hidden="true"
