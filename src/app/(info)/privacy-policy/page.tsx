@@ -6,7 +6,7 @@ export default function PrivacyPolicyPage() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[var(--paper)] py-20 md:py-32">
+      <section className="relative overflow-hidden bg-[var(--paper)] py-12 sm:py-20 md:py-32">
         <div className="container mx-auto px-4">
           <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
             <div className="w-20 h-20 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-6">
@@ -29,6 +29,34 @@ export default function PrivacyPolicyPage() {
       <section className="py-16 md:py-24 bg-[var(--paper-card)]">
         <div className="container mx-auto px-4 max-w-4xl">
           <AnimatedSection direction="up" className="space-y-8">
+            {/* Concise summary — English + Hindi, for a quick read */}
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-6 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
+                <p className="mb-2 text-sm font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
+                  In short
+                </p>
+                <p className="text-[var(--ink)] leading-relaxed">
+                  We collect only what we need to fill your order — your name, contact details,
+                  delivery address and order history. We never sell your data or share it for
+                  marketing. Prescription photos, phone numbers and full addresses are kept private
+                  and never logged.
+                </p>
+              </div>
+              <div
+                lang="hi"
+                className="bg-[var(--paper)] rounded-[var(--radius-md)] p-6 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]"
+              >
+                <p className="mb-2 text-sm font-semibold uppercase tracking-[0.08em] text-[var(--brand)]">
+                  संक्षेप में
+                </p>
+                <p className="text-[var(--ink)] leading-relaxed">
+                  हम केवल वही जानकारी लेते हैं जो आपका ऑर्डर पूरा करने के लिए ज़रूरी है — नाम, संपर्क,
+                  पता और ऑर्डर विवरण। हम आपका डेटा किसी को बेचते नहीं और मार्केटिंग के लिए साझा नहीं
+                  करते। आपकी पर्ची की फ़ोटो, फ़ोन नंबर और पूरा पता निजी रखा जाता है।
+                </p>
+              </div>
+            </div>
+
             {/* Introduction */}
             <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
               <p className="text-[var(--ink)] leading-relaxed">
