@@ -7,12 +7,12 @@ import { ProductVisual } from '@/components/products/ProductVisual';
  * Same-composition comparison, surfaced from the current search results.
  *
  * Groups the visible results by compositionKey (no extra DB queries) and, for
- * any group with more than one brand, shows a side-by-side card that puts the two
- * leading brands next to each other and leads with the unit price — the only
- * honest way to compare brands (docs/03-DESIGN-SYSTEM.md, CLAUDE.md rule #1). The
- * cheaper-per-unit brand is flagged "Best value" with what it saves per dose; the
- * card links to the full /compare view for the rest. Clicking a brand opens its
- * product page (the Strip).
+ * any group with more than one brand, shows a fixed side-by-side card: the brand
+ * the shopper searched for on the LEFT, and a same-salt brand that costs less per
+ * dose on the RIGHT (flagged "Better deal" with what it saves). The order never
+ * flips, and the card always leads with the unit price — the only honest way to
+ * compare brands (docs/03-DESIGN-SYSTEM.md, CLAUDE.md rule #1). The card links to
+ * the full /compare view for the rest; clicking a brand opens its product page.
  */
 
 interface CompareProduct {
@@ -31,10 +31,14 @@ interface CompareProduct {
   prescriptionRequired: boolean;
   image: string | null;
   form?: string;
+  /** Position in the search results (0 = most relevant to the query). */
+  rank: number;
 }
 
 const money = (n: number) => `₹${n.toFixed(2)}`;
-const mono = { fontFamily: 'var(--font-data)' as const, fontVariantNumeric: 'tabular-nums' as const };
+// Prices/counts read in the normal body sans (client preference, 2026-08-10);
+// tabular-nums keeps the figures aligned.
+const mono = { fontFamily: 'var(--font-body)' as const, fontVariantNumeric: 'tabular-nums' as const };
 const unitNoun = (packUnit: string) => (packUnit === 'ml' ? 'ml' : 'unit');
 
 function coerce(raw: Record<string, unknown>): CompareProduct | null {
@@ -64,23 +68,29 @@ function coerce(raw: Record<string, unknown>): CompareProduct | null {
     prescriptionRequired: raw.prescriptionRequired === true,
     image: images[0]?.url ?? null,
     form: typeof raw.form === 'string' ? raw.form : undefined,
+    rank: 0,
   };
 }
 
+const minRank = (g: CompareProduct[]) => Math.min(...g.map((p) => p.rank));
+
 export function SearchComparison({ products }: { products: Record<string, unknown>[] }) {
   const groups = new Map<string, CompareProduct[]>();
-  for (const raw of products) {
+  products.forEach((raw, idx) => {
     const p = coerce(raw);
-    if (!p) continue;
+    if (!p) return;
+    p.rank = idx; // results arrive in relevance order — index 0 is the top match
     const arr = groups.get(p.compositionKey) ?? [];
     arr.push(p);
     groups.set(p.compositionKey, arr);
-  }
+  });
 
-  // Only groups with more than one brand are worth comparing. Cap at 3 so the
-  // page stays scannable; the rest are still in the grid below.
+  // Only groups with more than one brand are worth comparing. Show the group
+  // that holds the most relevant result first, and cap at 3 so the page stays
+  // scannable; the rest are still in the grid below.
   const comparable = [...groups.values()]
     .filter((g) => g.length >= 2)
+    .sort((a, b) => minRank(a) - minRank(b))
     .slice(0, 3);
 
   if (comparable.length === 0) return null;
@@ -91,9 +101,9 @@ export function SearchComparison({ products }: { products: Record<string, unknow
         Same composition, compared
       </h2>
       <p className="mb-5 max-w-2xl text-sm text-[var(--ink-70)]">
-        These brands contain the same salt. We lead with the price per{' '}
-        {comparable[0][0].packUnit === 'ml' ? 'ml' : 'tablet'} — the fair way to compare, since a
-        cheaper-looking pack can cost more per dose.
+        The medicine you searched is on the left; a same-salt brand that costs less per{' '}
+        {comparable[0][0].packUnit === 'ml' ? 'ml' : 'tablet'} is on the right — the fair way to
+        compare, since a cheaper-looking pack can cost more per dose.
       </p>
 
       <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
@@ -106,29 +116,31 @@ export function SearchComparison({ products }: { products: Record<string, unknow
 }
 
 function CompareCard({ group }: { group: CompareProduct[] }) {
-  // In-stock first, then cheapest per unit — the Strip's ordering rule. The two
-  // leading brands are shown side by side; any others live on the /compare page.
-  const ranked = [...group].sort((a, b) => {
-    if (a.stock > 0 !== b.stock > 0) return a.stock > 0 ? -1 : 1;
-    return a.unitPrice - b.unitPrice;
-  });
-
-  const primary = ranked[0]; // best value — leads with the lower unit price
-  const secondary = ranked[1]; // the brand shown next to it
+  // LEFT is always the brand the shopper searched for (the most relevant result
+  // in this composition group). RIGHT is the best-value same-salt alternative —
+  // in stock first, then cheapest per unit. The order never flips.
+  const searched = [...group].sort((a, b) => a.rank - b.rank)[0];
+  const alt = group
+    .filter((p) => p !== searched)
+    .sort((a, b) => {
+      if (a.stock > 0 !== b.stock > 0) return a.stock > 0 ? -1 : 1;
+      return a.unitPrice - b.unitPrice;
+    })[0];
 
   const label =
-    primary.salts.length > 0 ? formatComposition(primary.salts) : primary.compositionKey;
+    searched.salts.length > 0 ? formatComposition(searched.salts) : searched.compositionKey;
 
-  // What the best-value brand saves per dose against the one shown beside it.
-  const unitGap = Math.max(0, secondary.unitPrice - primary.unitPrice);
-  const pct = secondary.unitPrice > 0 ? Math.round((unitGap / secondary.unitPrice) * 100) : 0;
+  // What the alternative saves per dose against the searched brand.
+  const altIsBetter = alt.unitPrice < searched.unitPrice;
+  const unitGap = Math.max(0, searched.unitPrice - alt.unitPrice);
+  const pct = altIsBetter && searched.unitPrice > 0 ? Math.round((unitGap / searched.unitPrice) * 100) : 0;
 
   // Link to the full side-by-side /compare page — only when both carry a real
   // Mongo id (coerce() can fall back to the slug).
   const isObjectId = (s: string) => /^[a-f0-9]{24}$/i.test(s);
   const compareHref =
-    isObjectId(primary._id) && isObjectId(secondary._id)
-      ? `/compare?ids=${primary._id},${secondary._id}`
+    isObjectId(searched._id) && isObjectId(alt._id)
+      ? `/compare?ids=${searched._id},${alt._id}`
       : null;
 
   return (
@@ -148,10 +160,21 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
         )}
       </div>
 
-      {/* The two leading brands, side by side */}
+      {/* Searched brand (left) vs the better-value alternative (right) */}
       <div className="grid flex-1 grid-cols-2 divide-x divide-[var(--foil-soft)]">
-        <ProductPane p={primary} best noun={unitNoun(primary.packUnit)} savePerUnit={unitGap} />
-        <ProductPane p={secondary} noun={unitNoun(secondary.packUnit)} />
+        <ProductPane
+          p={searched}
+          role="searched"
+          noun={unitNoun(searched.packUnit)}
+          highlight={!altIsBetter}
+        />
+        <ProductPane
+          p={alt}
+          role={altIsBetter ? 'deal' : 'alt'}
+          noun={unitNoun(alt.packUnit)}
+          savePerUnit={altIsBetter ? unitGap : 0}
+          highlight={altIsBetter}
+        />
       </div>
 
       {/* Footer: open the full side-by-side compare */}
@@ -179,19 +202,21 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
 /** One brand column inside a comparison card. Leads with the unit price. */
 function ProductPane({
   p,
-  best = false,
+  role,
   noun,
   savePerUnit = 0,
+  highlight = false,
 }: {
   p: CompareProduct;
-  best?: boolean;
+  role: 'searched' | 'deal' | 'alt';
   noun: string;
   savePerUnit?: number;
+  highlight?: boolean;
 }) {
   const out = p.stock <= 0;
   return (
     <div
-      className={`flex flex-col gap-2 p-3 ${best ? 'bg-[var(--brand-soft)]/40' : ''} ${
+      className={`flex flex-col gap-2 p-3 ${highlight ? 'bg-[var(--brand-soft)]/40' : ''} ${
         out ? 'opacity-60' : ''
       }`}
     >
@@ -202,9 +227,13 @@ function ProductPane({
       </Link>
 
       <div className="flex flex-wrap items-center gap-1.5">
-        {best ? (
+        {role === 'searched' ? (
+          <span className="inline-flex rounded-[var(--radius-pill)] bg-[var(--foil-soft)] px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
+            You searched
+          </span>
+        ) : role === 'deal' ? (
           <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--brand)] px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--brand-ink)]">
-            <Check className="h-3 w-3" aria-hidden="true" /> Best value
+            <Check className="h-3 w-3" aria-hidden="true" /> Better deal
           </span>
         ) : (
           <span className="inline-flex rounded-[var(--radius-pill)] bg-[var(--foil-soft)] px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
@@ -236,7 +265,7 @@ function ProductPane({
             </span>
           )}
         </p>
-        {best && savePerUnit > 0 ? (
+        {role === 'deal' && savePerUnit > 0 ? (
           <p style={mono} className="mt-1 text-xs font-semibold text-[var(--mint)]">
             Save {money(savePerUnit)}/{noun}
           </p>

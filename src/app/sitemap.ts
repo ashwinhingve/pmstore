@@ -2,10 +2,9 @@ import { MetadataRoute } from 'next';
 import connectDB from '@/lib/mongodb/connection';
 import Product from '@/models/Product';
 import Category from '@/models/Category';
+import { SITE_URL } from '@/lib/constants';
 
 export const revalidate = 86400; // refresh sitemap every 24 hours
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
 
 const staticPages: MetadataRoute.Sitemap = [
   {

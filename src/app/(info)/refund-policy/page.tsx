@@ -6,7 +6,7 @@ export default function ReturnPolicyPage() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[var(--paper)] py-20 md:py-32">
+      <section className="relative overflow-hidden bg-[var(--paper)] py-12 sm:py-20 md:py-32">
         <div className="container mx-auto px-4">
           <AnimatedSection direction="up" className="text-center max-w-4xl mx-auto">
             <div className="w-20 h-20 bg-[var(--brand)] rounded-full flex items-center justify-center mx-auto mb-6">

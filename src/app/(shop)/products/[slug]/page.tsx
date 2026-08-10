@@ -16,8 +16,7 @@ import { SectionHeading } from '@/components/shared/SectionHeading';
 import { getAlternatives } from '@/lib/pharma/alternatives-data';
 import { formatComposition } from '@/lib/pharma/composition';
 import { Stethoscope } from 'lucide-react';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
+import { SITE_URL } from '@/lib/constants';
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -46,15 +45,44 @@ export async function generateMetadata({
     return { title: 'Product Not Found' };
   }
 
-  const title = product.seo?.metaTitle || `${product.name} | PM Store`;
-  const description = product.seo?.metaDescription || product.description;
+  // Build strong per-product SEO even when the admin leaves the SEO tab blank —
+  // brand + salt + pack, always suffixed with the PM Store name.
+  const composition = product.salts?.length ? formatComposition(product.salts) : '';
+  const packLabel =
+    product.packSize && product.packUnit ? `${product.packSize} ${product.packUnit}` : '';
+
+  const title =
+    product.seo?.metaTitle ||
+    `${product.name}${composition ? ` – ${composition}` : ''} | PM Store`;
+
+  const description =
+    product.seo?.metaDescription ||
+    product.description ||
+    `Buy ${product.name}${composition ? ` (${composition})` : ''}${
+      product.manufacturer ? ` by ${product.manufacturer}` : ''
+    } online at PM Store — genuine medicine${packLabel ? `, ${packLabel} pack` : ''}, priced per ${
+      product.packUnit || 'unit'
+    }. Free delivery in Bhopal.`;
+
   const ogImage = product.seo?.ogImage || product.images?.[0]?.url || `${SITE_URL}/images/logo.jpg`;
   const canonicalUrl = `${SITE_URL}/products/${product.slug}`;
+
+  const autoKeywords = [
+    product.name,
+    ...(product.salts || []).map((s: any) => s.name),
+    product.manufacturer,
+    'PM Store',
+    'online pharmacy',
+  ].filter(Boolean);
 
   return {
     title,
     description,
-    keywords: product.seo?.keywords?.length ? product.seo.keywords : (product.tags || []),
+    keywords: product.seo?.keywords?.length
+      ? product.seo.keywords
+      : product.tags?.length
+        ? product.tags
+        : autoKeywords,
     alternates: {
       canonical: canonicalUrl,
     },
@@ -122,18 +150,25 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
   const strip = await getAlternatives(slug);
 
   const canonicalUrl = `${SITE_URL}/products/${serializedProduct.slug}`;
+  const jsonLdComposition = serializedProduct.salts?.length
+    ? formatComposition(serializedProduct.salts)
+    : '';
+  const jsonLdDescription =
+    serializedProduct.description ||
+    `${serializedProduct.name}${jsonLdComposition ? ` – ${jsonLdComposition}` : ''} — genuine medicine at PM Store.`;
 
-  // Product JSON-LD — enables price, availability, and star ratings in Google SERPs
+  // Product JSON-LD — enables price, availability, and star ratings in Google SERPs.
+  // brand = the medicine's manufacturer (falling back to the store); seller = PM Store.
   const productJsonLd: Record<string, any> = {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": serializedProduct.name,
-    "description": serializedProduct.description,
+    "description": jsonLdDescription,
     "image": (serializedProduct.images || []).map((img: any) => img.url).filter(Boolean),
     "sku": serializedProduct.sku,
     "brand": {
       "@type": "Brand",
-      "name": "PMStore",
+      "name": serializedProduct.manufacturer || "PM Store",
     },
     "offers": {
       "@type": "Offer",

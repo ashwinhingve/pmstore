@@ -96,7 +96,7 @@ export function Header() {
             <Link href="/admin/dashboard" className="hidden sm:inline-flex">
               <Button
                 size="sm"
-                className="gap-1.5 rounded-[var(--radius-pill)] bg-[var(--brand-ink)] font-semibold text-[var(--brand-deep)] shadow-[var(--shadow-sm)] ring-1 ring-inset ring-[var(--brand-deep)]/15 transition-[transform,box-shadow] duration-[var(--dur-fast)] hover:-translate-y-0.5 hover:bg-[var(--brand-ink)] hover:shadow-[var(--shadow-md)]"
+                className="gap-1.5 rounded-[var(--radius-pill)] bg-[var(--ink)] font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-sm)] ring-1 ring-inset ring-[var(--ink)]/10 transition-[transform,box-shadow,background-color] duration-[var(--dur-fast)] hover:-translate-y-0.5 hover:bg-[var(--ink)]/90 hover:text-[var(--brand-ink)] hover:shadow-[var(--shadow-md)]"
               >
                 <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
                 Admin

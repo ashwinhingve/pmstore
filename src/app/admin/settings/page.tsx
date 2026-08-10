@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/mongodb';
 import SiteSettings from '@/models/SiteSettings';
 import AnnouncementManager from '@/components/admin/AnnouncementManager';
 import HeroSliderManager from '@/components/admin/HeroSliderManager';
+import FeatureSliderManager from '@/components/admin/FeatureSliderManager';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 
 export default async function AdminSettingsPage() {
@@ -51,15 +52,28 @@ export default async function AdminSettingsPage() {
     order: s.order ?? 0,
   }));
 
+  const featureSlides = (settings.featureSlider?.slides || []).map((s: any) => ({
+    _id: s._id?.toString(),
+    image: s.image || '',
+    imagePublicId: s.imagePublicId || '',
+    title: s.title || '',
+    ctaLink: s.ctaLink || '/products',
+    isActive: s.isActive ?? true,
+    order: s.order ?? 0,
+  }));
+
   return (
     <div className="space-y-8 max-w-5xl">
       <AdminPageHeader
         title="Site Settings"
-        description="Manage homepage content, announcement banner, and slider."
+        description="Manage homepage content, announcement banner, and sliders."
       />
 
       {/* Hero Slider */}
       <HeroSliderManager initialSlides={heroSlides} />
+
+      {/* Feature Slider (2-up band below the hero) */}
+      <FeatureSliderManager initialSlides={featureSlides} />
 
       {/* Announcement Banner */}
       <AnnouncementManager initialData={bannerData} />

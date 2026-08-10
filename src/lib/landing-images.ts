@@ -44,6 +44,9 @@ export const CATEGORY_IMAGES: Record<string, LandingImage> = {
   'ortho-muscle-care': { url: '/landing/category-ortho-muscle-care.jpg', alt: 'Person holding a sore knee' },
   'derma-skin': { url: '/landing/category-derma-skin.jpg', alt: 'Woman with healthy, glowing skin' },
   'general-otc': { url: '/landing/category-general-otc.jpg', alt: 'Prescription bottle with capsules' },
+  // 'surgical' has no photo yet, so Categories.tsx renders its tinted fallback
+  // card (never a broken image). Add a /landing/category-surgical.jpg entry here
+  // once a real photo exists.
   'pet-care': { url: '/landing/category-pet-care.jpg', alt: 'A cat and dog resting together outdoors' },
 };
 

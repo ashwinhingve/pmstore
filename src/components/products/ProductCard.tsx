@@ -91,8 +91,6 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const categoryName =
     typeof product.category === "string" ? product.category : product.category?.name;
-  const averageRating = product.averageRating || product.average_rating || 0;
-  const totalReviews = product.totalReviews || product.review_count || 0;
   const outOfStock = typeof product.stock === "number" && product.stock <= 0;
 
   // Newly added within the last 30 days
@@ -130,6 +128,13 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         )}
 
+        {/* Pack size — a glanceable chip, like a real strip's printed pack. */}
+        {product.packSize && product.packUnit && !outOfStock && (
+          <span className="pointer-events-none absolute bottom-2.5 left-2.5 rounded-[var(--radius-pill)] bg-[var(--paper-card)]/95 px-2 py-0.5 text-[0.6875rem] font-semibold tabular-nums text-[var(--ink-70)] shadow-[var(--shadow-xs)]">
+            {product.packSize} {product.packUnit}
+          </span>
+        )}
+
         {outOfStock && (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center pb-3">
             <span className="rounded-[var(--radius-pill)] bg-[var(--ink)] px-3 py-1 text-xs font-semibold text-[var(--paper-card)]">
@@ -155,15 +160,9 @@ export function ProductCard({ product }: ProductCardProps) {
         <Scale className="h-4 w-4" aria-hidden="true" />
       </button>
 
-      {/* Info */}
-      <div className="flex flex-1 flex-col p-4">
-        {categoryName && (
-          <span className="mb-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[var(--brand-deep)]">
-            {categoryName}
-          </span>
-        )}
-
-        <h3 className="mb-2 line-clamp-2 font-[family-name:var(--font-display)] text-[0.95rem] font-semibold leading-snug text-[var(--ink)]">
+      {/* Info — kept deliberately compact: name, price, one action. */}
+      <div className="flex flex-1 flex-col p-3">
+        <h3 className="mb-1.5 line-clamp-2 font-[family-name:var(--font-display)] text-sm font-semibold leading-snug text-[var(--ink)]">
           <Link
             href={`/products/${product.slug}`}
             className="outline-none after:absolute after:inset-0 after:content-[''] focus-visible:underline"
@@ -172,28 +171,8 @@ export function ProductCard({ product }: ProductCardProps) {
           </Link>
         </h3>
 
-        {averageRating > 0 && (
-          <div className="mb-2 flex items-center gap-1">
-            <div className="flex" aria-label={`Rated ${averageRating} out of 5`}>
-              {[...Array(5)].map((_, i) => (
-                <svg
-                  key={i}
-                  className={`h-3.5 w-3.5 fill-current ${
-                    i < Math.floor(averageRating) ? "text-[var(--brand)]" : "text-[var(--foil-soft)]"
-                  }`}
-                  viewBox="0 0 20 20"
-                  aria-hidden="true"
-                >
-                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                </svg>
-              ))}
-            </div>
-            <span className="data text-xs text-[var(--ink-40)]">({totalReviews})</span>
-          </div>
-        )}
-
         {/* Price — unit price line always leads when we have the data. */}
-        <div className="mt-auto pt-3">
+        <div className="mt-auto pt-2">
           {product.unitPrice && product.packSize && product.packUnit ? (
             <PriceBlock
               price={product.price}
@@ -201,17 +180,22 @@ export function ProductCard({ product }: ProductCardProps) {
               unitPrice={product.unitPrice}
               packSize={product.packSize}
               packUnit={product.packUnit}
-              className="mb-3"
+              className="mb-2"
             />
           ) : (
-            <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <div className="mb-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
               <span className="price text-[length:var(--step-1)] font-semibold text-[var(--ink)]">
                 {formatINR(product.price)}
               </span>
               {product.originalPrice && product.originalPrice > product.price && (
-                <span className="price text-sm text-[var(--ink-40)] line-through">
-                  MRP {formatINR(product.originalPrice)}
-                </span>
+                <>
+                  <span className="price text-sm text-[var(--ink-40)] line-through">
+                    {formatINR(product.originalPrice)}
+                  </span>
+                  <span className="text-xs font-semibold tabular-nums text-[var(--mint)]">
+                    {Math.round((1 - product.price / product.originalPrice) * 100)}% off
+                  </span>
+                </>
               )}
             </div>
           )}

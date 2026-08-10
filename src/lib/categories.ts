@@ -1,4 +1,5 @@
 import {
+  Pill,
   Sprout,
   HeartPulse,
   FlaskConical,
@@ -10,6 +11,7 @@ import {
   Bone,
   Sparkles,
   Stethoscope,
+  Syringe,
   PawPrint,
   type LucideIcon,
 } from "lucide-react";
@@ -44,6 +46,11 @@ export interface PharmaCategory {
 }
 
 export const PHARMA_CATEGORIES: PharmaCategory[] = [
+  // "Medicine" is the top-level door to the whole catalogue. Like Pet Care below
+  // it is an intentional exception to the "must have products under this exact
+  // name" rule: its tile links to /products (browse-all), not a name filter, so
+  // it never dead-ends — see the medicine special case in Categories.tsx.
+  { name: "Medicine", slug: "medicine", icon: Pill, tint: "teal" },
   { name: "Ayurveda", slug: "ayurveda", icon: Sprout, tint: "clay" },
   { name: "Cardiac Care", slug: "cardiac-care", icon: HeartPulse, tint: "plum" },
   { name: "Diabetes Care", slug: "diabetes-care", icon: Droplets, tint: "sky" },
@@ -55,6 +62,7 @@ export const PHARMA_CATEGORIES: PharmaCategory[] = [
   { name: "Ortho & Muscle Care", slug: "ortho-muscle-care", icon: Bone, tint: "slate" },
   { name: "Derma & Skin", slug: "derma-skin", icon: Sparkles, tint: "amber" },
   { name: "General & OTC", slug: "general-otc", icon: Stethoscope, tint: "teal" },
+  { name: "Surgical & Medical Supplies", slug: "surgical", icon: Syringe, tint: "sky" },
   // Pet Care is the one intentional exception to the "must have products" rule
   // above: the store wants the tile now but has no pet SKUs yet. Its card links
   // to /custom-order (a request), NOT /products, so it never dead-ends on the

@@ -273,7 +273,8 @@ export default function AdminCategoriesPage() {
 
       {/* Categories Table */}
       <div className="bg-[var(--paper-card)] rounded-xl border border-[var(--foil-soft)] overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px]">
           <thead className="bg-[var(--foil-soft)] border-b border-[var(--foil-soft)]">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase">Order</th>
@@ -406,6 +407,7 @@ export default function AdminCategoriesPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       <p className="text-xs text-[var(--ink-40)] mt-3">

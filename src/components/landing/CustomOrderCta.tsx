@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Upload, PackageSearch, Clock } from 'lucide-react';
+import { ArrowRight, Upload, PackageSearch, Clock, Check } from 'lucide-react';
 import { Container } from '@/components/shared/Container';
 
 /**
@@ -37,6 +37,37 @@ export function CustomOrderCta() {
               Send the name, a photo of the pack, or your doctor’s list. Our pharmacist checks
               availability and calls you back, usually within a working day.
             </p>
+
+            {/* Hindi decision guide — what to do and what to expect, in the
+                language most Bhopal customers read. Sourced from the store's own
+                terms (medicine availability, market shortages, near-expiry). */}
+            <div
+              lang="hi"
+              className="mt-6 max-w-md rounded-[var(--radius-md)] bg-[var(--paper)]/10 p-4 ring-1 ring-inset ring-[var(--paper)]/15"
+            >
+              <p className="text-sm font-semibold text-[var(--brand-ink)]">
+                दवा नहीं मिल रही? क्या करें —
+              </p>
+              <ul className="mt-2.5 space-y-2 text-sm leading-relaxed text-[var(--ink-10)]">
+                <li className="flex gap-2">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mint)]" aria-hidden="true" />
+                  <span>दवा का नाम या पर्ची भेजिए — हमारा फार्मासिस्ट उपलब्धता देखकर आपको कॉल करेगा।</span>
+                </li>
+                <li className="flex gap-2">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mint)]" aria-hidden="true" />
+                  <span>मोनोपॉली कंपनी की दवा उपलब्ध न होने पर — आपको पहले से सूचित कर दिया जाएगा।</span>
+                </li>
+                <li className="flex gap-2">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mint)]" aria-hidden="true" />
+                  <span>बाज़ार में दवा शॉर्ट होने पर — आपको सूचित किया जाएगा।</span>
+                </li>
+                <li className="flex gap-2">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--mint)]" aria-hidden="true" />
+                  <span>एक्सपायरी नज़दीक (1–2 महीने) वाली दवा डिलीवर नहीं की जाती।</span>
+                </li>
+              </ul>
+            </div>
+
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
                 href="/custom-order"

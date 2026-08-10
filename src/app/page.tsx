@@ -7,6 +7,8 @@ import SiteSettings from '@/models/SiteSettings';
 import { SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants';
 import { HeroSlider } from '@/components/landing/HeroSlider';
 import type { HeroSlideView } from '@/components/landing/HeroSlider';
+import { FeatureSlider } from '@/components/landing/FeatureSlider';
+import type { FeatureSlideView } from '@/components/landing/FeatureSlider';
 import { PromoBar } from '@/components/landing/PromoBar';
 import { QuickActions } from '@/components/landing/QuickActions';
 import { Categories } from '@/components/landing/Categories';
@@ -60,7 +62,7 @@ interface Product {
  *
  * Sections (in render order):
  *  1. HeroSlider — full-bleed image slider with search + CTAs
- *  2. PromoBar — compact headline-offers band
+ *  2. FeatureSlider — admin-managed 2-up image band that slides in from the left
  *  3. Categories — image-backed pharma category grid
  *  4. CustomOrderCta — request-a-medicine band (routes to /custom-order)
  *  5. QuickActions — search / order again / upload prescription
@@ -70,6 +72,7 @@ interface Product {
  *  9. WhyChooseUs — three photography-led reasons to trust the store
  * 10. FaqPreview — 4 FAQs using Accordion
  * 11. ContactCta — contact info + WhatsApp + contact form link
+ * 12. PromoBar — compact headline-offers band (moved to the foot of the page)
  */
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -80,6 +83,9 @@ export default async function Home() {
   // Admin-managed hero slides (Admin → Site settings). Empty → HeroCarousel
   // falls back to its built-in photo set.
   let heroSlides: HeroSlideView[] = [];
+  // Admin-managed feature slides (the 2-up band below the hero). Empty →
+  // FeatureSlider falls back to a curated pair.
+  let featureSlides: FeatureSlideView[] = [];
   try {
     await connectDB();
     const products = await Product.find({
@@ -104,10 +110,10 @@ export default async function Home() {
             : plain.category || 'Uncategorized',
       };
     });
-    // Active hero slides, ordered; serialize ObjectId at the boundary and drop
-    // any slide without an image so the carousel never renders a blank frame.
+    // Active hero + feature slides, ordered; serialize ObjectId at the boundary
+    // and drop any slide without an image so the carousels never render a blank.
     const settings = await SiteSettings.findOne({ key: 'global' })
-      .select('heroSlider')
+      .select('heroSlider featureSlider')
       .lean();
     heroSlides = ((settings as any)?.heroSlider?.slides ?? [])
       .filter((s: any) => s.isActive && s.image)
@@ -116,6 +122,15 @@ export default async function Home() {
         _id: String(s._id),
         image: s.image as string,
         title: s.title || undefined,
+      }));
+    featureSlides = ((settings as any)?.featureSlider?.slides ?? [])
+      .filter((s: any) => s.isActive && s.image)
+      .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+      .map((s: any) => ({
+        _id: String(s._id),
+        image: s.image as string,
+        title: s.title || undefined,
+        ctaLink: s.ctaLink || undefined,
       }));
   } catch (error) {
     // Silent fail — if catalogue is unseeded, we show empty state gracefully
@@ -126,7 +141,7 @@ export default async function Home() {
     <div className="w-full">
       {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
       <HeroSlider slides={heroSlides} />
-      <PromoBar />
+      <FeatureSlider slides={featureSlides} />
       <Categories />
       <CustomOrderCta />
       <QuickActions signedIn={signedIn} />
@@ -136,6 +151,7 @@ export default async function Home() {
       <WhyChooseUs />
       <FaqPreview />
       <ContactCta />
+      <PromoBar />
     </div>
   );
 }

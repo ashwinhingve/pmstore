@@ -8,7 +8,11 @@ import coreWebVitals from 'eslint-config-next/core-web-vitals';
 const eslintConfig = [
   {
     ignores: [
-      '.next/**',
+      // Match build output at any depth, not just the repo root — a mis-parsed
+      // working-directory path can leave a nested build dir whose minified
+      // chunks otherwise get linted and drown real findings.
+      '**/.next/**',
+      '**/node_modules/**',
       'mobile/**',
       'data/**',
       'public/**',
