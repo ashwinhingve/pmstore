@@ -65,7 +65,7 @@ export const productSchema = z.object({
     .min(3, 'Slug must be at least 3 characters')
     .regex(/^[a-z0-9-]+$/, 'Slug must contain only lowercase letters, numbers, and hyphens'),
   sku: z.string().min(3, 'SKU must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
+  description: z.string().max(300, 'Description must be 300 characters or less').optional().or(z.literal('')),
   longDescription: z.string().optional(),
   category: z.string().regex(/^[a-f\d]{24}$/i, 'A valid category is required'),
   subcategory: z.string().optional(),

@@ -8,6 +8,8 @@ import ImageUploader from './ImageUploader';
 import RichTextEditor from './RichTextEditor';
 import SpecificationsManager from './SpecificationsManager';
 import VariantsManager from './VariantsManager';
+import { SaltCombobox } from './SaltCombobox';
+import { computeSellingPrice, discountFromPrices } from '@/lib/pharma/pricing';
 import { Upload, X, Video, RefreshCw, Link as LinkIcon } from 'lucide-react';
 import { toast } from '@/store/useToastStore';
 import type { ProductFormData } from '@/lib/validations/product';
@@ -42,6 +44,22 @@ function getYouTubeEmbedUrl(url: string): string {
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/
   );
   return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+}
+
+/** Seed the pricing tab (MRP + discount%) when editing an existing product. */
+function deriveInitialPricing(
+  d?: Partial<ProductFormData>,
+): { mrp: number; discountPercentage: number } {
+  const price = typeof d?.price === 'number' ? d.price : 0;
+  let mrp = price;
+  if (typeof d?.mrp === 'number' && d.mrp > 0) mrp = d.mrp;
+  else if (typeof d?.originalPrice === 'number' && d.originalPrice > 0) mrp = d.originalPrice;
+
+  const discount =
+    typeof d?.discountPercentage === 'number' && d.discountPercentage > 0
+      ? d.discountPercentage
+      : discountFromPrices(mrp, price);
+  return { mrp, discountPercentage: Math.min(100, Math.max(0, discount)) };
 }
 
 interface ProductFormProps {
@@ -97,6 +115,8 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       .catch(() => {});
   }, []);
 
+  const initialPricing = deriveInitialPricing(initialData);
+
   const [formData, setFormData] = useState<Partial<ProductFormData>>({
     name: initialData?.name || '',
     slug: initialData?.slug || '',
@@ -106,7 +126,8 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     category: initialData?.category || '',
     subcategory: initialData?.subcategory || '',
     price: initialData?.price || 0,
-    originalPrice: initialData?.originalPrice,
+    originalPrice: initialData?.originalPrice ?? initialPricing.mrp,
+    discountPercentage: initialPricing.discountPercentage,
     stock: initialData?.stock || 0,
     images: initialData?.images || [],
     weight: initialData?.weight || 500,
@@ -129,7 +150,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     manufacturer: initialData?.manufacturer || '',
     packSize: initialData?.packSize || 1,
     packUnit: initialData?.packUnit || 'tablet',
-    mrp: initialData?.mrp,
+    mrp: initialPricing.mrp,
     prescriptionRequired: initialData?.prescriptionRequired || false,
     scheduleClass: initialData?.scheduleClass || 'OTC',
     hsnCode: initialData?.hsnCode || '',
@@ -178,6 +199,17 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
         }));
       }
     }
+  };
+
+  // MRP and discount% are the only price inputs; the selling price (`price`) and
+  // `originalPrice` are derived so there is never a manual selling-price field.
+  const setPricing = (patch: { mrp?: number; discountPercentage?: number }) => {
+    setFormData((prev) => {
+      const mrp = patch.mrp ?? prev.mrp ?? 0;
+      const discountPercentage = patch.discountPercentage ?? prev.discountPercentage ?? 0;
+      const price = computeSellingPrice(mrp, discountPercentage);
+      return { ...prev, mrp, discountPercentage, originalPrice: mrp, price };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -310,7 +342,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
 
             <div>
               <label className="block text-sm font-medium text-[var(--ink)] mb-2">
-                Short Description *
+                Short Description <span className="text-[var(--ink-40)] font-normal">(optional)</span>
               </label>
               <textarea
                 value={formData.description}
@@ -319,7 +351,6 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 rows={3}
                 className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md resize-none bg-[var(--paper-card)] text-[var(--ink)]"
                 maxLength={200}
-                required
               />
               <p className="mt-1 text-xs text-[var(--ink-40)]">
                 {formData.description?.length || 0}/200 characters
@@ -432,12 +463,10 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 {salts.map((salt, i) => (
                   <div key={i} className="grid grid-cols-12 gap-2 items-start">
                     <div className="col-span-6">
-                      <Input
-                        type="text"
+                      <SaltCombobox
                         value={salt.name}
-                        onChange={(e) => updateSalt(i, { name: e.target.value })}
-                        placeholder="Salt name, e.g., Paracetamol"
-                        aria-label={`Salt ${i + 1} name`}
+                        onChange={(v) => updateSalt(i, { name: v })}
+                        ariaLabel={`Salt ${i + 1} name`}
                         required
                       />
                     </div>
@@ -513,7 +542,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Pack size *
@@ -526,7 +555,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   placeholder="15"
                   required
                 />
-                <p className="mt-1 text-xs text-[var(--ink-40)]">Tablets / ml per pack</p>
+                <p className="mt-1 text-xs text-[var(--ink-40)]">
+                  Tablets / ml per pack — sets the price per unit
+                </p>
               </div>
 
               <div>
@@ -543,20 +574,6 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     <option key={u} value={u}>{u}</option>
                   ))}
                 </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
-                  MRP (₹)
-                </label>
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={formData.mrp ?? ''}
-                  onChange={(e) => updateField('mrp', parseFloat(e.target.value) || undefined)}
-                  placeholder="Printed MRP"
-                />
               </div>
             </div>
 
@@ -905,37 +922,62 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       case 'pricing':
         return (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Only MRP + discount% are entered; the selling price is derived. */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
-                  Price (₹) * <span className="text-[var(--ink-40)] font-normal">(GST-inclusive/MRP)</span>
+                  MRP (₹) *
                 </label>
                 <Input
                   type="number"
                   min="0"
                   step="0.01"
-                  value={formData.price}
-                  onChange={(e) => updateField('price', parseFloat(e.target.value) || 0)}
+                  value={formData.mrp ?? ''}
+                  onChange={(e) => setPricing({ mrp: parseFloat(e.target.value) || 0 })}
+                  placeholder="Printed maximum retail price"
                   required
                 />
+                <p className="mt-1 text-xs text-[var(--ink-40)]">Printed maximum retail price</p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
-                  Original Price (₹)
+                  Discount %
                 </label>
                 <Input
                   type="number"
                   min="0"
+                  max="100"
                   step="0.01"
-                  value={formData.originalPrice || ''}
+                  value={formData.discountPercentage ?? 0}
                   onChange={(e) =>
-                    updateField('originalPrice', parseFloat(e.target.value) || undefined)
+                    setPricing({
+                      discountPercentage: Math.min(100, Math.max(0, parseFloat(e.target.value) || 0)),
+                    })
                   }
+                  placeholder="0"
                 />
-                <p className="mt-1 text-xs text-[var(--ink-40)]">For showing discounts</p>
+                <p className="mt-1 text-xs text-[var(--ink-40)]">Percent off the MRP</p>
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
+                  Selling price (₹)
+                </label>
+                <div
+                  className="flex h-10 items-center rounded-md border border-[var(--foil-soft)] bg-[var(--foil-soft)]/50 px-3 text-sm font-semibold text-[var(--ink)]"
+                  style={{ fontFamily: 'var(--font-data)', fontVariantNumeric: 'tabular-nums' }}
+                  aria-live="polite"
+                >
+                  ₹{(formData.price ?? 0).toFixed(2)}
+                </div>
+                <p className="mt-1 text-xs text-[var(--ink-40)]">
+                  Auto: MRP − discount (GST-inclusive)
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div>
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   GST Rate *
@@ -946,7 +988,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--brand)] bg-[var(--paper-card)] text-[var(--ink)]"
                 >
                   <option value={0}>0% — GST Exempt</option>
-                  <option value={5}>5% — Standard Food</option>
+                  <option value={5}>5% — Standard</option>
                   <option value={12}>12%</option>
                   <option value={18}>18%</option>
                   <option value={28}>28%</option>
@@ -968,9 +1010,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   required
                 />
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Weight
@@ -1134,9 +1174,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-5 h-5 rounded-full bg-[var(--foil-soft)] border border-[var(--foil-soft)] flex-shrink-0" />
                   <div>
-                    <p className="text-xs text-[var(--ink-70)] leading-none font-medium">pmstore.in</p>
+                    <p className="text-xs text-[var(--ink-70)] leading-none font-medium">pratigyamedicalstore.com</p>
                     <p className="text-[11px] text-[var(--ink-40)] leading-none mt-0.5">
-                      pmstore.in &rsaquo; products &rsaquo; {formData.slug || 'product-slug'}
+                      pratigyamedicalstore.com &rsaquo; products &rsaquo; {formData.slug || 'product-slug'}
                     </p>
                   </div>
                 </div>

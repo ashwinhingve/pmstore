@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import "@/styles/tokens.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import SessionProvider from "@/components/providers/SessionProvider";
 import { ToastViewport } from "@/components/ui/toast";
 import { CompareTray } from "@/components/compare/CompareTray";
@@ -236,14 +237,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           Skip to content
         </a>
         <SessionProvider>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main id="main-content" className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <SiteChrome
+            header={<Header />}
+            footer={<Footer />}
+            floating={
+              <>
+                <CompareTray />
+                <WhatsAppButton />
+              </>
+            }
+          >
+            {children}
+          </SiteChrome>
           <ToastViewport />
-          <CompareTray />
-          <WhatsAppButton />
         </SessionProvider>
       </body>
     </html>

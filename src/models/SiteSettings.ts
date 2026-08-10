@@ -21,6 +21,22 @@ export interface IHeroSlide {
   order: number;
 }
 
+/**
+ * A feature-slider slide. Unlike the hero, this slider shows TWO images at a
+ * time below the hero, so each slide is a single image with a link — the display
+ * pairs them up. Kept deliberately flat (no CTA copy) so the admin editor is just
+ * "upload an image, give it a link".
+ */
+export interface IFeatureSlide {
+  _id?: mongoose.Types.ObjectId;
+  image: string;
+  imagePublicId: string;
+  title: string;
+  ctaLink: string;
+  isActive: boolean;
+  order: number;
+}
+
 export interface ISiteSettings extends Document {
   _id: mongoose.Types.ObjectId;
   key: string;
@@ -30,6 +46,9 @@ export interface ISiteSettings extends Document {
   };
   heroSlider: {
     slides: IHeroSlide[];
+  };
+  featureSlider: {
+    slides: IFeatureSlide[];
   };
   updatedAt: Date;
   createdAt: Date;
@@ -68,6 +87,18 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
           ctaLink: { type: String, default: '/products' },
           ctaSecondaryText: { type: String, default: '' },
           ctaSecondaryLink: { type: String, default: '/products' },
+          isActive: { type: Boolean, default: true },
+          order: { type: Number, default: 0 },
+        },
+      ],
+    },
+    featureSlider: {
+      slides: [
+        {
+          image: { type: String, default: '' },
+          imagePublicId: { type: String, default: '' },
+          title: { type: String, default: '' },
+          ctaLink: { type: String, default: '/products' },
           isActive: { type: Boolean, default: true },
           order: { type: Number, default: 0 },
         },
