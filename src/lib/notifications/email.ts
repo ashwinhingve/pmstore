@@ -853,7 +853,7 @@ class EmailService {
       // DB lookup failed — send email without promo code
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://pmstore.in';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://pratigyamedicalstore.com';
     const greeting = name ? `Hi ${name},` : 'Hello,';
 
     const subject = 'Welcome to PM Store!';

@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pmstore.in';
+import { SITE_URL } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'Shop medicines | Pratigya Medical Store',
+  title: 'Shop medicines | PM Store',
   description:
     'Order genuine prescription and OTC medicines online from Pratigya Medical Store, Bhopal. Compare brands by price per tablet, find cheaper equivalents of the same composition, and save 60–70% with generic brands. Free home delivery.',
   keywords: [
@@ -13,6 +12,7 @@ export const metadata: Metadata = {
     'price per tablet comparison',
     'online pharmacy Bhopal',
     'prescription medicines online',
+    'PM Store',
     'Pratigya Medical Store',
     'generic brand medicines',
     'affordable medicines India',
@@ -22,24 +22,24 @@ export const metadata: Metadata = {
     canonical: `${SITE_URL}/products`,
   },
   openGraph: {
-    title: 'Shop medicines | Pratigya Medical Store',
+    title: 'Shop medicines | PM Store',
     description:
       'Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents of the same composition, and save with generic brands. Free home delivery.',
     url: `${SITE_URL}/products`,
     type: 'website',
-    siteName: 'Pratigya Medical Store',
+    siteName: 'PM Store',
     images: [
       {
         url: '/images/logo.jpg',
         width: 1200,
         height: 630,
-        alt: 'Pratigya Medical Store — Shop medicines',
+        alt: 'PM Store — Shop medicines',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Shop medicines | Pratigya Medical Store',
+    title: 'Shop medicines | PM Store',
     description:
       'Order genuine medicines online. Compare brands by price per tablet and find cheaper equivalents of the same composition.',
     images: ['/images/logo.jpg'],
