@@ -2,7 +2,7 @@ import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import OrderItem from '@/models/OrderItem';
 import Shipment from '@/models/Shipment';
-import { getShippingProvider } from './providerFactory';
+import { getShippingProvider, getDefaultProvider } from './providerFactory';
 import type { ShipmentCreationData } from './types';
 import { emailService } from '@/lib/notifications/email';
 import { smsService } from '@/lib/notifications/sms';
@@ -12,15 +12,17 @@ import { isManualDeliveryPincode } from '@/lib/constants';
  * Create a shipment for a paid (or COD-confirmed) order using the specified provider.
  *
  * @param orderId           MongoDB ObjectId string
- * @param provider          'delhivery' (default) | 'shiprocket'
+ * @param providerArg       'delhivery' | 'shiprocket'. Omit to use the env default
+ *                          (DEFAULT_SHIPPING_PROVIDER, see getDefaultProvider()).
  * @param sendNotifications Set false when the caller will handle notifications itself
  *                          (e.g. payment callback POST webhook) to avoid double-sending.
  */
 export async function createShipmentForOrder(
   orderId: string,
-  provider: 'delhivery' | 'shiprocket' = 'delhivery',
+  providerArg?: 'delhivery' | 'shiprocket',
   sendNotifications = true
 ): Promise<{ success: boolean; waybill?: string; trackingUrl?: string; error?: string }> {
+  const provider = providerArg ?? getDefaultProvider();
   try {
     await connectDB();
 

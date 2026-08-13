@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { createShipmentForOrder } from '@/lib/shipping/createShipmentForOrder';
+import { getDefaultProvider } from '@/lib/shipping/providerFactory';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { orderId, provider = 'delhivery' } = body;
+    const { orderId, provider = getDefaultProvider() } = body;
 
     if (!orderId) {
       return NextResponse.json(

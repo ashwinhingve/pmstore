@@ -248,7 +248,7 @@ export async function GET(request: NextRequest) {
       // Create shipment — sendNotifications:true so shipment tracking SMS/email fires.
       // Order confirmation is a separate message sent below.
       try {
-        const shipmentResult = await createShipmentForOrder(order._id.toString(), 'delhivery', true);
+        const shipmentResult = await createShipmentForOrder(order._id.toString(), undefined, true);
         if (shipmentResult.success) {
           console.log('Shipment created for order:', orderNumber, 'waybill:', shipmentResult.waybill);
         } else {
@@ -517,7 +517,7 @@ export async function POST(request: NextRequest) {
           // Create shipment — sendNotifications:true so shipment tracking fires.
           // Order confirmation is sent separately below.
           try {
-            const shipmentResult = await createShipmentForOrder(order._id.toString(), 'delhivery', true);
+            const shipmentResult = await createShipmentForOrder(order._id.toString(), undefined, true);
             if (shipmentResult.success) {
               logger.info('Shipment created via webhook', { orderNumber, waybill: shipmentResult.waybill });
             } else {

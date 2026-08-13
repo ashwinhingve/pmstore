@@ -32,15 +32,22 @@ const TERMINAL_STATUSES = [
  * Auth: either admin session OR secret query param (for cron).
  *
  * GET /api/shipping/poll-tracking
- * GET /api/shipping/poll-tracking?secret=YOUR_SECRET  (for cron)
+ * GET /api/shipping/poll-tracking?secret=YOUR_SECRET  (generic cron)
+ * Vercel Cron: sends `Authorization: Bearer $CRON_SECRET` (no query string).
  */
 export async function GET(request: NextRequest) {
   try {
-    // Auth: check secret param (cron) OR admin session
+    // Auth: query secret (generic cron) OR Vercel Cron header OR admin session
     const secret = request.nextUrl.searchParams.get('secret');
     const hasValidSecret = !!secret && !!POLL_SECRET && timingSafeStringEqual(secret, POLL_SECRET);
 
-    if (!hasValidSecret) {
+    // Vercel Cron passes the secret in the Authorization header rather than the
+    // URL, so it never lands in server/proxy logs or cron dashboards.
+    const cronSecret = process.env.CRON_SECRET;
+    const authHeader = request.headers.get('authorization') || '';
+    const hasValidCron = !!cronSecret && timingSafeStringEqual(authHeader, `Bearer ${cronSecret}`);
+
+    if (!hasValidSecret && !hasValidCron) {
       // Check admin session
       const session = await getServerSession(authOptions);
       if (!session?.user?.email) {
