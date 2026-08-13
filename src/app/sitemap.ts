@@ -20,6 +20,24 @@ const staticPages: MetadataRoute.Sitemap = [
     priority: 0.9,
   },
   {
+    url: `${SITE_URL}/bestsellers`,
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 0.8,
+  },
+  {
+    url: `${SITE_URL}/how-it-works`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  },
+  {
+    url: `${SITE_URL}/custom-order`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  },
+  {
     url: `${SITE_URL}/about`,
     lastModified: new Date(),
     changeFrequency: 'monthly',

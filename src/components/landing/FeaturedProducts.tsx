@@ -150,10 +150,10 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
           <div className="mt-8 text-center">
             <Link
-              href="/products"
+              href="/bestsellers"
               className="group inline-flex h-11 items-center gap-1.5 rounded-[var(--radius-pill)] border border-[var(--foil)] bg-[var(--paper-card)] px-6 font-semibold text-[var(--brand-deep)] shadow-[var(--shadow-xs)] transition-[transform,box-shadow,border-color] duration-[var(--dur-fast)] hover:-translate-y-0.5 hover:border-[var(--brand)] hover:shadow-[var(--shadow-sm)]"
             >
-              View all medicines
+              View all bestsellers
               <ArrowRight
                 className="h-4 w-4 transition-transform duration-[var(--dur-fast)] group-hover:translate-x-0.5"
                 aria-hidden="true"
