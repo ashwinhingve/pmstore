@@ -4,6 +4,8 @@ import { SITE_SHORT_NAME, CONTACT_EMAIL } from "@/lib/constants"
 import { applyRateLimit } from "@/lib/middleware/rateLimit"
 import { createErrorResponse, Errors } from "@/lib/utils/errorHandler"
 import { contactSchema } from "@/lib/validations/contact"
+import { connectDB } from "@/lib/mongodb"
+import Enquiry from "@/models/Enquiry"
 
 export const runtime = "nodejs"
 
@@ -41,7 +43,30 @@ export async function POST(req: NextRequest) {
         parsed.error.flatten()
       )
     }
-    const { name, email, phone, subject, message } = parsed.data
+    const { name, email, phone, subject, message, source, website } = parsed.data
+
+    // Honeypot: a filled hidden field means a bot. Ack success without doing
+    // anything, so the bot can't tell it was rejected.
+    if (website) {
+      return NextResponse.json({ data: { sent: true } }, { status: 200 })
+    }
+
+    // Persist the enquiry so staff can work through it at /admin/enquiries.
+    // Best-effort: a DB hiccup must not lose the lead or block the reply email,
+    // and we never log the message/phone/email (CLAUDE.md rule #6).
+    try {
+      await connectDB()
+      await Enquiry.create({
+        name,
+        email,
+        phone: phone || undefined,
+        subject: subject || undefined,
+        message,
+        source: source === "footer" ? "footer" : "contact",
+      })
+    } catch {
+      console.warn("Contact form: could not store the enquiry.")
+    }
 
     const smtpPass = process.env.SMTP_PASS || process.env.SMTP_PASSWORD
     if (!process.env.SMTP_USER || !smtpPass) {

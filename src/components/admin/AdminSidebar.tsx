@@ -17,6 +17,7 @@ import {
   ClipboardCheck,
   Boxes,
   ClipboardList,
+  Inbox,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -42,6 +43,7 @@ export const adminNavigation: NavGroup[] = [
       { label: 'Orders', href: '/admin/orders', icon: ShoppingBag },
       { label: 'Custom orders', href: '/admin/custom-orders', icon: ClipboardList },
       { label: 'Bulk orders', href: '/admin/wholesale-enquiries', icon: Boxes },
+      { label: 'Enquiries', href: '/admin/enquiries', icon: Inbox },
       { label: 'Prescriptions', href: '/admin/prescriptions', icon: ClipboardCheck },
       { label: 'Payments', href: '/admin/payments', icon: CreditCard },
       { label: 'Shipments', href: '/admin/shipments', icon: Truck },
