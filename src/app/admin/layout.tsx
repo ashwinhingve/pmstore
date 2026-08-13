@@ -13,12 +13,13 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   // This will redirect to login if not authenticated or to home if not admin
-  const session = await requireAdmin();
+  await requireAdmin();
 
   return (
     <div className="min-h-screen bg-[var(--paper)]">
-      {/* Admin Header */}
-      <AdminHeader user={session.user} />
+      {/* Mobile-only admin nav bar. On desktop the left sidebar + the orange
+          site navbar (from SiteChrome) provide navigation, so this is hidden. */}
+      <AdminHeader />
 
       <div className="flex">
         {/* Sidebar Navigation */}
