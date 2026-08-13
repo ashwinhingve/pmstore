@@ -12,6 +12,7 @@ import { CompareTray } from "@/components/compare/CompareTray";
 import { WhatsAppButton } from "@/components/shared/WhatsAppButton";
 import { connectDB } from "@/lib/mongodb";
 import MarketingSettings from "@/models/MarketingSettings";
+import { organizationSchema, websiteSchema, safeJsonLd } from "@/lib/seo/structured-data";
 
 // Self-hosted via next/font — no external font request (works under strict CSP).
 // The CSS variables feed the --font-* tokens in tokens.css.
@@ -39,23 +40,23 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pratigyamedicalsto
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "PM Store — Pratigya Medical Store | Online Pharmacy",
+    default: "PM Store — Online Pharmacy | Medicines, Surgical & Health Supplies",
     template: "%s | PM Store",
   },
-  description: "PM Store (Pratigya Medical Store) — order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents of the same composition, upload a prescription, and reorder in one tap.",
-  keywords: ["pm store", "pmstore", "pratigya medical store", "online pharmacy", "buy medicines online", "generic medicine", "price per tablet", "prescription upload", "medicine home delivery", "India pharmacy"],
+  description: "PM Store — order medicines online from a trusted Bhopal pharmacy. Compare brands by price per tablet, find cheaper equivalents of the same composition, upload a prescription, and reorder in one tap.",
+  keywords: ["pm store", "pmstore", "pm store pharmacy", "pm store bhopal", "pm store online", "pratigya medical store", "online pharmacy", "buy medicines online", "generic medicine", "price per tablet", "surgical supplies", "prescription upload", "medicine home delivery bhopal", "India pharmacy"],
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "PM Store — Pratigya Medical Store | Online Pharmacy",
-    description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, upload a prescription, and reorder in one tap.",
+    title: "PM Store — Online Pharmacy | Medicines & Health Supplies",
+    description: "Order medicines online from PM Store. Compare brands by price per tablet, find cheaper equivalents, upload a prescription, and reorder in one tap.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "PM Store — Pratigya Medical Store",
+        alt: "PM Store — Online Pharmacy",
       },
     ],
     siteName: "PM Store",
@@ -65,8 +66,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PM Store — Pratigya Medical Store | Online Pharmacy",
-    description: "Order genuine medicines online. Compare brands by price per tablet, find cheaper equivalents, and upload a prescription.",
+    title: "PM Store — Online Pharmacy | Medicines & Health Supplies",
+    description: "Order medicines online from PM Store. Compare brands by price per tablet, find cheaper equivalents, and upload a prescription.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -82,54 +83,11 @@ export const metadata: Metadata = {
   },
 };
 
-const orgJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Pharmacy",
-  "@id": `${SITE_URL}/#organization`,
-  "name": "Pratigya Medical Store",
-  "alternateName": "PM Store",
-  "url": SITE_URL,
-  "logo": {
-    "@type": "ImageObject",
-    "url": `${SITE_URL}/pmstore-logo.png`,
-    "width": 512,
-    "height": 512,
-  },
-  "description": "Online pharmacy — genuine medicines with price-per-unit comparison, cheaper equivalents, and prescription upload.",
-  "address": {
-    "@type": "PostalAddress",
-    "addressRegion": "Madhya Pradesh",
-    "addressCountry": "IN",
-  },
-  // TODO (Week 6): add the drug-licence disclosure credential.
-};
-
-const websiteJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": `${SITE_URL}/#website`,
-  "url": SITE_URL,
-  "name": "PM Store",
-  "description": "Online pharmacy — genuine medicines, price-per-unit comparison, and prescription upload.",
-  "publisher": {
-    "@id": `${SITE_URL}/#organization`,
-  },
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": {
-      "@type": "EntryPoint",
-      "urlTemplate": `${SITE_URL}/products?search={search_term_string}`,
-    },
-    "query-input": "required name=search_term_string",
-  },
-};
-
-function safeJsonLd(data: object): string {
-  return JSON.stringify(data)
-    .replace(/</g, "\\u003c")
-    .replace(/>/g, "\\u003e")
-    .replace(/&/g, "\\u0026");
-}
+// Brand entity + site schema — single source of truth in src/lib/seo.
+// name is "PM Store" (the query we want to rank for); the registered name rides
+// along as legalName. TODO (Week 6): add the drug-licence disclosure credential.
+const orgJsonLd = organizationSchema(SITE_URL);
+const websiteJsonLd = websiteSchema(SITE_URL);
 
 async function getMarketingSettings() {
   try {

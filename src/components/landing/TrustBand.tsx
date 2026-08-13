@@ -19,7 +19,7 @@ export function TrustBand() {
   // stands behind everywhere else. Swap in real figures once the client confirms.
   const stats = [
     { label: 'Years trusted', value: 20, suffix: '+' },
-    { label: 'Genuine medicines', value: 100, suffix: '%' },
+    { label: 'Quality medicines', value: 100, suffix: '%' },
     { label: 'Pharmacist-checked', value: 100, suffix: '%' },
   ];
 

@@ -11,11 +11,11 @@ export const SITE_SHORT_NAME = "PM Store";
 // Compliance badge (kept distinct from the marketing slogan below).
 export const SITE_TAGLINE = "Government Approved Generic Brand";
 // Marketing slogan — logo lockup, hero, footer, PWA manifest.
-export const SITE_SLOGAN = "Genuine medicines, generic prices";
+export const SITE_SLOGAN = "Trusted medicines, generic prices";
 export const SITE_DESCRIPTION =
-  "Pratigya Medical Store is a trusted pharmacy bridging doctors and patients — " +
-  "genuine prescription and OTC medicines at generic prices, dispensed by trained " +
-  "pharmacists with free home delivery across Bhopal.";
+  "PM Store is a trusted Bhopal pharmacy bridging doctors and patients — " +
+  "prescription and OTC medicines at generic prices, compared by price per tablet " +
+  "and dispensed by trained pharmacists, with free home delivery across Bhopal.";
 
 // Public site domain (override with NEXT_PUBLIC_SITE_URL in production)
 export const SITE_URL =
@@ -51,7 +51,7 @@ export const VALUE_PROPS = [
   "30–40% off on pathology services",
   "Order easily over WhatsApp",
   "20+ years of trusted service",
-  "Genuine medicines, trained pharmacists",
+  "Quality medicines, trained pharmacists",
 ] as const;
 
 // Social — only channels we actually have. Add handles here when confirmed.

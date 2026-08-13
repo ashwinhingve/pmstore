@@ -875,7 +875,7 @@ class EmailService {
             </div>
             <div class="content">
               <p>${greeting}</p>
-              <p>Thank you for joining ${SITE_NAME} — a trusted pharmacy bridging doctors and patients with genuine prescription and OTC medicines at generic prices.</p>
+              <p>Thank you for joining ${SITE_NAME} — a trusted pharmacy bridging doctors and patients with prescription and OTC medicines at generic prices.</p>
               ${promoBlock}
               <p>Start exploring our collection and save 60–70% on your medicine costs.</p>
               <div style="text-align:center;margin:28px 0;">

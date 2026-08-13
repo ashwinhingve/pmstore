@@ -20,7 +20,7 @@ const REASONS = [
     icon: ShieldCheck,
     image: '/landing/trust-2.jpg',
     imageAlt: 'Precise quality check in a lab',
-    title: 'Genuine, approved medicines',
+    title: 'Trusted, approved medicines',
     body: 'Sourced from licensed distributors and checked before dispatch. Schedule-H medicines are verified against your prescription.',
   },
   {
@@ -48,8 +48,8 @@ export function WhyChooseUs() {
         <SectionHeading
           align="center"
           eyebrow="Why us"
-          title="Why choose Pratigya Medical Store"
-          description="Genuine medicines, honest pricing, and a pharmacist on every order"
+          title="Why choose PM Store"
+          description="Quality medicines, honest pricing, and a pharmacist on every order"
           className="mb-10"
         />
 

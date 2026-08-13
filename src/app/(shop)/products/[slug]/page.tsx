@@ -60,7 +60,7 @@ export async function generateMetadata({
     product.description ||
     `Buy ${product.name}${composition ? ` (${composition})` : ''}${
       product.manufacturer ? ` by ${product.manufacturer}` : ''
-    } online at PM Store — genuine medicine${packLabel ? `, ${packLabel} pack` : ''}, priced per ${
+    } online at PM Store — medicine${packLabel ? `, ${packLabel} pack` : ''}, priced per ${
       product.packUnit || 'unit'
     }. Free delivery in Bhopal.`;
 
@@ -155,7 +155,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
     : '';
   const jsonLdDescription =
     serializedProduct.description ||
-    `${serializedProduct.name}${jsonLdComposition ? ` – ${jsonLdComposition}` : ''} — genuine medicine at PM Store.`;
+    `${serializedProduct.name}${jsonLdComposition ? ` – ${jsonLdComposition}` : ''} — medicine at PM Store.`;
 
   // Product JSON-LD — enables price, availability, and star ratings in Google SERPs.
   // brand = the medicine's manufacturer (falling back to the store); seller = PM Store.
@@ -272,7 +272,7 @@ export default async function ProductDetailPage({ params, searchParams }: Produc
           <SectionHeading
             eyebrow="Compare & save"
             title="Same composition, better price"
-            description="The price that matters is per tablet. Switch to a genuine, cheaper brand with the exact same salts."
+            description="The price that matters is per tablet. Switch to a cheaper brand with the exact same salts."
           />
           <section className="mt-5 grid gap-8 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-feature)] sm:p-6 md:grid-cols-3">
             <div className="space-y-4 md:col-span-1">

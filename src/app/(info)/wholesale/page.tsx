@@ -14,13 +14,13 @@ import { WholesaleForm } from "@/components/wholesale/WholesaleForm"
 export const metadata: Metadata = {
   title: "Wholesale & bulk supply",
   description:
-    "Bulk medicine supply for pharmacies, clinics and institutions from Pratigya Medical Store — genuine, licensed stock, GST invoicing and reliable monthly delivery. Request a wholesale quote.",
+    "Bulk medicine supply for pharmacies, clinics and institutions from PM Store — licensed stock, GST invoicing and reliable monthly delivery. Request a wholesale quote.",
   alternates: { canonical: "/wholesale" },
 }
 
 const BENEFITS = [
   { icon: TrendingDown, title: "Wholesale pricing", body: "Volume rates that protect your margins on regular purchases." },
-  { icon: ShieldCheck, title: "Genuine, licensed stock", body: "Sourced through licensed channels with proper batch and expiry records." },
+  { icon: ShieldCheck, title: "Trusted, licensed stock", body: "Sourced through licensed channels with proper batch and expiry records." },
   { icon: Truck, title: "Reliable monthly supply", body: "Standing orders delivered on a schedule so you never run short." },
   { icon: FileText, title: "Proper GST invoicing", body: "Clean tax invoices for your accounts and input credit." },
   { icon: Headphones, title: "A person to call", body: "A dedicated contact for your account, not a queue." },
@@ -63,7 +63,7 @@ export default function WholesalePage() {
           Bulk supply for pharmacies, clinics and institutions
         </h1>
         <p className="mt-4 max-w-2xl text-[length:var(--step-1)] text-[var(--ink-70)]">
-          Genuine, licensed stock at wholesale rates, with GST invoicing and a delivery schedule
+          Trusted, licensed stock at wholesale rates, with GST invoicing and a delivery schedule
           you can plan around. Send us your list and we&apos;ll come back with a quote.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">

@@ -32,7 +32,7 @@ export default function ReturnPolicyPage() {
             {/* Introduction */}
             <div className="bg-[var(--paper)] rounded-[var(--radius-md)] p-8 shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
               <p className="text-[var(--ink)] leading-relaxed">
-                {SITE_NAME} is committed to providing genuine, safely packaged medicines. Due to the nature of pharmaceuticals, please read this policy carefully before placing an order.
+                {SITE_NAME} is committed to providing safely packaged, quality medicines. Due to the nature of pharmaceuticals, please read this policy carefully before placing an order.
               </p>
             </div>
 

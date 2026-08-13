@@ -11,6 +11,8 @@
  * navigation context, and FAQPage for the info pages (eligible for rich results).
  */
 
+import { SITE_NAME, SITE_SHORT_NAME, CONTACT, SOCIAL_LINKS } from '@/lib/constants';
+
 const ORG_ID = (siteUrl: string) => `${siteUrl}/#organization`;
 
 /** Escape a JSON-LD payload so it can't break out of the <script> tag. */
@@ -21,27 +23,44 @@ export function safeJsonLd(data: object): string {
     .replace(/&/g, '\\u0026');
 }
 
+/**
+ * The store's entity schema. `name` is the brand people actually search for
+ * ("PM Store") so Google ties the query to this site; the registered name is
+ * carried as `legalName`/`alternateName`. Full NAP (name/address/phone) +
+ * openingHours make it a complete local Pharmacy entity, which is what surfaces
+ * the site for the brand query.
+ */
 export function organizationSchema(siteUrl: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Pharmacy',
     '@id': ORG_ID(siteUrl),
-    name: 'Pratigya Medical Store',
-    alternateName: 'PM Store',
+    name: SITE_SHORT_NAME,
+    legalName: SITE_NAME,
+    alternateName: SITE_NAME,
     url: siteUrl,
     logo: {
       '@type': 'ImageObject',
-      url: `${siteUrl}/images/logo.jpg`,
+      url: `${siteUrl}/pmstore-logo.png`,
       width: 512,
       height: 512,
     },
+    image: `${siteUrl}/pmstore-logo.png`,
+    telephone: CONTACT.phone,
+    email: CONTACT.email,
     description:
-      'Online pharmacy — genuine medicines with price-per-unit comparison, cheaper equivalents, and prescription upload.',
+      'PM Store (Pratigya Medical Store) — online pharmacy in Bhopal. Compare medicine brands by price per tablet, find cheaper equivalents of the same composition, upload a prescription, and get free home delivery.',
     address: {
       '@type': 'PostalAddress',
-      addressRegion: 'Madhya Pradesh',
+      streetAddress: CONTACT.address.line1,
+      addressLocality: CONTACT.address.city,
+      addressRegion: CONTACT.address.state,
+      postalCode: CONTACT.address.postalCode,
       addressCountry: 'IN',
     },
+    areaServed: CONTACT.address.city,
+    openingHours: 'Mo-Su 09:00-21:00',
+    sameAs: [SOCIAL_LINKS.whatsapp],
   };
 }
 
@@ -51,9 +70,10 @@ export function websiteSchema(siteUrl: string) {
     '@type': 'WebSite',
     '@id': `${siteUrl}/#website`,
     url: siteUrl,
-    name: 'PM Store',
+    name: SITE_SHORT_NAME,
+    alternateName: SITE_NAME,
     description:
-      'Online pharmacy — genuine medicines, price-per-unit comparison, and prescription upload.',
+      'PM Store — online pharmacy with price-per-tablet comparison, cheaper equivalents, and prescription upload.',
     publisher: { '@id': ORG_ID(siteUrl) },
     potentialAction: {
       '@type': 'SearchAction',

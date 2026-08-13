@@ -333,7 +333,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
       {/* Trust badges */}
       <div className="grid grid-cols-3 gap-3 pt-6">
         {[
-          { icon: BadgeCheck, label: '100% genuine', accent: true },
+          { icon: BadgeCheck, label: '100% authentic', accent: true },
           { icon: Truck, label: 'Free home delivery', accent: false },
           { icon: Shield, label: 'Secure payment', accent: true },
         ].map(({ icon: Icon, label, accent }) => (

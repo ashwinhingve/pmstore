@@ -359,7 +359,7 @@ export default function ProductsPage() {
             )}
           </div>
           <p className="mt-1 max-w-2xl text-sm text-[var(--ink-70)]">
-            {SITE_SLOGAN} — compare brands by price per tablet and switch to genuine, cheaper equivalents.
+            {SITE_SLOGAN} — compare brands by price per tablet and switch to cheaper equivalents.
           </p>
         </div>
       </div>

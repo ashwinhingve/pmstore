@@ -4,9 +4,9 @@ import { FAQAccordion, type FAQItem } from '@/components/shared/FAQAccordion';
 import { Card } from '@/components/ui/card';
 
 export const metadata: Metadata = {
-  title: 'Frequently Asked Questions — Pratigya Medical Store',
+  title: 'Frequently Asked Questions — PM Store',
   description:
-    'Answers about prescriptions, delivery, generic alternatives, refunds and refill reminders at Pratigya Medical Store.',
+    'Answers about prescriptions, delivery, generic alternatives, refunds and refill reminders at PM Store.',
 };
 
 /**

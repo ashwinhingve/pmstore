@@ -6,13 +6,13 @@ import { CustomOrderForm } from "@/components/custom-order/CustomOrderForm"
 export const metadata: Metadata = {
   title: "Custom order — request a medicine",
   description:
-    "Can't find your medicine at Pratigya Medical Store? Request it and we'll source it for you — genuine stock, generic prices, delivered across Bhopal. Tell us what you need and we'll call you back.",
+    "Can't find your medicine at PM Store? Request it and we'll source it for you at generic prices, delivered across Bhopal. Tell us what you need and we'll call you back.",
   alternates: { canonical: "/custom-order" },
 }
 
 const STEPS = [
   { icon: ClipboardList, title: "Tell us what you need", body: "Share the medicine name, strength and how much — a brand, a salt, or a short list." },
-  { icon: Search, title: "We check availability", body: "We source it through our licensed suppliers and confirm the genuine, best-price option." },
+  { icon: Search, title: "We check availability", body: "We source it through our licensed suppliers and confirm the best-price option." },
   { icon: PhoneCall, title: "We call you back", body: "Usually within a working day, with price and timing — and to collect a prescription if it's needed." },
   { icon: PackageCheck, title: "Delivered to you", body: "Confirm the order and we deliver to your door across Bhopal." },
 ]

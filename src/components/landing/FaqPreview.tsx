@@ -12,9 +12,9 @@ import { SectionHeading } from '@/components/shared/SectionHeading';
  */
 const SAMPLE_FAQS = [
   {
-    question: 'Are the medicines genuine?',
+    question: 'Are your medicines authentic?',
     answer:
-      'Yes, all medicines are 100% genuine and sourced directly from authorized distributors. We are a licensed pharmacy with all regulatory approvals.',
+      'Yes. All medicines are sourced directly from authorised distributors, and we are a licensed pharmacy with all regulatory approvals.',
   },
   {
     question: 'Do you deliver outside Bhopal?',
