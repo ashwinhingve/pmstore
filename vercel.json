@@ -2,6 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "crons": [
-    { "path": "/api/shipping/poll-tracking", "schedule": "0 */6 * * *" }
+    { "path": "/api/shipping/poll-tracking", "schedule": "0 13 * * *" }
   ]
 }
