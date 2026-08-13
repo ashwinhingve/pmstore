@@ -4,7 +4,8 @@ import { connectDB } from '@/lib/mongodb';
 import { authOptions } from '@/lib/auth';
 import Product from '@/models/Product';
 import SiteSettings from '@/models/SiteSettings';
-import { SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants';
+import Category from '@/models/Category';
+import { SITE_SHORT_NAME, SITE_DESCRIPTION } from '@/lib/constants';
 import { HeroSlider } from '@/components/landing/HeroSlider';
 import type { HeroSlideView } from '@/components/landing/HeroSlider';
 import { FeatureSlider } from '@/components/landing/FeatureSlider';
@@ -12,6 +13,7 @@ import type { FeatureSlideView } from '@/components/landing/FeatureSlider';
 import { PromoBar } from '@/components/landing/PromoBar';
 import { QuickActions } from '@/components/landing/QuickActions';
 import { Categories } from '@/components/landing/Categories';
+import type { CategoryCardView } from '@/components/landing/Categories';
 import { CustomOrderCta } from '@/components/landing/CustomOrderCta';
 import { PromoBanners } from '@/components/landing/PromoBanners';
 import { FeaturedProducts } from '@/components/landing/FeaturedProducts';
@@ -21,10 +23,11 @@ import { FaqPreview } from '@/components/landing/FaqPreview';
 import { ContactCta } from '@/components/landing/ContactCta';
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} | Genuine Medicines Online`,
+  title: `${SITE_SHORT_NAME} — Online Pharmacy in Bhopal | Order Medicines Online`,
   description: SITE_DESCRIPTION,
+  alternates: { canonical: '/' },
   openGraph: {
-    title: `${SITE_NAME} | Genuine Medicines Online`,
+    title: `${SITE_SHORT_NAME} — Online Pharmacy in Bhopal | Order Medicines Online`,
     description: SITE_DESCRIPTION,
     type: 'website',
     images: [
@@ -32,7 +35,7 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: SITE_NAME,
+        alt: SITE_SHORT_NAME,
       },
     ],
   },
@@ -57,7 +60,7 @@ interface Product {
 }
 
 /**
- * Home — premium marketing landing page for Pratigya Medical Store.
+ * Home — premium marketing landing page for PM Store.
  * Server-fetches featured products, respects user session.
  *
  * Sections (in render order):
@@ -86,6 +89,9 @@ export default async function Home() {
   // Admin-managed feature slides (the 2-up band below the hero). Empty →
   // FeatureSlider falls back to a curated pair.
   let featureSlides: FeatureSlideView[] = [];
+  // Admin-managed categories (name + image, editable at /admin/categories). Empty
+  // → Categories falls back to the canonical taxonomy so the grid is never blank.
+  let categoryCards: CategoryCardView[] = [];
   try {
     await connectDB();
     const products = await Product.find({
@@ -132,6 +138,17 @@ export default async function Home() {
         title: s.title || undefined,
         ctaLink: s.ctaLink || undefined,
       }));
+
+    // Active categories, ordered — drives the homepage category grid.
+    const categories = await Category.find({ isActive: true })
+      .sort({ order: 1 })
+      .select('name slug image')
+      .lean();
+    categoryCards = categories.map((c: any) => ({
+      name: c.name as string,
+      slug: c.slug as string,
+      image: (c.image as string) || undefined,
+    }));
   } catch (error) {
     // Silent fail — if catalogue is unseeded, we show empty state gracefully
     console.error('Failed to fetch home page data:', error);
@@ -139,10 +156,16 @@ export default async function Home() {
 
   return (
     <div className="w-full">
+      {/* The hero is image-only by design, so this is the page's single H1 —
+          it carries the brand + core intent for the "PM Store" search query. */}
+      <h1 className="sr-only">
+        PM Store — online pharmacy in Bhopal. Order medicines online, compare brands by price per
+        tablet, and get free home delivery.
+      </h1>
       {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
       <HeroSlider slides={heroSlides} />
       <FeatureSlider slides={featureSlides} />
-      <Categories />
+      <Categories categories={categoryCards} />
       <CustomOrderCta />
       <QuickActions signedIn={signedIn} />
       <FeaturedProducts products={featuredProducts} />

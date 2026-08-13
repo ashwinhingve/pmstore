@@ -1,47 +1,91 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, LayoutGrid } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Container } from '@/components/shared/Container';
 import { SectionHeading } from '@/components/shared/SectionHeading';
-import { PHARMA_CATEGORIES } from '@/lib/categories';
+import { PHARMA_CATEGORIES, categoryIcon } from '@/lib/categories';
 import { getCategoryTint } from '@/lib/pharma/medicine-visual';
 import { CATEGORY_IMAGES } from '@/lib/landing-images';
 import { cn } from '@/lib/utils';
 
+/** An admin-managed category (from the Category collection). */
+export interface CategoryCardView {
+  name: string;
+  slug: string;
+  /** Admin-uploaded image URL; empty falls back to the curated CATEGORY_IMAGES. */
+  image?: string;
+}
+
 /**
- * Categories — image-backed cards, one per canonical pharma category
- * (src/lib/categories.ts). Category names match the DB so each card links to a
- * working /products filter. Replaces the old icon-tile grid; this is where
- * category browsing lives now that the top nav no longer carries a dropdown.
+ * Categories — image-backed cards for the storefront's category navigation.
  *
- * Each card uses a curated photo (CATEGORY_IMAGES, keyed by slug). A category
- * with no photo falls back to its tinted card, so the grid is never broken.
+ * Driven by the admin-managed Category collection (passed as `categories`): the
+ * name and image come from the DB so both are editable at /admin/categories and
+ * appear here without a code change. The canonical taxonomy
+ * (src/lib/categories.ts) still supplies each card's icon, tint and routing, and
+ * CATEGORY_IMAGES is the photo fallback when a category has no admin image. When
+ * no categories are passed (DB unseeded) it renders the full canonical list, so
+ * the grid is never blank.
+ *
+ * Category names match the DB, so each card links to a working /products filter.
  */
-export function Categories() {
+
+const CANON_BY_SLUG = Object.fromEntries(PHARMA_CATEGORIES.map((c) => [c.slug, c]));
+
+function hrefForSlug(slug: string, name: string): string {
+  // Pet Care has no SKUs yet, so route to the request form rather than dead-end
+  // on an empty /products filter. Medicine is the browse-all door.
+  if (slug === 'pet-care') return '/custom-order';
+  if (slug === 'medicine') return '/products';
+  return `/products?category=${encodeURIComponent(name)}`;
+}
+
+export function Categories({ categories }: { categories?: CategoryCardView[] }) {
   const reduceMotion = useReducedMotion();
+
+  const items = useMemo(() => {
+    const source: CategoryCardView[] =
+      categories && categories.length > 0
+        ? categories
+        : PHARMA_CATEGORIES.map((c) => ({ name: c.name, slug: c.slug }));
+
+    return source.map((cat) => {
+      const canon = CANON_BY_SLUG[cat.slug];
+      const fallback = CATEGORY_IMAGES[cat.slug];
+      const image = cat.image || fallback?.url;
+      return {
+        name: cat.name,
+        slug: cat.slug,
+        Icon: canon?.icon ?? categoryIcon(cat.name),
+        tint: getCategoryTint(cat.name),
+        image,
+        imageAlt: cat.image ? cat.name : fallback?.alt || cat.name,
+        href: hrefForSlug(cat.slug, cat.name),
+      };
+    });
+  }, [categories]);
 
   return (
     <section className="bg-[var(--paper)]">
       <Container className="py-16 sm:py-24">
         <SectionHeading
           align="center"
-          eyebrow="Catalogue"
-          title="Shop by category"
-          description="Tap a category to see every brand, priced per tablet"
+          eyebrow="Browse the pharmacy"
+          title="Find your medicine faster"
+          description="Pick a category to compare every brand by price per tablet — or search the full catalogue."
           className="mb-10"
         />
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
-          {PHARMA_CATEGORIES.map((category, i) => {
-            const Icon = category.icon;
-            const tint = getCategoryTint(category.name);
-            const img = CATEGORY_IMAGES[category.slug];
+          {items.map((category, i) => {
+            const { Icon, tint, image } = category;
             return (
               <motion.div
-                key={category.name}
+                key={category.slug || category.name}
                 initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
@@ -51,23 +95,14 @@ export function Categories() {
                 viewport={{ once: true, margin: '0px 0px -60px 0px' }}
               >
                 <Link
-                  href={
-                    // Pet Care has no SKUs yet, so route to the request form
-                    // rather than dead-end on an empty /products filter. Medicine
-                    // is the browse-all door, so it goes to the full catalogue.
-                    category.slug === 'pet-care'
-                      ? '/custom-order'
-                      : category.slug === 'medicine'
-                        ? '/products'
-                        : `/products?category=${encodeURIComponent(category.name)}`
-                  }
+                  href={category.href}
                   className="group relative flex aspect-[5/4] flex-col justify-end overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] sm:aspect-[4/3]"
                 >
-                  {img ? (
+                  {image ? (
                     <>
                       <Image
-                        src={img.url}
-                        alt={img.alt}
+                        src={image}
+                        alt={category.imageAlt}
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         className="object-cover transition-transform duration-[var(--dur-slow)] ease-[var(--ease-out)] group-hover:scale-105"
@@ -82,14 +117,14 @@ export function Categories() {
                   <div className="relative flex items-center gap-2 p-3 sm:gap-2.5 sm:p-4">
                     <span
                       className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--brand-ink)]/95 shadow-[var(--shadow-xs)] sm:h-8 sm:w-8"
-                      style={{ color: img ? 'var(--brand-deep)' : tint.fg }}
+                      style={{ color: image ? 'var(--brand-deep)' : tint.fg }}
                     >
                       <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
                     </span>
                     <h3
                       className={cn(
                         'min-w-0 font-[family-name:var(--font-display)] text-sm font-extrabold leading-tight tracking-tight line-clamp-2 sm:text-base',
-                        img ? 'text-[var(--brand-ink)]' : 'text-[var(--ink)]',
+                        image ? 'text-[var(--brand-ink)]' : 'text-[var(--ink)]',
                       )}
                     >
                       {category.name}
