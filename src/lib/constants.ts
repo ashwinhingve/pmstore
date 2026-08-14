@@ -8,6 +8,15 @@ export const SITE_NAME = "Pratigya Medical Store";
 // Short display brand — used everywhere customers read the name (navbar, footer
 // heading, logo wordmark, page-title suffix).
 export const SITE_SHORT_NAME = "PM Store";
+// Brand aliases people search for — fed to schema.org alternateName + SEO keywords
+// so Google ties "PM Store medicine"/"PMStore" queries to this entity.
+export const SITE_ALT_NAMES = [
+  "Pratigya Medical Store",
+  "PMStore",
+  "PM Store Medicine",
+  "PM Store Pharmacy",
+  "PM Store Bhopal",
+];
 // Compliance badge (kept distinct from the marketing slogan below).
 export const SITE_TAGLINE = "Government Approved Generic Brand";
 // Marketing slogan — logo lockup, hero, footer, PWA manifest.

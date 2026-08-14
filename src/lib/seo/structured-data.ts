@@ -11,7 +11,7 @@
  * navigation context, and FAQPage for the info pages (eligible for rich results).
  */
 
-import { SITE_NAME, SITE_SHORT_NAME, CONTACT, SOCIAL_LINKS } from '@/lib/constants';
+import { SITE_NAME, SITE_SHORT_NAME, SITE_ALT_NAMES, CONTACT, SOCIAL_LINKS } from '@/lib/constants';
 
 const ORG_ID = (siteUrl: string) => `${siteUrl}/#organization`;
 
@@ -37,7 +37,11 @@ export function organizationSchema(siteUrl: string) {
     '@id': ORG_ID(siteUrl),
     name: SITE_SHORT_NAME,
     legalName: SITE_NAME,
-    alternateName: SITE_NAME,
+    // Brand aliases customers actually search for — helps Google associate
+    // "PM Store medicine"/"PMStore" with this entity. "Pratigya Medical Store"
+    // stays as legalName and the first alias.
+    alternateName: SITE_ALT_NAMES,
+    brand: { '@type': 'Brand', name: SITE_SHORT_NAME },
     url: siteUrl,
     logo: {
       '@type': 'ImageObject',
@@ -71,7 +75,7 @@ export function websiteSchema(siteUrl: string) {
     '@id': `${siteUrl}/#website`,
     url: siteUrl,
     name: SITE_SHORT_NAME,
-    alternateName: SITE_NAME,
+    alternateName: SITE_ALT_NAMES,
     description:
       'PM Store — online pharmacy with price-per-tablet comparison, cheaper equivalents, and prescription upload.',
     publisher: { '@id': ORG_ID(siteUrl) },

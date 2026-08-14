@@ -3,7 +3,7 @@ import { ShieldCheck } from 'lucide-react';
 import { CONTACT } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'Drug Licence & Compliance — Pratigya Medical Store',
+  title: 'Drug Licence & Compliance | PM Store',
   description:
     'Drug licence details and regulatory compliance for Pratigya Medical Store under the Drugs & Cosmetics Act, 1940.',
 };
