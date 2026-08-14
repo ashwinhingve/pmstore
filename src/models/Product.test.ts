@@ -69,4 +69,19 @@ describe('Product derive hook', () => {
     bad.salts = [];
     await expect(Product.create(bad)).rejects.toThrow();
   });
+
+  // Short description is optional (admin form + Zod, since 13d656d). The model
+  // must agree, otherwise Product.create throws a ValidationError that the POST
+  // handler surfaces as an opaque 500.
+  it('creates a product with no short description', async () => {
+    const noDesc: any = baseProduct();
+    delete noDesc.description;
+    const p = await Product.create(noDesc);
+    expect(p._id).toBeDefined();
+  });
+
+  it('creates a product with an empty-string description (form sends "")', async () => {
+    const p = await Product.create({ ...baseProduct(), description: '' });
+    expect(p._id).toBeDefined();
+  });
 });

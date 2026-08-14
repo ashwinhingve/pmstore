@@ -129,9 +129,11 @@ const ProductSchema = new Schema<IProduct>(
       uppercase: true,
       trim: true,
     },
+    // Short description is optional (admin form + Zod since 13d656d). Kept as a
+    // string with an empty default so consumers never read `undefined`.
     description: {
       type: String,
-      required: true,
+      default: '',
     },
     shortDescription: {
       type: String,
