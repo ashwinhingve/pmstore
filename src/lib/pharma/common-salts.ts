@@ -48,17 +48,37 @@ export const COMMON_SALTS: string[] = [
 ];
 
 /**
+ * Merge the compiled shortlist with an admin-added `extra` pool, de-duplicated
+ * case-insensitively. The base entry wins on casing, so "Paracetamol" is never
+ * shadowed by a later "paracetamol".
+ */
+function mergedPool(extra: string[]): string[] {
+  const seen = new Set(COMMON_SALTS.map((s) => s.toLowerCase()));
+  const out = [...COMMON_SALTS];
+  for (const salt of extra) {
+    const key = salt.trim().toLowerCase();
+    if (key && !seen.has(key)) {
+      seen.add(key);
+      out.push(salt.trim());
+    }
+  }
+  return out;
+}
+
+/**
  * Suggest salts for a typed query. Prefix matches rank above substring matches,
  * and a known alias (e.g. "acetaminophen" → paracetamol) surfaces the canonical
- * entry so a misremembered name still finds the right salt.
+ * entry so a misremembered name still finds the right salt. `extra` carries any
+ * salts the admin has added to the catalogue, merged on top of the base list.
  */
-export function suggestSalts(query: string, limit = 8): string[] {
+export function suggestSalts(query: string, limit = 8, extra: string[] = []): string[] {
+  const pool = mergedPool(extra);
   const q = query.trim().toLowerCase();
-  if (!q) return COMMON_SALTS.slice(0, limit);
+  if (!q) return pool.slice(0, limit);
 
   const starts: string[] = [];
   const contains: string[] = [];
-  for (const salt of COMMON_SALTS) {
+  for (const salt of pool) {
     const s = salt.toLowerCase();
     if (s.startsWith(q)) starts.push(salt);
     else if (s.includes(q)) contains.push(salt);
@@ -68,9 +88,20 @@ export function suggestSalts(query: string, limit = 8): string[] {
   const aliasHits: string[] = [];
   const canonical = SALT_ALIASES[q];
   if (canonical) {
-    const match = COMMON_SALTS.find((s) => s.toLowerCase().startsWith(canonical));
+    const match = pool.find((s) => s.toLowerCase().startsWith(canonical));
     if (match && !starts.includes(match) && !contains.includes(match)) aliasHits.push(match);
   }
 
   return [...starts, ...aliasHits, ...contains].slice(0, limit);
+}
+
+/**
+ * Whether `name` is already a suggestible salt — in the base shortlist or the
+ * admin-added `extra` pool — compared case-insensitively. The combobox uses this
+ * to decide whether to offer an "Add to salt list" action for a typed name.
+ */
+export function isKnownSalt(name: string, extra: string[] = []): boolean {
+  const key = name.trim().toLowerCase();
+  if (!key) return false;
+  return mergedPool(extra).some((s) => s.toLowerCase() === key);
 }

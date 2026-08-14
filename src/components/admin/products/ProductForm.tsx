@@ -101,6 +101,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const replaceVideoInputRef = useRef<HTMLInputElement>(null);
   const [categoryOptions, setCategoryOptions] = useState<{ _id: string; name: string }[]>([]);
+  const [catalogSalts, setCatalogSalts] = useState<string[]>([]);
 
   useEffect(() => {
     fetch('/api/admin/categories')
@@ -111,6 +112,16 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
             data.categories.map((c: any) => ({ _id: String(c._id), name: c.name }))
           );
         }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Admin-added salts, merged on top of the compiled shortlist in the combobox.
+  useEffect(() => {
+    fetch('/api/admin/products/salts')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (Array.isArray(data?.salts)) setCatalogSalts(data.salts as string[]);
       })
       .catch(() => {});
   }, []);
@@ -171,6 +182,26 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     updateField('salts', [...salts, { name: '', strength: 0, unit: 'mg' }] as ProductFormData['salts']);
   const removeSalt = (index: number) =>
     updateField('salts', salts.filter((_, i) => i !== index) as ProductFormData['salts']);
+
+  // Persist a new salt to the catalogue so it's suggested next time. Optimistic:
+  // show it immediately, revert if the save fails.
+  const handleAddSalt = async (name: string) => {
+    const clean = name.trim();
+    if (!clean || catalogSalts.some((s) => s.toLowerCase() === clean.toLowerCase())) return;
+    setCatalogSalts((prev) => [...prev, clean]);
+    try {
+      const res = await fetch('/api/admin/products/salts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: clean }),
+      });
+      if (!res.ok) throw new Error('add-salt failed');
+      toast.success(`Added “${clean}” to the salt list`);
+    } catch {
+      setCatalogSalts((prev) => prev.filter((s) => s.toLowerCase() !== clean.toLowerCase()));
+      toast.error("Couldn't add that salt. Try again.");
+    }
+  };
 
   const updateField = <K extends keyof ProductFormData>(
     field: K,
@@ -468,6 +499,8 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                         onChange={(v) => updateSalt(i, { name: v })}
                         ariaLabel={`Salt ${i + 1} name`}
                         required
+                        catalogSalts={catalogSalts}
+                        onAddSalt={handleAddSalt}
                       />
                     </div>
                     <div className="col-span-3">

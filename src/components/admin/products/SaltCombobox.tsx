@@ -2,37 +2,56 @@
 
 import { useId, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { suggestSalts } from '@/lib/pharma/common-salts';
+import { suggestSalts, isKnownSalt } from '@/lib/pharma/common-salts';
 
 /**
  * Salt name field with an autocomplete of the pharmacy's most common salts
- * (src/lib/pharma/common-salts.ts). Picking a suggestion keeps spelling
- * consistent so the Strip groups brands correctly, but free text is always
- * allowed for anything off the list. Keyboard: ↑/↓ to move, Enter to pick,
- * Esc to close.
+ * (src/lib/pharma/common-salts.ts) plus any the admin has added to the catalogue
+ * (`catalogSalts`). Picking a suggestion keeps spelling consistent so the Strip
+ * groups brands correctly, but free text is always allowed for anything off the
+ * list. When the typed name isn't yet known, an "Add …" row offers to save it to
+ * the catalogue via `onAddSalt` so it's suggested next time. Keyboard: ↑/↓ to
+ * move, Enter to pick, Esc to close.
  */
 export function SaltCombobox({
   value,
   onChange,
   ariaLabel,
   required,
+  catalogSalts = [],
+  onAddSalt,
 }: {
   value: string;
   onChange: (v: string) => void;
   ariaLabel: string;
   required?: boolean;
+  catalogSalts?: string[];
+  onAddSalt?: (name: string) => void | Promise<void>;
 }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const listId = useId();
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  const options = open ? suggestSalts(value) : [];
+  const options = open ? suggestSalts(value, 8, catalogSalts) : [];
+  const trimmed = value.trim();
+  const canAdd =
+    open && !!onAddSalt && trimmed.length > 0 && !isKnownSalt(value, catalogSalts);
+  // Keyboard navigation spans the suggestions plus the optional "Add" row (last).
+  const itemCount = options.length + (canAdd ? 1 : 0);
+  const addIndex = canAdd ? options.length : -1;
 
   const select = (v: string) => {
     onChange(v);
     setOpen(false);
     setActive(-1);
+  };
+
+  const addSalt = (raw: string) => {
+    const name = raw.trim();
+    if (!name) return;
+    onAddSalt?.(name);
+    select(name);
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -42,14 +61,19 @@ export function SaltCombobox({
         setOpen(true);
         return;
       }
-      setActive((a) => Math.min(a + 1, options.length - 1));
+      setActive((a) => Math.min(a + 1, itemCount - 1));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setActive((a) => Math.max(a - 1, 0));
     } else if (e.key === 'Enter') {
-      if (open && active >= 0 && options[active]) {
-        e.preventDefault();
-        select(options[active]);
+      if (open && active >= 0) {
+        if (active === addIndex) {
+          e.preventDefault();
+          addSalt(value);
+        } else if (options[active]) {
+          e.preventDefault();
+          select(options[active]);
+        }
       }
     } else if (e.key === 'Escape') {
       setOpen(false);
@@ -87,7 +111,7 @@ export function SaltCombobox({
         autoComplete="off"
         required={required}
       />
-      {open && options.length > 0 && (
+      {open && itemCount > 0 && (
         <ul
           id={listId}
           role="listbox"
@@ -111,6 +135,22 @@ export function SaltCombobox({
               </button>
             </li>
           ))}
+          {canAdd && (
+            <li role="option" aria-selected={active === addIndex}>
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => addSalt(value)}
+                onMouseEnter={() => setActive(addIndex)}
+                className={`flex min-h-10 w-full items-center gap-1.5 border-t border-[var(--foil-soft)] px-3 py-2 text-left text-sm font-medium text-[var(--brand)] ${
+                  active === addIndex ? 'bg-[var(--brand-soft)]' : 'hover:bg-[var(--brand-soft)]'
+                }`}
+              >
+                <span aria-hidden="true">+</span>
+                <span>Add &ldquo;{trimmed}&rdquo; to salt list</span>
+              </button>
+            </li>
+          )}
         </ul>
       )}
     </div>
