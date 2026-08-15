@@ -9,6 +9,10 @@ import * as z from 'zod';
 const optionalText = (max: number) =>
   z.string().trim().max(max, `Keep this under ${max} characters`).optional().or(z.literal(''));
 
+// A required consent: the box must be ticked (true) for the request to be valid.
+// Enforced both client-side (form disables submit) and server-side (this schema).
+const requiredConsent = z.boolean().refine((v) => v === true, 'Please accept to continue');
+
 export const customOrderSchema = z.object({
   name: z.string().trim().min(2, 'Enter your name').max(120),
   phone: z
@@ -33,6 +37,11 @@ export const customOrderSchema = z.object({
     .or(z.literal('')),
   hasPrescription: z.boolean().optional(),
   notes: optionalText(2000),
+  // Required consents (client's "T&C Apply" note) — all three must be accepted.
+  // Field names/order mirror src/lib/custom-order-consents.ts.
+  agreeMonopolyNotice: requiredConsent,
+  agreeMarketShortage: requiredConsent,
+  agreeNearExpiry: requiredConsent,
   // Honeypot: real users never see or fill this. Bots do. Must stay empty.
   website: z.string().max(0).optional().or(z.literal('')),
 });

@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, LayoutGrid } from 'lucide-react';
+import { ArrowRight, LayoutGrid, Camera, PackageSearch } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Container } from '@/components/shared/Container';
 import { SectionHeading } from '@/components/shared/SectionHeading';
@@ -153,6 +153,61 @@ export function Categories({ categories }: { categories?: CategoryCardView[] }) 
               />
               <div className="relative flex items-center justify-between gap-2 p-3 text-[var(--brand-ink)] sm:p-4">
                 <h3 className="min-w-0 font-[family-name:var(--font-display)] text-sm font-extrabold leading-tight tracking-tight line-clamp-2 sm:text-base">All medicines</h3>
+                <ArrowRight
+                  className="h-5 w-5 transition-transform duration-[var(--dur-fast)] group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Upload medicine — highlighted CTA. Send a photo of the pack/list;
+              opens the custom-order flow. WhatsApp-green so it reads as the
+              quick, chat-like way in. */}
+          <motion.div
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.4, delay: reduceMotion ? 0 : 0.1 }}
+            viewport={{ once: true, margin: '0px 0px -60px 0px' }}
+          >
+            <Link
+              href="/custom-order"
+              className="group relative flex aspect-[5/4] flex-col justify-end overflow-hidden rounded-[var(--radius-lg)] bg-[var(--whatsapp)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--whatsapp-deep)] sm:aspect-[4/3]"
+            >
+              <Camera
+                className="absolute -bottom-5 -right-4 h-28 w-28 text-[var(--brand-ink)]/20"
+                strokeWidth={1.25}
+                aria-hidden="true"
+              />
+              <div className="relative flex items-center justify-between gap-2 p-3 text-[var(--brand-ink)] sm:p-4">
+                <h3 className="min-w-0 font-[family-name:var(--font-display)] text-sm font-extrabold leading-tight tracking-tight line-clamp-2 sm:text-base">Upload medicine</h3>
+                <ArrowRight
+                  className="h-5 w-5 transition-transform duration-[var(--dur-fast)] group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Custom order — highlighted CTA. Request any medicine we may not
+              stock and we'll source it. Brand orange to sit beside the two. */}
+          <motion.div
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.4, delay: reduceMotion ? 0 : 0.15 }}
+            viewport={{ once: true, margin: '0px 0px -60px 0px' }}
+          >
+            <Link
+              href="/custom-order"
+              className="group relative flex aspect-[5/4] flex-col justify-end overflow-hidden rounded-[var(--radius-lg)] bg-[image:var(--surface-brand)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] sm:aspect-[4/3]"
+            >
+              <PackageSearch
+                className="absolute -bottom-5 -right-4 h-28 w-28 text-[var(--brand-ink)]/20"
+                strokeWidth={1.25}
+                aria-hidden="true"
+              />
+              <div className="relative flex items-center justify-between gap-2 p-3 text-[var(--brand-ink)] sm:p-4">
+                <h3 className="min-w-0 font-[family-name:var(--font-display)] text-sm font-extrabold leading-tight tracking-tight line-clamp-2 sm:text-base">Custom order</h3>
                 <ArrowRight
                   className="h-5 w-5 transition-transform duration-[var(--dur-fast)] group-hover:translate-x-0.5"
                   aria-hidden="true"

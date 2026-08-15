@@ -6,11 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useDropzone } from "react-dropzone"
 import Image from "next/image"
 import { customOrderSchema, type CustomOrderInput } from "@/lib/validations/custom-order"
+import { CUSTOM_ORDER_CONSENTS } from "@/lib/custom-order-consents"
 import { compressImage } from "@/lib/utils/compress-image"
+import { waHref } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { FormField } from "@/components/ui/form-field"
+import { WhatsAppGlyph } from "@/components/shared/WhatsAppGlyph"
 import { CheckCircle2, Upload, X } from "lucide-react"
 
 const MAX_IMAGES = 5
@@ -30,6 +33,7 @@ export function CustomOrderForm() {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<CustomOrderInput>({
     resolver: zodResolver(customOrderSchema),
@@ -43,9 +47,19 @@ export function CustomOrderForm() {
       pincode: "",
       hasPrescription: false,
       notes: "",
+      agreeMonopolyNotice: false,
+      agreeMarketShortage: false,
+      agreeNearExpiry: false,
       website: "",
     },
   })
+
+  // The request can only be sent once all three consents are ticked.
+  const consentsAccepted = watch([
+    "agreeMonopolyNotice",
+    "agreeMarketShortage",
+    "agreeNearExpiry",
+  ]).every(Boolean)
 
   // Release object URLs when the component unmounts.
   useEffect(() => {
@@ -158,6 +172,17 @@ export function CustomOrderForm() {
           {serverError}
         </div>
       )}
+
+      {/* Prefer to chat? Same request, straight over WhatsApp. */}
+      <a
+        href={waHref("Hi, I'd like to request a medicine.")}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mb-6 inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--whatsapp-soft)] px-4 py-2 text-sm font-semibold text-[var(--whatsapp-deep)] ring-1 ring-inset ring-[var(--whatsapp)]/30 transition-colors duration-[var(--dur-fast)] hover:bg-[var(--whatsapp)] hover:text-[var(--brand-ink)] hover:ring-[var(--whatsapp)]"
+      >
+        <WhatsAppGlyph className="h-4 w-4 shrink-0" />
+        Prefer WhatsApp? Chat with us
+      </a>
 
       {/* Your details — full width, fields flow across the available columns */}
       <h3 className="mb-4 text-[length:var(--step-0)] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
@@ -274,6 +299,33 @@ export function CustomOrderForm() {
         </FormField>
       </div>
 
+      {/* Required consents — all three must be ticked before the request sends. */}
+      <fieldset className="mt-8 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-tint)] p-5">
+        <legend className="px-1 text-[length:var(--step-0)] font-semibold text-[var(--ink)]">
+          Please read and accept
+        </legend>
+        <p className="mb-4 mt-1 text-sm text-[var(--ink-70)]">Tick all three to place your request.</p>
+        <ul className="space-y-2.5">
+          {CUSTOM_ORDER_CONSENTS.map((c) => (
+            <li key={c.id}>
+              <label className="flex items-start gap-3 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-3.5 transition-colors duration-[var(--dur-fast)] hover:border-[var(--foil)]">
+                <input
+                  type="checkbox"
+                  {...register(c.field)}
+                  className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--brand)]"
+                />
+                <span className="text-sm">
+                  <span lang="hi" className="block text-[var(--ink)]">
+                    {c.hi}
+                  </span>
+                  <span className="mt-0.5 block text-[var(--ink-70)]">{c.en}</span>
+                </span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </fieldset>
+
       {/* Honeypot — hidden from users, catches bots */}
       <input
         type="text"
@@ -284,11 +336,17 @@ export function CustomOrderForm() {
         {...register("website")}
       />
 
-      <Button type="submit" disabled={isSubmitting} className="mt-8 h-12 w-full bg-[var(--brand)] text-base font-semibold text-[var(--brand-ink)] hover:bg-[var(--brand-deep)] md:w-auto md:px-10">
+      <Button
+        type="submit"
+        disabled={isSubmitting || !consentsAccepted}
+        className="mt-8 h-12 w-full bg-[var(--brand)] text-base font-semibold text-[var(--brand-ink)] hover:bg-[var(--brand-deep)] md:w-auto md:px-10"
+      >
         {isSubmitting ? "Sending…" : "Send request"}
       </Button>
       <p className="mt-3 text-sm text-[var(--ink-70)]">
-        We reply within one working day. Your details are used only to source your medicine.
+        {consentsAccepted
+          ? "We reply within one working day. Your details are used only to source your medicine."
+          : "Tick all three boxes above to send your request."}
       </p>
     </form>
   )

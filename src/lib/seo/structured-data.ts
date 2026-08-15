@@ -26,9 +26,10 @@ export function safeJsonLd(data: object): string {
 /**
  * The store's entity schema. `name` is the brand people actually search for
  * ("PM Store") so Google ties the query to this site; the registered name is
- * carried as `legalName`/`alternateName`. Full NAP (name/address/phone) +
- * openingHours make it a complete local Pharmacy entity, which is what surfaces
- * the site for the brand query.
+ * carried ONLY as `legalName` (invisible metadata — never a display heading),
+ * never as an `alternateName` (client: show "PM Store" everywhere). Full NAP
+ * (name/address/phone) + openingHours make it a complete local Pharmacy entity,
+ * which is what surfaces the site for the brand query.
  */
 export function organizationSchema(siteUrl: string) {
   return {
@@ -36,10 +37,13 @@ export function organizationSchema(siteUrl: string) {
     '@type': 'Pharmacy',
     '@id': ORG_ID(siteUrl),
     name: SITE_SHORT_NAME,
+    // Registered name — legally required, but pure metadata: Google renders `name`
+    // ("PM Store") as the heading, not legalName. This is the ONLY schema field that
+    // carries the full name (client: "full name on legal pages only").
     legalName: SITE_NAME,
-    // Brand aliases customers actually search for — helps Google associate
-    // "PM Store medicine"/"PMStore" with this entity. "Pratigya Medical Store"
-    // stays as legalName and the first alias.
+    // Brand aliases customers actually search for — all "PM Store" variants, helping
+    // Google associate "PM Store medicine"/"PMStore" with this entity. The registered
+    // name is deliberately NOT listed here (see legalName above).
     alternateName: SITE_ALT_NAMES,
     brand: { '@type': 'Brand', name: SITE_SHORT_NAME },
     url: siteUrl,
@@ -53,7 +57,7 @@ export function organizationSchema(siteUrl: string) {
     telephone: CONTACT.phone,
     email: CONTACT.email,
     description:
-      'PM Store (Pratigya Medical Store) — online pharmacy in Bhopal. Compare medicine brands by price per tablet, find cheaper equivalents of the same composition, upload a prescription, and get free home delivery.',
+      'PM Store — online pharmacy in Bhopal. Compare medicine brands by price per tablet, find cheaper equivalents of the same composition, upload a prescription, and get free home delivery.',
     address: {
       '@type': 'PostalAddress',
       streetAddress: CONTACT.address.line1,

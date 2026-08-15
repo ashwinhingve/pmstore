@@ -18,6 +18,12 @@ export interface ICustomOrder extends Document {
   notes?: string;
   /** Photos the customer attached (medicine pack, list, or prescription). */
   images: { url: string; publicId: string }[];
+  /** Required T&C the customer accepted at submit (client's note, 2026-08-15). */
+  consents: {
+    monopolyNotice: boolean;
+    marketShortage: boolean;
+    nearExpiry: boolean;
+  };
   status: 'new' | 'contacted' | 'closed';
   createdAt: Date;
   updatedAt: Date;
@@ -44,6 +50,11 @@ const CustomOrderSchema = new Schema<ICustomOrder>(
         },
       ],
       default: [],
+    },
+    consents: {
+      monopolyNotice: { type: Boolean, default: false },
+      marketShortage: { type: Boolean, default: false },
+      nearExpiry: { type: Boolean, default: false },
     },
     status: {
       type: String,

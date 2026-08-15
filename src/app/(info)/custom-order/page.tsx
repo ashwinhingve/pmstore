@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Search, PhoneCall, PackageCheck, ClipboardList, ShieldCheck, ArrowRight } from "lucide-react"
+import { Search, PhoneCall, PackageCheck, ClipboardList, ShieldCheck, ArrowRight, CheckCircle2 } from "lucide-react"
 import { CustomOrderForm } from "@/components/custom-order/CustomOrderForm"
+import { CUSTOM_ORDER_CONSENTS } from "@/lib/custom-order-consents"
+import { WhatsAppGlyph } from "@/components/shared/WhatsAppGlyph"
+import { waHref } from "@/lib/constants"
 
 export const metadata: Metadata = {
   title: "Custom order — request a medicine",
@@ -37,6 +40,15 @@ export default function CustomOrderPage() {
           >
             Request a medicine <ArrowRight className="h-4 w-4" />
           </Link>
+          <a
+            href={waHref("Hi, I'd like to request a medicine.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--whatsapp)] px-6 font-semibold text-[var(--brand-ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--whatsapp-deep)]"
+          >
+            <WhatsAppGlyph className="h-5 w-5" />
+            Chat on WhatsApp
+          </a>
           <Link
             href="/products"
             className="inline-flex h-12 items-center rounded-[var(--radius-sm)] border-2 border-[var(--foil-soft)] bg-[var(--paper-card)] px-6 font-semibold text-[var(--ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--foil-soft)]"
@@ -67,6 +79,40 @@ export default function CustomOrderPage() {
               )
             })}
           </ol>
+        </div>
+      </section>
+
+      {/* Good to know — the three things we always keep you posted about (the
+          consents you'll confirm in the form). WhatsApp-green accent. */}
+      <section className="bg-[var(--paper)]">
+        <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 pt-14 md:pt-16">
+          <div className="rounded-[var(--radius-lg)] border border-[var(--whatsapp)]/25 bg-[var(--whatsapp-soft)] p-6 md:p-8">
+            <div className="flex items-center gap-2.5">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--whatsapp)] text-[var(--brand-ink)]">
+                <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <h2 className="text-[length:var(--step-1)] text-[var(--ink)]">Good to know before you order</h2>
+            </div>
+            <ul className="mt-5 grid gap-3 sm:grid-cols-3">
+              {CUSTOM_ORDER_CONSENTS.map((c) => (
+                <li
+                  key={c.id}
+                  className="flex items-start gap-2.5 rounded-[var(--radius-md)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)]"
+                >
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[var(--whatsapp-deep)]" aria-hidden="true" />
+                  <span className="text-sm">
+                    <span lang="hi" className="block text-[var(--ink)]">
+                      {c.hi}
+                    </span>
+                    <span className="mt-0.5 block text-[var(--ink-70)]">{c.en}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-sm text-[var(--ink-70)]">
+              You&apos;ll confirm these with a tick when you send the form below.
+            </p>
+          </div>
         </div>
       </section>
 

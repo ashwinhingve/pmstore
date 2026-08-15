@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     template: "%s | PM Store",
   },
   description: "PM Store — order medicines online from a trusted Bhopal pharmacy. Compare brands by price per tablet, find cheaper equivalents of the same composition, upload a prescription, and reorder in one tap.",
-  keywords: ["pm store", "pmstore", "pm store medicine", "pmstore medicine", "pm store pharmacy", "pm store bhopal", "pm store online", "pratigya medical store", "online pharmacy", "buy medicines online", "generic medicine", "price per tablet", "surgical supplies", "prescription upload", "medicine home delivery bhopal", "India pharmacy"],
+  keywords: ["pm store", "pmstore", "pm store medicine", "pmstore medicine", "pm store pharmacy", "pm store bhopal", "pm store online", "pm store medicine bhopal", "online pharmacy", "buy medicines online", "generic medicine", "price per tablet", "surgical supplies", "prescription upload", "medicine home delivery bhopal", "India pharmacy"],
   alternates: {
     canonical: SITE_URL,
   },

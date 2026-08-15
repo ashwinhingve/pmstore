@@ -16,7 +16,9 @@ import { Categories } from '@/components/landing/Categories';
 import type { CategoryCardView } from '@/components/landing/Categories';
 import { CustomOrderCta } from '@/components/landing/CustomOrderCta';
 import { PromoBanners } from '@/components/landing/PromoBanners';
-import { FeaturedProducts } from '@/components/landing/FeaturedProducts';
+import { CuratedTabs } from '@/components/landing/CuratedTabs';
+import type { CuratedBuckets } from '@/components/landing/CuratedTabs';
+import type { ProductCardData } from '@/components/products/ProductCard';
 import { TrustBand } from '@/components/landing/TrustBand';
 import { WhyChooseUs } from '@/components/landing/WhyChooseUs';
 import { FaqPreview } from '@/components/landing/FaqPreview';
@@ -41,35 +43,17 @@ export const metadata: Metadata = {
   },
 };
 
-interface Product {
-  _id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  price: number;
-  originalPrice?: number;
-  images?: Array<{ url: string }>;
-  form?: string;
-  stock: number;
-  category?: { name: string } | string;
-  averageRating?: number;
-  totalReviews?: number;
-  packSize?: number;
-  packUnit?: string;
-  unitPrice?: number;
-}
-
 /**
  * Home — premium marketing landing page for PM Store.
- * Server-fetches featured products, respects user session.
+ * Server-fetches curated product buckets, respects user session.
  *
  * Sections (in render order):
  *  1. HeroSlider — full-bleed image slider with search + CTAs
  *  2. FeatureSlider — admin-managed 2-up image band that slides in from the left
- *  3. Categories — image-backed pharma category grid
+ *  3. Categories — image-backed pharma category grid + custom-order CTA cards
  *  4. CustomOrderCta — request-a-medicine band (routes to /custom-order)
  *  5. QuickActions — search / order again / upload prescription
- *  6. FeaturedProducts — carousel of bestsellers
+ *  6. CuratedTabs — tabbed grid: Bestsellers / New arrivals / Value buys / Trending
  *  7. PromoBanners — prescription-upload + reorder feature banners
  *  8. TrustBand — stats + VALUE_PROPS + credentials
  *  9. WhyChooseUs — three photography-led reasons to trust the store
@@ -81,8 +65,14 @@ export default async function Home() {
   const session = await getServerSession(authOptions);
   const signedIn = Boolean(session?.user);
 
-  // Fetch ~8 featured products
-  let featuredProducts: Product[] = [];
+  // Four curated collections for the "Shop by" tabbed grid. Each is a small
+  // pre-fetched slice; buckets fall back to derived ordering so no tab is empty.
+  let buckets: CuratedBuckets = {
+    bestsellers: [],
+    newArrivals: [],
+    valueBuys: [],
+    trending: [],
+  };
   // Admin-managed hero slides (Admin → Site settings). Empty → HeroCarousel
   // falls back to its built-in photo set.
   let heroSlides: HeroSlideView[] = [];
@@ -94,28 +84,46 @@ export default async function Home() {
   let categoryCards: CategoryCardView[] = [];
   try {
     await connectDB();
-    const products = await Product.find({
-      isActive: true,
-      isDiscontinued: false,
-    })
-      .sort({ orderCount: -1 })
-      .limit(8)
-      .lean()
-      .exec();
 
     // Deep-serialize for client consumption — round-tripping through JSON turns
     // every ObjectId (including nested salts[]._id / images[]._id) into a string
     // and yields plain objects, which Client Components require.
-    featuredProducts = products.map((p: any) => {
-      const plain = JSON.parse(JSON.stringify(p));
-      return {
-        ...plain,
-        category:
-          typeof plain.category === 'object' && plain.category
-            ? { name: plain.category.name || 'Uncategorized' }
-            : plain.category || 'Uncategorized',
-      };
-    });
+    const serialize = (rows: any[]): ProductCardData[] =>
+      rows.map((p: any) => {
+        const plain = JSON.parse(JSON.stringify(p));
+        return {
+          ...plain,
+          category:
+            typeof plain.category === 'object' && plain.category
+              ? { name: plain.category.name || 'Uncategorized' }
+              : plain.category || 'Uncategorized',
+        };
+      });
+
+    const base = { isActive: true, isDiscontinued: false } as const;
+    const bucket = (filter: Record<string, unknown>, sort: Record<string, 1 | -1>) =>
+      Product.find({ ...base, ...filter }).sort(sort).limit(8).lean().exec();
+
+    // Each bucket prefers its admin flag, then falls back to a derived ordering so
+    // the tab is populated even before the flags are set in the admin panel.
+    let bestsellers = await bucket({ isBestseller: true }, { orderCount: -1, createdAt: -1 });
+    if (bestsellers.length === 0) bestsellers = await bucket({}, { orderCount: -1, createdAt: -1 });
+
+    const newArrivals = await bucket({}, { createdAt: -1 });
+
+    let valueBuys = await bucket({ isValueBuy: true }, { discountPercentage: -1 });
+    if (valueBuys.length === 0)
+      valueBuys = await bucket({ discountPercentage: { $gt: 0 } }, { discountPercentage: -1 });
+
+    let trending = await bucket({ isTrending: true }, { orderCount: -1 });
+    if (trending.length === 0) trending = await bucket({}, { updatedAt: -1, orderCount: -1 });
+
+    buckets = {
+      bestsellers: serialize(bestsellers),
+      newArrivals: serialize(newArrivals),
+      valueBuys: serialize(valueBuys),
+      trending: serialize(trending),
+    };
     // Active hero + feature slides, ordered; serialize ObjectId at the boundary
     // and drop any slide without an image so the carousels never render a blank.
     const settings = await SiteSettings.findOne({ key: 'global' })
@@ -168,7 +176,7 @@ export default async function Home() {
       <Categories categories={categoryCards} />
       <CustomOrderCta />
       <QuickActions signedIn={signedIn} />
-      <FeaturedProducts products={featuredProducts} />
+      <CuratedTabs buckets={buckets} />
       <PromoBanners />
       <TrustBand />
       <WhyChooseUs />

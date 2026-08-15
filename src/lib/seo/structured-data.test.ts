@@ -32,15 +32,19 @@ describe('organizationSchema / websiteSchema', () => {
     expect(site.publisher['@id']).toBe(`${SITE}/#organization`);
   });
 
-  it('carries PM Store brand aliases so Google ties brand queries to the entity', () => {
+  it('shows only "PM Store" aliases publicly; the registered name stays in legalName', () => {
     const org = organizationSchema(SITE);
     expect(org.name).toBe('PM Store');
     expect(org.alternateName).toContain('PM Store Medicine');
-    expect(org.alternateName).toContain('Pratigya Medical Store');
+    // Client decision (2026-08-15): the registered name is NOT a public alias — it
+    // lives only in legalName + the legal pages, never as a display/alternate name.
+    expect(org.alternateName).not.toContain('Pratigya Medical Store');
+    expect(org.legalName).toBe('Pratigya Medical Store');
     expect(org.brand.name).toBe('PM Store');
 
     const site = websiteSchema(SITE);
     expect(site.alternateName).toContain('PM Store Medicine');
+    expect(site.alternateName).not.toContain('Pratigya Medical Store');
   });
 });
 

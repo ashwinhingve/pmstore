@@ -1,20 +1,22 @@
 import type { Metadata } from 'next';
 import { ShieldCheck } from 'lucide-react';
-import { CONTACT } from '@/lib/constants';
+import { CONTACT, LEGAL, SITE_NAME } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Drug Licence & Compliance | PM Store',
   description:
-    'Drug licence details and regulatory compliance for Pratigya Medical Store under the Drugs & Cosmetics Act, 1940.',
+    'Drug licence details and regulatory compliance for Pratigya Medical Store under the Drugs & Cosmetics Act, 1940 — retail drug sale licences (Form 20 & 21), registered pharmacist and licensing authority.',
+  alternates: { canonical: '/drug-licence' },
 };
 
 /**
  * Drug-licence disclosure — a legal requirement for an online pharmacy in India.
- * The licence numbers and pharmacist details below are PLACEHOLDERS: the store
- * owner must replace them with the real registered values before go-live. We do
- * not ship invented credentials — a wrong licence number is worse than none.
+ * The licence numbers, pharmacist and registration details come from LEGAL in
+ * src/lib/constants.ts, which is verified against the store's official documents.
  */
 export default function DrugLicencePage() {
+  const { drugLicence, pharmacist } = LEGAL;
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
       <div className="mb-8 flex items-center gap-3">
@@ -27,28 +29,41 @@ export default function DrugLicencePage() {
       </div>
 
       <p className="mb-8 text-[var(--ink)]">
-        Pratigya Medical Store operates as a licensed pharmacy under the Drugs &amp; Cosmetics
+        {SITE_NAME} operates as a licensed retail pharmacy under the Drugs &amp; Cosmetics
         Act, 1940 and the Pharmacy Act, 1948. Prescription (Schedule H, H1 and X) medicines are
-        dispensed only against a valid prescription verified by our registered pharmacist.
+        dispensed only against a valid prescription verified by our registered pharmacist before
+        the order is delivered.
       </p>
 
       <section className="space-y-4 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)]">
-        <Detail label="Legal entity" value="Pratigya Medical Store" />
-        <Detail label="Retail drug licence no." value="[To be added before go-live]" placeholder />
-        <Detail label="Wholesale drug licence no." value="[To be added before go-live]" placeholder />
-        <Detail label="Registered pharmacist" value="[Name — to be added]" placeholder />
-        <Detail label="Pharmacist registration no." value="[State Pharmacy Council reg. no. — to be added]" placeholder />
-        <Detail label="Licensing authority" value="Food &amp; Drug Administration, Madhya Pradesh" />
-        <Detail label="Registered address" value="Madhya Pradesh, India" />
+        <Detail label="Legal entity" value={SITE_NAME} />
+        <Detail label="Proprietor" value={LEGAL.proprietor} />
+        <Detail label="Drug sale licence (Form 20 — general drugs)" value={drugLicence.form20} />
+        <Detail label="Drug sale licence (Form 21 — Schedule C &amp; C1)" value={drugLicence.form21} />
+        <Detail label="Licence valid up to" value={drugLicence.validTo} />
+        <Detail
+          label="Registered pharmacist"
+          value={`${pharmacist.name}, ${pharmacist.qualification}`}
+        />
+        <Detail
+          label="Pharmacist registration no."
+          value={`${pharmacist.regNo} (valid to ${pharmacist.regValidTo})`}
+        />
+        <Detail label="Licensing authority" value={drugLicence.authority} />
+        <Detail label="Udyam (MSME) registration" value={LEGAL.udyam} />
+        <Detail label="MP Shops &amp; Establishments (Gumasta)" value={LEGAL.gumasta} />
+        <Detail label="GSTIN" value="Not applicable" />
+        <Detail label="Registered address" value={CONTACT.addressFull} />
       </section>
 
       <div className="mt-8 rounded-[var(--radius-md)] border-l-4 border-[var(--rx)] bg-[var(--paper-card)] p-5">
         <h2 className="mb-2 font-bold text-[var(--ink)]">Prescription medicines</h2>
         <p className="text-[length:var(--step--1)] text-[var(--ink)]">
-          Medicines marked with a red prescription flag cannot be purchased without uploading a
-          valid prescription. Our pharmacist reviews every prescription before the order is
-          dispatched. Self-medication with prescription drugs can be dangerous — always consult a
-          registered medical practitioner.
+          You can order scheduled (prescription) medicines through {SITE_NAME}. Uploading your
+          prescription at checkout is optional — for any medicine that requires one, our registered
+          pharmacist verifies a valid prescription before the order is dispatched and delivered.
+          Self-medication with prescription drugs can be dangerous — always consult a registered
+          medical practitioner.
         </p>
       </div>
 
@@ -63,11 +78,11 @@ export default function DrugLicencePage() {
   );
 }
 
-function Detail({ label, value, placeholder }: { label: string; value: string; placeholder?: boolean }) {
+function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:gap-4">
       <span className="text-[length:var(--step--1)] font-medium text-[var(--ink-70)]">{label}</span>
-      <span className={`text-[var(--ink)] ${placeholder ? 'italic opacity-70' : 'font-semibold'}`}>{value}</span>
+      <span className="font-semibold text-[var(--ink)]">{value}</span>
     </div>
   );
 }

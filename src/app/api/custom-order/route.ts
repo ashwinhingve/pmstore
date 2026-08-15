@@ -51,6 +51,9 @@ export async function POST(req: NextRequest) {
       pincode: asStr(formData.get('pincode')),
       hasPrescription: formData.get('hasPrescription') === 'true',
       notes: asStr(formData.get('notes')),
+      agreeMonopolyNotice: formData.get('agreeMonopolyNotice') === 'true',
+      agreeMarketShortage: formData.get('agreeMarketShortage') === 'true',
+      agreeNearExpiry: formData.get('agreeNearExpiry') === 'true',
       website: asStr(formData.get('website')),
     });
     if (!parsed.success) {
@@ -60,12 +63,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { website, ...data } = parsed.data;
+    const { website, agreeMonopolyNotice, agreeMarketShortage, agreeNearExpiry, ...data } =
+      parsed.data;
 
     // Honeypot tripped: pretend success, do nothing.
     if (website) {
       return NextResponse.json({ data: { received: true } }, { status: 201 });
     }
+
+    // The three required consents are validated true by the schema; store them
+    // nested on the document as a record of what the customer accepted.
+    const consents = {
+      monopolyNotice: agreeMonopolyNotice,
+      marketShortage: agreeMarketShortage,
+      nearExpiry: agreeNearExpiry,
+    };
 
     // Validate attached images (a user error here should be surfaced, since they
     // deliberately added the files) — before spending any Cloudinary quota.
@@ -135,7 +147,7 @@ export async function POST(req: NextRequest) {
       console.error('Custom order: Cloudinary not configured (request stored without images).');
     }
 
-    const doc = await CustomOrder.create({ ...cleaned, images });
+    const doc = await CustomOrder.create({ ...cleaned, images, consents });
 
     // Notify the shop with signed links to any photos. Never block the response
     // (or leak PII) on a mail failure — the request is already stored.

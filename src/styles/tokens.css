@@ -19,6 +19,14 @@
   --rx:         #B23A34;   /* Schedule H — prescription flags ONLY, never discounts */
   --rx-soft:    #FAECEA;
 
+  /* WhatsApp — the click-to-chat affordance's own brand green (#25D366). Kept a
+     distinct token from --mint (which keeps its savings / in-stock / verified
+     meaning) and never red. --whatsapp-soft is the calm on-card "Chat with us"
+     fill; --whatsapp-deep is the readable text/hover on those soft surfaces. */
+  --whatsapp:      #25D366;
+  --whatsapp-soft: #E7F8EF;
+  --whatsapp-deep: #0F7A4E;
+
   /* Brand — pharmacy orange (Dr. Morepen inspired). This is the storefront's
      primary accent: headers, CTAs, links, active states. Deliberately a warm
      orange hue, kept clearly distinct from --rx red (#B23A34) so the "needs a

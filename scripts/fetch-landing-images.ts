@@ -44,12 +44,14 @@ const IMAGES: Record<string, string> = {
   'category-ayurveda.jpg': `${U}/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=800&q=80`,
   'category-homeopathy.jpg': `${U}/photo-1725267882596-2d08e560b250?auto=format&fit=crop&w=800&q=80`,
 
-  // Promo banners (~1600px)
-  'promo-rx.jpg': `${U}/photo-1580281658223-9b93f18ae9ae?auto=format&fit=crop&w=1600&q=80`,
+  // Promo banners (~1600px). promo-rx is a female pharmacist (Pexels-licence,
+  // royalty-free, no attribution) — client asked for a woman here, 2026-08-15.
+  'promo-rx.jpg': `https://images.pexels.com/photos/19471015/pexels-photo-19471015.jpeg?auto=compress&cs=tinysrgb&w=1600`,
   'promo-reorder.jpg': `${U}/photo-1758691031621-f6870f9f998a?auto=format&fit=crop&w=1600&q=80`,
 
-  // Trust / lifestyle (~1200px)
-  'trust-1.jpg': `${U}/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=1200&q=80`,
+  // Trust / lifestyle (~1200px). trust-1 is a female pharmacist (Pexels-licence)
+  // — also feeds the "Can't find it?" band; client asked for a woman, 2026-08-15.
+  'trust-1.jpg': `https://images.pexels.com/photos/16122143/pexels-photo-16122143.jpeg?auto=compress&cs=tinysrgb&w=1200`,
   'trust-2.jpg': `${U}/photo-1576671081837-49000212a370?auto=format&fit=crop&w=1200&q=80`,
   'trust-3.jpg': `${U}/photo-1559234938-b60fff04894d?auto=format&fit=crop&w=1200&q=80`,
 };

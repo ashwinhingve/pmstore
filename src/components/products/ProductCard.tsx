@@ -7,9 +7,11 @@ import { RxBadge } from "@/components/shared/RxBadge";
 import { PriceBlock } from "@/components/shared/PriceBlock";
 import { formatINR, type ScheduleClass } from "@/lib/pharma/format";
 import { ProductVisual } from "@/components/products/ProductVisual";
+import { WhatsAppGlyph } from "@/components/shared/WhatsAppGlyph";
 import { useCartStore } from "@/store/useCartStore";
 import { useCompareStore } from "@/store/useCompareStore";
 import { toast } from "@/store/useToastStore";
+import { waHref, SITE_URL } from "@/lib/constants";
 import { useState, useEffect } from "react";
 import { Plus, Minus, Scale, Check } from "lucide-react";
 
@@ -242,6 +244,21 @@ export function ProductCard({ product }: ProductCardProps) {
                 {outOfStock ? "Out of stock" : isAdding ? "Added to cart" : "Add to cart"}
               </Button>
             )}
+
+            {/* Chat with us — a per-product WhatsApp link, prefilled with the
+                medicine name. Sits above the card's stretched link (stopPropagation
+                so a tap opens the chat, not the product page). */}
+            <a
+              href={waHref(`Hi, I'd like to ask about ${product.name} — ${SITE_URL}/products/${product.slug}`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`Chat with us on WhatsApp about ${product.name}`}
+              className="relative mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[var(--whatsapp-soft)] text-sm font-semibold text-[var(--whatsapp-deep)] ring-1 ring-inset ring-[var(--whatsapp)]/30 transition-colors duration-[var(--dur-fast)] hover:bg-[var(--whatsapp)] hover:text-[var(--brand-ink)] hover:ring-[var(--whatsapp)]"
+            >
+              <WhatsAppGlyph className="h-4 w-4 shrink-0" />
+              Chat with us
+            </a>
           </div>
         </div>
       </div>

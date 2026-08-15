@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, Check } from 'lucide-react';
 import { computeUnitPrice, formatComposition, type Salt } from '@/lib/pharma/composition';
 import { ProductVisual } from '@/components/products/ProductVisual';
+import { CompareAddToCart } from '@/components/search/CompareAddToCart';
 
 /**
  * Same-composition comparison, surfaced from the current search results.
@@ -275,6 +276,23 @@ function ProductPane({
           </p>
         ) : null}
       </div>
+
+      {/* Add to cart — available straight from the comparison, on both brands. */}
+      <CompareAddToCart
+        product={{
+          _id: p._id,
+          name: p.name,
+          slug: p.slug,
+          price: p.price,
+          image: p.image,
+          packSize: p.packSize,
+          packUnit: p.packUnit,
+          unitPrice: p.unitPrice,
+          mrp: p.mrp,
+          prescriptionRequired: p.prescriptionRequired,
+          stock: p.stock,
+        }}
+      />
     </div>
   );
 }

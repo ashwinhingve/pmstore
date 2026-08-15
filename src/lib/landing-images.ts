@@ -63,7 +63,7 @@ export interface PromoBanner extends LandingImage {
 export const PROMO_BANNERS: PromoBanner[] = [
   {
     url: '/landing/promo-rx.jpg',
-    alt: 'Healthcare worker with a prescription',
+    alt: 'Pharmacist checking medicine availability at the shelves',
     eyebrow: 'Prescription orders',
     title: 'Upload your prescription',
     body: 'Send a photo and a pharmacist builds your order. Schedule-H medicines are verified before dispatch.',
@@ -83,7 +83,7 @@ export const PROMO_BANNERS: PromoBanner[] = [
 
 /** Trust / lifestyle supporting images. */
 export const TRUST_IMAGES: LandingImage[] = [
-  { url: '/landing/trust-1.jpg', alt: 'Pharmacist at the counter' },
+  { url: '/landing/trust-1.jpg', alt: 'Pharmacist in a white coat ready to help' },
   { url: '/landing/trust-2.jpg', alt: 'Precise quality check in a lab' },
   { url: '/landing/trust-3.jpg', alt: 'Couple walking outdoors' },
 ];

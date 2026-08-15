@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     'online pharmacy Bhopal',
     'prescription medicines online',
     'PM Store',
-    'Pratigya Medical Store',
+    'PM Store medicine Bhopal',
     'generic brand medicines',
     'affordable medicines India',
     'order medicine online',

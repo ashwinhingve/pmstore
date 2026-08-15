@@ -1,6 +1,14 @@
+import type { Metadata } from "next"
 import { AnimatedSection } from "@/components/shared/AnimatedSection"
 import { SITE_NAME, CONTACT } from "@/lib/constants"
-import { RefreshCcw, AlertCircle, PackageCheck, Phone, Mail, Camera } from "lucide-react"
+import { RefreshCcw, AlertCircle, PackageCheck, Mail, Camera, XCircle } from "lucide-react"
+
+export const metadata: Metadata = {
+  title: "Return & Refund Policy | PM Store",
+  description:
+    "Pratigya Medical Store return, refund and cancellation policy — non-returnable medicines, wrong or damaged items, how to cancel, and refund timelines.",
+  alternates: { canonical: "/refund-policy" },
+}
 
 export default function ReturnPolicyPage() {
   return (
@@ -19,7 +27,7 @@ export default function ReturnPolicyPage() {
               Quality medicines with hassle-free replacements
             </p>
             <p className="text-base text-[var(--ink-40)]">
-              Last Updated: February 2026
+              Last Updated: August 2026
             </p>
           </AnimatedSection>
         </div>
@@ -111,21 +119,33 @@ export default function ReturnPolicyPage() {
                   ✓ If unavailable, a <strong>full refund</strong> is processed.
                 </p>
                 <p className="leading-relaxed">
-                  Refunds go to your original payment method within <strong>7–10 working days</strong> after approval.
+                  Approved refunds are processed to your original payment method within{" "}
+                  <strong>7–10 working days</strong>. Refunds are reviewed and processed manually,
+                  so this timeline starts once your claim is approved.
                 </p>
               </div>
             </div>
 
             {/* Order Cancellation */}
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold font-display text-[var(--ink)]">Order Cancellation</h2>
-              <div className="text-[var(--ink)] space-y-2">
-                <p className="leading-relaxed">
-                  • Orders can be cancelled only <strong>before dispatch</strong>
-                </p>
-                <p className="leading-relaxed">
-                  • Once dispatched, cancellations cannot be accepted
-                </p>
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[var(--brand)] rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0">
+                  <XCircle className="w-6 h-6 text-[var(--brand-ink)]" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold font-display text-[var(--ink)] mb-3">Order Cancellation</h2>
+                  <ul className="space-y-2 text-[var(--ink)]">
+                    <li>• Orders can be cancelled only <strong>before dispatch</strong></li>
+                    <li>• Once dispatched, cancellations cannot be accepted</li>
+                  </ul>
+                  <p className="text-[var(--ink)] leading-relaxed mt-3">
+                    To cancel before dispatch, use your account&apos;s order page, or contact us on{" "}
+                    <a href={CONTACT.whatsappHref} className="text-[var(--brand)] underline">WhatsApp</a>,{" "}
+                    <a href={CONTACT.phoneHref} className="text-[var(--brand)] underline">{CONTACT.phone}</a>, or{" "}
+                    <a href={CONTACT.emailHref} className="text-[var(--brand)] underline">{CONTACT.email}</a>{" "}
+                    with your order number.
+                  </p>
+                </div>
               </div>
             </div>
 
