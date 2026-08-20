@@ -9,6 +9,7 @@ import RichTextEditor from './RichTextEditor';
 import SpecificationsManager from './SpecificationsManager';
 import VariantsManager from './VariantsManager';
 import { SaltCombobox } from './SaltCombobox';
+import { ManufacturerCombobox } from './ManufacturerCombobox';
 import { computeSellingPrice, discountFromPrices } from '@/lib/pharma/pricing';
 import { Upload, X, Video, RefreshCw, Link as LinkIcon } from 'lucide-react';
 import { toast } from '@/store/useToastStore';
@@ -85,7 +86,10 @@ const DOSAGE_FORMS = [
 
 const SALT_UNITS = ['mg', 'mcg', 'g', 'ml', 'iu', '%'] as const;
 const SCHEDULE_CLASSES = ['OTC', 'H', 'H1', 'X', 'G'] as const;
-const PACK_UNITS = ['tablet', 'ml', 'g', 'unit'] as const;
+const PACK_UNITS = [
+  'tablet', 'capsule', 'ml', 'g', 'strip', 'bottle', 'box', 'piece',
+  'sachet', 'tube', 'vial', 'ampoule', 'drop', 'packet', 'spray', 'kit', 'unit',
+] as const;
 
 type SaltRow = { name: string; strength: number; unit: string };
 
@@ -102,6 +106,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
   const replaceVideoInputRef = useRef<HTMLInputElement>(null);
   const [categoryOptions, setCategoryOptions] = useState<{ _id: string; name: string }[]>([]);
   const [catalogSalts, setCatalogSalts] = useState<string[]>([]);
+  const [catalogManufacturers, setCatalogManufacturers] = useState<string[]>([]);
 
   useEffect(() => {
     fetch('/api/admin/categories')
@@ -122,6 +127,16 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (Array.isArray(data?.salts)) setCatalogSalts(data.salts as string[]);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Admin-added manufacturers, suggested in the manufacturer combobox.
+  useEffect(() => {
+    fetch('/api/admin/products/manufacturers')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (Array.isArray(data?.manufacturers)) setCatalogManufacturers(data.manufacturers as string[]);
       })
       .catch(() => {});
   }, []);
@@ -200,6 +215,26 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     } catch {
       setCatalogSalts((prev) => prev.filter((s) => s.toLowerCase() !== clean.toLowerCase()));
       toast.error("Couldn't add that salt. Try again.");
+    }
+  };
+
+  // Persist a new manufacturer to the catalogue so it's suggested next time.
+  // Optimistic: show it immediately, revert if the save fails.
+  const handleAddManufacturer = async (name: string) => {
+    const clean = name.trim();
+    if (!clean || catalogManufacturers.some((m) => m.toLowerCase() === clean.toLowerCase())) return;
+    setCatalogManufacturers((prev) => [...prev, clean]);
+    try {
+      const res = await fetch('/api/admin/products/manufacturers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: clean }),
+      });
+      if (!res.ok) throw new Error('add-manufacturer failed');
+      toast.success(`Added “${clean}” to the manufacturer list`);
+    } catch {
+      setCatalogManufacturers((prev) => prev.filter((m) => m.toLowerCase() !== clean.toLowerCase()));
+      toast.error("Couldn't add that manufacturer. Try again.");
     }
   };
 
@@ -508,7 +543,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                         type="number"
                         min="0"
                         step="any"
-                        value={salt.strength}
+                        value={salt.strength || ''}
                         onChange={(e) => updateSalt(i, { strength: parseFloat(e.target.value) || 0 })}
                         placeholder="Strength"
                         aria-label={`Salt ${i + 1} strength`}
@@ -565,12 +600,13 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Manufacturer *
                 </label>
-                <Input
-                  type="text"
-                  value={formData.manufacturer}
-                  onChange={(e) => updateField('manufacturer', e.target.value)}
-                  placeholder="e.g., Cipla"
+                <ManufacturerCombobox
+                  value={formData.manufacturer ?? ''}
+                  onChange={(v) => updateField('manufacturer', v)}
+                  ariaLabel="Manufacturer"
                   required
+                  catalogManufacturers={catalogManufacturers}
+                  onAddManufacturer={handleAddManufacturer}
                 />
               </div>
             </div>
@@ -982,7 +1018,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   min="0"
                   max="100"
                   step="0.01"
-                  value={formData.discountPercentage ?? 0}
+                  value={formData.discountPercentage || ''}
                   onChange={(e) =>
                     setPricing({
                       discountPercentage: Math.min(100, Math.max(0, parseFloat(e.target.value) || 0)),
@@ -1038,8 +1074,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <Input
                   type="number"
                   min="0"
-                  value={formData.stock}
+                  value={formData.stock || ''}
                   onChange={(e) => updateField('stock', parseInt(e.target.value) || 0)}
+                  placeholder="0"
                   required
                 />
               </div>

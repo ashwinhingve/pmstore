@@ -18,6 +18,8 @@ import {
   Boxes,
   ClipboardList,
   Inbox,
+  FlaskConical,
+  Factory,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -54,6 +56,8 @@ export const adminNavigation: NavGroup[] = [
     items: [
       { label: 'Products', href: '/admin/products', icon: Package },
       { label: 'Categories', href: '/admin/categories', icon: Tags },
+      { label: 'Salts', href: '/admin/salts', icon: FlaskConical },
+      { label: 'Manufacturers', href: '/admin/manufacturers', icon: Factory },
       { label: 'Offers', href: '/admin/offers', icon: TicketPercent },
     ],
   },

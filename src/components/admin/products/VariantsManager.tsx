@@ -130,10 +130,11 @@ export default function VariantsManager({
                         type="number"
                         min="0"
                         step="0.01"
-                        value={editForm.price || 0}
+                        value={editForm.price || ''}
                         onChange={(e) =>
                           setEditForm({ ...editForm, price: parseFloat(e.target.value) || 0 })
                         }
+                        placeholder="0"
                       />
                     </div>
                     <div>
@@ -160,10 +161,11 @@ export default function VariantsManager({
                       <Input
                         type="number"
                         min="0"
-                        value={editForm.stock || 0}
+                        value={editForm.stock || ''}
                         onChange={(e) =>
                           setEditForm({ ...editForm, stock: parseInt(e.target.value) || 0 })
                         }
+                        placeholder="0"
                       />
                     </div>
                   </div>

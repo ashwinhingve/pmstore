@@ -73,3 +73,32 @@ export async function POST(req: Request) {
     return createErrorResponse(error);
   }
 }
+
+/**
+ * DELETE /api/admin/products/salts
+ * Remove an admin-added salt from the catalogue so it stops appearing in the
+ * dropdown. Only affects the SaltCatalog entry (the compiled base list can't be
+ * removed); products keep their inline salts untouched. Admin only.
+ */
+export async function DELETE(req: Request) {
+  const adminCheck = await verifyAdminAccess();
+  if (adminCheck.error) return adminCheck.error;
+
+  try {
+    const { name } = saltCatalogSchema.parse(await req.json());
+
+    await connectDB();
+    const result = await SaltCatalog.deleteOne({ nameLower: name.toLowerCase() });
+
+    return NextResponse.json({ deleted: result.deletedCount > 0, salt: name });
+  } catch (error: any) {
+    if (error?.name === 'ZodError') {
+      return NextResponse.json(
+        { error: 'Validation failed', details: error.issues ?? error.errors },
+        { status: 400 }
+      );
+    }
+    console.error('❌ Error deleting salt:', error);
+    return createErrorResponse(error);
+  }
+}
