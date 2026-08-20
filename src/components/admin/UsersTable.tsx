@@ -10,8 +10,25 @@ import {
   ChevronRight,
   Shield,
   User,
+  Mail,
+  Phone,
+  Loader2,
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils/format-date';
+import { Drawer } from '@/components/ui/drawer';
+import { toast } from '@/store/useToastStore';
+
+interface UserDetail {
+  _id: string;
+  name?: string;
+  fullName?: string;
+  email?: string;
+  phoneNumber?: string;
+  role?: string;
+  emailVerified?: boolean | string | null;
+  mobileVerified?: boolean;
+  createdAt?: string;
+}
 
 interface UserData {
   id: string;
@@ -48,6 +65,50 @@ export default function UsersTable({
   const [showFilters, setShowFilters] = useState(false);
   const [localSearch, setLocalSearch] = useState(filters.search);
   const [localFilters, setLocalFilters] = useState(filters);
+
+  // User-detail drawer (the "View" action)
+  const [viewUser, setViewUser] = useState<UserData | null>(null);
+  const [detail, setDetail] = useState<UserDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [savingRole, setSavingRole] = useState(false);
+
+  const openUser = async (user: UserData) => {
+    setViewUser(user);
+    setDetail(null);
+    setDetailLoading(true);
+    try {
+      const res = await fetch(`/api/admin/users/${user.id}`);
+      if (!res.ok) throw new Error('load failed');
+      const json = await res.json();
+      setDetail(json.data as UserDetail);
+    } catch {
+      toast.error("Couldn't load this user. Try again.");
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
+  const changeRole = async (nextRole: string) => {
+    if (!viewUser || nextRole === viewUser.role) return;
+    setSavingRole(true);
+    try {
+      const res = await fetch(`/api/admin/users/${viewUser.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: nextRole }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json?.error?.message || 'Update failed');
+      setViewUser({ ...viewUser, role: nextRole });
+      setDetail((d) => (d ? { ...d, role: nextRole } : d));
+      toast.success(`Role changed to ${nextRole}`);
+      router.refresh();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't update the role.");
+    } finally {
+      setSavingRole(false);
+    }
+  };
 
   const updateURL = (newFilters: Partial<Filters>, page = 1) => {
     const params = new URLSearchParams();
@@ -277,6 +338,7 @@ export default function UsersTable({
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <button
                       type="button"
+                      onClick={() => openUser(user)}
                       className="inline-flex items-center gap-1 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
                     >
                       <Eye className="w-4 h-4" />
@@ -320,6 +382,105 @@ export default function UsersTable({
           </div>
         </div>
       )}
+
+      {/* User detail + role management */}
+      <Drawer
+        open={viewUser !== null}
+        onClose={() => setViewUser(null)}
+        title="User details"
+        side="right"
+      >
+        {viewUser && (
+          <div className="space-y-6 p-4">
+            {/* Identity */}
+            <div className="flex items-center gap-3">
+              {viewUser.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={viewUser.image} alt={viewUser.name} className="h-12 w-12 rounded-full" />
+              ) : (
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ink)] font-semibold text-[var(--paper-card)]">
+                  {viewUser.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="truncate font-semibold text-[var(--ink)]">{viewUser.name}</p>
+                <p className="flex items-center gap-1.5 truncate text-sm text-[var(--ink-70)]">
+                  <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  {viewUser.email}
+                </p>
+              </div>
+            </div>
+
+            {/* Contact + account (from the detail fetch) */}
+            {detailLoading ? (
+              <div className="flex items-center gap-2 text-sm text-[var(--ink-70)]">
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                Loading details…
+              </div>
+            ) : (
+              detail && (
+                <dl className="space-y-2 text-sm">
+                  {detail.phoneNumber && (
+                    <div className="flex items-center gap-1.5 text-[var(--ink-70)]">
+                      <Phone className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                      <span className="data text-[var(--ink)]">{detail.phoneNumber}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <dt className="text-[var(--ink-70)]">Email verified</dt>
+                    <dd className="text-[var(--ink)]">{detail.emailVerified ? 'Yes' : 'No'}</dd>
+                  </div>
+                  <div className="flex justify-between">
+                    <dt className="text-[var(--ink-70)]">Mobile verified</dt>
+                    <dd className="text-[var(--ink)]">{detail.mobileVerified ? 'Yes' : 'No'}</dd>
+                  </div>
+                </dl>
+              )
+            )}
+
+            {/* Activity (from the table row — already loaded) */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] p-3">
+                <p className="text-xs text-[var(--ink-70)]">Orders</p>
+                <p className="data text-lg font-semibold text-[var(--ink)]">{viewUser.orderCount}</p>
+              </div>
+              <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] p-3">
+                <p className="text-xs text-[var(--ink-70)]">Total spent</p>
+                <p className="data text-lg font-semibold text-[var(--ink)]">
+                  ₹{viewUser.totalSpent.toLocaleString('en-IN')}
+                </p>
+              </div>
+            </div>
+            <p className="text-sm text-[var(--ink-70)]">
+              Joined <span className="data text-[var(--ink)]">{formatDate(viewUser.createdAt)}</span>
+            </p>
+
+            {/* Role management — backed by PATCH /api/admin/users/[id] */}
+            <div>
+              <label
+                htmlFor="user-role"
+                className="mb-2 block text-sm font-medium text-[var(--ink)]"
+              >
+                Role
+              </label>
+              <select
+                id="user-role"
+                value={viewUser.role}
+                disabled={savingRole}
+                onChange={(e) => changeRole(e.target.value)}
+                className="w-full rounded-lg border border-[var(--foil-soft)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
+              >
+                <option value="client">Client</option>
+                <option value="admin">Admin</option>
+              </select>
+              <p className="mt-2 flex items-center gap-1.5 text-xs text-[var(--ink-40)]">
+                {savingRole && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
+                Admins can manage the whole store. You cannot change your own role.
+              </p>
+            </div>
+          </div>
+        )}
+      </Drawer>
     </div>
   );
 }

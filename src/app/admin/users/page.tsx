@@ -121,6 +121,12 @@ export default async function AdminUsersPage({
     createdAt: { $gte: thirtyDaysAgo },
   });
 
+  // "Export CSV" downloads exactly what's filtered on screen.
+  const exportParams = new URLSearchParams();
+  if (search) exportParams.set('search', search);
+  if (role) exportParams.set('role', role);
+  const exportHref = `/api/admin/users/export${exportParams.toString() ? `?${exportParams}` : ''}`;
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -128,7 +134,8 @@ export default async function AdminUsersPage({
         title="User management"
         description={<>Manage all users and their permissions ({totalUsers.toLocaleString()} total)</>}
       >
-        <div
+        <a
+          href={exportHref}
           className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--paper-card)] border border-[var(--foil-soft)] rounded-lg text-sm font-medium text-[var(--ink)] hover:bg-[var(--foil-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--ink)]"
         >
           <svg
@@ -145,7 +152,7 @@ export default async function AdminUsersPage({
             />
           </svg>
           Export CSV
-        </div>
+        </a>
       </AdminPageHeader>
 
       {/* Stats Overview */}
