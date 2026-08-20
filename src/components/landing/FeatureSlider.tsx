@@ -93,7 +93,7 @@ export function FeatureSlider({ slides }: { slides?: FeatureSlideView[] }) {
   const hasControls = maxIndex >= 1;
 
   return (
-    <section className="bg-[var(--paper)] pb-6 pt-2 sm:pb-8" aria-label="Featured">
+    <section className="bg-[var(--paper-tint)] py-10 sm:py-14" aria-label="Featured">
       <Container>
         <div
           className="relative isolate"

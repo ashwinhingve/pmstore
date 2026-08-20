@@ -83,7 +83,7 @@ export const PROMO_BANNERS: PromoBanner[] = [
 
 /** Trust / lifestyle supporting images. */
 export const TRUST_IMAGES: LandingImage[] = [
-  { url: '/landing/trust-1.jpg', alt: 'Pharmacist in a white coat ready to help' },
+  { url: '/landing/pharmacist.jpg', alt: 'Nurse in a white coat with a stethoscope, ready to help' },
   { url: '/landing/trust-2.jpg', alt: 'Precise quality check in a lab' },
   { url: '/landing/trust-3.jpg', alt: 'Couple walking outdoors' },
 ];

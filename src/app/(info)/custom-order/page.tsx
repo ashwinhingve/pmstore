@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Search, PhoneCall, PackageCheck, ClipboardList, ShieldCheck, ArrowRight, CheckCircle2 } from "lucide-react"
+import { Search, PhoneCall, PackageCheck, ClipboardList, ShieldCheck, ArrowRight } from "lucide-react"
 import { CustomOrderForm } from "@/components/custom-order/CustomOrderForm"
-import { CUSTOM_ORDER_CONSENTS } from "@/lib/custom-order-consents"
 import { WhatsAppGlyph } from "@/components/shared/WhatsAppGlyph"
 import { waHref } from "@/lib/constants"
 
@@ -27,7 +26,7 @@ export default function CustomOrderPage() {
       <section className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16 md:py-20">
         <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--brand)]">Custom order</p>
         <h1 className="max-w-3xl text-[length:var(--step-3)] text-[var(--ink)]">
-          Can&apos;t find your medicine? Request it.
+          Prescription
         </h1>
         <p className="mt-4 max-w-2xl text-[length:var(--step-1)] text-[var(--ink-70)]">
           Tell us the medicine you need — even if it isn&apos;t in our catalogue. We&apos;ll source
@@ -79,40 +78,6 @@ export default function CustomOrderPage() {
               )
             })}
           </ol>
-        </div>
-      </section>
-
-      {/* Good to know — the three things we always keep you posted about (the
-          consents you'll confirm in the form). WhatsApp-green accent. */}
-      <section className="bg-[var(--paper)]">
-        <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 pt-14 md:pt-16">
-          <div className="rounded-[var(--radius-lg)] border border-[var(--whatsapp)]/25 bg-[var(--whatsapp-soft)] p-6 md:p-8">
-            <div className="flex items-center gap-2.5">
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--whatsapp)] text-[var(--brand-ink)]">
-                <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-              </span>
-              <h2 className="text-[length:var(--step-1)] text-[var(--ink)]">Good to know before you order</h2>
-            </div>
-            <ul className="mt-5 grid gap-3 sm:grid-cols-3">
-              {CUSTOM_ORDER_CONSENTS.map((c) => (
-                <li
-                  key={c.id}
-                  className="flex items-start gap-2.5 rounded-[var(--radius-md)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)]"
-                >
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[var(--whatsapp-deep)]" aria-hidden="true" />
-                  <span className="text-sm">
-                    <span lang="hi" className="block text-[var(--ink)]">
-                      {c.hi}
-                    </span>
-                    <span className="mt-0.5 block text-[var(--ink-70)]">{c.en}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-4 text-sm text-[var(--ink-70)]">
-              You&apos;ll confirm these with a tick when you send the form below.
-            </p>
-          </div>
         </div>
       </section>
 

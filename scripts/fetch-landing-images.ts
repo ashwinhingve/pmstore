@@ -54,6 +54,11 @@ const IMAGES: Record<string, string> = {
   'trust-1.jpg': `https://images.pexels.com/photos/16122143/pexels-photo-16122143.jpeg?auto=compress&cs=tinysrgb&w=1200`,
   'trust-2.jpg': `${U}/photo-1576671081837-49000212a370?auto=format&fit=crop&w=1200&q=80`,
   'trust-3.jpg': `${U}/photo-1559234938-b60fff04894d?auto=format&fit=crop&w=1200&q=80`,
+
+  // "What sets us apart" (TrustBand) — a professional nurse/clinician in a white
+  // coat (Pexels-licence, royalty-free). Replaced the aesthetics-clinic photo the
+  // client flagged, 2026-08-20. trust-1 stays on the custom-order CTA.
+  'pharmacist.jpg': `https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=1200`,
 };
 
 async function main() {

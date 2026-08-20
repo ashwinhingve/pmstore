@@ -8,10 +8,10 @@ import { SectionHeading } from '@/components/shared/SectionHeading';
 import { CONTACT } from '@/lib/constants';
 
 /**
- * PromoBar — the homepage's closing band of headline offers, mirroring the promos
- * the store leads with (save 60–70%, free delivery, pathology discount, WhatsApp
- * ordering). It rounds off the page as a calm, generously-spaced offers section
- * that flows into the footer. Numbers use --font-data per the mono rule.
+ * PromoBar — the store's headline offers, sitting high on the page just under the
+ * hero as an eye-catching "discount strip" (save 60–70%, free delivery, pathology
+ * discount, WhatsApp ordering). Cards are centred and brand-accented so the offers
+ * read at a glance. Numbers use --font-data per the mono rule.
  */
 const PROMOS = [
   { icon: TrendingDown, value: '60–70%', label: 'off with generic brands', href: '/products' },
@@ -28,9 +28,9 @@ export function PromoBar() {
       <Container className="py-14 sm:py-20">
         <SectionHeading
           align="center"
-          eyebrow="Everyday value"
-          title="Savings on every order"
-          description="Honest per-tablet pricing, free delivery, and quick WhatsApp ordering — the reasons patients keep coming back."
+          eyebrow="Everyday savings"
+          title="Save on every order"
+          description="Honest per-tablet pricing, free delivery and quick WhatsApp ordering — the reasons patients keep coming back."
           className="mb-10"
         />
         <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
@@ -44,20 +44,20 @@ export function PromoBar() {
             >
               <Link
                 href={href}
-                className="group relative flex items-center gap-3.5 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 py-4 shadow-[var(--shadow-xs)] transition-[box-shadow,border-color,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--brand)] hover:shadow-[var(--shadow-md)]"
+                className="group relative flex h-full flex-col items-center gap-3 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 py-6 text-center shadow-[var(--shadow-xs)] transition-[box-shadow,border-color,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1 hover:border-[var(--brand)] hover:shadow-[var(--shadow-md)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
               >
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-0 top-0 h-[3px] bg-[image:var(--surface-brand)] opacity-0 transition-opacity duration-[var(--dur-base)] group-hover:opacity-100"
+                  className="absolute inset-x-0 top-0 h-1 bg-[image:var(--surface-brand)] opacity-0 transition-opacity duration-[var(--dur-base)] group-hover:opacity-100"
                 />
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[image:var(--surface-brand)] text-[var(--brand-ink)] shadow-[var(--shadow-xs)]">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[image:var(--surface-brand)] text-[var(--brand-ink)] shadow-[var(--shadow-xs)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:scale-110">
+                  <Icon className="h-6 w-6" aria-hidden="true" />
                 </span>
                 <span className="min-w-0">
-                  <span className="data block truncate text-[length:var(--step-1)] font-bold leading-tight text-[var(--ink)]">
+                  <span className="data block truncate text-[length:var(--step-1)] font-bold leading-tight text-[var(--brand)]">
                     {value}
                   </span>
-                  <span className="block truncate text-sm text-[var(--ink-70)]">{label}</span>
+                  <span className="mt-0.5 block text-sm text-[var(--ink-70)]">{label}</span>
                 </span>
               </Link>
             </motion.li>

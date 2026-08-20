@@ -51,7 +51,7 @@ export function QuickActions({ signedIn }: QuickActionsProps) {
     {
       href: '/custom-order',
       icon: PackageSearch,
-      title: 'Custom order',
+      title: 'Request medicine',
       description: "Can't find it? Tell us and we source it for you",
       cta: 'Request a medicine',
       highlight: true,
@@ -62,7 +62,7 @@ export function QuickActions({ signedIn }: QuickActionsProps) {
   const gridCols = actions.length >= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3';
 
   return (
-    <section className="bg-[var(--paper-tint)]">
+    <section className="bg-[var(--paper)]">
       <Container className="py-16 sm:py-24">
         <SectionHeading
           align="center"

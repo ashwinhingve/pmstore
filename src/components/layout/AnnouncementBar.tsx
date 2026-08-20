@@ -64,7 +64,7 @@ export function AnnouncementBar() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-[image:var(--surface-hero)] text-sm text-[var(--brand-ink)]/90 sm:text-base print:hidden">
+    <div className="relative overflow-hidden bg-[var(--brand-deep)] text-sm text-[var(--brand-ink)]/90 sm:text-base print:hidden">
       <div className="mx-auto flex h-11 max-w-[1600px] items-center sm:h-12">
         {reduceMotion ? (
           <div className="flex-1 overflow-hidden" aria-label="Store offers" role="region">

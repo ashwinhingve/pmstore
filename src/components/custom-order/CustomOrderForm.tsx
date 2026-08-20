@@ -34,6 +34,7 @@ export function CustomOrderForm() {
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CustomOrderInput>({
     resolver: zodResolver(customOrderSchema),
@@ -54,7 +55,18 @@ export function CustomOrderForm() {
     },
   })
 
-  // The request can only be sent once all three consents are ticked.
+  // Ticking the single "I have a prescription for these" box accepts all three
+  // sourcing consents at once — the individual boxes are hidden. Unticking clears
+  // them, so a prescription confirmation is required before the request can send.
+  const hasPrescription = watch("hasPrescription")
+  useEffect(() => {
+    const on = Boolean(hasPrescription)
+    setValue("agreeMonopolyNotice", on)
+    setValue("agreeMarketShortage", on)
+    setValue("agreeNearExpiry", on)
+  }, [hasPrescription, setValue])
+
+  // The request can only be sent once the consents are accepted (mirrors the box above).
   const consentsAccepted = watch([
     "agreeMonopolyNotice",
     "agreeMarketShortage",
@@ -283,48 +295,48 @@ export function CustomOrderForm() {
           )}
         </div>
 
-        <label className="flex items-start gap-3 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-tint)] p-4">
-          <input
-            type="checkbox"
-            {...register("hasPrescription")}
-            className="mt-0.5 h-4 w-4 accent-[var(--brand)]"
-          />
-          <span className="text-sm text-[var(--ink-70)]">
-            I have a prescription for this. Schedule H / H1 / X medicines can only be dispensed
-            against a valid prescription — we&apos;ll collect it before delivery.
-          </span>
-        </label>
+        <div className="rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-tint)] p-4">
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              {...register("hasPrescription")}
+              className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--brand)]"
+            />
+            <span className="text-sm text-[var(--ink-70)]">
+              <span className="font-medium text-[var(--ink)]">I have a prescription for these</span>{" "}
+              and accept the store&apos;s sourcing terms. Schedule H / H1 / X medicines are
+              dispensed only against a valid prescription — we&apos;ll collect it before delivery.
+            </span>
+          </label>
+          <details className="mt-2 pl-8">
+            <summary className="cursor-pointer text-sm font-medium text-[var(--brand-deep)]">
+              View sourcing terms
+            </summary>
+            <ul className="mt-2 space-y-1.5">
+              {CUSTOM_ORDER_CONSENTS.map((c) => (
+                <li key={c.id} className="text-sm">
+                  <span lang="hi" className="block text-[var(--ink)]">
+                    {c.hi}
+                  </span>
+                  <span className="block text-[var(--ink-70)]">{c.en}</span>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
         <FormField label="Anything else" htmlFor="notes">
           <Textarea id="notes" {...register("notes")} error={errors.notes?.message} placeholder="Optional — timing, alternatives you're open to, etc." />
         </FormField>
       </div>
 
-      {/* Required consents — all three must be ticked before the request sends. */}
-      <fieldset className="mt-8 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-tint)] p-5">
-        <legend className="px-1 text-[length:var(--step-0)] font-semibold text-[var(--ink)]">
-          Please read and accept
-        </legend>
-        <p className="mb-4 mt-1 text-sm text-[var(--ink-70)]">Tick all three to place your request.</p>
-        <ul className="space-y-2.5">
-          {CUSTOM_ORDER_CONSENTS.map((c) => (
-            <li key={c.id}>
-              <label className="flex items-start gap-3 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-3.5 transition-colors duration-[var(--dur-fast)] hover:border-[var(--foil)]">
-                <input
-                  type="checkbox"
-                  {...register(c.field)}
-                  className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--brand)]"
-                />
-                <span className="text-sm">
-                  <span lang="hi" className="block text-[var(--ink)]">
-                    {c.hi}
-                  </span>
-                  <span className="mt-0.5 block text-[var(--ink-70)]">{c.en}</span>
-                </span>
-              </label>
-            </li>
-          ))}
-        </ul>
-      </fieldset>
+      {/* The three sourcing consents are accepted in one tick via the prescription
+          box above. They stay registered (and hidden) so each acceptance is still
+          recorded and validated on submit. */}
+      <div className="hidden" aria-hidden="true">
+        {CUSTOM_ORDER_CONSENTS.map((c) => (
+          <input key={c.id} type="checkbox" tabIndex={-1} {...register(c.field)} />
+        ))}
+      </div>
 
       {/* Honeypot — hidden from users, catches bots */}
       <input
@@ -346,7 +358,7 @@ export function CustomOrderForm() {
       <p className="mt-3 text-sm text-[var(--ink-70)]">
         {consentsAccepted
           ? "We reply within one working day. Your details are used only to source your medicine."
-          : "Tick all three boxes above to send your request."}
+          : "Tick “I have a prescription for these” above to send your request."}
       </p>
     </form>
   )

@@ -44,7 +44,13 @@ export function CuratedTabs({ buckets }: { buckets: CuratedBuckets }) {
   return (
     <section className="bg-[var(--paper-tint)]">
       <Container className="py-16 sm:py-24">
-        <SectionHeading align="center" eyebrow="Curated for you" title="Shop by" className="mb-8" />
+        <SectionHeading
+          align="center"
+          eyebrow="Curated for you"
+          title="Shop by"
+          description="Handpicked bestsellers and value buys — compare every brand by price per tablet."
+          className="mb-8"
+        />
 
         {/* Pill tabs — active is the brand-orange fill; the count rides in a chip. */}
         <div
@@ -63,7 +69,7 @@ export function CuratedTabs({ buckets }: { buckets: CuratedBuckets }) {
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => setActive(tab.id)}
-                className={`inline-flex h-11 items-center gap-2 rounded-[var(--radius-pill)] px-4 text-sm font-semibold transition-colors duration-[var(--dur-fast)] sm:px-5 ${
+                className={`inline-flex h-11 items-center gap-2 rounded-[var(--radius-pill)] px-4 text-sm font-semibold transition-colors duration-[var(--dur-fast)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] sm:px-5 ${
                   isActive
                     ? 'bg-[image:var(--surface-brand)] text-[var(--brand-ink)] shadow-[var(--shadow-brand)]'
                     : 'border border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)] hover:border-[var(--brand)] hover:text-[var(--ink)]'
@@ -93,7 +99,7 @@ export function CuratedTabs({ buckets }: { buckets: CuratedBuckets }) {
             initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.3, ease: 'easeOut' }}
-            className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4"
+            className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4"
           >
             {products.map((p) => (
               <ProductCard key={p._id || p.id || p.slug} product={p} />

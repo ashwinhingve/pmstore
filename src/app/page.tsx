@@ -14,7 +14,6 @@ import { PromoBar } from '@/components/landing/PromoBar';
 import { QuickActions } from '@/components/landing/QuickActions';
 import { Categories } from '@/components/landing/Categories';
 import type { CategoryCardView } from '@/components/landing/Categories';
-import { CustomOrderCta } from '@/components/landing/CustomOrderCta';
 import { PromoBanners } from '@/components/landing/PromoBanners';
 import { CuratedTabs } from '@/components/landing/CuratedTabs';
 import type { CuratedBuckets } from '@/components/landing/CuratedTabs';
@@ -49,17 +48,16 @@ export const metadata: Metadata = {
  *
  * Sections (in render order):
  *  1. HeroSlider — full-bleed image slider with search + CTAs
- *  2. FeatureSlider — admin-managed 2-up image band that slides in from the left
- *  3. Categories — image-backed pharma category grid + custom-order CTA cards
- *  4. CustomOrderCta — request-a-medicine band (routes to /custom-order)
- *  5. QuickActions — search / order again / upload prescription
- *  6. CuratedTabs — tabbed grid: Bestsellers / New arrivals / Value buys / Trending
- *  7. PromoBanners — prescription-upload + reorder feature banners
- *  8. TrustBand — stats + VALUE_PROPS + credentials
- *  9. WhyChooseUs — three photography-led reasons to trust the store
- * 10. FaqPreview — 4 FAQs using Accordion
+ *  2. Categories — image-backed pharma category grid + a Request-medicine CTA
+ *  3. CuratedTabs — tabbed grid: Bestsellers / New arrivals / Value buys / Trending
+ *  4. QuickActions — search / order again / upload prescription / request medicine
+ *  5. FeatureSlider — admin-managed 2-up image band that slides in from the left
+ *  6. PromoBanners — prescription-upload + reorder feature banners
+ *  7. TrustBand — stats + VALUE_PROPS + credentials
+ *  8. WhyChooseUs — three photography-led reasons to trust the store
+ *  9. FaqPreview — 4 FAQs using Accordion
+ * 10. PromoBar — headline-offers strip (the "Everyday savings" discount cards)
  * 11. ContactCta — contact info + WhatsApp + contact form link
- * 12. PromoBar — compact headline-offers band (moved to the foot of the page)
  */
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -172,17 +170,16 @@ export default async function Home() {
       </h1>
       {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
       <HeroSlider slides={heroSlides} />
-      <FeatureSlider slides={featureSlides} />
       <Categories categories={categoryCards} />
-      <CustomOrderCta />
-      <QuickActions signedIn={signedIn} />
       <CuratedTabs buckets={buckets} />
+      <QuickActions signedIn={signedIn} />
+      <FeatureSlider slides={featureSlides} />
       <PromoBanners />
       <TrustBand />
       <WhyChooseUs />
       <FaqPreview />
-      <ContactCta />
       <PromoBar />
+      <ContactCta />
     </div>
   );
 }
