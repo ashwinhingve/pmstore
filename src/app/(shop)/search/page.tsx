@@ -5,7 +5,7 @@ import Category from '@/models/Category';
 import { searchQuerySchema } from '@/lib/validations/search';
 import { executeSearch, type SearchFacets } from '@/lib/search/execute';
 import { ProductCard, type ProductCardData } from '@/components/products/ProductCard';
-import { SearchComparison } from '@/components/search/SearchComparison';
+import { SearchFilterDrawer } from '@/components/search/SearchFilterDrawer';
 import { EmptySearchArt } from '@/components/illustrations';
 
 /**
@@ -104,10 +104,19 @@ export default async function SearchPage({
         )}
       </header>
 
-      {results.length > 1 && <SearchComparison products={results} />}
+      <div className="flex flex-col gap-4 md:flex-row md:gap-6">
+        {/* Mobile: filters live behind a compact trigger so results show first */}
+        <SearchFilterDrawer>
+          <FacetContent params={params} facets={data.facets} catName={catName} />
+        </SearchFilterDrawer>
 
-      <div className="flex flex-col gap-6 md:flex-row">
-        <FacetSidebar params={params} facets={data.facets} catName={catName} />
+        {/* Desktop: the same facets, inline in a sidebar */}
+        <aside
+          className="hidden h-fit w-full shrink-0 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)] md:block md:w-60"
+          aria-label="Filter results"
+        >
+          <FacetContent params={params} facets={data.facets} catName={catName} />
+        </aside>
 
         <main className="flex-1">
           {results.length === 0 ? (
@@ -131,7 +140,7 @@ export default async function SearchPage({
   );
 }
 
-function FacetSidebar({
+function FacetContent({
   params,
   facets,
   catName,
@@ -145,10 +154,7 @@ function FacetSidebar({
   const activeMin = firstString(params.minPrice);
 
   return (
-    <aside
-      className="h-fit w-full shrink-0 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)] md:w-60"
-      aria-label="Filter results"
-    >
+    <>
       {/* Prescription */}
       {facets.prescriptionRequired.length > 0 && (
         <FacetGroup title="Prescription">
@@ -208,7 +214,7 @@ function FacetSidebar({
           );
         })}
       </FacetGroup>
-    </aside>
+    </>
   );
 }
 

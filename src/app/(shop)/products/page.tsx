@@ -473,52 +473,30 @@ export default function ProductsPage() {
             </div>
           </aside>
 
-          <div className="flex flex-col gap-4 lg:hidden">
-            {/* Mobile Filter Button */}
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={() => setShowMobileFilters(true)}
-                variant="outline"
-                size="sm"
-                className="min-h-11 flex-1"
-              >
-                <Filter className="mr-2 h-4 w-4" aria-hidden="true" />
-                Filters
-              </Button>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                aria-label="Sort medicines"
-                className="min-h-11 flex-1 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 py-2 text-sm font-medium transition-colors duration-[var(--dur-fast)] focus:border-[var(--ink-70)] focus:outline-none"
-              >
-                <option value="featured">Sort: Featured</option>
-                <option value="name">Sort: Name</option>
-                <option value="price-low">Sort: Price low</option>
-                <option value="price-high">Sort: Price high</option>
-                <option value="rating">Sort: Rating</option>
-              </select>
-            </div>
-
-            {/* Mobile Section Pills */}
-            <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {sidebarSections.map((section) => {
-                const Icon = section.icon
-                return (
-                  <button
-                    key={section.id}
-                    onClick={() => setSelectedSection(section.id)}
-                    className={`flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-pill)] px-3 py-1.5 text-xs font-medium transition-colors duration-[var(--dur-fast)] ${
-                      selectedSection === section.id
-                        ? "bg-[var(--brand)] text-[var(--brand-ink)]"
-                        : "border border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)]"
-                    }`}
-                  >
-                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
-                    <span>{section.label}</span>
-                  </button>
-                )
-              })}
-            </div>
+          {/* Mobile filter + sort row — compact, so results start higher.
+              Sections/categories/price all live in the Filters drawer. */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <Button
+              onClick={() => setShowMobileFilters(true)}
+              variant="outline"
+              size="sm"
+              className="min-h-11 flex-1"
+            >
+              <Filter className="mr-2 h-4 w-4" aria-hidden="true" />
+              Filters
+            </Button>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              aria-label="Sort medicines"
+              className="min-h-11 flex-1 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 py-2 text-sm font-medium transition-colors duration-[var(--dur-fast)] focus:border-[var(--ink-70)] focus:outline-none"
+            >
+              <option value="featured">Sort: Featured</option>
+              <option value="name">Sort: Name</option>
+              <option value="price-low">Sort: Price low</option>
+              <option value="price-high">Sort: Price high</option>
+              <option value="rating">Sort: Rating</option>
+            </select>
           </div>
 
           {/* Main Content */}

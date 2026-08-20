@@ -14,15 +14,14 @@ function searchStage(pipeline: Record<string, unknown>[]) {
 }
 
 describe('fuzzyForTerm', () => {
-  it('disables fuzzy for very short terms (<=2 chars)', () => {
+  it('disables fuzzy for terms shorter than 4 chars', () => {
     expect(fuzzyForTerm('ab')).toBeNull();
+    expect(fuzzyForTerm('abc')).toBeNull();
   });
-  it('allows one edit for short terms (3-4 chars)', () => {
+  it('caps tolerance at a single edit for 4+ char terms', () => {
     expect(fuzzyForTerm('abcd')).toEqual({ maxEdits: 1 });
-  });
-  it('allows two edits for longer terms (>=5 chars)', () => {
-    expect(fuzzyForTerm('abcde')).toEqual({ maxEdits: 2 });
-    expect(fuzzyForTerm('paracetamol')).toEqual({ maxEdits: 2 });
+    expect(fuzzyForTerm('abcde')).toEqual({ maxEdits: 1 });
+    expect(fuzzyForTerm('paracetamol')).toEqual({ maxEdits: 1 });
   });
 });
 
@@ -34,12 +33,12 @@ describe('buildSearchPipeline', () => {
     expect(search.compound.minimumShouldMatch).toBe(1);
   });
 
-  it('searches name, salts.name and manufacturer', () => {
+  it('searches name and salts.name, but not manufacturer (precision over recall)', () => {
     const { compound } = searchStage(buildSearchPipeline({ q: 'paracetamol' }));
     const paths = compound.should.map((c: any) => c.text.path);
     expect(paths).toContain('name');
     expect(paths).toContain('salts.name');
-    expect(paths).toContain('manufacturer');
+    expect(paths).not.toContain('manufacturer');
   });
 
   it('boosts brand name above salt name', () => {
@@ -69,10 +68,10 @@ describe('buildSearchPipeline', () => {
     expect(synonymClause.text.fuzzy).toBeUndefined();
   });
 
-  it('applies fuzzy matching sized to the longest query word', () => {
+  it('applies single-edit fuzzy matching driven by the longest query word', () => {
     const { compound } = searchStage(buildSearchPipeline({ q: 'paracetmol 650' }));
     const nameClause = compound.should.find((c: any) => c.text.path === 'name');
-    expect(nameClause.text.fuzzy).toEqual({ maxEdits: 2 });
+    expect(nameClause.text.fuzzy).toEqual({ maxEdits: 1 });
   });
 
   it('paginates with skip and limit', () => {

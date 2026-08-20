@@ -8,18 +8,22 @@
  *
  * Query design (docs/04-ROADMAP.md § Week 2, task 6):
  *   compound.should  →  fuzzy text on name (boosted), fuzzy text on salts.name,
- *                        text on manufacturer
+ *                        salt-synonym expansion
  *   compound.filter  →  isActive: true, isDiscontinued: false (+ optional facets)
+ *
+ * Precision over recall: we deliberately match only the brand name and the active
+ * salt (plus its aliases). We do NOT match the manufacturer — a maker's name would
+ * pull that maker's whole catalogue into results for an unrelated medicine — and we
+ * cap typo tolerance at a single edit so results stay close to what was typed.
  */
 
 export const SEARCH_INDEX = 'products_search';
 /** Synonym mapping name declared in scripts/atlas-search-index.json. */
 export const SYNONYM_MAPPING = 'salt_synonyms';
 
-/** Boosts: a brand-name hit outranks a salt hit, which outranks a manufacturer hit. */
+/** Boosts: a brand-name hit outranks a salt hit. */
 const BOOST_NAME = 3;
 const BOOST_SALT = 2;
-const BOOST_MANUFACTURER = 1;
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 50;
@@ -67,15 +71,15 @@ export interface SuggestParams {
 }
 
 /**
- * Fuzzy tolerance sized to a term's length. One edit is plenty for a 4-letter
- * word; longer words earn a second edit. Terms of 1–2 characters get no fuzzy —
- * at that length every word is one edit from every other and results turn to noise.
+ * Fuzzy tolerance, capped at a single edit. Terms shorter than 4 characters get no
+ * fuzzy at all — at that length every word is one edit from too many others, so
+ * matches turn to noise. A single edit corrects the common one-letter typo
+ * ("paracetmol" → "paracetamol") without pulling in unrelated medicines the way a
+ * two-edit tolerance does.
  */
 export function fuzzyForTerm(term: string): { maxEdits: number } | null {
-  const len = term.length;
-  if (len <= 2) return null;
-  if (len <= 4) return { maxEdits: 1 };
-  return { maxEdits: 2 };
+  if (term.length < 4) return null;
+  return { maxEdits: 1 };
 }
 
 /** Pick the fuzzy config for a whole query from its longest alphabetic word. */
@@ -135,7 +139,6 @@ function shouldClauses(q: string) {
         score: { boost: { value: BOOST_SALT } },
       },
     },
-    { text: { query: q, path: 'manufacturer', score: { boost: { value: BOOST_MANUFACTURER } } } },
   ];
 }
 
