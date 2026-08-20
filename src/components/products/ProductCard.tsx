@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { RxBadge } from "@/components/shared/RxBadge";
 import { PriceBlock } from "@/components/shared/PriceBlock";
-import { formatINR, type ScheduleClass } from "@/lib/pharma/format";
+import { formatINR, formatPack, type ScheduleClass } from "@/lib/pharma/format";
 import { ProductVisual } from "@/components/products/ProductVisual";
 import { WhatsAppGlyph } from "@/components/shared/WhatsAppGlyph";
 import { useCartStore } from "@/store/useCartStore";
@@ -133,7 +133,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Pack size — a glanceable chip, like a real strip's printed pack. */}
         {product.packSize && product.packUnit && !outOfStock && (
           <span className="pointer-events-none absolute bottom-2.5 left-2.5 rounded-[var(--radius-pill)] bg-[var(--paper-card)]/95 px-2 py-0.5 text-[0.6875rem] font-semibold tabular-nums text-[var(--ink-70)] shadow-[var(--shadow-xs)]">
-            {product.packSize} {product.packUnit}
+            {formatPack(product.packSize, product.packUnit)}
           </span>
         )}
 

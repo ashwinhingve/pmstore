@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { formatINR, discountPercent } from '@/lib/pharma/format';
+import { formatINR, discountPercent, normalizeUnit, formatPack } from '@/lib/pharma/format';
 
 /**
  * PriceBlock (docs/03-DESIGN-SYSTEM.md).
@@ -26,8 +26,6 @@ export function PriceBlock({
   className?: string;
 }) {
   const off = discountPercent(mrp, price);
-  const pluralUnit =
-    ['tablet', 'capsule'].includes(packUnit) && packSize !== 1 ? `${packUnit}s` : packUnit;
 
   return (
     <div className={cn('flex flex-col gap-0.5', className)}>
@@ -41,7 +39,7 @@ export function PriceBlock({
         {off > 0 && <span className="text-[0.8125rem] font-semibold text-[var(--mint)]">Save {off}%</span>}
       </div>
       <p className="pack text-[length:var(--step--1)] text-[var(--ink-70)]">
-        {formatINR(unitPrice)} per {packUnit} · {packSize} {pluralUnit}
+        {formatINR(unitPrice)} per {normalizeUnit(packUnit)} · {formatPack(packSize, packUnit)}
       </p>
     </div>
   );

@@ -6,7 +6,7 @@ import { Star, ShoppingCart, Package, Check, Share2, Shield, Truck, BadgeCheck, 
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/store/useCartStore';
 import { toast } from '@/store/useToastStore';
-import { formatINR, type ScheduleClass } from '@/lib/pharma/format';
+import { formatINR, normalizeUnit, formatPack, type ScheduleClass } from '@/lib/pharma/format';
 import { RxBadge } from '@/components/shared/RxBadge';
 import VariantSelector from './VariantSelector';
 import ProductReviews from './ProductReviews';
@@ -205,7 +205,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
         </div>
         {product.unitPrice != null && product.packSize && product.packUnit && (
           <p className="price mt-1.5 text-sm text-[var(--ink-70)]">
-            {formatINR(product.unitPrice)} per {product.packUnit} · {product.packSize} {product.packUnit}
+            {formatINR(product.unitPrice)} per {normalizeUnit(product.packUnit)} · {formatPack(product.packSize, product.packUnit)}
           </p>
         )}
       </div>

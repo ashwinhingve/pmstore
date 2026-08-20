@@ -6,6 +6,9 @@ import {
   scheduleLabel,
   isRxSchedule,
   discountPercent,
+  normalizeUnit,
+  pluralizeUnit,
+  formatPack,
 } from './format';
 
 describe('formatINR', () => {
@@ -59,5 +62,40 @@ describe('discountPercent', () => {
     expect(discountPercent(undefined, 30)).toBe(0);
     expect(discountPercent(20, 25)).toBe(0);
     expect(discountPercent(0, 25)).toBe(0);
+  });
+});
+
+describe('normalizeUnit', () => {
+  it('maps legacy "gm" to "g" and leaves other units untouched', () => {
+    expect(normalizeUnit('gm')).toBe('g');
+    expect(normalizeUnit('GM')).toBe('g');
+    expect(normalizeUnit('tablet')).toBe('tablet');
+    expect(normalizeUnit(' ml ')).toBe('ml');
+  });
+});
+
+describe('pluralizeUnit', () => {
+  it('pluralises countable units when count is not 1', () => {
+    expect(pluralizeUnit('tablet', 15)).toBe('tablets');
+    expect(pluralizeUnit('bottle', 2)).toBe('bottles');
+    expect(pluralizeUnit('strip', 3)).toBe('strips');
+  });
+  it('keeps countable units singular for exactly one', () => {
+    expect(pluralizeUnit('tablet', 1)).toBe('tablet');
+    expect(pluralizeUnit('bottle', 1)).toBe('bottle');
+  });
+  it('never pluralises measure units', () => {
+    expect(pluralizeUnit('ml', 100)).toBe('ml');
+    expect(pluralizeUnit('g', 500)).toBe('g');
+    expect(pluralizeUnit('gm', 500)).toBe('g');
+  });
+});
+
+describe('formatPack', () => {
+  it('joins pack size with its correctly-spelled unit', () => {
+    expect(formatPack(15, 'tablet')).toBe('15 tablets');
+    expect(formatPack(1, 'tablet')).toBe('1 tablet');
+    expect(formatPack(100, 'ml')).toBe('100 ml');
+    expect(formatPack(2, 'bottle')).toBe('2 bottles');
   });
 });
