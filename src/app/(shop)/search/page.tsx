@@ -5,6 +5,7 @@ import Category from '@/models/Category';
 import { searchQuerySchema } from '@/lib/validations/search';
 import { executeSearch, type SearchFacets } from '@/lib/search/execute';
 import { ProductCard, type ProductCardData } from '@/components/products/ProductCard';
+import { SearchComparison } from '@/components/search/SearchComparison';
 import { SearchFilterDrawer } from '@/components/search/SearchFilterDrawer';
 import { EmptySearchArt } from '@/components/illustrations';
 
@@ -103,6 +104,11 @@ export default async function SearchPage({
           </p>
         )}
       </header>
+
+      {/* Same-composition comparison: brands sharing the searched salt, side by
+          side and led by price per tablet. Only same-formula groups (2+ brands)
+          appear — never unrelated medicines. */}
+      {results.length > 1 && <SearchComparison products={results} />}
 
       <div className="flex flex-col gap-4 md:flex-row md:gap-6">
         {/* Mobile: filters live behind a compact trigger so results show first */}
