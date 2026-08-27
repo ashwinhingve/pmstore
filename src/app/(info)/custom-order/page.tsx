@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Search, PhoneCall, PackageCheck, ClipboardList, ShieldCheck, ArrowRight } from "lucide-react"
+import { Search, PhoneCall, PackageCheck, ClipboardList, ShieldCheck } from "lucide-react"
 import { CustomOrderForm } from "@/components/custom-order/CustomOrderForm"
 import { WhatsAppGlyph } from "@/components/shared/WhatsAppGlyph"
 import { waHref } from "@/lib/constants"
@@ -13,93 +13,79 @@ export const metadata: Metadata = {
 }
 
 const STEPS = [
-  { icon: ClipboardList, title: "Tell us what you need", body: "Share the medicine name, strength and how much — a brand, a salt, or a short list." },
-  { icon: Search, title: "We check availability", body: "We source it through our licensed suppliers and confirm the best-price option." },
-  { icon: PhoneCall, title: "We call you back", body: "Usually within a working day, with price and timing — and to collect a prescription if it's needed." },
-  { icon: PackageCheck, title: "Delivered to you", body: "Confirm the order and we deliver to your door across Bhopal." },
+  { icon: ClipboardList, title: "Tell us what you need" },
+  { icon: Search, title: "We check availability" },
+  { icon: PhoneCall, title: "We call you back" },
+  { icon: PackageCheck, title: "Delivered to you" },
 ]
 
 export default function CustomOrderPage() {
   return (
     <div className="bg-[var(--paper)]">
-      {/* Hero */}
-      <section className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16 md:py-20">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--brand)]">Custom order</p>
-        <h1 className="max-w-3xl text-[length:var(--step-3)] text-[var(--ink)]">
-          Prescription
+      {/* Compact intro — a couple of lines, not a full hero, so the form is the
+          first thing a visitor has to scroll past. */}
+      <section className="mx-auto max-w-[1600px] xl:w-4/5 px-4 pt-10 pb-2 md:pt-14">
+        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-[var(--brand)]">Custom order</p>
+        <h1 className="max-w-2xl text-[length:var(--step-2)] text-[var(--ink)]">
+          Request a medicine
         </h1>
-        <p className="mt-4 max-w-2xl text-[length:var(--step-1)] text-[var(--ink-70)]">
-          Tell us the medicine you need — even if it isn&apos;t in our catalogue. We&apos;ll source
-          it through licensed suppliers at generic prices and call you back to confirm.
+        <p className="mt-2 max-w-2xl text-[var(--ink-70)]">
+          Can&apos;t find it in our catalogue? Tell us what you need — we&apos;ll source it
+          through licensed suppliers at generic prices and call you back to confirm.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="#request"
-            className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--brand)] px-6 font-semibold text-[var(--brand-ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--brand-deep)]"
-          >
-            Request a medicine <ArrowRight className="h-4 w-4" />
-          </Link>
-          <a
-            href={waHref("Hi, I'd like to request a medicine.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-12 items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--whatsapp)] px-6 font-semibold text-[var(--brand-ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--whatsapp-deep)]"
-          >
-            <WhatsAppGlyph className="h-5 w-5" />
-            Chat on WhatsApp
-          </a>
-          <Link
-            href="/products"
-            className="inline-flex h-12 items-center rounded-[var(--radius-sm)] border-2 border-[var(--foil-soft)] bg-[var(--paper-card)] px-6 font-semibold text-[var(--ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--foil-soft)]"
-          >
-            Browse the catalogue
-          </Link>
-        </div>
       </section>
 
-      {/* How it works */}
-      <section className="border-y border-[var(--foil-soft)] bg-[var(--paper-card)]">
-        <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-16">
-          <h2 className="mb-8 text-[length:var(--step-2)] text-[var(--ink)]">How it works</h2>
-          <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Request form — the primary action, right below the intro. Spans the
+          full rail (no xl:w-4/5) so the form fields have room to breathe. */}
+      <section id="request" className="mx-auto max-w-[1600px] px-4 pb-14 pt-6 md:pb-20">
+        <div className="mb-6 flex max-w-md items-start gap-3 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-sm)]">
+          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand)]" aria-hidden="true" />
+          <p className="text-sm text-[var(--ink-70)]">
+            Prescription medicines (Schedule H / H1 / X) are dispensed only against a valid
+            prescription. Tick the box in the form and we&apos;ll collect it before delivery.
+          </p>
+        </div>
+        <CustomOrderForm />
+      </section>
+
+      {/* Condensed "how it works" + secondary CTAs — icon + title only, no body
+          copy, kept below the form so it never gates it on mobile. */}
+      <section className="border-t border-[var(--foil-soft)] bg-[var(--paper-card)]">
+        <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-10">
+          <ol className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-4">
             {STEPS.map((s, i) => {
               const Icon = s.icon
               return (
-                <li key={s.title} className="relative">
-                  <span className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--brand-soft)] text-[var(--brand)]">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
+                <li key={s.title} className="flex flex-col items-center gap-2 text-center sm:items-start sm:text-left">
+                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--brand-soft)] text-[var(--brand)]">
+                    <Icon className="h-4 w-4" aria-hidden="true" />
                   </span>
-                  <p className="text-xs font-semibold text-[var(--ink-40)]" style={{ fontFamily: "var(--font-data)" }}>
-                    Step {i + 1}
-                  </p>
-                  <h3 className="mb-1 text-[length:var(--step-0)] font-semibold text-[var(--ink)]">{s.title}</h3>
-                  <p className="text-sm text-[var(--ink-70)]">{s.body}</p>
+                  <span className="text-sm font-semibold text-[var(--ink)]">
+                    {i + 1}. {s.title}
+                  </span>
                 </li>
               )
             })}
           </ol>
-        </div>
-      </section>
 
-      {/* Request form — spans the full rail */}
-      <section id="request" className="mx-auto max-w-[1600px] px-4 py-16 md:py-20">
-        <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
-            <h2 className="text-[length:var(--step-2)] text-[var(--ink)]">Request a medicine</h2>
-            <p className="mt-3 text-[var(--ink-70)]">
-              Only your name, phone and the medicine you need are required. The more you tell us,
-              the faster we can confirm.
-            </p>
-          </div>
-          <div className="flex max-w-md items-start gap-3 rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-sm)]">
-            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand)]" aria-hidden="true" />
-            <p className="text-sm text-[var(--ink-70)]">
-              Prescription medicines (Schedule H / H1 / X) are dispensed only against a valid
-              prescription. Tick the box in the form and we&apos;ll collect it before delivery.
-            </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-[var(--foil-soft)] pt-6 sm:justify-start">
+            <a
+              href={waHref("Hi, I'd like to request a medicine.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--ink)] underline-offset-4 hover:underline"
+            >
+              <WhatsAppGlyph className="h-4 w-4" />
+              Chat on WhatsApp
+            </a>
+            <Link
+              href="/products"
+              className="text-sm font-semibold text-[var(--ink)] underline-offset-4 hover:underline"
+            >
+              Browse the catalogue
+            </Link>
           </div>
         </div>
-        <CustomOrderForm />
       </section>
     </div>
   )
