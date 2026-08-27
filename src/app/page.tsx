@@ -17,6 +17,7 @@ import type { CategoryCardView } from '@/components/landing/Categories';
 import { PromoBanners } from '@/components/landing/PromoBanners';
 import { CuratedTabs } from '@/components/landing/CuratedTabs';
 import type { CuratedBuckets } from '@/components/landing/CuratedTabs';
+import { ProductMarquee } from '@/components/landing/ProductMarquee';
 import type { ProductCardData } from '@/components/products/ProductCard';
 import { TrustBand } from '@/components/landing/TrustBand';
 import { WhyChooseUs } from '@/components/landing/WhyChooseUs';
@@ -50,14 +51,16 @@ export const metadata: Metadata = {
  *  1. HeroSlider — full-bleed image slider with search + CTAs
  *  2. Categories — image-backed pharma category grid + a Request-medicine CTA
  *  3. CuratedTabs — tabbed grid: Bestsellers / New arrivals / Value buys / Trending
- *  4. QuickActions — search / order again / upload prescription / request medicine
- *  5. FeatureSlider — admin-managed 2-up image band that slides in from the left
- *  6. PromoBanners — prescription-upload + reorder feature banners
- *  7. TrustBand — stats + VALUE_PROPS + credentials
- *  8. WhyChooseUs — three photography-led reasons to trust the store
- *  9. FaqPreview — 4 FAQs using Accordion
- * 10. PromoBar — headline-offers strip (the "Everyday savings" discount cards)
- * 11. ContactCta — contact info + WhatsApp + contact form link
+ *  4. ProductMarquee — "More to explore": a compact, continuously-sliding row
+ *     mixing products across categories
+ *  5. QuickActions — search / order again / upload prescription / request medicine
+ *  6. FeatureSlider — admin-managed 2-up image band that slides in from the left
+ *  7. PromoBanners — prescription-upload + reorder feature banners
+ *  8. TrustBand — stats + VALUE_PROPS + credentials
+ *  9. WhyChooseUs — three photography-led reasons to trust the store
+ * 10. FaqPreview — 4 FAQs using Accordion
+ * 11. PromoBar — headline-offers strip (the "Everyday savings" discount cards)
+ * 12. ContactCta — contact info + WhatsApp + contact form link
  */
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -80,6 +83,9 @@ export default async function Home() {
   // Admin-managed categories (name + image, editable at /admin/categories). Empty
   // → Categories falls back to the canonical taxonomy so the grid is never blank.
   let categoryCards: CategoryCardView[] = [];
+  // A larger, cross-category slice for the "More to explore" marquee — not
+  // filtered to one category, sized for a sliding row rather than a grid tab.
+  let marqueeProducts: ProductCardData[] = [];
   try {
     await connectDB();
 
@@ -122,6 +128,15 @@ export default async function Home() {
       valueBuys: serialize(valueBuys),
       trending: serialize(trending),
     };
+
+    // "More to explore" marquee — a wider, cross-category pull (not gated on
+    // isTrending) so it reads as a different set from the Trending tab above.
+    const marquee = await Product.find(base)
+      .sort({ orderCount: -1, updatedAt: -1 })
+      .limit(16)
+      .lean()
+      .exec();
+    marqueeProducts = serialize(marquee);
     // Active hero + feature slides, ordered; serialize ObjectId at the boundary
     // and drop any slide without an image so the carousels never render a blank.
     const settings = await SiteSettings.findOne({ key: 'global' })
@@ -172,6 +187,7 @@ export default async function Home() {
       <HeroSlider slides={heroSlides} />
       <Categories categories={categoryCards} />
       <CuratedTabs buckets={buckets} />
+      <ProductMarquee products={marqueeProducts} />
       <QuickActions signedIn={signedIn} />
       <FeatureSlider slides={featureSlides} />
       <PromoBanners />
