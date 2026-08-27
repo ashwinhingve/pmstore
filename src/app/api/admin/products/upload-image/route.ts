@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdminAccess } from '@/lib/auth-helpers';
-import cloudinary, { CLOUDINARY_FOLDERS, UPLOAD_CONFIG, IMAGE_TRANSFORMATIONS } from '@/lib/cloudinary/config';
+import { UPLOAD_CONFIG } from '@/lib/cloudinary/config';
+import { uploadProductImageBuffer } from '@/lib/cloudinary/upload-product-image';
 
 /**
  * POST /api/admin/products/upload-image
@@ -50,38 +51,22 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Determine upload folder
-    const folder = formData.get('folder') as string || CLOUDINARY_FOLDERS.PRODUCTS;
-
-    // Upload to Cloudinary
-    const result = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            folder,
-            resource_type: 'image',
-            transformation: [IMAGE_TRANSFORMATIONS.PRODUCT_MAIN],
-          },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        )
-        .end(buffer);
-    });
-
-    const uploadResult = result as any;
+    // Determine upload folder (categories admin overrides this; default is products)
+    const folder = (formData.get('folder') as string) || undefined;
+    const uploaded = folder
+      ? await uploadProductImageBuffer(buffer, folder)
+      : await uploadProductImageBuffer(buffer);
 
     // Return image metadata
     return NextResponse.json({
       success: true,
-      url: uploadResult.secure_url,
+      url: uploaded.url,
       image: {
-        url: uploadResult.secure_url,
-        publicId: uploadResult.public_id,
-        width: uploadResult.width,
-        height: uploadResult.height,
-        format: uploadResult.format,
+        url: uploaded.url,
+        publicId: uploaded.publicId,
+        width: uploaded.width,
+        height: uploaded.height,
+        format: uploaded.format,
         order: 0, // Will be set by frontend when adding to product
       },
     });

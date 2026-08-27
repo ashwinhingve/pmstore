@@ -3,6 +3,7 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { requireAdmin } from "@/lib/auth-helpers"
 import { ProductImportClient } from "@/components/admin/products/ProductImportClient"
+import { ImportTemplateManager } from "@/components/admin/products/ImportTemplateManager"
 
 export const metadata: Metadata = {
   title: "Import products",
@@ -26,6 +27,10 @@ export default async function ProductImportPage() {
         by SKU. Prices, <span style={{ fontFamily: "var(--font-data)" }}>compositionKey</span> and{" "}
         <span style={{ fontFamily: "var(--font-data)" }}>unitPrice</span> are recomputed on save.
       </p>
+
+      <div className="mb-6">
+        <ImportTemplateManager />
+      </div>
 
       <ProductImportClient />
     </div>

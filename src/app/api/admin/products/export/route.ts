@@ -3,16 +3,21 @@ import { verifyAdminAccess } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
 import Product from '@/models/Product';
 import Category from '@/models/Category';
+import ImportTemplate from '@/models/ImportTemplate';
 import { toCsv } from '@/lib/import/csv-parse';
+import { resolveTemplateColumns } from '@/lib/import/template-fields';
 import { createErrorResponse } from '@/lib/utils/errorHandler';
 
 /**
  * GET /api/admin/products/export
- * Export all products as CSV
- * Admin only
+ * GET /api/admin/products/export?templateId=<id>
+ * Export all products as CSV. Admin only.
  *
  * The CSV includes all product fields needed to re-import, with salts flattened
  * into salt_1_name, salt_1_strength, salt_1_unit, salt_2_name, ... columns.
+ * With `?templateId=`, the export is scoped to that saved template's mandatory
+ * + chosen optional columns instead of every field — the same field set its
+ * downloadable import CSV uses. Omit it for today's full export, unchanged.
  */
 export async function GET(req: NextRequest) {
   try {
@@ -21,6 +26,21 @@ export async function GET(req: NextRequest) {
     if (adminCheck.error) return adminCheck.error;
 
     await connectDB();
+
+    const templateIdParam = req.nextUrl.searchParams.get('templateId');
+    let allowedColumns: Set<string> | null = null;
+    if (templateIdParam) {
+      const template = await ImportTemplate.findById(templateIdParam)
+        .select('includedOptionalFields')
+        .lean<{ includedOptionalFields?: string[] } | null>();
+      if (!template) {
+        return NextResponse.json(
+          { error: 'That import template no longer exists' },
+          { status: 400 }
+        );
+      }
+      allowedColumns = new Set(resolveTemplateColumns(template.includedOptionalFields ?? []));
+    }
 
     // Fetch all products, lean to avoid hydration
     const products = await Product.find({})
@@ -78,7 +98,7 @@ export async function GET(req: NextRequest) {
       'contraindications',
       ...Array.from({ length: maxImages }, (_, i) => `image_url_${i + 1}`),
       'is_active',
-    ];
+    ].filter((col) => !allowedColumns || allowedColumns.has(col));
 
     // Transform products to export records
     const rows: Record<string, string | number | boolean | undefined>[] = products.map((p: any) => {

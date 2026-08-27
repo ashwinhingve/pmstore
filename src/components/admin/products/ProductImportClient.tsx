@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import {
   UploadCloud,
@@ -10,8 +10,10 @@ import {
   AlertTriangle,
   Loader2,
   X,
+  ImagePlus,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { TEMPLATE_HEADERS, REQUIRED_COLUMNS, TEMPLATE_EXAMPLE, csvCell } from "@/lib/import/template-csv"
 
 interface ImportError {
   sku?: string
@@ -23,33 +25,10 @@ interface ImportResult {
   failed: number
   errors: ImportError[]
 }
-
-// The column contract the importer expects (src/lib/import/product-row.ts).
-const TEMPLATE_HEADERS = [
-  "sku", "name", "brand", "manufacturer", "category", "form", "pack_size", "pack_unit",
-  "salt_1_name", "salt_1_strength", "salt_1_unit",
-  "salt_2_name", "salt_2_strength", "salt_2_unit",
-  "price", "mrp", "gst_rate", "stock", "schedule_class", "prescription_required", "hsn_code",
-  "short_description", "storage_instructions", "usage_instructions",
-  "side_effects", "contraindications", "image_url_1", "image_url_2", "tags", "is_active",
-]
-
-const TEMPLATE_EXAMPLE: Record<string, string> = {
-  sku: "PMS-TAB-DOLO-650", name: "Dolo 650", brand: "Dolo", manufacturer: "Micro Labs",
-  category: "Pain Relief", form: "tablet", pack_size: "15", pack_unit: "tablets",
-  salt_1_name: "Paracetamol", salt_1_strength: "650", salt_1_unit: "mg",
-  salt_2_name: "", salt_2_strength: "", salt_2_unit: "",
-  price: "30.50", mrp: "36", gst_rate: "12", stock: "100",
-  schedule_class: "OTC", prescription_required: "FALSE", hsn_code: "3004",
-  short_description: "Paracetamol 650 mg for fever and pain",
-  storage_instructions: "Store below 30 C", usage_instructions: "As directed by the physician",
-  side_effects: "Nausea|Rash", contraindications: "Severe liver disease",
-  image_url_1: "", image_url_2: "", tags: "", is_active: "TRUE",
+interface TemplateOption {
+  id: string
+  name: string
 }
-
-const REQUIRED_COLUMNS = ["sku", "name", "manufacturer", "category", "form", "price", "pack_size"]
-
-const csvCell = (v: string) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)
 
 /** Read a CSV file directly, or convert the first sheet of an Excel file to CSV. */
 async function fileToCsv(file: File): Promise<string> {
@@ -68,9 +47,23 @@ async function fileToCsv(file: File): Promise<string> {
 
 export function ProductImportClient() {
   const [file, setFile] = useState<File | null>(null)
+  const [images, setImages] = useState<File[]>([])
+  const [templates, setTemplates] = useState<TemplateOption[]>([])
+  const [templateId, setTemplateId] = useState("")
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
   const [result, setResult] = useState<ImportResult | null>(null)
+
+  useEffect(() => {
+    fetch("/api/admin/products/import-templates")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data?.data)) {
+          setTemplates(data.data.map((t: { id: string; name: string }) => ({ id: t.id, name: t.name })))
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   const onDrop = useCallback((accepted: File[]) => {
     setError("")
@@ -88,6 +81,10 @@ export function ProductImportClient() {
     },
   })
 
+  function onImagesSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    setImages(Array.from(e.target.files ?? []))
+  }
+
   async function handleImport() {
     if (!file) return
     setBusy(true)
@@ -95,11 +92,12 @@ export function ProductImportClient() {
     setResult(null)
     try {
       const csv = await fileToCsv(file)
-      const res = await fetch("/api/admin/products/import", {
-        method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: csv,
-      })
+      const body = new FormData()
+      body.append("file", new Blob([csv], { type: "text/csv" }), file.name || "import.csv")
+      if (templateId) body.append("templateId", templateId)
+      images.forEach((img) => body.append("images", img, img.name))
+
+      const res = await fetch("/api/admin/products/import", { method: "POST", body })
       const data = await res.json().catch(() => null)
       if (!res.ok) {
         const msg =
@@ -130,9 +128,21 @@ export function ProductImportClient() {
   }
 
   function downloadTemplate() {
+    if (templateId) {
+      // Template-scoped download is built server-side (it also bakes in the
+      // template's example manufacturer/salt, if set).
+      window.location.href = `/api/admin/products/import-templates/${templateId}/download`
+      return
+    }
     const header = TEMPLATE_HEADERS.join(",")
     const example = TEMPLATE_HEADERS.map((h) => csvCell(TEMPLATE_EXAMPLE[h] ?? "")).join(",")
     triggerDownload(`${header}\n${example}\n`, "product-import-template.csv")
+  }
+
+  function downloadExport() {
+    window.location.href = templateId
+      ? `/api/admin/products/export?templateId=${encodeURIComponent(templateId)}`
+      : "/api/admin/products/export"
   }
 
   function downloadFailedRows() {
@@ -144,20 +154,64 @@ export function ProductImportClient() {
   return (
     <div className="space-y-6">
       {/* Template */}
-      <div className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="font-semibold text-[var(--ink)]">Start from the template</h2>
+            <p className="mt-1 text-sm text-[var(--ink-70)]">
+              Required columns:{" "}
+              <span style={{ fontFamily: "var(--font-data)" }} className="text-[var(--ink)]">
+                {REQUIRED_COLUMNS.join(", ")}
+              </span>
+              . Add salts as{" "}
+              <span style={{ fontFamily: "var(--font-data)" }}>salt_1_name / salt_1_strength / salt_1_unit</span>.
+            </p>
+          </div>
+          <Button variant="outline" onClick={downloadTemplate} className="shrink-0 gap-2">
+            <Download className="h-4 w-4" /> Download template
+          </Button>
+        </div>
+
+        {templates.length > 0 && (
+          <div>
+            <label htmlFor="import-template" className="mb-1 block text-sm font-medium text-[var(--ink)]">
+              Use a saved template
+            </label>
+            <select
+              id="import-template"
+              value={templateId}
+              onChange={(e) => setTemplateId(e.target.value)}
+              className="h-11 w-full max-w-sm rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper)] px-3 text-sm text-[var(--ink)]"
+            >
+              <option value="">All fields (default)</option>
+              {templates.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+            {templateId && (
+              <p className="mt-1 text-xs text-[var(--ink-70)]">
+                This template also requires a salt/formula and a product image on every row —
+                manage templates above.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Export */}
+      <div className="flex flex-col gap-2 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="font-semibold text-[var(--ink)]">Start from the template</h2>
+          <h2 className="font-semibold text-[var(--ink)]">Export products</h2>
           <p className="mt-1 text-sm text-[var(--ink-70)]">
-            Required columns:{" "}
-            <span style={{ fontFamily: "var(--font-data)" }} className="text-[var(--ink)]">
-              {REQUIRED_COLUMNS.join(", ")}
-            </span>
-            . Add salts as{" "}
-            <span style={{ fontFamily: "var(--font-data)" }}>salt_1_name / salt_1_strength / salt_1_unit</span>.
+            {templateId
+              ? "Downloads every active product, scoped to the template selected above."
+              : "Downloads every product with every field — pick a saved template above to narrow the columns."}
           </p>
         </div>
-        <Button variant="outline" onClick={downloadTemplate} className="shrink-0 gap-2">
-          <Download className="h-4 w-4" /> Download template
+        <Button variant="outline" onClick={downloadExport} className="shrink-0 gap-2">
+          <Download className="h-4 w-4" /> Export CSV
         </Button>
       </div>
 
@@ -210,6 +264,33 @@ export function ProductImportClient() {
               </button>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Optional batch of product images, matched to rows by filename = SKU */}
+      {file && (
+        <div className="rounded-[var(--radius-md)] border border-dashed border-[var(--foil)] bg-[var(--paper-card)] p-4">
+          <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-[var(--ink)]">
+            <ImagePlus className="h-4 w-4 shrink-0 text-[var(--ink-70)]" aria-hidden="true" />
+            Product images (optional)
+            <input type="file" accept="image/*" multiple className="sr-only" onChange={onImagesSelected} />
+          </label>
+          <p className="mt-1 text-xs text-[var(--ink-70)]">
+            Name each file after its SKU (e.g. <span style={{ fontFamily: "var(--font-data)" }}>PMS-TAB-DOLO-650.jpg</span>) — matched rows get the image attached automatically. A missing match doesn&apos;t fail the row.
+          </p>
+          {images.length > 0 && (
+            <ul className="mt-2 flex flex-wrap gap-2">
+              {images.map((img) => (
+                <li
+                  key={img.name}
+                  className="rounded-[var(--radius-pill)] bg-[var(--foil-soft)] px-2.5 py-1 text-xs text-[var(--ink-70)]"
+                  style={{ fontFamily: "var(--font-data)" }}
+                >
+                  {img.name}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

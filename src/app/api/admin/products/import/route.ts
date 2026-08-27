@@ -5,10 +5,12 @@ import { verifyAdminAccess } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
 import Product from '@/models/Product';
 import Category from '@/models/Category';
+import ImportTemplate from '@/models/ImportTemplate';
 import { parseCsv } from '@/lib/import/csv-parse';
 import { parseProductRow } from '@/lib/import/product-row';
 import { generateUniqueSlug } from '@/lib/utils/slugify';
 import { createErrorResponse } from '@/lib/utils/errorHandler';
+import { uploadProductImageBuffer, isAllowedImageFormat } from '@/lib/cloudinary/upload-product-image';
 
 interface ImportError {
   sku?: string;
@@ -22,14 +24,20 @@ interface ImportError {
  *
  * Accepts CSV as:
  * - Raw text body (Content-Type: text/plain)
- * - Form data file upload (Content-Type: multipart/form-data, field name: 'file')
+ * - Form data file upload (Content-Type: multipart/form-data, field name: 'file'),
+ *   optionally with a 'templateId' field and one or more 'images' files (matched
+ *   to rows by filename stem = SKU)
  *
  * For each row:
  * 1. Parse and validate using parseProductRow()
- * 2. Resolve category name → ObjectId (upsert)
- * 3. Upsert product by SKU using save() (not insertMany/updateMany)
+ * 2. If a template was selected, additionally require a salt/formula and a
+ *    product image (CSV image_url_* or a matched batch image) — the client's
+ *    "simplified template" mandatory-field set. No template → unchanged.
+ * 3. Resolve category name → ObjectId (upsert)
+ * 4. Upload any matched batch image to Cloudinary
+ * 5. Upsert product by SKU using save() (not insertMany/updateMany)
  *    — triggers the pre-validate hook to compute compositionKey and unitPrice
- * 4. Collect errors for reporting
+ * 6. Collect errors for reporting
  *
  * Returns counts of created, updated, failed, and a sample of errors.
  */
@@ -39,8 +47,9 @@ export async function POST(req: NextRequest) {
     const adminCheck = await verifyAdminAccess();
     if (adminCheck.error) return adminCheck.error;
 
-    // Read CSV text from body or form
     let csvText: string;
+    let templateId: string | null = null;
+    const imagesBySku = new Map<string, File>();
 
     const contentType = req.headers.get('content-type');
     if (contentType?.includes('multipart/form-data')) {
@@ -54,8 +63,19 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
-
       csvText = await file.text();
+
+      const templateField = form.get('templateId');
+      if (typeof templateField === 'string' && templateField.trim()) {
+        templateId = templateField.trim();
+      }
+
+      for (const entry of form.getAll('images')) {
+        if (entry instanceof File && entry.size > 0 && isAllowedImageFormat(entry.name)) {
+          const stem = entry.name.replace(/\.[^.]+$/, '').trim().toUpperCase();
+          if (stem) imagesBySku.set(stem, entry);
+        }
+      }
     } else {
       // Read raw text body
       csvText = await req.text();
@@ -70,6 +90,21 @@ export async function POST(req: NextRequest) {
     }
 
     await connectDB();
+
+    // A selected template tightens validation beyond the base importer: a
+    // salt/formula and a product image become required on every row (see
+    // src/lib/import/template-fields.ts). No templateId → today's behavior.
+    let requireSaltAndImage = false;
+    if (templateId) {
+      const template = await ImportTemplate.findById(templateId).select('_id').lean();
+      if (!template) {
+        return NextResponse.json(
+          { error: 'That import template no longer exists' },
+          { status: 400 }
+        );
+      }
+      requireSaltAndImage = true;
+    }
 
     // Parse CSV into rows
     const rows = parseCsv(csvText);
@@ -100,9 +135,21 @@ export async function POST(req: NextRequest) {
         continue;
       }
 
-      try {
-        const parsed = parseResult.value;
+      const parsed = parseResult.value;
+      const matchedImage = imagesBySku.get(parsed.sku.trim().toUpperCase());
 
+      if (requireSaltAndImage) {
+        if (parsed.salts.length === 0) {
+          errors.push({ sku: parsed.sku, reason: 'missing salt/formula (required by this template)' });
+          continue;
+        }
+        if (parsed.imageUrls.length === 0 && !matchedImage) {
+          errors.push({ sku: parsed.sku, reason: 'missing product image (required by this template)' });
+          continue;
+        }
+      }
+
+      try {
         // Resolve category name → ObjectId
         let categoryId: string;
         const categoryKey = parsed.categoryName.toLowerCase();
@@ -135,12 +182,18 @@ export async function POST(req: NextRequest) {
           categoryCache.set(categoryKey, categoryId);
         }
 
-        // Map image URLs to images array (publicId left empty for import)
+        // Map image URLs to images array (publicId left empty for import),
+        // plus an uploaded batch image if one matched this row's SKU.
         const images = parsed.imageUrls.map((url, idx) => ({
           url,
-          publicId: '', // Import doesn't upload to Cloudinary — left empty
+          publicId: '', // Import doesn't upload URL-only images to Cloudinary — left empty
           order: idx,
         }));
+        if (matchedImage) {
+          const bytes = await matchedImage.arrayBuffer();
+          const uploaded = await uploadProductImageBuffer(Buffer.from(bytes));
+          images.push({ url: uploaded.url, publicId: uploaded.publicId, order: images.length });
+        }
 
         // Upsert by SKU
         let isNew = false;
@@ -215,9 +268,9 @@ export async function POST(req: NextRequest) {
         }
       } catch (err: any) {
         // Log only SKU and error message, never full product data (health data)
-        console.error(`Import error for SKU ${parseResult.value.sku}:`, err.message);
+        console.error(`Import error for SKU ${parsed.sku}:`, err.message);
         errors.push({
-          sku: parseResult.value.sku,
+          sku: parsed.sku,
           reason: err.message || 'Failed to save product',
         });
       }
