@@ -55,16 +55,16 @@ export function CustomOrderForm() {
     },
   })
 
-  // Ticking the single "I have a prescription for these" box accepts all three
-  // sourcing consents at once — the individual boxes are hidden. Unticking clears
-  // them, so a prescription confirmation is required before the request can send.
-  const hasPrescription = watch("hasPrescription")
+  // Ticking the single "accept sourcing terms" box accepts all three consents at
+  // once — the individual boxes are hidden. This is deliberately separate from
+  // "I have a prescription" below: not every request is for a prescription
+  // medicine, so that box stays optional and never gates submission.
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
   useEffect(() => {
-    const on = Boolean(hasPrescription)
-    setValue("agreeMonopolyNotice", on)
-    setValue("agreeMarketShortage", on)
-    setValue("agreeNearExpiry", on)
-  }, [hasPrescription, setValue])
+    setValue("agreeMonopolyNotice", acceptedTerms)
+    setValue("agreeMarketShortage", acceptedTerms)
+    setValue("agreeNearExpiry", acceptedTerms)
+  }, [acceptedTerms, setValue])
 
   // The request can only be sent once the consents are accepted (mirrors the box above).
   const consentsAccepted = watch([
@@ -304,8 +304,22 @@ export function CustomOrderForm() {
             />
             <span className="text-sm text-[var(--ink-70)]">
               <span className="font-medium text-[var(--ink)]">I have a prescription for these</span>{" "}
-              and accept the store&apos;s sourcing terms. Schedule H / H1 / X medicines are
-              dispensed only against a valid prescription — we&apos;ll collect it before delivery.
+              (optional). Schedule H / H1 / X medicines are dispensed only against a valid
+              prescription — we&apos;ll collect it before delivery.
+            </span>
+          </label>
+        </div>
+
+        <div className="rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-tint)] p-4">
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--brand)]"
+            />
+            <span className="text-sm text-[var(--ink-70)]">
+              <span className="font-medium text-[var(--ink)]">I accept the store&apos;s sourcing terms.</span>
             </span>
           </label>
           <details className="mt-2 pl-8">
@@ -358,7 +372,7 @@ export function CustomOrderForm() {
       <p className="mt-3 text-sm text-[var(--ink-70)]">
         {consentsAccepted
           ? "We reply within one working day. Your details are used only to source your medicine."
-          : "Tick “I have a prescription for these” above to send your request."}
+          : "Tick “I accept the store's sourcing terms” above to send your request."}
       </p>
     </form>
   )
