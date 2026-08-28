@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Check } from 'lucide-react';
 import { computeUnitPrice, formatComposition, type Salt } from '@/lib/pharma/composition';
+import { groupComparableProducts, pickComparisonPair } from '@/lib/search/comparison';
 import { ProductVisual } from '@/components/products/ProductVisual';
 import { CompareAddToCart } from '@/components/search/CompareAddToCart';
 
@@ -73,26 +74,19 @@ function coerce(raw: Record<string, unknown>): CompareProduct | null {
   };
 }
 
-const minRank = (g: CompareProduct[]) => Math.min(...g.map((p) => p.rank));
-
 export function SearchComparison({ products }: { products: Record<string, unknown>[] }) {
-  const groups = new Map<string, CompareProduct[]>();
-  products.forEach((raw, idx) => {
-    const p = coerce(raw);
-    if (!p) return;
-    p.rank = idx; // results arrive in relevance order — index 0 is the top match
-    const arr = groups.get(p.compositionKey) ?? [];
-    arr.push(p);
-    groups.set(p.compositionKey, arr);
-  });
+  const coerced = products
+    .map((raw, idx) => {
+      const p = coerce(raw);
+      if (p) p.rank = idx; // results arrive in relevance order — index 0 is the top match
+      return p;
+    })
+    .filter((p): p is CompareProduct => p !== null);
 
   // Only groups with more than one brand are worth comparing. Show the group
   // that holds the most relevant result first, and cap at 3 so the page stays
   // scannable; the rest are still in the grid below.
-  const comparable = [...groups.values()]
-    .filter((g) => g.length >= 2)
-    .sort((a, b) => minRank(a) - minRank(b))
-    .slice(0, 3);
+  const comparable = groupComparableProducts(coerced, 3);
 
   if (comparable.length === 0) return null;
 
@@ -120,13 +114,7 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
   // LEFT is always the brand the shopper searched for (the most relevant result
   // in this composition group). RIGHT is the best-value same-salt alternative —
   // in stock first, then cheapest per unit. The order never flips.
-  const searched = [...group].sort((a, b) => a.rank - b.rank)[0];
-  const alt = group
-    .filter((p) => p !== searched)
-    .sort((a, b) => {
-      if (a.stock > 0 !== b.stock > 0) return a.stock > 0 ? -1 : 1;
-      return a.unitPrice - b.unitPrice;
-    })[0];
+  const { searched, alt } = pickComparisonPair(group);
 
   const label =
     searched.salts.length > 0 ? formatComposition(searched.salts) : searched.compositionKey;
