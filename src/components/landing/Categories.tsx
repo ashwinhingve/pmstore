@@ -41,6 +41,8 @@ function hrefForSlug(slug: string, name: string): string {
   // on an empty /products filter. Medicine is the browse-all door.
   if (slug === 'pet-care') return '/custom-order';
   if (slug === 'medicine') return '/products';
+  // A service, not a purchasable product — its own info page, not /products.
+  if (slug === 'pathology-nursing-care') return '/pathology-nursing-care';
   return `/products?category=${encodeURIComponent(name)}`;
 }
 

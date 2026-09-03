@@ -13,6 +13,7 @@ import {
   Stethoscope,
   Syringe,
   PawPrint,
+  Microscope,
   type LucideIcon,
 } from "lucide-react";
 
@@ -69,6 +70,10 @@ export const PHARMA_CATEGORIES: PharmaCategory[] = [
   // empty state — see the pet-care special case in Categories.tsx. When pet
   // products are imported, drop that special case so it filters like the rest.
   { name: "Pet Care", slug: "pet-care", icon: PawPrint, tint: "sage" },
+  // Pathology & Nursing Care is a service, not a purchasable product — like Pet
+  // Care above, its tile routes to its own info page (not /products), so it
+  // never dead-ends on the empty state — see the special case in Categories.tsx.
+  { name: "Pathology & Nursing Care", slug: "pathology-nursing-care", icon: Microscope, tint: "sky" },
 ];
 
 /** Lookup an icon by category name, for lists driven off the DB `/api/categories`. */
