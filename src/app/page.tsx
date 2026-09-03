@@ -16,7 +16,8 @@ import { Categories } from '@/components/landing/Categories';
 import type { CategoryCardView } from '@/components/landing/Categories';
 import { PromoBanners } from '@/components/landing/PromoBanners';
 import { CuratedTabs } from '@/components/landing/CuratedTabs';
-import type { CuratedBuckets } from '@/components/landing/CuratedTabs';
+import type { CuratedCategoryBucket } from '@/components/landing/CuratedTabs';
+import { ProductImageSlider } from '@/components/landing/ProductImageSlider';
 import { ProductMarquee } from '@/components/landing/ProductMarquee';
 import type { ProductCardData } from '@/components/products/ProductCard';
 import { TrustBand } from '@/components/landing/TrustBand';
@@ -49,31 +50,27 @@ export const metadata: Metadata = {
  *
  * Sections (in render order):
  *  1. HeroSlider — full-bleed image slider with search + CTAs
- *  2. Categories — image-backed pharma category grid + a Request-medicine CTA
- *  3. CuratedTabs — tabbed grid: Bestsellers / New arrivals / Value buys / Trending
- *  4. ProductMarquee — "More to explore": a compact, continuously-sliding row
+ *  2. ProductImageSlider — quiet, image-only circular product strip
+ *  3. Categories — image-backed pharma category grid + a Request-medicine CTA
+ *  4. CuratedTabs — tabbed grid of the store's top medicine categories
+ *  5. ProductMarquee — "More to explore": a compact, continuously-sliding row
  *     mixing products across categories
- *  5. QuickActions — search / order again / upload prescription / request medicine
- *  6. FeatureSlider — admin-managed 2-up image band that slides in from the left
- *  7. PromoBanners — prescription-upload + reorder feature banners
- *  8. TrustBand — stats + VALUE_PROPS + credentials
- *  9. WhyChooseUs — three photography-led reasons to trust the store
- * 10. FaqPreview — 4 FAQs using Accordion
- * 11. PromoBar — headline-offers strip (the "Everyday savings" discount cards)
- * 12. ContactCta — contact info + WhatsApp + contact form link
+ *  6. QuickActions — search / order again / upload prescription / request medicine
+ *  7. FeatureSlider — admin-managed 2-up image band that slides in from the left
+ *  8. PromoBanners — prescription-upload + reorder feature banners
+ *  9. TrustBand — stats + VALUE_PROPS + credentials
+ * 10. WhyChooseUs — three photography-led reasons to trust the store
+ * 11. FaqPreview — 4 FAQs using Accordion
+ * 12. PromoBar — headline-offers strip (the "Everyday savings" discount cards)
+ * 13. ContactCta — contact info + WhatsApp + contact form link
  */
 export default async function Home() {
   const session = await getServerSession(authOptions);
   const signedIn = Boolean(session?.user);
 
-  // Four curated collections for the "Shop by" tabbed grid. Each is a small
-  // pre-fetched slice; buckets fall back to derived ordering so no tab is empty.
-  let buckets: CuratedBuckets = {
-    bestsellers: [],
-    newArrivals: [],
-    valueBuys: [],
-    trending: [],
-  };
+  // Top medicine categories for the "Shop by category" tabbed grid, each with
+  // a small pre-fetched slice of its top products.
+  let categoryBuckets: CuratedCategoryBucket[] = [];
   // Admin-managed hero slides (Admin → Site settings). Empty → HeroCarousel
   // falls back to its built-in photo set.
   let heroSlides: HeroSlideView[] = [];
@@ -105,29 +102,42 @@ export default async function Home() {
       });
 
     const base = { isActive: true, isDiscontinued: false } as const;
-    const bucket = (filter: Record<string, unknown>, sort: Record<string, 1 | -1>) =>
-      Product.find({ ...base, ...filter }).sort(sort).limit(8).lean().exec();
 
-    // Each bucket prefers its admin flag, then falls back to a derived ordering so
-    // the tab is populated even before the flags are set in the admin panel.
-    let bestsellers = await bucket({ isBestseller: true }, { orderCount: -1, createdAt: -1 });
-    if (bestsellers.length === 0) bestsellers = await bucket({}, { orderCount: -1, createdAt: -1 });
+    // Top 4 categories by active product count, each with its own top-8
+    // products by orderCount — real medicine categories, not marketing flags.
+    const topCategoryAgg = await Product.aggregate([
+      { $match: base },
+      { $group: { _id: '$category', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 4 },
+    ]);
+    const topCategoryDocs = topCategoryAgg.filter((c) => c._id);
+    if (topCategoryDocs.length > 0) {
+      const categoryDocs = await Category.find({ _id: { $in: topCategoryDocs.map((c) => c._id) } })
+        .select('name')
+        .lean();
+      const nameById = new Map(categoryDocs.map((c: any) => [String(c._id), c.name as string]));
 
-    const newArrivals = await bucket({}, { createdAt: -1 });
+      const orderedIds = topCategoryDocs
+        .map((c) => String(c._id))
+        .filter((id) => nameById.has(id));
 
-    let valueBuys = await bucket({ isValueBuy: true }, { discountPercentage: -1 });
-    if (valueBuys.length === 0)
-      valueBuys = await bucket({ discountPercentage: { $gt: 0 } }, { discountPercentage: -1 });
+      const productsByCategory = await Promise.all(
+        orderedIds.map((id) =>
+          Product.find({ ...base, category: id })
+            .sort({ orderCount: -1, createdAt: -1 })
+            .limit(8)
+            .lean()
+            .exec()
+        )
+      );
 
-    let trending = await bucket({ isTrending: true }, { orderCount: -1 });
-    if (trending.length === 0) trending = await bucket({}, { updatedAt: -1, orderCount: -1 });
-
-    buckets = {
-      bestsellers: serialize(bestsellers),
-      newArrivals: serialize(newArrivals),
-      valueBuys: serialize(valueBuys),
-      trending: serialize(trending),
-    };
+      categoryBuckets = orderedIds.map((id, i) => ({
+        id,
+        name: nameById.get(id) as string,
+        products: serialize(productsByCategory[i]),
+      }));
+    }
 
     // "More to explore" marquee — a wider, cross-category pull (not gated on
     // isTrending) so it reads as a different set from the Trending tab above.
@@ -185,8 +195,9 @@ export default async function Home() {
       </h1>
       {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
       <HeroSlider slides={heroSlides} />
+      <ProductImageSlider products={marqueeProducts.slice(0, 14)} />
       <Categories categories={categoryCards} />
-      <CuratedTabs buckets={buckets} />
+      <CuratedTabs buckets={categoryBuckets} />
       <ProductMarquee products={marqueeProducts} />
       <QuickActions signedIn={signedIn} />
       <FeatureSlider slides={featureSlides} />
