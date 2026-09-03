@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { groupComparableProducts, pickComparisonPair, type ComparableProduct } from './comparison';
+import { groupComparableProducts, pickComparisonPair, isExactNameMatch, type ComparableProduct } from './comparison';
 
 interface P extends ComparableProduct {
   id: string;
@@ -99,5 +99,34 @@ describe('pickComparisonPair', () => {
     ];
     const { alt } = pickComparisonPair(group);
     expect(alt.id).toBe('only-alt');
+  });
+});
+
+describe('isExactNameMatch', () => {
+  it('matches when the normalized name equals the query', () => {
+    expect(isExactNameMatch('dolo 650', 'Dolo 650')).toBe(true);
+  });
+
+  it('matches a whole-word prefix — the brand without its strength/form', () => {
+    expect(isExactNameMatch('dolo', 'Dolo 650mg Tablet')).toBe(true);
+    expect(isExactNameMatch('dolo 650', 'Dolo 650mg Tablet')).toBe(true);
+  });
+
+  it('rejects a partial-word match that only looks like a prefix', () => {
+    expect(isExactNameMatch('do', 'Dolo 650mg Tablet')).toBe(false);
+    expect(isExactNameMatch('crocin', 'Crocinol Cough Syrup')).toBe(false);
+  });
+
+  it('rejects an unrelated fuzzy/salt-only match', () => {
+    expect(isExactNameMatch('paracetamol', 'Dolo 650mg Tablet')).toBe(false);
+  });
+
+  it('is case- and whitespace-insensitive', () => {
+    expect(isExactNameMatch('  DOLO   650  ', 'dolo 650mg tablet')).toBe(true);
+  });
+
+  it('is safe for empty input', () => {
+    expect(isExactNameMatch('', 'Dolo 650mg Tablet')).toBe(false);
+    expect(isExactNameMatch('dolo', '')).toBe(false);
   });
 });

@@ -53,3 +53,31 @@ export function pickComparisonPair<T extends ComparableProduct>(group: T[]): { s
     })[0];
   return { searched, alt };
 }
+
+function normalize(s: string): string {
+  return s
+    .toLowerCase()
+    .trim()
+    // Pack names often run strength into its unit ("650mg", "5ml") with no
+    // space — split those so a query like "dolo 650" still lands on a word
+    // boundary against "Dolo 650mg Tablet" rather than mid-token.
+    .replace(/(\d)([a-z])/g, '$1 $2')
+    .replace(/\s+/g, ' ');
+}
+
+/**
+ * Whether `name` is a match for the searched medicine, not just a fuzzy/salt
+ * hit that happens to share the same composition. True on an exact (normalized)
+ * match, or when `name` starts with `query` on a whole-word boundary — e.g.
+ * "dolo" matches "Dolo 650mg Tablet", but "do" does not. This gates whether the
+ * search page's same-composition comparison card is worth showing at all: a
+ * comparison built around a name the shopper didn't actually search for is
+ * confusing, not helpful.
+ */
+export function isExactNameMatch(query: string, name: string): boolean {
+  const q = normalize(query);
+  const n = normalize(name);
+  if (!q || !n) return false;
+  if (n === q) return true;
+  return n.startsWith(q) && (n.length === q.length || n[q.length] === ' ');
+}
