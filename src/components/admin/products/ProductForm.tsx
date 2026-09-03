@@ -70,7 +70,7 @@ interface ProductFormProps {
 
 const TABS = [
   { id: 'basic', label: 'Basic Info' },
-  { id: 'pharma', label: 'Pharma' },
+  { id: 'pharma', label: 'Composition' },
   { id: 'images', label: 'Images & Video' },
   { id: 'pricing', label: 'Pricing & Inventory' },
   { id: 'variants', label: 'Variants' },
