@@ -19,22 +19,8 @@ export const customOrderSchema = z.object({
     .string()
     .trim()
     .regex(/^[6-9]\d{9}$/, 'Enter a valid 10-digit mobile number'),
-  email: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .email('Enter a valid email address')
-    .optional()
-    .or(z.literal('')),
   medicines: z.string().trim().min(3, 'Tell us which medicine(s) you need').max(2000),
   quantity: optionalText(120),
-  deliveryArea: optionalText(160),
-  pincode: z
-    .string()
-    .trim()
-    .regex(/^\d{6}$/, 'Enter a valid 6-digit PIN code')
-    .optional()
-    .or(z.literal('')),
   hasPrescription: z.boolean().optional(),
   notes: optionalText(2000),
   // Required consents (client's "T&C Apply" note) — all three must be accepted.

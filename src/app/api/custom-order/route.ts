@@ -44,11 +44,8 @@ export async function POST(req: NextRequest) {
     const parsed = customOrderSchema.safeParse({
       name: asStr(formData.get('name')),
       phone: asStr(formData.get('phone')),
-      email: asStr(formData.get('email')),
       medicines: asStr(formData.get('medicines')),
       quantity: asStr(formData.get('quantity')),
-      deliveryArea: asStr(formData.get('deliveryArea')),
-      pincode: asStr(formData.get('pincode')),
       hasPrescription: formData.get('hasPrescription') === 'true',
       notes: asStr(formData.get('notes')),
       agreeMonopolyNotice: formData.get('agreeMonopolyNotice') === 'true',

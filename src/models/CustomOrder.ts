@@ -9,11 +9,8 @@ export interface ICustomOrder extends Document {
   _id: mongoose.Types.ObjectId;
   name: string;
   phone: string;
-  email?: string;
   medicines: string;
   quantity?: string;
-  deliveryArea?: string;
-  pincode?: string;
   hasPrescription: boolean;
   notes?: string;
   /** Photos the customer attached (medicine pack, list, or prescription). */
@@ -33,11 +30,8 @@ const CustomOrderSchema = new Schema<ICustomOrder>(
   {
     name: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
-    email: { type: String, lowercase: true, trim: true },
     medicines: { type: String, required: true, trim: true },
     quantity: { type: String, trim: true },
-    deliveryArea: { type: String, trim: true },
-    pincode: { type: String, trim: true },
     hasPrescription: { type: Boolean, default: false },
     notes: { type: String, trim: true },
     // Stored private (Cloudinary access_mode: 'authenticated'); shown to staff

@@ -41,11 +41,8 @@ export function CustomOrderForm() {
     defaultValues: {
       name: "",
       phone: "",
-      email: "",
       medicines: "",
       quantity: "",
-      deliveryArea: "",
-      pincode: "",
       hasPrescription: false,
       notes: "",
       agreeMonopolyNotice: false,
@@ -196,33 +193,18 @@ export function CustomOrderForm() {
         Prefer WhatsApp? Chat with us
       </a>
 
-      {/* Your details — full width, fields flow across the available columns */}
-      <h3 className="mb-4 text-[length:var(--step-0)] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
-        Your details
-      </h3>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Your details */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <FormField label="Your name" required htmlFor="name">
           <Input id="name" {...register("name")} error={errors.name?.message} placeholder="Full name" />
         </FormField>
         <FormField label="Phone" required htmlFor="phone">
           <Input id="phone" type="tel" inputMode="numeric" {...register("phone")} error={errors.phone?.message} placeholder="10-digit mobile" />
         </FormField>
-        <FormField label="Email" htmlFor="email">
-          <Input id="email" type="email" {...register("email")} error={errors.email?.message} placeholder="Optional" />
-        </FormField>
-        <FormField label="Delivery area" htmlFor="deliveryArea">
-          <Input id="deliveryArea" {...register("deliveryArea")} error={errors.deliveryArea?.message} placeholder="Area / locality" />
-        </FormField>
-        <FormField label="PIN code" htmlFor="pincode">
-          <Input id="pincode" inputMode="numeric" {...register("pincode")} error={errors.pincode?.message} placeholder="6 digits" />
-        </FormField>
       </div>
 
-      {/* What you need — full width */}
-      <h3 className="mb-4 mt-8 text-[length:var(--step-0)] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
-        What you need
-      </h3>
-      <div className="grid grid-cols-1 gap-4">
+      {/* What you need */}
+      <div className="mt-6 grid grid-cols-1 gap-4">
         <FormField label="Medicine(s) you need" required htmlFor="medicines">
           <Textarea id="medicines" {...register("medicines")} error={errors.medicines?.message} placeholder="Brand or salt name, strength and form — e.g. 'Foracort 200 inhaler', or a short list" />
         </FormField>
