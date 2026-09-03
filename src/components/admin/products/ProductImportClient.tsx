@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import {
   UploadCloud,
@@ -13,7 +13,15 @@ import {
   ImagePlus,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { TEMPLATE_HEADERS, REQUIRED_COLUMNS, TEMPLATE_EXAMPLE, csvCell } from "@/lib/import/template-csv"
+import {
+  TEMPLATE_HEADERS,
+  TEMPLATE_HEADER_LABELS,
+  REQUIRED_COLUMNS,
+  TEMPLATE_EXAMPLE,
+  csvCell,
+} from "@/lib/import/template-csv"
+import { parseCsv, toCsv } from "@/lib/import/csv-parse"
+import { applyColumnMapping } from "@/lib/import/column-mapper"
 
 interface ImportError {
   sku?: string
@@ -25,10 +33,30 @@ interface ImportResult {
   failed: number
   errors: ImportError[]
 }
+interface ValidateResult {
+  totalRows: number
+  valid: number
+  willCreate: number
+  willUpdate: number
+  newCategories: string[]
+  errors: ImportError[]
+}
 interface TemplateOption {
   id: string
   name: string
 }
+interface FullTemplate {
+  id: string
+  name: string
+  includedOptionalFields: string[]
+  defaultManufacturer?: string
+  defaultSalt?: string
+  columnMapping?: Record<string, string>
+}
+
+const CANONICAL_HEADERS = new Set(TEMPLATE_HEADERS)
+const CHUNK_SIZE_WITH_IMAGES = 40
+const CHUNK_SIZE_NO_IMAGES = 100
 
 /** Read a CSV file directly, or convert the first sheet of an Excel file to CSV. */
 async function fileToCsv(file: File): Promise<string> {
@@ -50,7 +78,25 @@ export function ProductImportClient() {
   const [images, setImages] = useState<File[]>([])
   const [templates, setTemplates] = useState<TemplateOption[]>([])
   const [templateId, setTemplateId] = useState("")
-  const [busy, setBusy] = useState(false)
+  const [fullTemplate, setFullTemplate] = useState<FullTemplate | null>(null)
+
+  const [parsedRows, setParsedRows] = useState<Record<string, string>[]>([])
+  const [detectedHeaders, setDetectedHeaders] = useState<string[]>([])
+  const [columnMapping, setColumnMapping] = useState<Record<string, string>>({})
+  const [mappingExpanded, setMappingExpanded] = useState(false)
+  const [savingMapping, setSavingMapping] = useState(false)
+
+  const [previewBusy, setPreviewBusy] = useState(false)
+  const [validation, setValidation] = useState<ValidateResult | null>(null)
+
+  const [importBusy, setImportBusy] = useState(false)
+  const [progress, setProgress] = useState<{
+    doneRows: number
+    totalRows: number
+    doneChunks: number
+    totalChunks: number
+  } | null>(null)
+
   const [error, setError] = useState("")
   const [result, setResult] = useState<ImportResult | null>(null)
 
@@ -65,9 +111,62 @@ export function ProductImportClient() {
       .catch(() => {})
   }, [])
 
+  // Fetch the full template (including its saved column mapping) whenever a
+  // different one is selected — the dropdown list above only carries id+name.
+  useEffect(() => {
+    if (!templateId) {
+      setFullTemplate(null)
+      return
+    }
+    let cancelled = false
+    fetch(`/api/admin/products/import-templates/${templateId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled && data?.data) setFullTemplate(data.data as FullTemplate)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [templateId])
+
+  // Seed the working column mapping from the selected template's saved one.
+  useEffect(() => {
+    setColumnMapping(fullTemplate?.columnMapping ? { ...fullTemplate.columnMapping } : {})
+    setMappingExpanded(false)
+  }, [fullTemplate])
+
+  // Parse the dropped file into rows as soon as it's selected — this both
+  // detects headers (for the mapping form) and gives Preview/Import the row
+  // count without re-reading the file each time.
+  useEffect(() => {
+    if (!file) {
+      setParsedRows([])
+      setDetectedHeaders([])
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      try {
+        const csv = await fileToCsv(file)
+        const rows = parseCsv(csv)
+        if (cancelled) return
+        setParsedRows(rows)
+        setDetectedHeaders(rows.length ? Object.keys(rows[0]) : [])
+      } catch (e) {
+        if (!cancelled) setError(e instanceof Error ? e.message : "Could not read that file.")
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [file])
+
   const onDrop = useCallback((accepted: File[]) => {
     setError("")
     setResult(null)
+    setValidation(null)
+    setProgress(null)
     if (accepted[0]) setFile(accepted[0])
   }, [])
 
@@ -85,34 +184,180 @@ export function ProductImportClient() {
     setImages(Array.from(e.target.files ?? []))
   }
 
-  async function handleImport() {
-    if (!file) return
-    setBusy(true)
-    setError("")
-    setResult(null)
-    try {
-      const csv = await fileToCsv(file)
-      const body = new FormData()
-      body.append("file", new Blob([csv], { type: "text/csv" }), file.name || "import.csv")
-      if (templateId) body.append("templateId", templateId)
-      images.forEach((img) => body.append("images", img, img.name))
+  // Every header that doesn't already match one of our canonical column
+  // names — these are the ones that need (or already have) a mapping.
+  const mappableHeaders = useMemo(
+    () => detectedHeaders.filter((h) => !CANONICAL_HEADERS.has(h)),
+    [detectedHeaders]
+  )
+  const allMapped = mappableHeaders.length > 0 && mappableHeaders.every((h) => columnMapping[h])
+  const showMappingForm = mappableHeaders.length > 0 && (mappingExpanded || !allMapped)
 
-      const res = await fetch("/api/admin/products/import", { method: "POST", body })
+  // Rows remapped onto canonical columns — a no-op for any header that
+  // already matched, or wasn't given an explicit mapping.
+  const mappedRows = useMemo(
+    () => parsedRows.map((r) => applyColumnMapping(r, columnMapping)),
+    [parsedRows, columnMapping]
+  )
+
+  function updateMapping(header: string, target: string) {
+    setValidation(null)
+    setResult(null)
+    setColumnMapping((m) => {
+      const next = { ...m }
+      if (target) next[header] = target
+      else delete next[header]
+      return next
+    })
+  }
+
+  async function saveMappingToTemplate() {
+    if (!templateId || !fullTemplate) return
+    setSavingMapping(true)
+    try {
+      const res = await fetch(`/api/admin/products/import-templates/${templateId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fullTemplate.name,
+          includedOptionalFields: fullTemplate.includedOptionalFields,
+          defaultManufacturer: fullTemplate.defaultManufacturer,
+          defaultSalt: fullTemplate.defaultSalt,
+          columnMapping,
+        }),
+      })
       const data = await res.json().catch(() => null)
       if (!res.ok) {
-        const msg =
-          typeof data?.error === "string"
-            ? data.error
-            : data?.error?.message || "The import could not be completed."
-        setError(msg)
+        setError(typeof data?.error === "string" ? data.error : data?.error?.message || "Could not save the column mapping.")
         return
       }
-      setResult(data.data as ImportResult)
+      setFullTemplate(data.data as FullTemplate)
+    } catch {
+      setError("Could not save the column mapping.")
+    } finally {
+      setSavingMapping(false)
+    }
+  }
+
+  async function saveMappingAsNewTemplate() {
+    const name = window.prompt("Name this template (e.g. the supplier's name):")
+    if (!name || !name.trim()) return
+    setSavingMapping(true)
+    try {
+      const res = await fetch("/api/admin/products/import-templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), includedOptionalFields: [], columnMapping }),
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        setError(typeof data?.error === "string" ? data.error : data?.error?.message || "Could not save the template.")
+        return
+      }
+      const created = data.data as FullTemplate
+      setTemplates((ts) => [...ts, { id: created.id, name: created.name }])
+      setTemplateId(created.id)
+      setFullTemplate(created)
+    } catch {
+      setError("Could not save the template.")
+    } finally {
+      setSavingMapping(false)
+    }
+  }
+
+  async function handlePreview() {
+    if (!file || mappedRows.length === 0) return
+    setPreviewBusy(true)
+    setError("")
+    setValidation(null)
+    setResult(null)
+    try {
+      const csv = toCsv(mappedRows, TEMPLATE_HEADERS)
+      const body = new FormData()
+      body.append("file", new Blob([csv], { type: "text/csv" }), "preview.csv")
+      if (templateId) body.append("templateId", templateId)
+
+      const res = await fetch("/api/admin/products/import?mode=validate", { method: "POST", body })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        setError(typeof data?.error === "string" ? data.error : data?.error?.message || "The preview could not be completed.")
+        return
+      }
+      setValidation(data.data as ValidateResult)
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not read that file.")
     } finally {
-      setBusy(false)
+      setPreviewBusy(false)
     }
+  }
+
+  async function handleImport() {
+    if (!file || mappedRows.length === 0) return
+    setImportBusy(true)
+    setError("")
+    setResult(null)
+
+    const chunkSize = images.length > 0 ? CHUNK_SIZE_WITH_IMAGES : CHUNK_SIZE_NO_IMAGES
+    const chunks: Record<string, string>[][] = []
+    for (let i = 0; i < mappedRows.length; i += chunkSize) {
+      chunks.push(mappedRows.slice(i, i + chunkSize))
+    }
+
+    const aggregate: ImportResult = { created: 0, updated: 0, failed: 0, errors: [] }
+    setProgress({ doneRows: 0, totalRows: mappedRows.length, doneChunks: 0, totalChunks: chunks.length })
+
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i]
+      const skusInChunk = new Set(chunk.map((r) => (r.sku || "").trim().toUpperCase()))
+      const chunkImages = images.filter((img) =>
+        skusInChunk.has(img.name.replace(/\.[^.]+$/, "").trim().toUpperCase())
+      )
+
+      const csv = toCsv(chunk, TEMPLATE_HEADERS)
+      const body = new FormData()
+      body.append("file", new Blob([csv], { type: "text/csv" }), `import-batch-${i + 1}.csv`)
+      if (templateId) body.append("templateId", templateId)
+      chunkImages.forEach((img) => body.append("images", img, img.name))
+
+      try {
+        const res = await fetch("/api/admin/products/import?mode=commit", { method: "POST", body })
+        const data = await res.json().catch(() => null)
+        if (!res.ok) {
+          const msg = typeof data?.error === "string" ? data.error : data?.error?.message || "A batch failed to import."
+          setError(
+            `Batch ${i + 1} of ${chunks.length} failed: ${msg} — ${aggregate.created + aggregate.updated} products were already imported. It's safe to click Import again; already-imported products won't be duplicated.`
+          )
+          setResult(aggregate)
+          setImportBusy(false)
+          setProgress(null)
+          return
+        }
+        const batchResult = data.data as ImportResult
+        aggregate.created += batchResult.created
+        aggregate.updated += batchResult.updated
+        aggregate.failed += batchResult.failed
+        aggregate.errors.push(...batchResult.errors)
+      } catch (e) {
+        setError(
+          `Batch ${i + 1} of ${chunks.length} failed: ${e instanceof Error ? e.message : "network error"} — ${aggregate.created + aggregate.updated} products were already imported. It's safe to click Import again; already-imported products won't be duplicated.`
+        )
+        setResult(aggregate)
+        setImportBusy(false)
+        setProgress(null)
+        return
+      }
+
+      setProgress({
+        doneRows: Math.min((i + 1) * chunkSize, mappedRows.length),
+        totalRows: mappedRows.length,
+        doneChunks: i + 1,
+        totalChunks: chunks.length,
+      })
+    }
+
+    setResult(aggregate)
+    setImportBusy(false)
+    setProgress(null)
   }
 
   function triggerDownload(contents: string, filename: string) {
@@ -151,6 +396,14 @@ export function ProductImportClient() {
     triggerDownload(["sku,reason", ...rows].join("\n") + "\n", "product-import-failed-rows.csv")
   }
 
+  function downloadPreviewErrors() {
+    if (!validation?.errors.length) return
+    const rows = validation.errors.map((e) => `${csvCell(e.sku ?? "")},${csvCell(e.reason)}`)
+    triggerDownload(["sku,reason", ...rows].join("\n") + "\n", "product-import-preview-errors.csv")
+  }
+
+  const progressPct = progress ? Math.round((progress.doneRows / Math.max(progress.totalRows, 1)) * 100) : 0
+
   return (
     <div className="space-y-6">
       {/* Template */}
@@ -180,7 +433,11 @@ export function ProductImportClient() {
             <select
               id="import-template"
               value={templateId}
-              onChange={(e) => setTemplateId(e.target.value)}
+              onChange={(e) => {
+                setTemplateId(e.target.value)
+                setValidation(null)
+                setResult(null)
+              }}
               className="h-11 w-full max-w-sm rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper)] px-3 text-sm text-[var(--ink)]"
             >
               <option value="">All fields (default)</option>
@@ -234,14 +491,31 @@ export function ProductImportClient() {
 
       {/* Selected file */}
       {file && (
-        <div className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 py-3">
           <div className="flex min-w-0 items-center gap-3">
             <FileText className="h-5 w-5 shrink-0 text-[var(--ink-70)]" aria-hidden="true" />
             <span className="truncate text-[var(--ink)]">{file.name}</span>
+            {parsedRows.length > 0 && (
+              <span className="data text-xs text-[var(--ink-40)]">{parsedRows.length} rows</span>
+            )}
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <Button onClick={handleImport} disabled={busy} className="gap-2">
-              {busy ? (
+            <Button variant="outline" onClick={handlePreview} disabled={previewBusy || importBusy} className="gap-2">
+              {previewBusy ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Checking…
+                </>
+              ) : (
+                "Preview"
+              )}
+            </Button>
+            <Button
+              onClick={handleImport}
+              disabled={!validation || previewBusy || importBusy}
+              title={!validation ? "Run Preview first" : undefined}
+              className="gap-2"
+            >
+              {importBusy ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" /> Importing…
                 </>
@@ -249,13 +523,14 @@ export function ProductImportClient() {
                 "Import"
               )}
             </Button>
-            {!busy && (
+            {!previewBusy && !importBusy && (
               <button
                 type="button"
                 onClick={() => {
                   setFile(null)
                   setError("")
                   setResult(null)
+                  setValidation(null)
                 }}
                 aria-label="Remove file"
                 className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] text-[var(--ink-40)] hover:bg-[var(--foil-soft)]"
@@ -264,6 +539,81 @@ export function ProductImportClient() {
               </button>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Column mapping — only shown when the file's headers don't already match ours */}
+      {file && mappableHeaders.length > 0 && (
+        <div className="rounded-[var(--radius-md)] border border-dashed border-[var(--foil)] bg-[var(--paper-card)] p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="font-semibold text-[var(--ink)]">Column mapping</h2>
+              <p className="mt-1 text-sm text-[var(--ink-70)]">
+                {allMapped
+                  ? `Using ${templateId ? "the saved" : "your"} mapping for ${mappableHeaders.length} column${
+                      mappableHeaders.length === 1 ? "" : "s"
+                    } that ${mappableHeaders.length === 1 ? "doesn't" : "don't"} match our column names.`
+                  : `${mappableHeaders.length} column${mappableHeaders.length === 1 ? "" : "s"} in your file ${
+                      mappableHeaders.length === 1 ? "doesn't" : "don't"
+                    } match our column names — map ${mappableHeaders.length === 1 ? "it" : "them"} below.`}
+              </p>
+            </div>
+            {allMapped && (
+              <Button type="button" size="sm" variant="outline" onClick={() => setMappingExpanded((v) => !v)}>
+                {mappingExpanded ? "Hide" : "Edit mapping"}
+              </Button>
+            )}
+          </div>
+
+          {showMappingForm && (
+            <>
+              <div className="mt-4 space-y-2">
+                {mappableHeaders.map((header) => (
+                  <div key={header} className="flex items-center gap-3">
+                    <span
+                      className="w-1/2 truncate text-sm text-[var(--ink)]"
+                      style={{ fontFamily: "var(--font-data)" }}
+                      title={header}
+                    >
+                      {header}
+                    </span>
+                    <select
+                      aria-label={`Map column "${header}"`}
+                      value={columnMapping[header] ?? ""}
+                      onChange={(e) => updateMapping(header, e.target.value)}
+                      className="h-11 flex-1 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper)] px-3 text-sm text-[var(--ink)]"
+                    >
+                      <option value="">— not used —</option>
+                      {TEMPLATE_HEADERS.map((key) => (
+                        <option key={key} value={key}>
+                          {TEMPLATE_HEADER_LABELS[key] ?? key}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4">
+                {templateId ? (
+                  <Button type="button" size="sm" variant="secondary" onClick={saveMappingToTemplate} loading={savingMapping}>
+                    Save this mapping to the template
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={saveMappingAsNewTemplate}
+                    loading={savingMapping}
+                    disabled={Object.keys(columnMapping).length === 0}
+                  >
+                    Save mapping as a new template…
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -294,6 +644,24 @@ export function ProductImportClient() {
         </div>
       )}
 
+      {/* Import progress */}
+      {progress && (
+        <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4">
+          <div className="mb-2 flex items-center justify-between text-sm">
+            <span className="text-[var(--ink)]">
+              Importing… {progress.doneRows}/{progress.totalRows} rows ({progress.doneChunks}/{progress.totalChunks} batches)
+            </span>
+            <span className="data text-[var(--ink-70)]">{progressPct}%</span>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--foil-soft)]">
+            <div
+              className="h-full bg-[var(--brand)] transition-[width] duration-300"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Error */}
       {error && (
         <div
@@ -302,6 +670,63 @@ export function ProductImportClient() {
         >
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
           <p>{error}</p>
+        </div>
+      )}
+
+      {/* Preview (validate mode) — nothing has been written yet */}
+      {validation && !result && (
+        <div className="space-y-4 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
+            <h2 className="font-semibold text-[var(--ink)]">Preview — nothing has been imported yet</h2>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <Stat label="Valid rows" value={validation.valid} tone="mint" />
+            <Stat label="New products" value={validation.willCreate} tone="mint" />
+            <Stat label="Updates" value={validation.willUpdate} tone="mint" />
+            <Stat label="Errors" value={validation.totalRows - validation.valid} tone="ink" />
+          </div>
+
+          {validation.newCategories.length > 0 && (
+            <p className="text-sm text-[var(--ink-70)]">
+              New categories that will be created: {validation.newCategories.join(", ")}
+            </p>
+          )}
+
+          {validation.errors.length > 0 && (
+            <div>
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <h3 className="text-sm font-semibold text-[var(--ink-70)]">
+                  {validation.totalRows - validation.valid > validation.errors.length
+                    ? `First ${validation.errors.length} of ${validation.totalRows - validation.valid} rows with errors`
+                    : `${validation.errors.length} row${validation.errors.length === 1 ? "" : "s"} with errors`}
+                </h3>
+                <Button variant="outline" size="sm" onClick={downloadPreviewErrors} className="shrink-0 gap-2">
+                  <Download className="h-4 w-4" /> Download errors
+                </Button>
+              </div>
+              <div className="overflow-x-auto rounded-[var(--radius-sm)] border border-[var(--foil-soft)]">
+                <table className="w-full min-w-[420px] text-left text-sm">
+                  <thead className="bg-[var(--foil-soft)] text-xs uppercase tracking-wide text-[var(--ink-70)]">
+                    <tr>
+                      <th scope="col" className="px-4 py-2 font-medium">SKU</th>
+                      <th scope="col" className="px-4 py-2 font-medium">Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {validation.errors.map((e, i) => (
+                      <tr key={i} className="border-t border-[var(--foil-soft)]">
+                        <td className="px-4 py-2 text-[var(--ink)]" style={{ fontFamily: "var(--font-data)" }}>
+                          {e.sku || "—"}
+                        </td>
+                        <td className="px-4 py-2 text-[var(--ink-70)]">{e.reason}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

@@ -15,6 +15,11 @@ import mongoose, { Schema, Document } from 'mongoose';
  * downloaded template's sample row (picked from the real manufacturer/salt
  * catalogues in the admin UI) — they are not live dropdown cells inside the
  * CSV itself, which plain-text spreadsheet files can't do.
+ *
+ * `columnMapping` remembers how a supplier's own column headers ("Product
+ * Name", "Company") translate to PMStore's canonical import columns ("name",
+ * "manufacturer"), so an admin maps a supplier's file once and every later
+ * import from that supplier auto-applies it (see src/lib/import/column-mapper.ts).
  */
 export interface IImportTemplate extends Document {
   _id: mongoose.Types.ObjectId;
@@ -23,6 +28,7 @@ export interface IImportTemplate extends Document {
   includedOptionalFields: string[];
   defaultManufacturer?: string;
   defaultSalt?: string;
+  columnMapping?: Record<string, string>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -55,6 +61,13 @@ const importTemplateSchema = new Schema<IImportTemplate>(
       type: String,
       trim: true,
       maxlength: 120,
+    },
+    // Whole-object replace only (never mutated in place), so plain Mixed is
+    // simpler here than a Mongoose Map — it round-trips through .lean()/JSON
+    // without an extra serialization step.
+    columnMapping: {
+      type: Schema.Types.Mixed,
+      default: undefined,
     },
   },
   { timestamps: true }

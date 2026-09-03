@@ -20,6 +20,41 @@ export const TEMPLATE_HEADERS = [
 /** Columns the base importer (no template) already requires — unchanged. */
 export const REQUIRED_COLUMNS = ['sku', 'name', 'manufacturer', 'category', 'form', 'price', 'pack_size'];
 
+/** Human-readable label per canonical column key, for the column-mapping UI —
+ * so an admin picks "Pack size" from a dropdown, not the raw `pack_size` key. */
+export const TEMPLATE_HEADER_LABELS: Record<string, string> = {
+  sku: 'SKU',
+  name: 'Product name',
+  brand: 'Brand',
+  manufacturer: 'Manufacturer',
+  category: 'Category',
+  form: 'Dosage form',
+  pack_size: 'Pack size',
+  pack_unit: 'Pack unit',
+  salt_1_name: 'Salt 1 — name',
+  salt_1_strength: 'Salt 1 — strength',
+  salt_1_unit: 'Salt 1 — unit',
+  salt_2_name: 'Salt 2 — name',
+  salt_2_strength: 'Salt 2 — strength',
+  salt_2_unit: 'Salt 2 — unit',
+  price: 'Price',
+  mrp: 'MRP',
+  gst_rate: 'GST rate',
+  stock: 'Stock',
+  schedule_class: 'Schedule class',
+  prescription_required: 'Prescription required',
+  hsn_code: 'HSN code',
+  short_description: 'Short description',
+  storage_instructions: 'Storage instructions',
+  usage_instructions: 'Usage instructions',
+  side_effects: 'Side effects',
+  contraindications: 'Contraindications',
+  image_url_1: 'Image URL 1',
+  image_url_2: 'Image URL 2',
+  tags: 'Tags',
+  is_active: 'Active',
+};
+
 /** One example product (Dolo 650), keyed by CSV column — used to fill the
  * downloadable template's sample row so an admin sees a realistic shape. */
 export const TEMPLATE_EXAMPLE: Record<string, string> = {

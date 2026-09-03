@@ -11,6 +11,7 @@ interface ImportTemplateView {
   includedOptionalFields: string[];
   defaultManufacturer?: string;
   defaultSalt?: string;
+  columnMapping?: Record<string, string>;
   updatedAt: string;
 }
 
@@ -21,6 +22,7 @@ function toView(doc: any): ImportTemplateView {
     includedOptionalFields: doc.includedOptionalFields ?? [],
     defaultManufacturer: doc.defaultManufacturer || undefined,
     defaultSalt: doc.defaultSalt || undefined,
+    columnMapping: doc.columnMapping || undefined,
     updatedAt: new Date(doc.updatedAt).toISOString(),
   };
 }

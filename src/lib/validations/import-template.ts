@@ -17,6 +17,7 @@ export const importTemplateSchema = z.object({
     .default([]),
   defaultManufacturer: z.string().trim().max(120).optional(),
   defaultSalt: z.string().trim().max(120).optional(),
+  columnMapping: z.record(z.string(), z.string()).optional(),
 });
 
 export type ImportTemplateInput = z.infer<typeof importTemplateSchema>;

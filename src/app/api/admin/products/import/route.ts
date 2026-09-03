@@ -1,4 +1,9 @@
 export const runtime = 'nodejs';
+// Request the platform's maximum allowed execution time — commit-mode imports
+// still do a per-row save() (and optional Cloudinary upload), and the client
+// chunks large files, but a single chunk should still get all the headroom
+// available on a budget/Hobby-tier deploy.
+export const maxDuration = 60;
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdminAccess } from '@/lib/auth-helpers';
@@ -7,7 +12,7 @@ import Product from '@/models/Product';
 import Category from '@/models/Category';
 import ImportTemplate from '@/models/ImportTemplate';
 import { parseCsv } from '@/lib/import/csv-parse';
-import { parseProductRow } from '@/lib/import/product-row';
+import { parseProductRow, type ParsedProductRow } from '@/lib/import/product-row';
 import { generateUniqueSlug } from '@/lib/utils/slugify';
 import { createErrorResponse } from '@/lib/utils/errorHandler';
 import { uploadProductImageBuffer, isAllowedImageFormat } from '@/lib/cloudinary/upload-product-image';
@@ -17,10 +22,14 @@ interface ImportError {
   reason: string;
 }
 
+interface RowOptions {
+  requireSaltAndImage: boolean;
+  imagesBySku: Map<string, File>;
+}
+
 /**
  * POST /api/admin/products/import
- * Import products from CSV
- * Admin only
+ * Import products from CSV. Admin only.
  *
  * Accepts CSV as:
  * - Raw text body (Content-Type: text/plain)
@@ -28,24 +37,27 @@ interface ImportError {
  *   optionally with a 'templateId' field and one or more 'images' files (matched
  *   to rows by filename stem = SKU)
  *
- * For each row:
- * 1. Parse and validate using parseProductRow()
- * 2. If a template was selected, additionally require a salt/formula and a
- *    product image (CSV image_url_* or a matched batch image) — the client's
- *    "simplified template" mandatory-field set. No template → unchanged.
- * 3. Resolve category name → ObjectId (upsert)
- * 4. Upload any matched batch image to Cloudinary
- * 5. Upsert product by SKU using save() (not insertMany/updateMany)
- *    — triggers the pre-validate hook to compute compositionKey and unitPrice
- * 6. Collect errors for reporting
+ * `?mode=validate` (default: `commit`) runs every row through the same parsing
+ * and template gating WITHOUT writing anything — no category creation, no
+ * Cloudinary upload, no product.save(). It answers "what would happen" so the
+ * UI can show a preview before committing. `?mode=commit` is today's behavior.
  *
- * Returns counts of created, updated, failed, and a sample of errors.
+ * Column mapping (a supplier's own headers → PMStore's canonical columns) is
+ * applied client-side before the CSV is ever uploaded — see
+ * src/lib/import/column-mapper.ts and ProductImportClient's fileToCsv/mapping
+ * flow — so this route always sees canonical column names, the same as a
+ * template downloaded straight from /import-templates. A selected template
+ * still requires a salt/formula and a product image on every row.
+ *
+ * compositionKey/unitPrice are never computed here — Product.save() triggers
+ * the pre-validate hook that derives them. Never insertMany/updateMany.
  */
 export async function POST(req: NextRequest) {
   try {
-    // Verify admin access
     const adminCheck = await verifyAdminAccess();
     if (adminCheck.error) return adminCheck.error;
+
+    const mode = req.nextUrl.searchParams.get('mode') === 'validate' ? 'validate' : 'commit';
 
     let csvText: string;
     let templateId: string | null = null;
@@ -53,7 +65,6 @@ export async function POST(req: NextRequest) {
 
     const contentType = req.headers.get('content-type');
     if (contentType?.includes('multipart/form-data')) {
-      // Read from form data
       const form = await req.formData();
       const file = form.get('file');
 
@@ -77,23 +88,18 @@ export async function POST(req: NextRequest) {
         }
       }
     } else {
-      // Read raw text body
       csvText = await req.text();
     }
 
     csvText = csvText.trim();
     if (!csvText) {
-      return NextResponse.json(
-        { error: 'Empty CSV file' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Empty CSV file' }, { status: 400 });
     }
 
     await connectDB();
 
     // A selected template tightens validation beyond the base importer: a
-    // salt/formula and a product image become required on every row (see
-    // src/lib/import/template-fields.ts). No templateId → today's behavior.
+    // salt/formula and a product image become required on every row.
     let requireSaltAndImage = false;
     if (templateId) {
       const template = await ImportTemplate.findById(templateId).select('_id').lean();
@@ -106,189 +112,253 @@ export async function POST(req: NextRequest) {
       requireSaltAndImage = true;
     }
 
-    // Parse CSV into rows
     const rows = parseCsv(csvText);
     if (rows.length === 0) {
-      return NextResponse.json(
-        { error: 'No data rows found in CSV' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No data rows found in CSV' }, { status: 400 });
     }
 
-    // Cache for category lookups to avoid repeated queries
-    const categoryCache = new Map<string, string>();
-
-    // Track results
-    let created = 0;
-    let updated = 0;
-    const errors: ImportError[] = [];
-
-    // Process each row
-    for (const row of rows) {
-      const parseResult = parseProductRow(row);
-
-      if (!parseResult.ok) {
-        errors.push({
-          sku: parseResult.sku,
-          reason: parseResult.reason,
-        });
-        continue;
-      }
-
-      const parsed = parseResult.value;
-      const matchedImage = imagesBySku.get(parsed.sku.trim().toUpperCase());
-
-      if (requireSaltAndImage) {
-        if (parsed.salts.length === 0) {
-          errors.push({ sku: parsed.sku, reason: 'missing salt/formula (required by this template)' });
-          continue;
-        }
-        if (parsed.imageUrls.length === 0 && !matchedImage) {
-          errors.push({ sku: parsed.sku, reason: 'missing product image (required by this template)' });
-          continue;
-        }
-      }
-
-      try {
-        // Resolve category name → ObjectId
-        let categoryId: string;
-        const categoryKey = parsed.categoryName.toLowerCase();
-
-        if (categoryCache.has(categoryKey)) {
-          categoryId = categoryCache.get(categoryKey)!;
-        } else {
-          // Find or create category (case-insensitive)
-          let category = await Category.findOne({
-            name: { $regex: `^${parsed.categoryName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
-          });
-
-          if (!category) {
-            // Create new category
-            const slug = parsed.categoryName
-              .toLowerCase()
-              .trim()
-              .replace(/[^\w\s-]/g, '')
-              .replace(/\s+/g, '-')
-              .replace(/--+/g, '-');
-
-            category = new Category({
-              name: parsed.categoryName,
-              slug,
-            });
-            await category.save();
-          }
-
-          categoryId = String(category._id);
-          categoryCache.set(categoryKey, categoryId);
-        }
-
-        // Map image URLs to images array (publicId left empty for import),
-        // plus an uploaded batch image if one matched this row's SKU.
-        const images = parsed.imageUrls.map((url, idx) => ({
-          url,
-          publicId: '', // Import doesn't upload URL-only images to Cloudinary — left empty
-          order: idx,
-        }));
-        if (matchedImage) {
-          const bytes = await matchedImage.arrayBuffer();
-          const uploaded = await uploadProductImageBuffer(Buffer.from(bytes));
-          images.push({ url: uploaded.url, publicId: uploaded.publicId, order: images.length });
-        }
-
-        // Upsert by SKU
-        let isNew = false;
-        let product = await Product.findOne({ sku: parsed.sku });
-
-        if (product) {
-          // Update existing product
-          product.name = parsed.name;
-          if (parsed.brand) product.brand = parsed.brand;
-          product.manufacturer = parsed.manufacturer;
-          product.category = categoryId as any;
-          product.salts = parsed.salts;
-          product.form = parsed.form;
-          product.packSize = parsed.packSize;
-          product.packUnit = parsed.packUnit;
-          product.price = parsed.price;
-          if (parsed.mrp !== undefined) product.mrp = parsed.mrp;
-          product.gstRate = parsed.gstRate;
-          product.stock = parsed.stock;
-          product.prescriptionRequired = parsed.prescriptionRequired;
-          product.scheduleClass = parsed.scheduleClass;
-          if (parsed.hsnCode !== undefined) product.hsnCode = parsed.hsnCode;
-          product.description = parsed.description;
-          if (parsed.storageInstructions) product.storageInstructions = parsed.storageInstructions;
-          if (parsed.usageInstructions) product.usageInstructions = parsed.usageInstructions;
-          product.sideEffects = parsed.sideEffects;
-          product.contraindications = parsed.contraindications;
-          if (parsed.tags.length > 0) product.tags = parsed.tags;
-          product.images = images as any;
-          product.isActive = parsed.isActive;
-        } else {
-          // Create new product
-          isNew = true;
-          const slug = await generateUniqueSlug(parsed.name);
-
-          product = new Product({
-            sku: parsed.sku,
-            name: parsed.name,
-            slug,
-            brand: parsed.brand,
-            manufacturer: parsed.manufacturer,
-            category: categoryId,
-            salts: parsed.salts,
-            form: parsed.form,
-            packSize: parsed.packSize,
-            packUnit: parsed.packUnit,
-            price: parsed.price,
-            mrp: parsed.mrp,
-            gstRate: parsed.gstRate,
-            stock: parsed.stock,
-            prescriptionRequired: parsed.prescriptionRequired,
-            scheduleClass: parsed.scheduleClass,
-            hsnCode: parsed.hsnCode,
-            description: parsed.description,
-            storageInstructions: parsed.storageInstructions,
-            usageInstructions: parsed.usageInstructions,
-            sideEffects: parsed.sideEffects,
-            contraindications: parsed.contraindications,
-            tags: parsed.tags,
-            images,
-            isActive: parsed.isActive,
-          });
-        }
-
-        // Save triggers pre-validate hook to compute compositionKey and unitPrice
-        await product.save();
-
-        if (isNew) {
-          created++;
-        } else {
-          updated++;
-        }
-      } catch (err: any) {
-        // Log only SKU and error message, never full product data (health data)
-        console.error(`Import error for SKU ${parsed.sku}:`, err.message);
-        errors.push({
-          sku: parsed.sku,
-          reason: err.message || 'Failed to save product',
-        });
-      }
-    }
-
-    return NextResponse.json(
-      {
-        data: {
-          created,
-          updated,
-          failed: errors.length,
-          errors: errors.slice(0, 50), // Return first 50 errors
-        },
-      },
-      { status: 200 }
-    );
+    const opts: RowOptions = { requireSaltAndImage, imagesBySku };
+    return mode === 'validate' ? runValidate(rows, opts) : runCommit(rows, opts);
   } catch (error: any) {
     console.error('Import route error:', error);
     return createErrorResponse(error);
   }
+}
+
+/** Parse + gate every row, collecting the ones that pass. Shared by both modes. */
+function parseAndGate(
+  rows: Record<string, string>[],
+  opts: RowOptions
+): { parsed: ParsedProductRow[]; errors: ImportError[] } {
+  const parsed: ParsedProductRow[] = [];
+  const errors: ImportError[] = [];
+
+  for (const row of rows) {
+    const parseResult = parseProductRow(row);
+    if (!parseResult.ok) {
+      errors.push({ sku: parseResult.sku, reason: parseResult.reason });
+      continue;
+    }
+
+    const p = parseResult.value;
+    if (opts.requireSaltAndImage) {
+      if (p.salts.length === 0) {
+        errors.push({ sku: p.sku, reason: 'missing salt/formula (required by this template)' });
+        continue;
+      }
+      const hasImage = p.imageUrls.length > 0 || opts.imagesBySku.has(p.sku.trim().toUpperCase());
+      if (!hasImage) {
+        errors.push({ sku: p.sku, reason: 'missing product image (required by this template)' });
+        continue;
+      }
+    }
+
+    parsed.push(p);
+  }
+
+  return { parsed, errors };
+}
+
+/** mode=validate — zero writes. Two bulk queries answer create/update/new-category counts. */
+async function runValidate(
+  rows: Record<string, string>[],
+  opts: RowOptions
+): Promise<NextResponse> {
+  const { parsed, errors } = parseAndGate(rows, opts);
+
+  const skus = parsed.map((p) => p.sku);
+  const existingSkus = new Set(
+    skus.length
+      ? (await Product.find({ sku: { $in: skus } }).select('sku').lean<{ sku: string }[]>()).map(
+          (p) => p.sku
+        )
+      : []
+  );
+
+  const categoryNamesInFile = [...new Set(parsed.map((p) => p.categoryName))];
+  const existingCategoryNamesLower = new Set(
+    (await Category.find().select('name').lean<{ name: string }[]>()).map((c) =>
+      c.name.toLowerCase()
+    )
+  );
+  const newCategories = categoryNamesInFile
+    .filter((name) => !existingCategoryNamesLower.has(name.toLowerCase()))
+    .slice(0, 20);
+
+  // Track SKUs "seen" during this pass too — two rows in the same file
+  // sharing a SKU resolve to one create + one update, same as commit mode's
+  // sequential save() would produce.
+  let willCreate = 0;
+  let willUpdate = 0;
+  const seen = new Set(existingSkus);
+  for (const p of parsed) {
+    if (seen.has(p.sku)) {
+      willUpdate++;
+    } else {
+      willCreate++;
+      seen.add(p.sku);
+    }
+  }
+
+  return NextResponse.json(
+    {
+      data: {
+        mode: 'validate',
+        totalRows: rows.length,
+        valid: parsed.length,
+        willCreate,
+        willUpdate,
+        newCategories,
+        errors: errors.slice(0, 50),
+      },
+    },
+    { status: 200 }
+  );
+}
+
+/** mode=commit — today's write behavior, with existing products bulk-prefetched by SKU. */
+async function runCommit(
+  rows: Record<string, string>[],
+  opts: RowOptions
+): Promise<NextResponse> {
+  const { parsed, errors } = parseAndGate(rows, opts);
+
+  const skus = parsed.map((p) => p.sku);
+  const existingProducts = skus.length ? await Product.find({ sku: { $in: skus } }) : [];
+  const productBySku = new Map(existingProducts.map((p) => [p.sku, p]));
+
+  const categoryCache = new Map<string, string>();
+  let created = 0;
+  let updated = 0;
+
+  for (const p of parsed) {
+    const matchedImage = opts.imagesBySku.get(p.sku.trim().toUpperCase());
+
+    try {
+      // Resolve category name → ObjectId
+      let categoryId: string;
+      const categoryKey = p.categoryName.toLowerCase();
+
+      if (categoryCache.has(categoryKey)) {
+        categoryId = categoryCache.get(categoryKey)!;
+      } else {
+        let category = await Category.findOne({
+          name: { $regex: `^${p.categoryName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
+        });
+
+        if (!category) {
+          const slug = p.categoryName
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/--+/g, '-');
+
+          category = new Category({ name: p.categoryName, slug });
+          await category.save();
+        }
+
+        categoryId = String(category._id);
+        categoryCache.set(categoryKey, categoryId);
+      }
+
+      // Map image URLs to images array (publicId left empty for import),
+      // plus an uploaded batch image if one matched this row's SKU.
+      const images = p.imageUrls.map((url, idx) => ({
+        url,
+        publicId: '',
+        order: idx,
+      }));
+      if (matchedImage) {
+        const bytes = await matchedImage.arrayBuffer();
+        const uploaded = await uploadProductImageBuffer(Buffer.from(bytes));
+        images.push({ url: uploaded.url, publicId: uploaded.publicId, order: images.length });
+      }
+
+      // Upsert by SKU — prefetched above, kept in sync below so duplicate
+      // SKUs within one file still resolve to a single saved product.
+      let isNew = false;
+      let product = productBySku.get(p.sku);
+
+      if (product) {
+        product.name = p.name;
+        if (p.brand) product.brand = p.brand;
+        product.manufacturer = p.manufacturer;
+        product.category = categoryId as any;
+        product.salts = p.salts;
+        product.form = p.form;
+        product.packSize = p.packSize;
+        product.packUnit = p.packUnit;
+        product.price = p.price;
+        if (p.mrp !== undefined) product.mrp = p.mrp;
+        product.gstRate = p.gstRate;
+        product.stock = p.stock;
+        product.prescriptionRequired = p.prescriptionRequired;
+        product.scheduleClass = p.scheduleClass;
+        if (p.hsnCode !== undefined) product.hsnCode = p.hsnCode;
+        product.description = p.description;
+        if (p.storageInstructions) product.storageInstructions = p.storageInstructions;
+        if (p.usageInstructions) product.usageInstructions = p.usageInstructions;
+        product.sideEffects = p.sideEffects;
+        product.contraindications = p.contraindications;
+        if (p.tags.length > 0) product.tags = p.tags;
+        product.images = images as any;
+        product.isActive = p.isActive;
+      } else {
+        isNew = true;
+        const slug = await generateUniqueSlug(p.name);
+
+        product = new Product({
+          sku: p.sku,
+          name: p.name,
+          slug,
+          brand: p.brand,
+          manufacturer: p.manufacturer,
+          category: categoryId,
+          salts: p.salts,
+          form: p.form,
+          packSize: p.packSize,
+          packUnit: p.packUnit,
+          price: p.price,
+          mrp: p.mrp,
+          gstRate: p.gstRate,
+          stock: p.stock,
+          prescriptionRequired: p.prescriptionRequired,
+          scheduleClass: p.scheduleClass,
+          hsnCode: p.hsnCode,
+          description: p.description,
+          storageInstructions: p.storageInstructions,
+          usageInstructions: p.usageInstructions,
+          sideEffects: p.sideEffects,
+          contraindications: p.contraindications,
+          tags: p.tags,
+          images,
+          isActive: p.isActive,
+        });
+      }
+
+      // Save triggers pre-validate hook to compute compositionKey and unitPrice
+      await product.save();
+      productBySku.set(p.sku, product);
+
+      if (isNew) created++;
+      else updated++;
+    } catch (err: any) {
+      // Log only SKU and error message, never full product data (health data)
+      console.error(`Import error for SKU ${p.sku}:`, err.message);
+      errors.push({ sku: p.sku, reason: err.message || 'Failed to save product' });
+    }
+  }
+
+  return NextResponse.json(
+    {
+      data: {
+        created,
+        updated,
+        failed: errors.length,
+        errors: errors.slice(0, 50),
+      },
+    },
+    { status: 200 }
+  );
 }

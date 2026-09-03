@@ -12,6 +12,7 @@ function toView(doc: any) {
     includedOptionalFields: doc.includedOptionalFields ?? [],
     defaultManufacturer: doc.defaultManufacturer || undefined,
     defaultSalt: doc.defaultSalt || undefined,
+    columnMapping: doc.columnMapping || undefined,
     updatedAt: new Date(doc.updatedAt).toISOString(),
   };
 }
