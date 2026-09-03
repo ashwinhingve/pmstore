@@ -23,7 +23,7 @@ export function CompareTray() {
   if (!mounted || picks.length !== 1) return null;
 
   return (
-    <div className="fixed bottom-3 left-3 z-[80] flex max-w-[calc(100vw-1.5rem)] items-center gap-2.5 rounded-[var(--radius-pill)] border border-[var(--foil-soft)] bg-[var(--paper-card)] py-2 pl-4 pr-2 shadow-[var(--shadow-lg)]">
+    <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px)+0.75rem)] left-3 z-[80] flex max-w-[calc(100vw-1.5rem)] items-center gap-2.5 rounded-[var(--radius-pill)] border border-[var(--foil-soft)] bg-[var(--paper-card)] py-2 pl-4 pr-2 shadow-[var(--shadow-lg)] lg:bottom-3">
       <Scale className="h-4 w-4 shrink-0 text-[var(--brand)]" aria-hidden="true" />
       <p className="truncate text-[0.875rem] text-[var(--ink)]">
         Comparing <span className="font-semibold">{picks[0].name}</span> — pick one more

@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { MobileBottomNav } from './MobileBottomNav';
 
 /**
  * SiteChrome — decides which parts of the public storefront chrome (header,
@@ -9,8 +10,9 @@ import type { ReactNode } from 'react';
  *
  * The public Header (announcement strip + main nav) shows on every page,
  * including `/admin/*`, so the admin panel wears the same orange site navbar.
- * The Footer, compare tray and WhatsApp button stay hidden on `/admin/*` —
- * admin pages keep the navbar but otherwise get a clean, self-contained shell.
+ * The Footer, compare tray, WhatsApp button and mobile bottom nav stay hidden
+ * on `/admin/*` — admin pages keep the navbar but otherwise get a clean,
+ * self-contained shell.
  *
  * The chrome is passed in as already-rendered nodes so the (server-rendered)
  * Header/Footer stay Server Components; this client wrapper only toggles them.
@@ -32,11 +34,15 @@ export function SiteChrome({
   return (
     <div className="flex min-h-screen flex-col">
       {header}
-      <main id="main-content" className="flex-1">
+      <main
+        id="main-content"
+        className={isAdmin ? 'flex-1' : 'flex-1 pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-0'}
+      >
         {children}
       </main>
       {!isAdmin && footer}
       {!isAdmin && floating}
+      {!isAdmin && <MobileBottomNav />}
     </div>
   );
 }
