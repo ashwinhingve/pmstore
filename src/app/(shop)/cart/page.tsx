@@ -17,6 +17,7 @@ import { RxBadge } from "@/components/shared/RxBadge"
 import { EmptyCartArt } from "@/components/illustrations"
 import { extractGST } from "@/lib/gst"
 import { perUnitLabel, formatINR } from "@/lib/pharma/format"
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants"
 
 export default function CartPage() {
   const { data: session } = useSession()
@@ -33,7 +34,7 @@ export default function CartPage() {
 
   const totalPrice = getTotalPrice()
   const totalItems = getTotalItems()
-  const shipping = totalPrice >= 500 ? 0 : 30
+  const shipping = totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : 30
   const discountAmt = getDiscountAmount()
   // Prices are GST-inclusive (MRP) — no separate tax added
   const finalTotal = Math.max(0, totalPrice + shipping - discountAmt)
@@ -459,9 +460,9 @@ export default function CartPage() {
                       <Package className="w-5 h-5 text-[var(--ink)] flex-shrink-0 mt-0.5" />
                       <div className="text-sm">
                         <p className="mb-1 font-semibold text-[var(--ink)]">
-                          Add <span className="data">₹{(500 - totalPrice).toLocaleString()}</span> more for free shipping
+                          Add <span className="data">₹{(FREE_SHIPPING_THRESHOLD - totalPrice).toLocaleString()}</span> more for free shipping
                         </p>
-                        <p className="text-[var(--ink-70)]">Orders above ₹500 get free delivery</p>
+                        <p className="text-[var(--ink-70)]">Orders above ₹{FREE_SHIPPING_THRESHOLD} get free delivery</p>
                       </div>
                     </div>
                   </div>
@@ -471,7 +472,7 @@ export default function CartPage() {
                   <div className="mb-4 flex items-start gap-2 rounded-lg bg-[var(--rx-soft)] p-3">
                     <Pill className="mt-0.5 h-4 w-4 flex-shrink-0 text-[var(--rx)]" aria-hidden="true" />
                     <p className="text-sm text-[var(--ink)]">
-                      Some items need a prescription. You&apos;ll attach it at checkout before payment.
+                      Some items need a prescription. You&apos;ll need a valid one on file to complete checkout.
                     </p>
                   </div>
                 )}

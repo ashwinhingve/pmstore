@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   assertPrescriptionForCart,
   cartRequiresPrescription,
+  isPrescriptionUsable,
   PrescriptionRequiredError,
   type RxProduct,
   type RxPrescription,
@@ -88,5 +89,21 @@ describe('assertPrescriptionForCart', () => {
       expect(err).toBeInstanceOf(PrescriptionRequiredError);
       expect((err as PrescriptionRequiredError).status).toBe(400);
     }
+  });
+});
+
+describe('isPrescriptionUsable', () => {
+  it('is false for none, another user, rejected, expired-status, or stale', () => {
+    expect(isPrescriptionUsable(null, USER, NOW)).toBe(false);
+    expect(isPrescriptionUsable(presc({ userId: 'someone-else' }), USER, NOW)).toBe(false);
+    expect(isPrescriptionUsable(presc({ status: 'rejected' }), USER, NOW)).toBe(false);
+    expect(isPrescriptionUsable(presc({ status: 'expired' }), USER, NOW)).toBe(false);
+    const old = new Date(NOW - 1000 * 60 * 60 * 24 * 200);
+    expect(isPrescriptionUsable(presc({ status: 'verified', issueDate: old }), USER, NOW)).toBe(false);
+  });
+
+  it('is true for a pending or verified, non-expired prescription owned by the user', () => {
+    expect(isPrescriptionUsable(presc({ status: 'pending' }), USER, NOW)).toBe(true);
+    expect(isPrescriptionUsable(presc({ status: 'verified' }), USER, NOW)).toBe(true);
   });
 });

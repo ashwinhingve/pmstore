@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ShoppingCart, Check } from 'lucide-react';
-import { useCartStore } from '@/store/useCartStore';
+import { useGatedAddToCart } from '@/hooks/useGatedAddToCart';
 import { toast } from '@/store/useToastStore';
 
 /** The fields the cart needs to add a brand from a comparison pane. */
@@ -28,11 +28,11 @@ export interface CompareCartProduct {
  */
 export function CompareAddToCart({ product }: { product: CompareCartProduct }) {
   const [added, setAdded] = useState(false);
-  const addItem = useCartStore((s) => s.addItem);
+  const { addToCart, gateModal } = useGatedAddToCart();
   const outOfStock = product.stock <= 0;
 
   const handleAdd = () => {
-    addItem(
+    addToCart(
       {
         _id: product._id,
         name: product.name,
@@ -48,13 +48,17 @@ export function CompareAddToCart({ product }: { product: CompareCartProduct }) {
         mrp: product.mrp,
       },
       1,
+      () => {
+        toast.success(`${product.name} added to cart`);
+        setAdded(true);
+        setTimeout(() => setAdded(false), 1200);
+      },
     );
-    toast.success(`${product.name} added to cart`);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1200);
   };
 
   return (
+    <>
+    {gateModal}
     <button
       type="button"
       onClick={handleAdd}
@@ -73,5 +77,6 @@ export function CompareAddToCart({ product }: { product: CompareCartProduct }) {
         </>
       )}
     </button>
+    </>
   );
 }

@@ -8,11 +8,12 @@ import OrderItem from '@/models/OrderItem';
 import Product from '@/models/Product';
 import Address from '@/models/Address';
 import Discount from '@/models/Discount';
-import Prescription from '@/models/Prescription';
+import Prescription, { type IPrescription } from '@/models/Prescription';
 import { calculateShipping } from '@/lib/shipping/calculateShipping';
 import { calculateOrderGST } from '@/lib/gst';
 import { checkoutSchema } from '@/lib/validations/checkout';
 import { applyRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimit';
+import { assertPrescriptionForCart, PrescriptionRequiredError } from '@/lib/checkout/prescription-guard';
 
 /**
  * POST /api/checkout/create-order
@@ -62,20 +63,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Prescription (optional at checkout — client policy, 2026-08-01) ──
-    // We never block an order for a missing prescription; scheduled medicines
-    // are verified by the pharmacist before delivery, not gated here. If the
-    // buyer attached one of their own that is still usable, link it to the order
-    // for the Rx audit trail.
+    // ── Prescription (mandatory for Schedule H/H1/X items, client policy
+    // 2026-09-04 — see CLAUDE.md rule #3) ──────────────────────────────────
+    // OTC/G items are never gated. A Schedule H/H1/X item requires a valid
+    // prescription belonging to this user; assertPrescriptionForCart below
+    // fails closed on missing/rejected/expired/another-user's prescriptions.
     let prescriptionId: string | undefined;
+    let attachedPrescription: IPrescription | null = null;
     if (body.prescriptionId) {
-      const prescription = await Prescription.findOne({
+      attachedPrescription = await Prescription.findOne({
         _id: body.prescriptionId,
         userId: session.user.id,
       });
-      if (prescription && ['pending', 'verified'].includes(prescription.status)) {
-        prescriptionId = String(prescription._id);
+      if (attachedPrescription && ['pending', 'verified'].includes(attachedPrescription.status)) {
+        prescriptionId = String(attachedPrescription._id);
       }
+    }
+
+    try {
+      assertPrescriptionForCart(products, attachedPrescription, session.user.id);
+    } catch (err) {
+      if (err instanceof PrescriptionRequiredError) {
+        return NextResponse.json(
+          { error: err.message, code: 'PRESCRIPTION_REQUIRED' },
+          { status: err.status },
+        );
+      }
+      throw err;
     }
 
     // Check stock availability

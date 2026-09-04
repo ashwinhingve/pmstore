@@ -12,9 +12,11 @@ import { FormField } from '@/components/ui/form-field';
 interface AddressStepProps {
   onNext: (addressId: string) => void;
   disabled?: boolean;
+  /** Continue-button label — the Rx gate modal uses "Continue" instead of the checkout default. */
+  ctaLabel?: string;
 }
 
-export function AddressStep({ onNext, disabled }: AddressStepProps) {
+export function AddressStep({ onNext, disabled, ctaLabel = 'Continue to Payment' }: AddressStepProps) {
   const [addresses, setAddresses] = useState<any[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [showNewAddressForm, setShowNewAddressForm] = useState(false);
@@ -327,7 +329,7 @@ export function AddressStep({ onNext, disabled }: AddressStepProps) {
           disabled={!selectedAddressId || isLoading}
           className="w-full py-6 text-lg bg-[var(--ink)] hover:opacity-90 text-[var(--paper-card)]"
         >
-          Continue to Payment
+          {ctaLabel}
         </Button>
       )}
     </div>

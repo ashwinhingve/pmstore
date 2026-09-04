@@ -49,12 +49,16 @@ These cause real harm if broken. Do not deviate without asking.
    `updateMany` on products — it skips the hook and silently breaks the Strip. Use `save()` or
    `bulkWrite` with explicitly computed values.
 
-3. **Prescription upload is OPTIONAL at checkout (client decision, 2026-08-01).** Any order may
-   be placed without attaching a prescription; scheduled (H/H1/X) medicines are verified by the
-   pharmacist before delivery instead of being gated at checkout. The old hard block was removed
-   from `/api/checkout/create-order` at the client's request — do **not** re-add it without their
-   sign-off. (`src/lib/checkout/prescription-guard.ts` still holds the enforcement logic, retained
-   and tested, if the pharmacy ever reinstates the gate.)
+3. **Prescription upload is MANDATORY for Schedule H/H1/X items only (client decision,
+   2026-09-04 — supersedes the 2026-08-01 "fully optional" policy for these items).** A product's
+   own `scheduleClass`/`prescriptionRequired` is the gate, never its browsing category — one
+   category (e.g. "Cardiac Care") can hold both OTC and Schedule-H products side by side. OTC/G
+   items remain completely unrestricted: no login, no prescription, no address required.
+   Enforcement is two-layered: `useGatedAddToCart` (`src/hooks/`) blocks add-to-cart for a
+   restricted item until the customer is signed in and clears `RxGateModal` (valid prescription +
+   an address on file); `/api/checkout/create-order` calls `assertPrescriptionForCart`
+   (`src/lib/checkout/prescription-guard.ts`) again server-side, since a disabled button is never
+   access control. Do not revert to the fully-optional policy without client sign-off.
 
 4. **Never trust the JWT role for destructive admin actions.** Re-read the user's role from the
    database inside the handler. A stale token must not be able to delete products.

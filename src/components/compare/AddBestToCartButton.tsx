@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useCartStore } from '@/store/useCartStore';
+import { useGatedAddToCart } from '@/hooks/useGatedAddToCart';
 import { toast } from '@/store/useToastStore';
 import type { CompareProduct } from '@/lib/pharma/compare';
 
@@ -11,22 +11,26 @@ import type { CompareProduct } from '@/lib/pharma/compare';
  * only this button needs the cart store.
  */
 export function AddBestToCartButton({ product }: { product: CompareProduct }) {
-  const addItem = useCartStore((s) => s.addItem);
+  const { addToCart, gateModal } = useGatedAddToCart();
   const [added, setAdded] = useState(false);
 
   return (
-    <Button
-      size="sm"
-      onClick={() => {
-        addItem({ ...product, images: [], category: '' }, 1);
-        toast.success(`${product.name} added to cart`);
-        setAdded(true);
-        setTimeout(() => setAdded(false), 1500);
-      }}
-      disabled={added}
-      className="h-11 bg-[var(--brand)] px-5 text-sm font-semibold text-[var(--brand-ink)] hover:bg-[var(--brand-deep)]"
-    >
-      {added ? 'Added to cart' : `Add ${product.name} to cart`}
-    </Button>
+    <>
+      {gateModal}
+      <Button
+        size="sm"
+        onClick={() => {
+          addToCart({ ...product, images: [], category: '' }, 1, () => {
+            toast.success(`${product.name} added to cart`);
+            setAdded(true);
+            setTimeout(() => setAdded(false), 1500);
+          });
+        }}
+        disabled={added}
+        className="h-11 bg-[var(--brand)] px-5 text-sm font-semibold text-[var(--brand-ink)] hover:bg-[var(--brand-deep)]"
+      >
+        {added ? 'Added to cart' : `Add ${product.name} to cart`}
+      </Button>
+    </>
   );
 }

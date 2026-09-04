@@ -9,6 +9,7 @@ import { formatINR, formatPack, type ScheduleClass } from "@/lib/pharma/format";
 import { ProductVisual } from "@/components/products/ProductVisual";
 import { WhatsAppGlyph } from "@/components/shared/WhatsAppGlyph";
 import { useCartStore } from "@/store/useCartStore";
+import { useGatedAddToCart } from "@/hooks/useGatedAddToCart";
 import { useCompareStore } from "@/store/useCompareStore";
 import { toast } from "@/store/useToastStore";
 import { waHref, SITE_URL } from "@/lib/constants";
@@ -50,10 +51,10 @@ export function ProductCard({ product }: ProductCardProps) {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const productId = (product._id || product.id) as string;
-  const addItem = useCartStore((state) => state.addItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const itemQuantity = useCartStore((state) => state.getItemQuantity(productId));
+  const { addToCart, gateModal } = useGatedAddToCart();
 
   useEffect(() => {
     setMounted(true);
@@ -62,10 +63,11 @@ export function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsAdding(true);
-    addItem(product, 1);
-    toast.success(`${product.name} added to cart`);
-    setTimeout(() => setIsAdding(false), 1000);
+    addToCart(product, 1, () => {
+      setIsAdding(true);
+      toast.success(`${product.name} added to cart`);
+      setTimeout(() => setIsAdding(false), 1000);
+    });
   };
 
   const pickForCompare = useCompareStore((state) => state.pick);
@@ -106,7 +108,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const inCart = mounted && itemQuantity > 0;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-[box-shadow,border-color,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--brand)] hover:shadow-[var(--shadow-md)]">
+    <>
+      {gateModal}
+      <article className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-[box-shadow,border-color,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--brand)] hover:shadow-[var(--shadow-md)]">
       {/* Visual */}
       <div className={`relative aspect-square overflow-hidden border-b border-[var(--foil-soft)] ${outOfStock ? "opacity-70" : ""}`}>
         <ProductVisual
@@ -227,7 +231,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    addItem(product, 1);
+                    addToCart(product, 1);
                   }}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--brand)] text-[var(--brand-ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--brand-deep)]"
                 >
@@ -263,5 +267,6 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </div>
     </article>
+    </>
   );
 }

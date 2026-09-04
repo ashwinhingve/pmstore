@@ -1,15 +1,13 @@
 /**
  * Server-side prescription helpers.
  *
- * NOTE (2026-08-01): per client policy, prescription upload is now OPTIONAL at
- * checkout — `create-order` no longer calls `assertPrescriptionForCart`, so this
- * no longer blocks any order (see CLAUDE.md rule #3). The functions below are
- * retained, still tested, and ready to re-enable if the pharmacy reinstates the
- * hard gate; do not delete them.
- *
- * Schedule H / H1 / X products historically could not be checked out without a
- * prescription. Kept as pure functions over already-loaded documents so they are
- * reusable across web routes and unit-testable without HTTP.
+ * NOTE (2026-09-04): per client policy, prescription upload is mandatory for
+ * Schedule H / H1 / X medicines specifically (their `prescriptionRequired`
+ * flag), enforced both when the item is added to the cart (client-side gate,
+ * see `useGatedAddToCart`) and again here at order creation. This supersedes
+ * the 2026-08-01 "fully optional" decision in CLAUDE.md rule #3 for these
+ * items only — OTC/G items remain completely unrestricted. `create-order`
+ * calls `assertPrescriptionForCart` below; it is no longer dormant.
  *
  * A pharmacy treats a paper prescription as valid for ~6 months; an attached
  * prescription in `pending` or `verified` state lets the order proceed (staff
@@ -54,6 +52,25 @@ export function cartRequiresPrescription(products: RxProduct[]): boolean {
 function isExpired(issueDate: Date | null | undefined, now: number): boolean {
   if (!issueDate) return false; // no issue date on file — not treated as expired
   return now - new Date(issueDate).getTime() > PRESCRIPTION_VALIDITY_MS;
+}
+
+/**
+ * True if this prescription can be used to check out right now: belongs to
+ * `userId`, is `pending`/`verified`, and isn't past the ~6-month validity
+ * window. Shared by the server-side order-creation gate and the client-side
+ * add-to-cart gate (`useGatedAddToCart`) so the "is this still usable" rule
+ * lives in one place.
+ */
+export function isPrescriptionUsable(
+  prescription: RxPrescription | null | undefined,
+  userId: string,
+  now: number = Date.now(),
+): boolean {
+  if (!prescription) return false;
+  if (String(prescription.userId) !== userId) return false;
+  if (!CHECKOUT_OK.includes(prescription.status)) return false;
+  if (isExpired(prescription.issueDate, now)) return false;
+  return true;
 }
 
 /**

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Star, ShoppingCart, Package, Check, Share2, Shield, Truck, BadgeCheck, Link2, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCartStore } from '@/store/useCartStore';
+import { useGatedAddToCart } from '@/hooks/useGatedAddToCart';
 import { toast } from '@/store/useToastStore';
 import { formatINR, normalizeUnit, formatPack, type ScheduleClass } from '@/lib/pharma/format';
 import { RxBadge } from '@/components/shared/RxBadge';
@@ -58,7 +58,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
   const [isAdding, setIsAdding] = useState(false);
   const [reviewLinkCopied, setReviewLinkCopied] = useState(false);
   const router = useRouter();
-  const addItem = useCartStore((state) => state.addItem);
+  const { addToCart, gateModal } = useGatedAddToCart();
 
   // Cart snapshot keeps category as a display string, whatever shape came in
   const categoryName =
@@ -78,51 +78,57 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
     : { label: 'In stock', color: 'text-[var(--mint)]', available: true };
 
   const handleAddToCart = () => {
-    setIsAdding(true);
-
-    addItem({
-      _id: product._id,
-      variantId: selectedVariant?.id,
-      name: selectedVariant ? `${product.name} - ${selectedVariant.name}` : product.name,
-      slug: product.slug,
-      price: currentPrice,
-      originalPrice: currentOriginalPrice,
-      images: product.images,
-      category: categoryName,
-      prescriptionRequired: product.prescriptionRequired,
-      scheduleClass: product.scheduleClass,
-      packSize: product.packSize,
-      packUnit: product.packUnit,
-      unitPrice: product.unitPrice,
-      mrp: product.mrp,
-      gstRate: product.gstRate,
-    }, quantity);
-
-    setTimeout(() => {
-      setIsAdding(false);
-      setQuantity(1);
-    }, 1000);
+    addToCart(
+      {
+        _id: product._id,
+        variantId: selectedVariant?.id,
+        name: selectedVariant ? `${product.name} - ${selectedVariant.name}` : product.name,
+        slug: product.slug,
+        price: currentPrice,
+        originalPrice: currentOriginalPrice,
+        images: product.images,
+        category: categoryName,
+        prescriptionRequired: product.prescriptionRequired,
+        scheduleClass: product.scheduleClass,
+        packSize: product.packSize,
+        packUnit: product.packUnit,
+        unitPrice: product.unitPrice,
+        mrp: product.mrp,
+        gstRate: product.gstRate,
+      },
+      quantity,
+      () => {
+        setIsAdding(true);
+        setTimeout(() => {
+          setIsAdding(false);
+          setQuantity(1);
+        }, 1000);
+      },
+    );
   };
 
   const handleBuyNow = () => {
-    addItem({
-      _id: product._id,
-      variantId: selectedVariant?.id,
-      name: selectedVariant ? `${product.name} - ${selectedVariant.name}` : product.name,
-      slug: product.slug,
-      price: currentPrice,
-      originalPrice: currentOriginalPrice,
-      images: product.images,
-      category: categoryName,
-      prescriptionRequired: product.prescriptionRequired,
-      scheduleClass: product.scheduleClass,
-      packSize: product.packSize,
-      packUnit: product.packUnit,
-      unitPrice: product.unitPrice,
-      mrp: product.mrp,
-      gstRate: product.gstRate,
-    }, quantity);
-    router.push('/checkout');
+    addToCart(
+      {
+        _id: product._id,
+        variantId: selectedVariant?.id,
+        name: selectedVariant ? `${product.name} - ${selectedVariant.name}` : product.name,
+        slug: product.slug,
+        price: currentPrice,
+        originalPrice: currentOriginalPrice,
+        images: product.images,
+        category: categoryName,
+        prescriptionRequired: product.prescriptionRequired,
+        scheduleClass: product.scheduleClass,
+        packSize: product.packSize,
+        packUnit: product.packUnit,
+        unitPrice: product.unitPrice,
+        mrp: product.mrp,
+        gstRate: product.gstRate,
+      },
+      quantity,
+      () => router.push('/checkout'),
+    );
   };
 
   const handleShare = async () => {
@@ -151,6 +157,7 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
 
   return (
     <div className="space-y-6">
+      {gateModal}
       {/* Product Name */}
       <div>
         <div className="mb-2 flex flex-wrap items-center gap-2">
