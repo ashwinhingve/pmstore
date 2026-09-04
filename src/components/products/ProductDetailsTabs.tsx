@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
+import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants';
 
 interface Specification {
   key: string;
@@ -83,7 +84,7 @@ export default function ProductDetailsTabs({
               <ul className="space-y-2 text-[var(--ink-70)]">
                 <li className="flex items-start gap-2">
                   <span className="text-[var(--mint)] mt-1">✓</span>
-                  <span>Free shipping on orders above ₹500</span>
+                  <span>Free shipping on orders above ₹{FREE_SHIPPING_THRESHOLD}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[var(--mint)] mt-1">✓</span>

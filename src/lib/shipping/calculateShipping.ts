@@ -1,4 +1,4 @@
-import { isManualDeliveryPincode } from '@/lib/constants';
+import { isManualDeliveryPincode, FREE_SHIPPING_THRESHOLD } from '@/lib/constants';
 
 export interface ShippingTier {
   name: 'free' | 'standard' | 'express';
@@ -35,11 +35,12 @@ interface ValueTier {
   name: 'free' | 'standard' | 'express';
 }
 
+// Only covers carts below FREE_SHIPPING_THRESHOLD — carts at or above it are
+// handled by the early return in calculateShipping(), which waives weight and
+// distance charges too so "free delivery" is actually free, not just base-free.
 const VALUE_TIERS: ValueTier[] = [
   { min: 0, max: 299, baseCost: 30, name: 'standard' },
-  { min: 300, max: 499, baseCost: 20, name: 'standard' },
-  { min: 500, max: 999, baseCost: 0, name: 'free' },
-  { min: 1000, max: Infinity, baseCost: 0, name: 'free' }
+  { min: 300, max: 498, baseCost: 20, name: 'standard' },
 ];
 
 /**
@@ -60,6 +61,16 @@ export function calculateShipping(
   if (isManualDeliveryPincode(postalCode)) {
     return {
       tier: { name: 'free', cost: 0, estimatedDays: 1 },
+      breakdown: { baseRate: 0, weightCharge: 0, distanceCharge: 0, total: 0 },
+    };
+  }
+
+  // Orders at or above the threshold are fully free — no weight or distance
+  // surcharge on top, so the promise shown to customers ("free delivery above
+  // ₹499") is exactly true, not just free of the base rate.
+  if (cartTotal >= FREE_SHIPPING_THRESHOLD) {
+    return {
+      tier: { name: 'free', cost: 0, estimatedDays: 3 },
       breakdown: { baseRate: 0, weightCharge: 0, distanceCharge: 0, total: 0 },
     };
   }
@@ -131,7 +142,7 @@ function calculateDistanceCharge(postalCode: string): number {
  * Get free shipping threshold
  */
 export function getFreeShippingThreshold(): number {
-  return 500;
+  return FREE_SHIPPING_THRESHOLD;
 }
 
 /**

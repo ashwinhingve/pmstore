@@ -36,9 +36,32 @@ describe('calculateShipping — courier zones still apply', () => {
     expect(r.breakdown.total).toBeGreaterThanOrEqual(30);
   });
 
-  it('adds the weight charge for a heavier parcel', () => {
-    const r = calculateShipping(600, 1500, '110001'); // free value tier, 1-2kg band
-    expect(r.breakdown.baseRate).toBe(0);
+  it('adds the weight charge for a heavier parcel below the free threshold', () => {
+    const r = calculateShipping(400, 1500, '110001'); // standard value tier, 1-2kg band
+    expect(r.breakdown.baseRate).toBe(20);
     expect(r.breakdown.weightCharge).toBe(40);
+  });
+});
+
+describe('calculateShipping — free delivery threshold (₹499)', () => {
+  it('still charges below the threshold', () => {
+    const r = calculateShipping(498, 200, '110001');
+    expect(r.tier.name).toBe('standard');
+    expect(r.breakdown.total).toBeGreaterThan(0);
+  });
+
+  it('is fully free at the threshold, even for a heavy/far parcel', () => {
+    const r = calculateShipping(499, 4000, '682001'); // far pincode, 2-5kg band
+    expect(r.tier.name).toBe('free');
+    expect(r.tier.cost).toBe(0);
+    expect(r.breakdown.baseRate).toBe(0);
+    expect(r.breakdown.weightCharge).toBe(0);
+    expect(r.breakdown.distanceCharge).toBe(0);
+    expect(r.breakdown.total).toBe(0);
+  });
+
+  it('stays free well above the threshold', () => {
+    const r = calculateShipping(1200, 6000, '682001');
+    expect(r.breakdown.total).toBe(0);
   });
 });

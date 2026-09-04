@@ -137,7 +137,7 @@ export const PAYMENT_STATUS = {
 export const PRODUCTS_PER_PAGE = 12;
 
 // Shipping (rupees)
-export const FREE_SHIPPING_THRESHOLD = 500;
+export const FREE_SHIPPING_THRESHOLD = 499;
 export const STANDARD_SHIPPING_COST = 40;
 
 // PIN codes the store delivers itself (local hand-delivery in Bhopal), bypassing
