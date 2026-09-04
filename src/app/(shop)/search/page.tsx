@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import connectDB from '@/lib/mongodb/connection';
 import Category from '@/models/Category';
+import Product from '@/models/Product';
 import { searchQuerySchema } from '@/lib/validations/search';
 import { executeSearch, type SearchFacets } from '@/lib/search/execute';
 import { isExactNameMatch } from '@/lib/search/comparison';
@@ -34,6 +35,12 @@ export async function generateMetadata({
 
 function firstString(v: string | string[] | undefined): string {
   return (Array.isArray(v) ? v[0] : v) ?? '';
+}
+
+/** JSON round-trip so nested ObjectIds (salts[]._id, images[]._id) become plain
+ * strings before crossing into React, matching lib/search/execute.ts's serialize(). */
+function serializeDoc(doc: Record<string, unknown>): Record<string, unknown> {
+  return JSON.parse(JSON.stringify(doc));
 }
 
 /** Build an href that preserves the current params and applies a patch (null clears). */
@@ -89,6 +96,39 @@ export default async function SearchPage({
 
   const totalPages = Math.max(1, Math.ceil(meta.total / meta.limit));
 
+  // Same-composition comparison: fetched directly by compositionKey (mirrors
+  // the Strip's related-products lookup in /api/products/[slug]/route.ts)
+  // rather than scraped from whatever else text-matched the search query. A
+  // genuine same-salt sibling is found even when its brand name shares no
+  // words with the query, and the group is always the searched medicine's
+  // own formula — never an unrelated pair that happened to co-occur on the
+  // results page.
+  const topResult = results[0];
+  let comparisonProducts: Record<string, unknown>[] = [];
+  if (
+    topResult &&
+    isExactNameMatch(q, String(topResult.name ?? '')) &&
+    typeof topResult.compositionKey === 'string' &&
+    topResult.compositionKey
+  ) {
+    const siblings = await Product.find({
+      compositionKey: topResult.compositionKey,
+      isActive: true,
+      isDiscontinued: false,
+      _id: { $ne: topResult._id },
+    })
+      .select(
+        'name slug manufacturer price mrp packSize packUnit unitPrice stock compositionKey salts prescriptionRequired images form'
+      )
+      .sort({ unitPrice: 1 })
+      .limit(30)
+      .lean();
+
+    if (siblings.length > 0) {
+      comparisonProducts = [topResult, ...siblings.map((s) => serializeDoc(s as Record<string, unknown>))];
+    }
+  }
+
   return (
     <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-8 sm:px-6 lg:px-8">
       <header className="mb-6">
@@ -107,12 +147,11 @@ export default async function SearchPage({
       </header>
 
       {/* Same-composition comparison: brands sharing the searched salt, side by
-          side and led by price per tablet. Only same-formula groups (2+ brands)
-          appear — never unrelated medicines — and only when the top result is
+          side and led by price per tablet. comparisonProducts (built above) is
+          always the searched medicine plus its real compositionKey siblings —
+          never unrelated medicines — and stays empty unless the top result is
           the medicine actually searched for, not just a fuzzy/salt-only hit. */}
-      {results.length > 1 && isExactNameMatch(q, String(results[0]?.name ?? '')) && (
-        <SearchComparison products={results} />
-      )}
+      {comparisonProducts.length > 1 && <SearchComparison products={comparisonProducts} />}
 
       <div className="flex flex-col gap-4 md:flex-row md:gap-6">
         {/* Mobile: filters live behind a compact trigger so results show first */}
