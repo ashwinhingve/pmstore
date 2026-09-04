@@ -50,7 +50,6 @@ export function FaqPreview() {
             align="center"
             eyebrow="Help"
             title="Frequently asked questions"
-            description="Quick answers to common questions"
             className="mb-10"
           />
 

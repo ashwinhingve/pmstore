@@ -49,7 +49,6 @@ export function WhyChooseUs() {
           align="center"
           eyebrow="Why us"
           title="Why choose PM Store"
-          description="Quality medicines, honest pricing, and a pharmacist on every order"
           className="mb-10"
         />
 

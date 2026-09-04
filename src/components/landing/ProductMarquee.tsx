@@ -43,7 +43,6 @@ export function ProductMarquee({ products }: { products: ProductCardData[] }) {
         <SectionHeading
           eyebrow="Across the store"
           title="More to explore"
-          description="A mix of bestsellers and everyday essentials, across categories."
           className="mb-8"
         />
       </Container>

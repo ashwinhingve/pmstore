@@ -78,7 +78,6 @@ export function Categories({ categories }: { categories?: CategoryCardView[] }) 
           align="center"
           eyebrow="Browse the pharmacy"
           title="Find your medicine faster"
-          description="Pick a category to compare every brand by price per tablet — or search the full catalogue."
           className="mb-10"
         />
 

@@ -68,7 +68,6 @@ export function QuickActions({ signedIn }: QuickActionsProps) {
           align="center"
           eyebrow="Get started"
           title="Everything in a couple of taps"
-          description="Four quick ways in — search, reorder, upload a prescription, or ask us to source it"
           className="mb-10"
         />
 

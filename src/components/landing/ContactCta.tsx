@@ -36,7 +36,6 @@ export function ContactCta() {
             onDark
             eyebrow="Contact"
             title="Get in touch"
-            description="Have questions? We're here to help"
             className="mb-12"
           />
 

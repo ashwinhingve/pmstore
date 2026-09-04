@@ -43,7 +43,6 @@ export function CuratedTabs({ buckets }: { buckets: CuratedCategoryBucket[] }) {
           align="center"
           eyebrow="Browse by category"
           title="Shop by category"
-          description="Compare every brand in a category by price per tablet."
           className="mb-8"
         />
 

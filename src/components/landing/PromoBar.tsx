@@ -30,7 +30,6 @@ export function PromoBar() {
           align="center"
           eyebrow="Everyday savings"
           title="Save on every order"
-          description="Honest per-tablet pricing, free delivery and quick WhatsApp ordering — the reasons patients keep coming back."
           className="mb-10"
         />
         <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
