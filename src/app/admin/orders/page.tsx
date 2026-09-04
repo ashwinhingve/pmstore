@@ -53,9 +53,10 @@ export default async function AdminOrdersPage({
     ];
   }
 
-  // Filter by order status
+  // Filter by order status — comma-separated values match any of them
   if (status) {
-    query.orderStatus = status;
+    const statuses = status.split(',').map((s) => s.trim()).filter(Boolean);
+    query.orderStatus = statuses.length > 1 ? { $in: statuses } : statuses[0];
   }
 
   // Filter by payment status

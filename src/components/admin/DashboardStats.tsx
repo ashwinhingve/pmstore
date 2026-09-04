@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import {
   ShoppingBag,
   DollarSign,
@@ -16,6 +17,7 @@ import {
 interface StatItem {
   value: number;
   label: string;
+  href: string;
   trend?: 'up' | 'down' | 'neutral';
   trendValue?: string;
 }
@@ -82,9 +84,10 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
         const colorClass = colorMap[key as keyof typeof colorMap];
 
         return (
-          <div
+          <Link
             key={key}
-            className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)]"
+            href={stat.href}
+            className="block rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:shadow-[var(--shadow-md)]"
           >
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-lg ${colorClass}`}>
@@ -108,7 +111,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
               </p>
               <p className="text-sm text-[var(--ink-70)]">{stat.label}</p>
             </div>
-          </div>
+          </Link>
         );
       })}
     </div>

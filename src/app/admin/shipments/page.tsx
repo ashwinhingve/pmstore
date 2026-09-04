@@ -52,7 +52,12 @@ export default async function AdminShipmentsPage({
     }
   }
 
-  if (status) query.shipmentStatus = status;
+  if (status) {
+    // Comma-separated values match any of them (used by the dashboard's
+    // "Active shipments" drill-down, which spans several statuses at once).
+    const statuses = status.split(',').map((s) => s.trim()).filter(Boolean);
+    query.shipmentStatus = statuses.length > 1 ? { $in: statuses } : statuses[0];
+  }
 
   if (dateFrom || dateTo) {
     query.createdAt = {};

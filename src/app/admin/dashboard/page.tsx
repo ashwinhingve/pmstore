@@ -28,7 +28,11 @@ export default async function AdminDashboard() {
   // Calculate date ranges
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  const ACTIVE_SHIPMENT_STATUSES = ['In Transit', 'Out for Delivery', 'Dispatched', 'Pending', 'Manifested'];
 
   // Fetch dashboard statistics in parallel
   const [
@@ -40,6 +44,9 @@ export default async function AdminDashboard() {
     totalUsers,
     totalProducts,
     recentOrders,
+    prevMonthOrders,
+    prevMonthRevenue,
+    prevMonthUsers,
   ] = await Promise.all([
     // Total orders this month
     Order.countDocuments({
@@ -70,13 +77,13 @@ export default async function AdminDashboard() {
 
     // Active shipments (in transit or out for delivery)
     Shipment.countDocuments({
-      shipmentStatus: { $in: ['In Transit', 'Out for Delivery', 'Dispatched', 'Pending', 'Manifested'] },
+      shipmentStatus: { $in: ACTIVE_SHIPMENT_STATUSES },
     }),
 
     // Failed payments (last 7 days)
     Transaction.countDocuments({
       status: 'failed',
-      createdAt: { $gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) },
+      createdAt: { $gte: sevenDaysAgo },
     }),
 
     // Total users
@@ -103,7 +110,38 @@ export default async function AdminDashboard() {
           createdAt: order.createdAt.toISOString(),
         }))
       ),
+
+    // Previous month — basis for the month-over-month trend indicators below
+    Order.countDocuments({
+      createdAt: { $gte: startOfPrevMonth, $lt: startOfMonth },
+    }),
+    Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startOfPrevMonth, $lt: startOfMonth },
+          paymentStatus: 'paid',
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$totalAmount' },
+        },
+      },
+    ]).then((result) => result[0]?.total || 0),
+    User.countDocuments({
+      createdAt: { $gte: startOfPrevMonth, $lt: startOfMonth },
+    }),
   ]);
+
+  // Real month-over-month % change — no trend shown when there's nothing to
+  // compare against (previous month had zero of that metric).
+  const trendFor = (current: number, previous: number): { trend: 'up' | 'down' | 'neutral'; trendValue?: string } => {
+    if (previous <= 0) return { trend: 'neutral' };
+    const pct = ((current - previous) / previous) * 100;
+    if (Math.abs(pct) < 0.5) return { trend: 'neutral' };
+    return { trend: pct > 0 ? 'up' : 'down', trendValue: `${Math.abs(Math.round(pct))}%` };
+  };
 
   // Fetch revenue data for last 30 days
   const revenueByDay = await Order.aggregate([
@@ -137,54 +175,68 @@ export default async function AdminDashboard() {
     },
   ]);
 
-  // Calculate low stock products
+  // Calculate low stock products — matches the Products page's own
+  // `stockLevel=low` filter exactly, so the number here always agrees with
+  // what the drill-down link shows (out-of-stock is a separate filter there).
   const lowStockCount = await Product.countDocuments({
-    stock: { $lt: 10 },
+    stock: { $gt: 0, $lte: 10 },
   });
+
+  const firstOfMonthISO = startOfMonth.toISOString().slice(0, 10);
+  const sevenDaysAgoISO = sevenDaysAgo.toISOString().slice(0, 10);
+  const pendingOrdersHref = '/admin/orders?status=confirmed,processing&paymentStatus=paid';
+  const activeShipmentsHref = `/admin/shipments?status=${encodeURIComponent(ACTIVE_SHIPMENT_STATUSES.join(','))}`;
+  const failedPaymentsHref = `/admin/payments?status=failed&dateFrom=${sevenDaysAgoISO}`;
+  const lowStockHref = '/admin/products?stockLevel=low';
 
   // Prepare stats data
   const stats = {
     totalOrders: {
       value: totalOrdersThisMonth,
       label: 'Orders This Month',
-      trend: 'up' as const,
-      trendValue: '12%',
+      href: `/admin/orders?dateFrom=${firstOfMonthISO}`,
+      ...trendFor(totalOrdersThisMonth, prevMonthOrders),
     },
     totalRevenue: {
       value: totalRevenueThisMonth,
       label: 'Revenue This Month',
-      trend: 'up' as const,
-      trendValue: '8%',
+      href: `/admin/orders?dateFrom=${firstOfMonthISO}&paymentStatus=paid`,
+      ...trendFor(totalRevenueThisMonth, prevMonthRevenue),
     },
     pendingOrders: {
       value: pendingOrders,
       label: 'Pending Orders',
+      href: pendingOrdersHref,
       trend: 'neutral' as const,
     },
     activeShipments: {
       value: activeShipments,
       label: 'Active Shipments',
+      href: activeShipmentsHref,
       trend: 'neutral' as const,
     },
     failedPayments: {
       value: failedPayments,
       label: 'Failed Payments (7d)',
+      href: failedPaymentsHref,
       trend: (failedPayments > 0 ? 'down' : 'neutral') as 'down' | 'neutral',
     },
     totalUsers: {
       value: totalUsers,
       label: 'Total Users',
-      trend: 'up' as const,
-      trendValue: '5%',
+      href: '/admin/users',
+      ...trendFor(totalUsers, prevMonthUsers),
     },
     totalProducts: {
       value: totalProducts,
       label: 'Total Products',
+      href: '/admin/products',
       trend: 'neutral' as const,
     },
     lowStockProducts: {
       value: lowStockCount,
       label: 'Low Stock Alert',
+      href: lowStockHref,
       trend: (lowStockCount > 0 ? 'down' : 'neutral') as 'down' | 'neutral',
     },
   };
@@ -219,19 +271,19 @@ export default async function AdminDashboard() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
-              href: '/admin/orders?status=pending',
+              href: pendingOrdersHref,
               icon: Clock,
               title: 'Process pending orders',
               meta: `${pendingOrders} orders waiting`,
             },
             {
-              href: '/admin/payments?status=failed',
+              href: failedPaymentsHref,
               icon: CreditCard,
               title: 'Review failed payments',
               meta: `${failedPayments} failed transactions`,
             },
             {
-              href: '/admin/products?filter=low-stock',
+              href: lowStockHref,
               icon: PackageX,
               title: 'Low stock alerts',
               meta: `${lowStockCount} products low`,
