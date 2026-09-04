@@ -427,25 +427,28 @@ export default function ShipmentsTable({
         <table className="w-full">
           <thead className="sticky top-0 z-10 border-b border-[var(--foil)] bg-[var(--paper-tint)]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="sticky left-0 z-20 w-14 bg-[var(--paper-tint)] px-3 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+                View
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Waybill
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Order
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Customer
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Courier
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Created
               </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-right text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -453,7 +456,7 @@ export default function ShipmentsTable({
           <tbody className="divide-y divide-[var(--foil-soft)]">
             {visibleShipments.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center text-[var(--ink-40)]">
+                <td colSpan={8} className="px-6 py-12 text-center text-[var(--ink-40)]">
                   No shipments yet. Shipment records appear here as orders are dispatched.
                 </td>
               </tr>
@@ -462,8 +465,23 @@ export default function ShipmentsTable({
                 const provider = shipment.provider || 'delhivery';
 
                 return (
-                  <tr key={shipment.id} className="hover:bg-[var(--foil-soft)]">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={shipment.id} className="group hover:bg-[var(--foil-soft)]">
+                    <td className="sticky left-0 z-10 w-14 bg-[var(--paper-card)] px-3 py-3 group-hover:bg-[var(--foil-soft)]">
+                      {shipment.orderId ? (
+                        <Link
+                          href={`/admin/orders/${shipment.orderId}`}
+                          aria-label={`View order ${shipment.orderNumber}`}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--ink)] hover:bg-[var(--foil-soft)]"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Link>
+                      ) : (
+                        <span className="flex h-8 w-8 items-center justify-center text-[var(--ink-40)]" aria-hidden="true">
+                          —
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <Truck className="w-4 h-4 text-[var(--ink-70)]" />
                         <span className="text-sm font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
@@ -471,7 +489,7 @@ export default function ShipmentsTable({
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       {shipment.orderId ? (
                         <Link
                           href={`/admin/orders/${shipment.orderId}`}
@@ -483,16 +501,16 @@ export default function ShipmentsTable({
                         <span className="text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>{shipment.orderNumber}</span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <div className="text-sm text-[var(--ink)]">{shipment.customerName}</div>
                       <div className="text-xs text-[var(--ink-70)]">{shipment.customerEmail}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <Badge variant={statusBadgeVariant(shipment.status)}>
                         {shipment.status}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <div className="text-sm text-[var(--ink)]">{shipment.courier}</div>
                       <span
                         className={`inline-flex mt-1 px-1.5 py-0.5 text-xs font-medium rounded-full ${
@@ -504,19 +522,11 @@ export default function ShipmentsTable({
                         {provider === 'shiprocket' ? 'Shiprocket' : 'Delhivery'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
                       {formatDateTime(shipment.createdAt)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                    <td className="px-4 py-3 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {shipment.orderId && (
-                          <Link
-                            href={`/admin/orders/${shipment.orderId}`}
-                            className="inline-flex items-center gap-1 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Link>
-                        )}
                         <a
                           href={getTrackingUrl(shipment)}
                           target="_blank"

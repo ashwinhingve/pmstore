@@ -321,29 +321,29 @@ export default function PaymentsTable({
         <table className="w-full">
           <thead className="sticky top-0 z-10 border-b border-[var(--foil)] bg-[var(--paper-tint)]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="sticky left-0 z-20 w-14 bg-[var(--paper-tint)] px-3 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+                View
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Transaction ID
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Order
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Customer
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Amount
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Method
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Date
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
-                Actions
               </th>
             </tr>
           </thead>
@@ -357,8 +357,23 @@ export default function PaymentsTable({
             ) : (
               transactions.map((txn) => {
                 return (
-                  <tr key={txn.id} className="hover:bg-[var(--foil-soft)]">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={txn.id} className="group hover:bg-[var(--foil-soft)]">
+                    <td className="sticky left-0 z-10 w-14 bg-[var(--paper-card)] px-3 py-3 group-hover:bg-[var(--foil-soft)]">
+                      {txn.orderId ? (
+                        <Link
+                          href={`/admin/orders/${txn.orderId}`}
+                          aria-label={`View order ${txn.orderNumber}`}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--ink)] hover:bg-[var(--foil-soft)]"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Link>
+                      ) : (
+                        <span className="flex h-8 w-8 items-center justify-center text-[var(--ink-40)]" aria-hidden="true">
+                          —
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <div className="text-sm font-medium text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>
                         {txn.transactionId}
                       </div>
@@ -368,7 +383,7 @@ export default function PaymentsTable({
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       {txn.orderId ? (
                         <Link
                           href={`/admin/orders/${txn.orderId}`}
@@ -380,19 +395,19 @@ export default function PaymentsTable({
                         <span className="text-sm text-[var(--ink-40)]">{txn.orderNumber}</span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <div className="text-sm text-[var(--ink)]">{txn.customerName}</div>
                       <div className="text-xs text-[var(--ink-40)]">{txn.customerEmail}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <div className="text-sm font-semibold text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>
                         ₹{txn.amount.toLocaleString('en-IN')}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <div className="text-sm text-[var(--ink)]">{txn.paymentMethod}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <Badge variant={statusBadgeVariant(txn.status)}>
                         {txn.status}
                       </Badge>
@@ -400,19 +415,8 @@ export default function PaymentsTable({
                         <div className="text-xs text-[var(--ink)] mt-1">{txn.failureReason}</div>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-40)]" style={{ fontFamily: 'var(--font-data)' }}>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-[var(--ink-40)]" style={{ fontFamily: 'var(--font-data)' }}>
                       {formatDateTime(txn.createdAt)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                      {txn.orderId && (
-                        <Link
-                          href={`/admin/orders/${txn.orderId}`}
-                          className="inline-flex items-center gap-1 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
-                        >
-                          <Eye className="w-4 h-4" />
-                          View Order
-                        </Link>
-                      )}
                     </td>
                   </tr>
                 );

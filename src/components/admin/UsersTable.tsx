@@ -252,26 +252,26 @@ export default function UsersTable({
         <table className="w-full">
           <thead className="sticky top-0 z-10 border-b border-[var(--foil)] bg-[var(--paper-tint)]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="sticky left-0 z-20 w-14 bg-[var(--paper-tint)] px-3 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+                View
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 User
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Role
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Orders
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Total spent
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Joined
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
-                Actions
               </th>
             </tr>
           </thead>
@@ -284,8 +284,18 @@ export default function UsersTable({
               </tr>
             ) : (
               users.map((user) => (
-                <tr key={user.id} className="hover:bg-[var(--foil-soft)]">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <tr key={user.id} className="group hover:bg-[var(--foil-soft)]">
+                  <td className="sticky left-0 z-10 w-14 bg-[var(--paper-card)] px-3 py-3 group-hover:bg-[var(--foil-soft)]">
+                    <button
+                      type="button"
+                      onClick={() => openUser(user)}
+                      aria-label={`View ${user.name}`}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--ink)] hover:bg-[var(--foil-soft)]"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       {user.image ? (
                         <img
@@ -303,10 +313,10 @@ export default function UsersTable({
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="text-sm text-[var(--ink)]">{user.email}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${
                         user.role === 'admin'
@@ -322,28 +332,18 @@ export default function UsersTable({
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="text-sm font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                       {user.orderCount}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="text-sm font-semibold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                       ₹{user.totalSpent.toLocaleString('en-IN')}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
                     {formatDate(user.createdAt)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <button
-                      type="button"
-                      onClick={() => openUser(user)}
-                      className="inline-flex items-center gap-1 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
-                    >
-                      <Eye className="w-4 h-4" />
-                      View
-                    </button>
                   </td>
                 </tr>
               ))

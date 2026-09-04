@@ -294,29 +294,29 @@ export default function OrdersTable({
         <table className="w-full">
           <thead className="sticky top-0 z-10 border-b border-[var(--foil)] bg-[var(--paper-tint)]">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="sticky left-0 z-20 w-14 bg-[var(--paper-tint)] px-3 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+                View
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Order
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Customer
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Items
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Amount
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Payment
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
                 Date
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-[var(--ink-70)] uppercase tracking-wider">
-                Actions
               </th>
             </tr>
           </thead>
@@ -329,8 +329,17 @@ export default function OrdersTable({
               </tr>
             ) : (
               orders.map((order) => (
-                <tr key={order.id} className="hover:bg-[var(--foil-soft)]">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <tr key={order.id} className="group hover:bg-[var(--foil-soft)]">
+                  <td className="sticky left-0 z-10 w-14 bg-[var(--paper-card)] px-3 py-3 group-hover:bg-[var(--foil-soft)]">
+                    <Link
+                      href={`/admin/orders/${order.id}`}
+                      aria-label={`View order ${order.orderNumber}`}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--ink)] hover:bg-[var(--foil-soft)]"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="text-sm font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                       {order.orderNumber}
                     </div>
@@ -341,39 +350,30 @@ export default function OrdersTable({
                       <Badge variant="strong" className="mt-1">Deliver manually</Badge>
                     )}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-3">
                     <div className="text-sm text-[var(--ink)]">{order.customerName}</div>
                     <div className="text-xs text-[var(--ink-70)]">{order.customerEmail}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="text-sm text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>{order.itemsCount} items</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="text-sm font-semibold text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
                       ₹{order.totalAmount.toLocaleString('en-IN')}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <Badge variant={statusBadgeVariant(order.paymentStatus)}>
                       {order.paymentStatus}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <Badge variant={statusBadgeVariant(order.orderStatus)}>
                       {order.orderStatus}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-[var(--ink-70)] data" style={{ fontFamily: 'var(--font-data)' }}>
                     {formatDateTime(order.createdAt)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <Link
-                      href={`/admin/orders/${order.id}`}
-                      className="inline-flex items-center gap-1 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
-                    >
-                      <Eye className="w-4 h-4" />
-                      View
-                    </Link>
                   </td>
                 </tr>
               ))
