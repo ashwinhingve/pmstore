@@ -39,10 +39,16 @@ const IMAGES: Record<string, string> = {
   'category-neuro-psychiatry.jpg': `${U}/photo-1526724038726-3007ffb8025f?auto=format&fit=crop&w=800&q=80`,
   'category-ortho-muscle-care.jpg': `${U}/photo-1778826393424-2e063bf5fd64?auto=format&fit=crop&w=800&q=80`,
   'category-derma-skin.jpg': `${U}/photo-1730288951113-9cc087c14b83?auto=format&fit=crop&w=800&q=80`,
-  'category-general-otc.jpg': `${U}/photo-1562243061-204550d8a2c9?auto=format&fit=crop&w=800&q=80`,
+  // Replaced 2026-09-04: a clean dispensary shelf reads more "pharmacy" than
+  // the previous single-bottle close-up, now that this tile sits beside a
+  // labeled Pathology & Nursing Care photo in the same grid.
+  'category-general-otc.jpg': `${U}/photo-1671108503276-1d3d5ab23a3a?auto=format&fit=crop&w=800&q=80`,
   'category-pet-care.jpg': `${U}/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=800&q=80`,
   'category-ayurveda.jpg': `${U}/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=800&q=80`,
   'category-homeopathy.jpg': `${U}/photo-1725267882596-2d08e560b250?auto=format&fit=crop&w=800&q=80`,
+  // Added 2026-09-04: this category had no photo at all (fell back to a flat
+  // tint) — a warm home-nursing-care moment.
+  'category-pathology-nursing-care.jpg': `${U}/photo-1765896387387-0538bc9f997e?auto=format&fit=crop&w=800&q=80`,
 
   // Promo banners (~1600px). promo-rx is a female pharmacist (Pexels-licence,
   // royalty-free, no attribution) — client asked for a woman here, 2026-08-15.

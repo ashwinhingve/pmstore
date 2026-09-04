@@ -43,12 +43,13 @@ export const CATEGORY_IMAGES: Record<string, LandingImage> = {
   'neuro-psychiatry': { url: '/landing/category-neuro-psychiatry.jpg', alt: 'Woman meditating by the sea' },
   'ortho-muscle-care': { url: '/landing/category-ortho-muscle-care.jpg', alt: 'Person holding a sore knee' },
   'derma-skin': { url: '/landing/category-derma-skin.jpg', alt: 'Woman with healthy, glowing skin' },
-  'general-otc': { url: '/landing/category-general-otc.jpg', alt: 'Prescription bottle with capsules' },
+  'general-otc': { url: '/landing/category-general-otc.jpg', alt: 'Clean pharmacy dispensary shelf stocked with medicine bottles' },
   // Stand-in clinical photo for Surgical & Medical Supplies until a dedicated
   // shot exists — reuses trust-2.jpg (not used elsewhere in this grid, so no
   // repeated photo). The admin can override this per-category at /admin/categories.
   'surgical': { url: '/landing/trust-2.jpg', alt: 'Sterile medical and surgical supplies' },
   'pet-care': { url: '/landing/category-pet-care.jpg', alt: 'A cat and dog resting together outdoors' },
+  'pathology-nursing-care': { url: '/landing/category-pathology-nursing-care.jpg', alt: 'A nurse caring for an elderly patient at home' },
 };
 
 /** Feature promo banners (wide). CTAs point at real features only. */
