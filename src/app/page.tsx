@@ -51,18 +51,20 @@ export const metadata: Metadata = {
  * Sections (in render order):
  *  1. HeroSlider — full-bleed image slider with search + CTAs
  *  2. ProductImageSlider — quiet, image-only circular product strip
- *  3. Categories — image-backed pharma category grid + a Request-medicine CTA
- *  4. CuratedTabs — tabbed grid of the store's top medicine categories
- *  5. ProductMarquee — "More to explore": a compact, continuously-sliding row
+ *  3. ProductImageSlider (OTC) — same strip, filtered to scheduleClass 'OTC'
+ *     and labeled, so shoppers can jump straight to over-the-counter items
+ *  4. Categories — image-backed pharma category grid + a Request-medicine CTA
+ *  5. CuratedTabs — tabbed grid of the store's top medicine categories
+ *  6. ProductMarquee — "More to explore": a compact, continuously-sliding row
  *     mixing products across categories
- *  6. QuickActions — search / order again / upload prescription / request medicine
- *  7. FeatureSlider — admin-managed 2-up image band that slides in from the left
- *  8. PromoBanners — prescription-upload + reorder feature banners
- *  9. TrustBand — stats + VALUE_PROPS + credentials
- * 10. WhyChooseUs — three photography-led reasons to trust the store
- * 11. FaqPreview — 4 FAQs using Accordion
- * 12. PromoBar — headline-offers strip (the "Everyday savings" discount cards)
- * 13. ContactCta — contact info + WhatsApp + contact form link
+ *  7. QuickActions — search / order again / upload prescription / request medicine
+ *  8. FeatureSlider — admin-managed 2-up image band that slides in from the left
+ *  9. PromoBanners — prescription-upload + reorder feature banners
+ * 10. TrustBand — stats + VALUE_PROPS + credentials
+ * 11. WhyChooseUs — three photography-led reasons to trust the store
+ * 12. FaqPreview — 4 FAQs using Accordion
+ * 13. PromoBar — headline-offers strip (the "Everyday savings" discount cards)
+ * 14. ContactCta — contact info + WhatsApp + contact form link
  */
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -83,6 +85,9 @@ export default async function Home() {
   // A larger, cross-category slice for the "More to explore" marquee — not
   // filtered to one category, sized for a sliding row rather than a grid tab.
   let marqueeProducts: ProductCardData[] = [];
+  // Over-the-counter medicines only (scheduleClass 'OTC') for the homepage's
+  // OTC sliding band, between the featured-medicines strip and Categories.
+  let otcProducts: ProductCardData[] = [];
   try {
     await connectDB();
 
@@ -147,6 +152,14 @@ export default async function Home() {
       .lean()
       .exec();
     marqueeProducts = serialize(marquee);
+
+    // OTC-only slice for the homepage's OTC sliding band.
+    const otc = await Product.find({ ...base, scheduleClass: 'OTC' })
+      .sort({ orderCount: -1, updatedAt: -1 })
+      .limit(14)
+      .lean()
+      .exec();
+    otcProducts = serialize(otc);
     // Active hero + feature slides, ordered; serialize ObjectId at the boundary
     // and drop any slide without an image so the carousels never render a blank.
     const settings = await SiteSettings.findOne({ key: 'global' })
@@ -196,6 +209,11 @@ export default async function Home() {
       {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
       <HeroSlider slides={heroSlides} />
       <ProductImageSlider products={marqueeProducts.slice(0, 14)} />
+      <ProductImageSlider
+        products={otcProducts}
+        title="Over-the-counter essentials"
+        ariaLabel="Over-the-counter medicines"
+      />
       <Categories categories={categoryCards} />
       <CuratedTabs buckets={categoryBuckets} />
       <ProductMarquee products={marqueeProducts} />
