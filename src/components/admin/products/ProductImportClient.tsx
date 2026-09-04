@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react"
 import { useDropzone } from "react-dropzone"
 import {
   UploadCloud,
@@ -39,6 +39,7 @@ interface ValidateResult {
   willCreate: number
   willUpdate: number
   newCategories: string[]
+  duplicateSkusInFile: string[]
   errors: ImportError[]
 }
 interface TemplateOption {
@@ -71,6 +72,32 @@ async function fileToCsv(file: File): Promise<string> {
     return XLSX.utils.sheet_to_csv(wb.Sheets[first])
   }
   throw new Error("Unsupported file. Upload a .csv or .xlsx file.")
+}
+
+function StepSection({
+  number,
+  title,
+  children,
+}: {
+  number: number
+  title: string
+  children: ReactNode
+}) {
+  return (
+    <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5">
+      <div className="mb-4 flex items-center gap-3">
+        <span
+          className="data flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--ink)] text-sm font-semibold text-[var(--paper-card)]"
+          style={{ fontFamily: "var(--font-data)" }}
+          aria-hidden="true"
+        >
+          {number}
+        </span>
+        <h2 className="font-semibold text-[var(--ink)]">{title}</h2>
+      </div>
+      {children}
+    </div>
+  )
 }
 
 export function ProductImportClient() {
@@ -404,29 +431,56 @@ export function ProductImportClient() {
 
   const progressPct = progress ? Math.round((progress.doneRows / Math.max(progress.totalRows, 1)) * 100) : 0
 
+  // Steps 3 and 4 only apply once a file is loaded (and step 3 only when the
+  // file's headers need mapping), so number sequentially over whichever
+  // steps actually apply — no gaps like "step 2, step 4" when 3 is skipped.
+  const stepFlags = {
+    template: true,
+    upload: true,
+    mapping: file !== null && mappableHeaders.length > 0,
+    photos: file !== null,
+    review: file !== null,
+  }
+  let stepCounter = 0
+  const stepNumbers = Object.fromEntries(
+    Object.entries(stepFlags).map(([key, visible]) => [key, visible ? ++stepCounter : 0])
+  ) as Record<keyof typeof stepFlags, number>
+
   return (
     <div className="space-y-6">
-      {/* Template */}
-      <div className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5">
+      {/* Export lives outside the numbered import flow — related, not a step */}
+      <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+        <p className="text-[var(--ink-70)]">
+          Already have products to check against?{" "}
+          <span className="text-[var(--ink-40)]">
+            {templateId
+              ? "Export downloads every active product, scoped to the template selected below."
+              : "Export downloads every product with every field."}
+          </span>
+        </p>
+        <Button variant="ghost" size="sm" onClick={downloadExport} className="shrink-0 gap-2">
+          <Download className="h-4 w-4" /> Export current catalogue
+        </Button>
+      </div>
+
+      {/* Step 1 — Get the template */}
+      <StepSection number={stepNumbers.template} title="Get the template">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="font-semibold text-[var(--ink)]">Start from the template</h2>
-            <p className="mt-1 text-sm text-[var(--ink-70)]">
-              Required columns:{" "}
-              <span style={{ fontFamily: "var(--font-data)" }} className="text-[var(--ink)]">
-                {REQUIRED_COLUMNS.join(", ")}
-              </span>
-              . Add salts as{" "}
-              <span style={{ fontFamily: "var(--font-data)" }}>salt_1_name / salt_1_strength / salt_1_unit</span>.
-            </p>
-          </div>
+          <p className="text-sm text-[var(--ink-70)]">
+            Required columns:{" "}
+            <span style={{ fontFamily: "var(--font-data)" }} className="text-[var(--ink)]">
+              {REQUIRED_COLUMNS.join(", ")}
+            </span>
+            . Add salts as{" "}
+            <span style={{ fontFamily: "var(--font-data)" }}>salt_1_name / salt_1_strength / salt_1_unit</span>.
+          </p>
           <Button variant="outline" onClick={downloadTemplate} className="shrink-0 gap-2">
             <Download className="h-4 w-4" /> Download template
           </Button>
         </div>
 
         {templates.length > 0 && (
-          <div>
+          <div className="mt-4">
             <label htmlFor="import-template" className="mb-1 block text-sm font-medium text-[var(--ink)]">
               Use a saved template
             </label>
@@ -455,109 +509,109 @@ export function ProductImportClient() {
             )}
           </div>
         )}
-      </div>
+      </StepSection>
 
-      {/* Export */}
-      <div className="flex flex-col gap-2 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="font-semibold text-[var(--ink)]">Export products</h2>
-          <p className="mt-1 text-sm text-[var(--ink-70)]">
-            {templateId
-              ? "Downloads every active product, scoped to the template selected above."
-              : "Downloads every product with every field — pick a saved template above to narrow the columns."}
+      {/* Step 2 — Upload your file, then check or import it */}
+      <StepSection number={stepNumbers.upload} title="Upload your file">
+        <div
+          {...getRootProps()}
+          className={`flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-md)] border-2 border-dashed p-10 text-center transition-colors ${
+            isDragActive
+              ? "border-[var(--brand)] bg-[var(--brand-soft)]"
+              : "border-[var(--foil)] bg-[var(--paper)] hover:bg-[var(--foil-soft)]"
+          }`}
+        >
+          <input {...getInputProps()} />
+          <UploadCloud className="mb-3 h-10 w-10 text-[var(--ink-40)]" aria-hidden="true" />
+          <p className="font-medium text-[var(--ink)]">
+            {isDragActive ? "Drop the file to load it" : "Drag a CSV or Excel file here"}
           </p>
+          <p className="mt-1 text-sm text-[var(--ink-70)]">or click to choose · .csv, .xlsx</p>
         </div>
-        <Button variant="outline" onClick={downloadExport} className="shrink-0 gap-2">
-          <Download className="h-4 w-4" /> Export CSV
-        </Button>
-      </div>
 
-      {/* Dropzone */}
-      <div
-        {...getRootProps()}
-        className={`flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-md)] border-2 border-dashed p-10 text-center transition-colors ${
-          isDragActive
-            ? "border-[var(--brand)] bg-[var(--brand-soft)]"
-            : "border-[var(--foil)] bg-[var(--paper-card)] hover:bg-[var(--foil-soft)]"
-        }`}
-      >
-        <input {...getInputProps()} />
-        <UploadCloud className="mb-3 h-10 w-10 text-[var(--ink-40)]" aria-hidden="true" />
-        <p className="font-medium text-[var(--ink)]">
-          {isDragActive ? "Drop the file to load it" : "Drag a CSV or Excel file here"}
-        </p>
-        <p className="mt-1 text-sm text-[var(--ink-70)]">or click to choose · .csv, .xlsx</p>
-      </div>
-
-      {/* Selected file */}
-      {file && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] px-4 py-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <FileText className="h-5 w-5 shrink-0 text-[var(--ink-70)]" aria-hidden="true" />
-            <span className="truncate text-[var(--ink)]">{file.name}</span>
-            {parsedRows.length > 0 && (
-              <span className="data text-xs text-[var(--ink-40)]">{parsedRows.length} rows</span>
-            )}
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <Button variant="outline" onClick={handlePreview} disabled={previewBusy || importBusy} className="gap-2">
-              {previewBusy ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Checking…
-                </>
-              ) : (
-                "Preview"
+        {file && (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper)] px-4 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <FileText className="h-5 w-5 shrink-0 text-[var(--ink-70)]" aria-hidden="true" />
+              <span className="truncate text-[var(--ink)]">{file.name}</span>
+              {parsedRows.length > 0 && (
+                <span className="data text-xs text-[var(--ink-40)]">{parsedRows.length} rows</span>
               )}
-            </Button>
-            <Button
-              onClick={handleImport}
-              disabled={!validation || previewBusy || importBusy}
-              title={!validation ? "Run Preview first" : undefined}
-              className="gap-2"
-            >
-              {importBusy ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Importing…
-                </>
-              ) : (
-                "Import"
-              )}
-            </Button>
-            {!previewBusy && !importBusy && (
-              <button
-                type="button"
-                onClick={() => {
-                  setFile(null)
-                  setError("")
-                  setResult(null)
-                  setValidation(null)
-                }}
-                aria-label="Remove file"
-                className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] text-[var(--ink-40)] hover:bg-[var(--foil-soft)]"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Column mapping — only shown when the file's headers don't already match ours */}
-      {file && mappableHeaders.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-dashed border-[var(--foil)] bg-[var(--paper-card)] p-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 className="font-semibold text-[var(--ink)]">Column mapping</h2>
-              <p className="mt-1 text-sm text-[var(--ink-70)]">
-                {allMapped
-                  ? `Using ${templateId ? "the saved" : "your"} mapping for ${mappableHeaders.length} column${
-                      mappableHeaders.length === 1 ? "" : "s"
-                    } that ${mappableHeaders.length === 1 ? "doesn't" : "don't"} match our column names.`
-                  : `${mappableHeaders.length} column${mappableHeaders.length === 1 ? "" : "s"} in your file ${
-                      mappableHeaders.length === 1 ? "doesn't" : "don't"
-                    } match our column names — map ${mappableHeaders.length === 1 ? "it" : "them"} below.`}
-              </p>
             </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <Button variant="outline" onClick={handlePreview} disabled={previewBusy || importBusy} className="gap-2">
+                {previewBusy ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Checking…
+                  </>
+                ) : (
+                  "Preview"
+                )}
+              </Button>
+              <Button
+                onClick={handleImport}
+                disabled={!validation || previewBusy || importBusy}
+                title={!validation ? "Run Preview first" : undefined}
+                className="gap-2"
+              >
+                {importBusy ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Importing…
+                  </>
+                ) : (
+                  "Import"
+                )}
+              </Button>
+              {!previewBusy && !importBusy && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFile(null)
+                    setError("")
+                    setResult(null)
+                    setValidation(null)
+                  }}
+                  aria-label="Remove file"
+                  className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] text-[var(--ink-40)] hover:bg-[var(--foil-soft)]"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {progress && (
+          <div className="mt-4 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper)] p-4">
+            <div className="mb-2 flex items-center justify-between text-sm">
+              <span className="text-[var(--ink)]">
+                Importing… {progress.doneRows}/{progress.totalRows} rows ({progress.doneChunks}/{progress.totalChunks} batches)
+              </span>
+              <span className="data text-[var(--ink-70)]">{progressPct}%</span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--foil-soft)]">
+              <div
+                className="h-full bg-[var(--brand)] transition-[width] duration-300"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+          </div>
+        )}
+      </StepSection>
+
+      {/* Step 3 — Match columns, only shown when the file's headers don't already match ours */}
+      {stepFlags.mapping && (
+        <StepSection number={stepNumbers.mapping} title="Match columns">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-[var(--ink-70)]">
+              {allMapped
+                ? `Using ${templateId ? "the saved" : "your"} mapping for ${mappableHeaders.length} column${
+                    mappableHeaders.length === 1 ? "" : "s"
+                  } that ${mappableHeaders.length === 1 ? "doesn't" : "don't"} match our column names.`
+                : `${mappableHeaders.length} column${mappableHeaders.length === 1 ? "" : "s"} in your file ${
+                    mappableHeaders.length === 1 ? "doesn't" : "don't"
+                  } match our column names — map ${mappableHeaders.length === 1 ? "it" : "them"} below.`}
+            </p>
             {allMapped && (
               <Button type="button" size="sm" variant="outline" onClick={() => setMappingExpanded((v) => !v)}>
                 {mappingExpanded ? "Hide" : "Edit mapping"}
@@ -614,15 +668,15 @@ export function ProductImportClient() {
               </div>
             </>
           )}
-        </div>
+        </StepSection>
       )}
 
-      {/* Optional batch of product images, matched to rows by filename = SKU */}
-      {file && (
-        <div className="rounded-[var(--radius-md)] border border-dashed border-[var(--foil)] bg-[var(--paper-card)] p-4">
+      {/* Step 4 — optional batch of product images, matched to rows by filename = SKU */}
+      {stepFlags.photos && (
+        <StepSection number={stepNumbers.photos} title="Add photos (optional)">
           <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-[var(--ink)]">
             <ImagePlus className="h-4 w-4 shrink-0 text-[var(--ink-70)]" aria-hidden="true" />
-            Product images (optional)
+            Choose product images
             <input type="file" accept="image/*" multiple className="sr-only" onChange={onImagesSelected} />
           </label>
           <p className="mt-1 text-xs text-[var(--ink-70)]">
@@ -641,143 +695,153 @@ export function ProductImportClient() {
               ))}
             </ul>
           )}
-        </div>
+        </StepSection>
       )}
 
-      {/* Import progress */}
-      {progress && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4">
-          <div className="mb-2 flex items-center justify-between text-sm">
-            <span className="text-[var(--ink)]">
-              Importing… {progress.doneRows}/{progress.totalRows} rows ({progress.doneChunks}/{progress.totalChunks} batches)
-            </span>
-            <span className="data text-[var(--ink-70)]">{progressPct}%</span>
-          </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--foil-soft)]">
-            <div
-              className="h-full bg-[var(--brand)] transition-[width] duration-300"
-              style={{ width: `${progressPct}%` }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Error */}
-      {error && (
-        <div
-          role="alert"
-          className="flex items-start gap-3 rounded-[var(--radius-sm)] border border-[var(--ink)] bg-[var(--paper)] px-4 py-3 text-[var(--ink)]"
-        >
-          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-          <p>{error}</p>
-        </div>
-      )}
-
-      {/* Preview (validate mode) — nothing has been written yet */}
-      {validation && !result && (
-        <div className="space-y-4 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
-            <h2 className="font-semibold text-[var(--ink)]">Preview — nothing has been imported yet</h2>
-          </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Stat label="Valid rows" value={validation.valid} tone="mint" />
-            <Stat label="New products" value={validation.willCreate} tone="mint" />
-            <Stat label="Updates" value={validation.willUpdate} tone="mint" />
-            <Stat label="Errors" value={validation.totalRows - validation.valid} tone="ink" />
-          </div>
-
-          {validation.newCategories.length > 0 && (
+      {/* Step 5 — preview and import results */}
+      {stepFlags.review && (
+        <StepSection number={stepNumbers.review} title="Preview & import">
+          {!error && !validation && !result && (
             <p className="text-sm text-[var(--ink-70)]">
-              New categories that will be created: {validation.newCategories.join(", ")}
+              Click Preview above to check your file before anything is written to the store.
             </p>
           )}
 
-          {validation.errors.length > 0 && (
-            <div>
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <h3 className="text-sm font-semibold text-[var(--ink-70)]">
-                  {validation.totalRows - validation.valid > validation.errors.length
-                    ? `First ${validation.errors.length} of ${validation.totalRows - validation.valid} rows with errors`
-                    : `${validation.errors.length} row${validation.errors.length === 1 ? "" : "s"} with errors`}
-                </h3>
-                <Button variant="outline" size="sm" onClick={downloadPreviewErrors} className="shrink-0 gap-2">
-                  <Download className="h-4 w-4" /> Download errors
-                </Button>
-              </div>
-              <div className="overflow-x-auto rounded-[var(--radius-sm)] border border-[var(--foil-soft)]">
-                <table className="w-full min-w-[420px] text-left text-sm">
-                  <thead className="bg-[var(--foil-soft)] text-xs uppercase tracking-wide text-[var(--ink-70)]">
-                    <tr>
-                      <th scope="col" className="px-4 py-2 font-medium">SKU</th>
-                      <th scope="col" className="px-4 py-2 font-medium">Reason</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {validation.errors.map((e, i) => (
-                      <tr key={i} className="border-t border-[var(--foil-soft)]">
-                        <td className="px-4 py-2 text-[var(--ink)]" style={{ fontFamily: "var(--font-data)" }}>
-                          {e.sku || "—"}
-                        </td>
-                        <td className="px-4 py-2 text-[var(--ink-70)]">{e.reason}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+          {error && (
+            <div
+              role="alert"
+              className="flex items-start gap-3 rounded-[var(--radius-sm)] border border-[var(--ink)] bg-[var(--paper)] px-4 py-3 text-[var(--ink)]"
+            >
+              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+              <p>{error}</p>
             </div>
           )}
-        </div>
-      )}
 
-      {/* Result */}
-      {result && (
-        <div className="space-y-4 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
-            <h2 className="font-semibold text-[var(--ink)]">Import finished</h2>
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <Stat label="Created" value={result.created} tone="mint" />
-            <Stat label="Updated" value={result.updated} tone="mint" />
-            <Stat label="Failed" value={result.failed} tone="ink" />
-          </div>
+          {/* Preview (validate mode) — nothing has been written yet */}
+          {validation && !result && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
+                <h3 className="font-semibold text-[var(--ink)]">Preview — nothing has been imported yet</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <Stat label="Valid rows" value={validation.valid} tone="mint" />
+                <Stat label="New products" value={validation.willCreate} tone="mint" />
+                <Stat label="Existing products" value={validation.willUpdate} tone="mint" />
+                <Stat label="Errors" value={validation.totalRows - validation.valid} tone="ink" />
+              </div>
+              <p className="text-xs text-[var(--ink-70)]">
+                Existing products are already in your store — they&apos;ll be updated, not duplicated.
+              </p>
 
-          {result.errors.length > 0 && (
-            <div>
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <h3 className="text-sm font-semibold text-[var(--ink-70)]">
-                  {result.failed > result.errors.length
-                    ? `First ${result.errors.length} of ${result.failed} rows that failed`
-                    : `${result.errors.length} row${result.errors.length === 1 ? "" : "s"} that failed`}
-                </h3>
-                <Button variant="outline" size="sm" onClick={downloadFailedRows} className="shrink-0 gap-2">
-                  <Download className="h-4 w-4" /> Download failed rows
-                </Button>
-              </div>
-              <div className="overflow-x-auto rounded-[var(--radius-sm)] border border-[var(--foil-soft)]">
-                <table className="w-full min-w-[420px] text-left text-sm">
-                  <thead className="bg-[var(--foil-soft)] text-xs uppercase tracking-wide text-[var(--ink-70)]">
-                    <tr>
-                      <th scope="col" className="px-4 py-2 font-medium">SKU</th>
-                      <th scope="col" className="px-4 py-2 font-medium">Reason</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.errors.map((e, i) => (
-                      <tr key={i} className="border-t border-[var(--foil-soft)]">
-                        <td className="px-4 py-2 text-[var(--ink)]" style={{ fontFamily: "var(--font-data)" }}>
-                          {e.sku || "—"}
-                        </td>
-                        <td className="px-4 py-2 text-[var(--ink-70)]">{e.reason}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              {validation.duplicateSkusInFile.length > 0 && (
+                <div
+                  role="alert"
+                  className="flex items-start gap-3 rounded-[var(--radius-sm)] border border-[var(--ink)] bg-[var(--paper)] px-4 py-3 text-sm text-[var(--ink)]"
+                >
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  <p>
+                    {validation.duplicateSkusInFile.length} SKU{validation.duplicateSkusInFile.length === 1 ? "" : "s"}{" "}
+                    {validation.duplicateSkusInFile.length === 1 ? "appears" : "appear"} more than once in this file —
+                    only the last row for each will be imported:{" "}
+                    <span style={{ fontFamily: "var(--font-data)" }}>{validation.duplicateSkusInFile.join(", ")}</span>
+                  </p>
+                </div>
+              )}
+
+              {validation.newCategories.length > 0 && (
+                <p className="text-sm text-[var(--ink-70)]">
+                  New categories that will be created: {validation.newCategories.join(", ")}
+                </p>
+              )}
+
+              {validation.errors.length > 0 && (
+                <div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <h4 className="text-sm font-semibold text-[var(--ink-70)]">
+                      {validation.totalRows - validation.valid > validation.errors.length
+                        ? `First ${validation.errors.length} of ${validation.totalRows - validation.valid} rows with errors`
+                        : `${validation.errors.length} row${validation.errors.length === 1 ? "" : "s"} with errors`}
+                    </h4>
+                    <Button variant="outline" size="sm" onClick={downloadPreviewErrors} className="shrink-0 gap-2">
+                      <Download className="h-4 w-4" /> Download errors
+                    </Button>
+                  </div>
+                  <div className="overflow-x-auto rounded-[var(--radius-sm)] border border-[var(--foil-soft)]">
+                    <table className="w-full min-w-[420px] text-left text-sm">
+                      <thead className="bg-[var(--foil-soft)] text-xs uppercase tracking-wide text-[var(--ink-70)]">
+                        <tr>
+                          <th scope="col" className="px-4 py-2 font-medium">SKU</th>
+                          <th scope="col" className="px-4 py-2 font-medium">Reason</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {validation.errors.map((e, i) => (
+                          <tr key={i} className="border-t border-[var(--foil-soft)]">
+                            <td className="px-4 py-2 text-[var(--ink)]" style={{ fontFamily: "var(--font-data)" }}>
+                              {e.sku || "—"}
+                            </td>
+                            <td className="px-4 py-2 text-[var(--ink-70)]">{e.reason}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           )}
-        </div>
+
+          {/* Result */}
+          {result && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-[var(--brand)]" aria-hidden="true" />
+                <h3 className="font-semibold text-[var(--ink)]">Import finished</h3>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <Stat label="Created" value={result.created} tone="mint" />
+                <Stat label="Updated" value={result.updated} tone="mint" />
+                <Stat label="Failed" value={result.failed} tone="ink" />
+              </div>
+
+              {result.errors.length > 0 && (
+                <div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <h4 className="text-sm font-semibold text-[var(--ink-70)]">
+                      {result.failed > result.errors.length
+                        ? `First ${result.errors.length} of ${result.failed} rows that failed`
+                        : `${result.errors.length} row${result.errors.length === 1 ? "" : "s"} that failed`}
+                    </h4>
+                    <Button variant="outline" size="sm" onClick={downloadFailedRows} className="shrink-0 gap-2">
+                      <Download className="h-4 w-4" /> Download failed rows
+                    </Button>
+                  </div>
+                  <div className="overflow-x-auto rounded-[var(--radius-sm)] border border-[var(--foil-soft)]">
+                    <table className="w-full min-w-[420px] text-left text-sm">
+                      <thead className="bg-[var(--foil-soft)] text-xs uppercase tracking-wide text-[var(--ink-70)]">
+                        <tr>
+                          <th scope="col" className="px-4 py-2 font-medium">SKU</th>
+                          <th scope="col" className="px-4 py-2 font-medium">Reason</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {result.errors.map((e, i) => (
+                          <tr key={i} className="border-t border-[var(--foil-soft)]">
+                            <td className="px-4 py-2 text-[var(--ink)]" style={{ fontFamily: "var(--font-data)" }}>
+                              {e.sku || "—"}
+                            </td>
+                            <td className="px-4 py-2 text-[var(--ink-70)]">{e.reason}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </StepSection>
       )}
     </div>
   )

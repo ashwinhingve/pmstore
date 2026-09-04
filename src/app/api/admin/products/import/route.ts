@@ -200,6 +200,18 @@ async function runValidate(
     }
   }
 
+  // SKUs that appear more than once within this file — these silently
+  // collapse to a single saved row (last one wins), so flag them instead of
+  // letting an admin assume every row became its own product.
+  const skuCounts = new Map<string, number>();
+  for (const p of parsed) {
+    skuCounts.set(p.sku, (skuCounts.get(p.sku) ?? 0) + 1);
+  }
+  const duplicateSkusInFile = [...skuCounts.entries()]
+    .filter(([, count]) => count > 1)
+    .map(([sku]) => sku)
+    .slice(0, 50);
+
   return NextResponse.json(
     {
       data: {
@@ -209,6 +221,7 @@ async function runValidate(
         willCreate,
         willUpdate,
         newCategories,
+        duplicateSkusInFile,
         errors: errors.slice(0, 50),
       },
     },
