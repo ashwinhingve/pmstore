@@ -144,7 +144,7 @@ export function Header() {
                   },
                 ] : []),
                 {
-                  label: 'Your orders',
+                  label: 'My orders',
                   href: '/orders',
                   icon: <Package className="h-4 w-4" />,
                 },
@@ -187,7 +187,7 @@ export function Header() {
                 variant="ghost"
                 size="icon"
                 className="hidden text-[var(--brand-ink)] transition-colors hover:bg-[var(--brand-ink)]/15 hover:text-[var(--brand-ink)] sm:flex"
-                aria-label="Your orders"
+                aria-label="My orders"
               >
                 <Package className="h-5 w-5" />
               </Button>

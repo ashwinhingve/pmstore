@@ -9,7 +9,7 @@ const shopLinks = [
   { href: "/bestsellers", label: "Bestsellers" },
   { href: "/custom-order", label: "Custom order" },
   { href: "/prescriptions", label: "Upload prescription" },
-  { href: "/orders", label: "Your orders" },
+  { href: "/orders", label: "My orders" },
   { href: "/saved", label: "Saved medicines" },
 ];
 

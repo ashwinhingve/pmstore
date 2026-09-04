@@ -33,7 +33,6 @@ export function Navigation() {
     <nav className="flex items-center gap-6">
       <NavLink href="/" label="Home" />
       <NavLink href="/products" label="Shop" />
-      <NavLink href="/bestsellers" label="Bestsellers" />
       <NavLink href="/custom-order" label="Custom order" />
       <NavLink href="/about" label="About" />
       <NavLink href="/contact" label="Contact" />

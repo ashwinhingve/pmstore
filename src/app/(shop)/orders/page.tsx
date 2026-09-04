@@ -174,7 +174,7 @@ export default function OrdersPage() {
         <AnimatedSection direction="up">
           {/* Header */}
           <div className="mx-auto mb-8 max-w-5xl">
-            <h1 className="mb-1 text-[length:var(--step-2)] text-[var(--ink)]">Your orders</h1>
+            <h1 className="mb-1 text-[length:var(--step-2)] text-[var(--ink)]">My orders</h1>
             <p className="text-[var(--ink-70)]">
               Track and manage your orders
               {pagination.totalOrders > 0 && (
