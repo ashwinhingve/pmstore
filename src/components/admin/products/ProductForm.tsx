@@ -10,6 +10,7 @@ import SpecificationsManager from './SpecificationsManager';
 import VariantsManager from './VariantsManager';
 import { SaltCombobox } from './SaltCombobox';
 import { ManufacturerCombobox } from './ManufacturerCombobox';
+import { DuplicateWarning } from './DuplicateWarning';
 import { computeSellingPrice, discountFromPrices } from '@/lib/pharma/pricing';
 import { Upload, X, Video, RefreshCw, Link as LinkIcon } from 'lucide-react';
 import { toast } from '@/store/useToastStore';
@@ -141,6 +142,16 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       .catch(() => {});
   }, []);
 
+  // Duplicate detection state
+  const [duplicateMatches, setDuplicateMatches] = useState<any[]>([]);
+  const [debouncedName, setDebouncedName] = useState<string>('');
+  const [debouncedComposition, setDebouncedComposition] = useState<{
+    salts: any[];
+    form: string;
+    manufacturer: string;
+    packSize: number;
+  } | null>(null);
+
   const initialPricing = deriveInitialPricing(initialData);
 
   const [formData, setFormData] = useState<Partial<ProductFormData>>({
@@ -186,6 +197,82 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     contraindications: initialData?.contraindications || [],
     isDiscontinued: initialData?.isDiscontinued || false,
   });
+
+  // Debounce name for duplicate checking (300ms, ignore flag pattern)
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedName(formData.name?.trim() || ''), 300);
+    return () => clearTimeout(id);
+  }, [formData.name]);
+
+  // Debounce composition fields for duplicate checking
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const { salts: s, form: f, manufacturer: m, packSize: p } = formData;
+      const hasComposition = s && s.length > 0 && f && m && p && p > 0;
+      if (hasComposition) {
+        setDebouncedComposition({
+          salts: s as any[],
+          form: f as string,
+          manufacturer: m as string,
+          packSize: p as number,
+        });
+      } else {
+        setDebouncedComposition(null);
+      }
+    }, 300);
+    return () => clearTimeout(id);
+  }, [formData.salts, formData.form, formData.manufacturer, formData.packSize]);
+
+  // Fetch duplicates when debounced name or composition changes
+  useEffect(() => {
+    if (!debouncedName) {
+      setDuplicateMatches([]);
+      return;
+    }
+
+    let ignore = false;
+
+    const checkDuplicates = async () => {
+      try {
+        const checkData = {
+          name: debouncedName,
+          ...(debouncedComposition && {
+            salts: debouncedComposition.salts,
+            form: debouncedComposition.form,
+            manufacturer: debouncedComposition.manufacturer,
+            packSize: debouncedComposition.packSize,
+          }),
+          ...(mode === 'edit' && initialData?._id && {
+            currentProductId: String(initialData._id),
+          }),
+        };
+
+        const response = await fetch('/api/admin/products/check-duplicate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(checkData),
+        });
+
+        if (!ignore) {
+          if (response.ok) {
+            const data = await response.json();
+            setDuplicateMatches(data.matches || []);
+          } else {
+            // Silently fail on error — this is advisory only
+            setDuplicateMatches([]);
+          }
+        }
+      } catch (err) {
+        // Silently fail — this is advisory only, not a blocking operation
+        if (!ignore) {
+          setDuplicateMatches([]);
+        }
+      }
+    };
+
+    checkDuplicates();
+    return () => { ignore = true; };
+  }, [debouncedName, debouncedComposition, mode, initialData?._id]);
 
   // ---- Salt row helpers ----
   const salts = (formData.salts as SaltRow[]) || [];
@@ -337,6 +424,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   placeholder="e.g., Organic Chia Seeds"
                   required
                 />
+                {duplicateMatches.length > 0 && (
+                  <DuplicateWarning matches={duplicateMatches} />
+                )}
               </div>
 
               <div>
