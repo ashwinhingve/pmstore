@@ -7,6 +7,14 @@ import { buildCompositionKey, type Salt, type SaltUnit } from '@/lib/pharma/comp
 import { createErrorResponse } from '@/lib/utils/errorHandler';
 
 /**
+ * Escape regex metacharacters to prevent ReDoS and regex injection attacks.
+ * Used when user input is interpolated into MongoDB $regex patterns.
+ */
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * POST /api/admin/products/check-duplicate
  * Advisory duplicate detection for the product form.
  *
@@ -49,8 +57,8 @@ export async function POST(req: Request) {
             unit: s.unit! as SaltUnit,
           })) as Salt[];
 
-        if (validSalts.length > 0) {
-          compositionKey = buildCompositionKey(validSalts, body.form as any);
+        if (validSalts.length > 0 && body.form) {
+          compositionKey = buildCompositionKey(validSalts, body.form);
         }
       } catch (err) {
         // If composition key building fails, silently fall back to name-only matching
@@ -59,33 +67,32 @@ export async function POST(req: Request) {
       }
     }
 
-    // Build the query for duplicates
-    const query: any = {
-      isActive: true,
-    };
+    // Build the query for duplicates:
+    // - If composition data provided: return products matching on BOTH name AND composition
+    // - If composition data missing: return products matching on name only
+    let query_final: any;
+
+    if (compositionKey && body.manufacturer && body.packSize) {
+      // Full composition available: strict match on all criteria
+      query_final = {
+        isActive: true,
+        name: { $regex: `^${escapeRegex(normalizedName)}$`, $options: 'i' },
+        compositionKey,
+        manufacturer: { $regex: `^${escapeRegex(body.manufacturer)}$`, $options: 'i' },
+        packSize: body.packSize,
+      };
+    } else {
+      // No composition data: match on name only (softer signal)
+      query_final = {
+        isActive: true,
+        name: { $regex: `^${escapeRegex(normalizedName)}$`, $options: 'i' },
+      };
+    }
 
     // Exclude the product being edited
     if (body.currentProductId) {
-      query._id = { $ne: body.currentProductId };
+      query_final._id = { $ne: body.currentProductId };
     }
-
-    // Always match on normalized name
-    query.name = { $regex: `^${normalizedName}$`, $options: 'i' };
-
-    // If we have full composition data, also add a full-match condition
-    const conditions: any[] = [query];
-    if (compositionKey && body.manufacturer && body.packSize) {
-      conditions.push({
-        isActive: true,
-        ...(body.currentProductId && { _id: { $ne: body.currentProductId } }),
-        compositionKey,
-        manufacturer: { $regex: `^${body.manufacturer}$`, $options: 'i' },
-        packSize: body.packSize,
-      });
-    }
-
-    // Execute query: match on name-only, or (name + full composition if available)
-    const query_final = conditions.length > 1 ? { $or: conditions } : query;
 
     const matches = await Product.find(query_final)
       .select('_id name manufacturer packSize packUnit compositionKey slug images unitPrice')

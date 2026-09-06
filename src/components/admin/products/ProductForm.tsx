@@ -258,13 +258,15 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
             const data = await response.json();
             setDuplicateMatches(data.matches || []);
           } else {
-            // Silently fail on error — this is advisory only
+            // Fail gracefully — this is advisory only
+            console.warn('Duplicate check error (non-blocking):', response.status, response.statusText);
             setDuplicateMatches([]);
           }
         }
       } catch (err) {
-        // Silently fail — this is advisory only, not a blocking operation
+        // Fail gracefully — this is advisory only, not a blocking operation
         if (!ignore) {
+          console.warn('Duplicate check error (non-blocking):', err);
           setDuplicateMatches([]);
         }
       }
