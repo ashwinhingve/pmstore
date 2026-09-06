@@ -64,7 +64,7 @@ function Card({ product }: { product: ProductCardData }) {
         {product.manufacturer && (
           <p className="text-xs text-[var(--ink-40)] truncate">{product.manufacturer}</p>
         )}
-        <p className="text-xs font-mono text-[var(--ink-70)] mt-1">
+        <p className="price text-xs text-[var(--ink-70)] mt-1">
           ₹{product.unitPrice?.toFixed(2) || '0.00'}/unit
         </p>
       </div>

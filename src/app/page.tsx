@@ -82,8 +82,12 @@ export default async function Home() {
   // Admin-managed categories (name + image, editable at /admin/categories). Empty
   // → Categories falls back to the canonical taxonomy so the grid is never blank.
   let categoryCards: CategoryCardView[] = [];
+  // Featured medicines slider — admin-curated if available, otherwise top products
+  // by orderCount. Independent from the marquee (which has its own query).
+  let featuredProducts: ProductCardData[] = [];
   // A larger, cross-category slice for the "More to explore" marquee — not
   // filtered to one category, sized for a sliding row rather than a grid tab.
+  // Always an independent query, never affected by featured-slider curation.
   let marqueeProducts: ProductCardData[] = [];
   // Over-the-counter medicines only (scheduleClass 'OTC') for the homepage's
   // OTC sliding band, between the featured-medicines strip and Categories.
@@ -149,6 +153,16 @@ export default async function Home() {
       .select('heroSlider featureSlider productSliders')
       .lean();
 
+    // "More to explore" marquee — a wider, cross-category pull (not gated on
+    // isTrending) so it reads as a different set from the Trending tab above.
+    // Always independent, never affected by featured-slider curation.
+    const marquee = await Product.find(base)
+      .sort({ orderCount: -1, updatedAt: -1 })
+      .limit(16)
+      .lean()
+      .exec();
+    marqueeProducts = serialize(marquee);
+
     // "Featured medicines" slider — use admin-curated list if available and non-empty,
     // otherwise fall back to top products by orderCount
     const featuredProductIds = (settings as any)?.productSliders?.featured?.productIds || [];
@@ -166,15 +180,15 @@ export default async function Home() {
       const featured = featuredProductIds
         .map((id: any) => docById.get(String(id)))
         .filter((p: any): p is any => p !== undefined);
-      marqueeProducts = serialize(featured);
+      featuredProducts = serialize(featured);
     } else {
       // Fallback: top products by orderCount
-      const marquee = await Product.find(base)
+      const topProducts = await Product.find(base)
         .sort({ orderCount: -1, updatedAt: -1 })
-        .limit(16)
+        .limit(14)
         .lean()
         .exec();
-      marqueeProducts = serialize(marquee);
+      featuredProducts = serialize(topProducts);
     }
 
     // OTC-only slider — use admin-curated list if available and non-empty,
@@ -250,7 +264,7 @@ export default async function Home() {
       </h1>
       {/* Sections alternate --paper / --paper-tint bands; no hairline dividers */}
       <HeroSlider slides={heroSlides} />
-      <ProductImageSlider products={marqueeProducts.slice(0, 14)} />
+      <ProductImageSlider products={featuredProducts.slice(0, 14)} />
       <ProductImageSlider
         products={otcProducts}
         title="Over-the-counter essentials"
