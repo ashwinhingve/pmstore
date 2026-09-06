@@ -37,6 +37,10 @@ export interface IFeatureSlide {
   order: number;
 }
 
+export interface IProductSlot {
+  productIds: mongoose.Types.ObjectId[];
+}
+
 export interface ISiteSettings extends Document {
   _id: mongoose.Types.ObjectId;
   key: string;
@@ -49,6 +53,10 @@ export interface ISiteSettings extends Document {
   };
   featureSlider: {
     slides: IFeatureSlide[];
+  };
+  productSliders?: {
+    featured?: IProductSlot;
+    otc?: IProductSlot;
   };
   updatedAt: Date;
   createdAt: Date;
@@ -103,6 +111,14 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
           order: { type: Number, default: 0 },
         },
       ],
+    },
+    productSliders: {
+      featured: {
+        productIds: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
+      },
+      otc: {
+        productIds: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
+      },
     },
   },
   {

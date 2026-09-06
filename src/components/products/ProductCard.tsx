@@ -31,6 +31,7 @@ export interface ProductCardData {
   images?: Array<string | { url: string }>;
   stock?: number;
   category?: { name: string } | string;
+  manufacturer?: string;
   averageRating?: number;
   average_rating?: number;
   totalReviews?: number;

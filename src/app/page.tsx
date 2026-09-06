@@ -144,27 +144,69 @@ export default async function Home() {
       }));
     }
 
-    // "More to explore" marquee — a wider, cross-category pull (not gated on
-    // isTrending) so it reads as a different set from the Trending tab above.
-    const marquee = await Product.find(base)
-      .sort({ orderCount: -1, updatedAt: -1 })
-      .limit(16)
-      .lean()
-      .exec();
-    marqueeProducts = serialize(marquee);
+    // Read site settings for admin-curated product sliders
+    const settings = await SiteSettings.findOne({ key: 'global' })
+      .select('heroSlider featureSlider productSliders')
+      .lean();
 
-    // OTC-only slice for the homepage's OTC sliding band.
-    const otc = await Product.find({ ...base, scheduleClass: 'OTC' })
-      .sort({ orderCount: -1, updatedAt: -1 })
-      .limit(14)
-      .lean()
-      .exec();
-    otcProducts = serialize(otc);
+    // "Featured medicines" slider — use admin-curated list if available and non-empty,
+    // otherwise fall back to top products by orderCount
+    const featuredProductIds = (settings as any)?.productSliders?.featured?.productIds || [];
+    if (featuredProductIds.length > 0) {
+      const featuredDocs = await Product.find({
+        _id: { $in: featuredProductIds },
+        ...base,
+      })
+        .select('-__v')
+        .lean()
+        .exec();
+
+      // Preserve the curated order
+      const docById = new Map(featuredDocs.map((p: any) => [String(p._id), p]));
+      const featured = featuredProductIds
+        .map((id: any) => docById.get(String(id)))
+        .filter((p: any): p is any => p !== undefined);
+      marqueeProducts = serialize(featured);
+    } else {
+      // Fallback: top products by orderCount
+      const marquee = await Product.find(base)
+        .sort({ orderCount: -1, updatedAt: -1 })
+        .limit(16)
+        .lean()
+        .exec();
+      marqueeProducts = serialize(marquee);
+    }
+
+    // OTC-only slider — use admin-curated list if available and non-empty,
+    // otherwise fall back to OTC products by orderCount
+    const otcProductIds = (settings as any)?.productSliders?.otc?.productIds || [];
+    if (otcProductIds.length > 0) {
+      const otcDocs = await Product.find({
+        _id: { $in: otcProductIds },
+        ...base,
+      })
+        .select('-__v')
+        .lean()
+        .exec();
+
+      // Preserve the curated order
+      const docById = new Map(otcDocs.map((p: any) => [String(p._id), p]));
+      const otc = otcProductIds
+        .map((id: any) => docById.get(String(id)))
+        .filter((p: any): p is any => p !== undefined);
+      otcProducts = serialize(otc);
+    } else {
+      // Fallback: OTC products by orderCount
+      const otc = await Product.find({ ...base, scheduleClass: 'OTC' })
+        .sort({ orderCount: -1, updatedAt: -1 })
+        .limit(14)
+        .lean()
+        .exec();
+      otcProducts = serialize(otc);
+    }
     // Active hero + feature slides, ordered; serialize ObjectId at the boundary
     // and drop any slide without an image so the carousels never render a blank.
-    const settings = await SiteSettings.findOne({ key: 'global' })
-      .select('heroSlider featureSlider')
-      .lean();
+    // (settings already fetched above for productSliders, so we just reuse it)
     heroSlides = ((settings as any)?.heroSlider?.slides ?? [])
       .filter((s: any) => s.isActive && s.image)
       .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
@@ -213,6 +255,7 @@ export default async function Home() {
         products={otcProducts}
         title="Over-the-counter essentials"
         ariaLabel="Over-the-counter medicines"
+        variant="card"
       />
       <Categories categories={categoryCards} />
       <CuratedTabs buckets={categoryBuckets} />
