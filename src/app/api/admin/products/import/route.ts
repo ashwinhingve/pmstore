@@ -166,8 +166,9 @@ async function handleJsonImport(req: NextRequest, mode: 'validate' | 'commit'): 
     for (const bulkRow of body.rows) {
       const parsed = bulkRowToParsedProductRow(bulkRow);
       // If this row has an image reference and it's in the images map, add the URL
-      if (bulkRow.image && body.images?.[bulkRow.image]) {
-        const img = body.images[bulkRow.image] as { url: string; publicId: string };
+      // Normalize to uppercase to match the key convention (SKU is case-insensitive)
+      if (bulkRow.image && body.images?.[bulkRow.image.toUpperCase()]) {
+        const img = body.images[bulkRow.image.toUpperCase()] as { url: string; publicId: string };
         parsed.imageUrls.push(img.url);
       }
       parsedRows.push(parsed);
@@ -363,19 +364,19 @@ async function runValidateWithDuplicateWarnings(
     .map(([sku]) => sku)
     .slice(0, 50);
 
-  // Per-row duplicate warnings (NEW for JSON path)
+  // Per-row duplicate warnings (JSON-mode-only, advisory)
   // For each row, check if there's an existing product with same name/composition
   const duplicateWarnings: RowDuplicateWarning[] = [];
   for (const p of parsed) {
-    const matches = await findDuplicateProducts(
-      p.name,
-      p.salts,
-      p.form,
-      p.manufacturer,
-      p.packSize,
-      undefined, // no currentProductId for new imports
-      5
-    );
+    const matches = await findDuplicateProducts({
+      name: p.name,
+      salts: p.salts,
+      form: p.form,
+      manufacturer: p.manufacturer,
+      packSize: p.packSize,
+      currentProductId: undefined,
+      limit: 5,
+    });
 
     if (matches.length > 0) {
       duplicateWarnings.push({

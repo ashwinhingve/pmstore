@@ -4,7 +4,7 @@
  */
 
 import Product from '@/models/Product';
-import { buildCompositionKey, type Salt, type SaltUnit } from '@/lib/pharma/composition';
+import { buildCompositionKey, type Salt, type SaltUnit, type DosageForm } from '@/lib/pharma/composition';
 
 /**
  * Escape regex metacharacters to prevent ReDoS and regex injection attacks.
@@ -26,6 +26,16 @@ export interface DuplicateMatch {
   unitPrice: number;
 }
 
+export interface FindDuplicatesOptions {
+  name: string;
+  salts?: Array<{ name?: string; strength?: number; unit?: string }>;
+  form?: string;
+  manufacturer?: string;
+  packSize?: number;
+  currentProductId?: string;
+  limit?: number;
+}
+
 /**
  * Find duplicate products matching on name and/or composition.
  *
@@ -37,14 +47,9 @@ export interface DuplicateMatch {
  * Excludes currentProductId so editing a product doesn't warn against itself.
  */
 export async function findDuplicateProducts(
-  name: string,
-  salts: Array<{ name?: string; strength?: number; unit?: string }> | undefined,
-  form: string | undefined,
-  manufacturer: string | undefined,
-  packSize: number | undefined,
-  currentProductId?: string,
-  limit = 5
+  options: FindDuplicatesOptions
 ): Promise<DuplicateMatch[]> {
+  const { name, salts, form, manufacturer, packSize, currentProductId, limit = 5 } = options;
   const normalizedName = name.toLowerCase().trim();
 
   // Build composition key if all required fields are present
@@ -69,7 +74,7 @@ export async function findDuplicateProducts(
         })) as Salt[];
 
       if (validSalts.length > 0 && form) {
-        compositionKey = buildCompositionKey(validSalts, form as any);
+        compositionKey = buildCompositionKey(validSalts, form as DosageForm);
       }
     } catch (err) {
       // If composition key building fails, silently fall back to name-only matching
@@ -81,7 +86,8 @@ export async function findDuplicateProducts(
   // Build the query for duplicates:
   // - If composition data provided: return products matching on BOTH name AND composition
   // - If composition data missing: return products matching on name only
-  let query_final: any;
+  type QueryFilter = Record<string, unknown>;
+  let query_final: QueryFilter;
 
   if (compositionKey && manufacturer && packSize) {
     // Full composition available: strict match on all criteria
@@ -105,12 +111,12 @@ export async function findDuplicateProducts(
     query_final._id = { $ne: currentProductId };
   }
 
-  const matches = await Product.find(query_final)
+  const matches = await Product.find(query_final as any)
     .select('_id name manufacturer packSize packUnit compositionKey slug images unitPrice')
     .limit(limit)
     .lean<
       Array<{
-        _id: any;
+        _id: string;
         name: string;
         manufacturer: string;
         packSize: number;

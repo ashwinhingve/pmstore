@@ -23,7 +23,7 @@ const SCHEDULE_CLASSES = ['OTC', 'H', 'H1', 'X', 'G'] as const;
 type ScheduleClass = (typeof SCHEDULE_CLASSES)[number];
 
 /** Schedules that legally require a prescription — never sold OTC. */
-const RX_SCHEDULES: ScheduleClass[] = ['H', 'H1', 'X'];
+export const RX_SCHEDULES: ScheduleClass[] = ['H', 'H1', 'X'];
 
 export interface ParsedProductRow {
   sku: string;

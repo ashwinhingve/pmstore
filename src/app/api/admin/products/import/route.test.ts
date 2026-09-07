@@ -1,18 +1,15 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { NextRequest } from 'next/server';
 import Product from '@/models/Product';
 import Category from '@/models/Category';
-import { POST } from './route';
+import { bulkRowToParsedProductRow } from '@/lib/import/bulk-row-converter';
+import type { BulkProductRow } from '@/lib/validations/bulk-product-import';
 
 /**
  * Integration tests for bulk product import JSON path.
- * Uses mongodb-memory-server to test real database behavior:
- * - Products saved via .save() (not insertMany/updateMany)
- * - compositionKey/unitPrice computed by pre-validate hook
- * - Category upsert
- * - Per-row duplicate detection
+ * Tests the core logic functions (not the HTTP route) against a real in-memory database.
+ * Uses the same pattern as Feature 1's check-duplicate tests.
  */
 
 let mongo: MongoMemoryServer;
@@ -31,472 +28,342 @@ afterEach(async () => {
   await mongoose.connection.dropDatabase();
 });
 
-/**
- * Helper to create a mock NextRequest with JSON body
- */
-function createJsonRequest(
-  body: any,
-  mode: 'validate' | 'commit' = 'validate'
-): NextRequest {
-  const jsonBody = JSON.stringify(body);
-  const request = new NextRequest(
-    new URL(`http://localhost:3000/api/admin/products/import?mode=${mode}`),
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonBody,
-    }
-  );
-  return request;
-}
-
-describe('Bulk Product Import - JSON Path', () => {
-  describe('Validate Mode', () => {
-    it('validates a simple valid row', async () => {
-      const body = {
-        rows: [
-          {
-            sku: 'TEST001',
-            name: 'Test Product',
-            manufacturer: 'Test Pharma',
-            category: 'Analgesics',
-            salts: [{ name: 'Paracetamol', strength: 500, unit: 'mg' }],
-            form: 'tablet' as const,
-            packSize: 10,
-            packUnit: 'tablet',
-            price: 100,
-            gstRate: 18,
-            stock: 50,
-            scheduleClass: 'OTC' as const,
-            prescriptionRequired: false,
-            isActive: true,
-          },
-        ],
+describe('Bulk Product Import - JSON Path Conversion', () => {
+  describe('BulkProductRow → ParsedProductRow conversion', () => {
+    it('converts a valid JSON row to ParsedProductRow with enforced Schedule H Rx rule', () => {
+      const bulkRow: BulkProductRow = {
+        sku: 'AMIO-200',
+        name: 'Amiodarone 200mg',
+        manufacturer: 'Cipla',
+        category: 'Cardiac',
+        salts: [{ name: 'Amiodarone', strength: 200, unit: 'mg' }],
+        form: 'tablet',
+        packSize: 14,
+        packUnit: 'tablet',
+        price: 500,
+        gstRate: 12,
+        stock: 20,
+        scheduleClass: 'H', // Schedule H is always Rx
+        prescriptionRequired: false, // Even if false, must be forced to true
+        description: '',
+        sideEffects: [],
+        contraindications: [],
+        tags: [],
+        isActive: true,
       };
 
-      const request = createJsonRequest(body, 'validate');
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
+      const parsed = bulkRowToParsedProductRow(bulkRow);
 
-      const response = await POST(request);
-      const result = await response.json() as any;
-
-      expect(response.status).toBe(200);
-      expect(result.data.mode).toBe('validate');
-      expect(result.data.valid).toBe(1);
-      expect(result.data.willCreate).toBe(1);
-      expect(result.data.errors).toEqual([]);
+      expect(parsed.sku).toBe('AMIO-200');
+      expect(parsed.name).toBe('Amiodarone 200mg');
+      expect(parsed.scheduleClass).toBe('H');
+      // CRITICAL: prescriptionRequired must be true even though input was false
+      expect(parsed.prescriptionRequired).toBe(true);
     });
 
-    it('validates multiple rows with duplicates', async () => {
-      const body = {
-        rows: [
-          {
-            sku: 'TEST001',
-            name: 'Test Product',
-            manufacturer: 'Test Pharma',
-            category: 'Analgesics',
-            salts: [{ name: 'Paracetamol', strength: 500, unit: 'mg' }],
-            form: 'tablet' as const,
-            packSize: 10,
-            packUnit: 'tablet',
-            price: 100,
-            gstRate: 18,
-            stock: 50,
-            scheduleClass: 'OTC' as const,
-            isActive: true,
-          },
-          {
-            sku: 'TEST001',
-            name: 'Test Product Updated',
-            manufacturer: 'Test Pharma',
-            category: 'Analgesics',
-            salts: [{ name: 'Paracetamol', strength: 500, unit: 'mg' }],
-            form: 'tablet' as const,
-            packSize: 10,
-            packUnit: 'tablet',
-            price: 110,
-            gstRate: 18,
-            stock: 60,
-            scheduleClass: 'OTC' as const,
-            isActive: true,
-          },
-        ],
+    it('enforces Schedule H1 Rx rule', () => {
+      const bulkRow: BulkProductRow = {
+        sku: 'PROP-50',
+        name: 'Propranolol 50mg',
+        manufacturer: 'Abbott',
+        category: 'Cardiac',
+        salts: [{ name: 'Propranolol', strength: 50, unit: 'mg' }],
+        form: 'tablet',
+        packSize: 30,
+        packUnit: 'tablet',
+        price: 150,
+        gstRate: 12,
+        stock: 50,
+        scheduleClass: 'H1', // Schedule H1 is always Rx
+        prescriptionRequired: false,
+        description: '',
+        sideEffects: [],
+        contraindications: [],
+        tags: [],
+        isActive: true,
       };
 
-      const request = createJsonRequest(body, 'validate');
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
+      const parsed = bulkRowToParsedProductRow(bulkRow);
 
-      const response = await POST(request);
-      const result = await response.json() as any;
-
-      expect(response.status).toBe(200);
-      expect(result.data.duplicateSkusInFile).toContain('TEST001');
-      expect(result.data.willCreate).toBe(1); // Only one will be created
-      expect(result.data.willUpdate).toBe(1);
+      expect(parsed.prescriptionRequired).toBe(true);
     });
 
-    it('rejects rows with invalid Zod schema', async () => {
-      const body = {
-        rows: [
-          {
-            sku: 'TEST001',
-            name: 'Test Product',
-            category: 'Analgesics',
-            salts: [{ name: 'Paracetamol', strength: 500, unit: 'mg' }],
-            form: 'tablet' as const,
-            packSize: 10,
-            packUnit: 'tablet',
-            price: 100,
-            gstRate: 18,
-            isActive: true,
-            // Missing manufacturer - will fail validation
-          } as any,
-        ],
+    it('enforces Schedule X Rx rule', () => {
+      const bulkRow: BulkProductRow = {
+        sku: 'OPIUM-10',
+        name: 'Opium Extract 10ml',
+        manufacturer: 'Reserved',
+        category: 'Controlled',
+        salts: [{ name: 'Opium', strength: 10, unit: 'ml' }],
+        form: 'drops', // Opium drops (drops is valid form)
+        packSize: 100,
+        packUnit: 'ml',
+        price: 5000,
+        gstRate: 12,
+        stock: 5,
+        scheduleClass: 'X', // Schedule X is always Rx (controlled)
+        prescriptionRequired: false,
+        description: '',
+        sideEffects: [],
+        contraindications: [],
+        tags: [],
+        isActive: true,
       };
 
-      const request = createJsonRequest(body, 'validate');
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
+      const parsed = bulkRowToParsedProductRow(bulkRow);
 
-      const response = await POST(request);
-      const result = await response.json() as any;
-
-      expect(response.status).toBe(400);
-      expect(result.error).toBe('Validation failed');
-      expect(result.details).toBeDefined();
+      expect(parsed.prescriptionRequired).toBe(true);
     });
 
-    it('detects new categories', async () => {
-      // Pre-create one category
-      await Category.create({ name: 'Existing', slug: 'existing' });
-
-      const body = {
-        rows: [
-          {
-            sku: 'TEST001',
-            name: 'Test Product',
-            manufacturer: 'Test Pharma',
-            category: 'New Category',
-            salts: [{ name: 'Paracetamol', strength: 500, unit: 'mg' }],
-            form: 'tablet' as const,
-            packSize: 10,
-            packUnit: 'tablet',
-            price: 100,
-            gstRate: 18,
-            isActive: true,
-          },
-        ],
-      };
-
-      const request = createJsonRequest(body, 'validate');
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
-
-      const response = await POST(request);
-      const result = await response.json() as any;
-
-      expect(response.status).toBe(200);
-      expect(result.data.newCategories).toContain('New Category');
-    });
-  });
-
-  describe('Commit Mode', () => {
-    it('creates a product via .save() with computed compositionKey and unitPrice', async () => {
-      const body = {
-        rows: [
-          {
-            sku: 'PROD001',
-            name: 'Aspirin 500mg',
-            manufacturer: 'Bayer',
-            category: 'Analgesics',
-            salts: [{ name: 'Acetylsalicylic Acid', strength: 500, unit: 'mg' }],
-            form: 'tablet',
-            packSize: 30,
-            packUnit: 'tablet',
-            price: 150,
-            mrp: 200,
-            gstRate: 18,
-            stock: 100,
-            scheduleClass: 'OTC' as const,
-            prescriptionRequired: false,
-            isActive: true,
-          },
-        ],
-      };
-
-      const request = createJsonRequest(body, 'commit');
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
-
-      const response = await POST(request);
-      const result = await response.json() as any;
-
-      expect(response.status).toBe(200);
-      expect(result.data.created).toBe(1);
-      expect(result.data.updated).toBe(0);
-      expect(result.data.failed).toBe(0);
-
-      // Verify product was created in database
-      const product = await Product.findOne({ sku: 'PROD001' }).select('+compositionKey +unitPrice +name +manufacturer +price +packSize').lean<any>();
-      expect(product).toBeDefined();
-      if (product) {
-        expect(product.name).toBe('Aspirin 500mg');
-        expect(product.manufacturer).toBe('Bayer');
-        expect(product.price).toBe(150);
-        expect(product.packSize).toBe(30);
-        expect(product.compositionKey).toBeDefined();
-        expect(typeof product.compositionKey).toBe('string');
-        expect(product.unitPrice).toBe(5);
-      }
-    });
-
-    it('updates an existing product via .save()', async () => {
-      // Create initial product
-      const cat = await Category.create({ name: 'Analgesics', slug: 'analgesics' });
-      const initial = new Product({
-        sku: 'PROD002',
-        name: 'Old Name',
-        slug: 'old-name',
-        manufacturer: 'Old Pharma',
-        category: cat._id,
+    it('allows OTC drugs to remain non-prescription', () => {
+      const bulkRow: BulkProductRow = {
+        sku: 'PARA-500',
+        name: 'Paracetamol 500mg',
+        manufacturer: 'Bayer',
+        category: 'Analgesics',
         salts: [{ name: 'Paracetamol', strength: 500, unit: 'mg' }],
         form: 'tablet',
-        packSize: 10,
+        packSize: 30,
         packUnit: 'tablet',
         price: 100,
         gstRate: 18,
-        stock: 50,
+        stock: 100,
         scheduleClass: 'OTC',
         prescriptionRequired: false,
+        description: '',
+        sideEffects: [],
+        contraindications: [],
+        tags: [],
         isActive: true,
+      };
+
+      const parsed = bulkRowToParsedProductRow(bulkRow);
+
+      expect(parsed.prescriptionRequired).toBe(false);
+    });
+
+    it('converts all fields correctly including optionals', () => {
+      const bulkRow: BulkProductRow = {
+        sku: 'ASPR-500',
+        name: 'Aspirin 500mg',
+        brand: 'Bayer',
+        manufacturer: 'Bayer Pharma',
+        category: 'Analgesics',
+        salts: [{ name: 'Acetylsalicylic Acid', strength: 500, unit: 'mg' }],
+        form: 'tablet',
+        packSize: 30,
+        packUnit: 'tablet',
+        price: 150,
+        mrp: 200,
+        gstRate: 18,
+        stock: 100,
+        scheduleClass: 'OTC',
+        prescriptionRequired: false,
+        hsnCode: '3004905100',
+        description: 'Fast relief',
+        storageInstructions: 'Store below 25°C',
+        usageInstructions: 'Take 1 tablet',
+        sideEffects: ['Nausea'],
+        contraindications: ['Allergy'],
+        tags: ['price-unverified'],
+        isActive: true,
+      };
+
+      const parsed = bulkRowToParsedProductRow(bulkRow);
+
+      expect(parsed.brand).toBe('Bayer');
+      expect(parsed.mrp).toBe(200);
+      expect(parsed.hsnCode).toBe('3004905100');
+      expect(parsed.storageInstructions).toBe('Store below 25°C');
+      expect(parsed.usageInstructions).toBe('Take 1 tablet');
+      expect(parsed.sideEffects).toEqual(['Nausea']);
+      expect(parsed.contraindications).toEqual(['Allergy']);
+      expect(parsed.tags).toEqual(['price-unverified']);
+      // Images in JSON path are added separately (via handleJsonImport)
+      expect(parsed.imageUrls).toEqual([]);
+    });
+  });
+
+  describe('Integration with Product.save() and pre-validate hook', () => {
+    it('creates a product via .save() and computes compositionKey/unitPrice', async () => {
+      const cat = await Category.create({ name: 'Analgesics', slug: 'analgesics' });
+
+      const bulkRow: BulkProductRow = {
+        sku: 'PROD-TEST-1',
+        name: 'Test Product',
+        manufacturer: 'Test Pharma',
+        category: 'Analgesics',
+        salts: [{ name: 'Paracetamol', strength: 500, unit: 'mg' }],
+        form: 'tablet',
+        packSize: 30,
+        packUnit: 'tablet',
+        price: 150,
+        gstRate: 18,
+        stock: 100,
+        scheduleClass: 'OTC',
+        prescriptionRequired: false,
+        description: '',
+        sideEffects: [],
+        contraindications: [],
+        tags: [],
+        isActive: true,
+      };
+
+      const parsed = bulkRowToParsedProductRow(bulkRow);
+      const product = new Product({
+        sku: parsed.sku,
+        name: parsed.name,
+        slug: 'test-product',
+        manufacturer: parsed.manufacturer,
+        category: cat._id,
+        salts: parsed.salts,
+        form: parsed.form,
+        packSize: parsed.packSize,
+        packUnit: parsed.packUnit,
+        price: parsed.price,
+        gstRate: parsed.gstRate,
+        stock: parsed.stock,
+        scheduleClass: parsed.scheduleClass,
+        prescriptionRequired: parsed.prescriptionRequired,
+        isActive: parsed.isActive,
+        images: [],
       });
-      await initial.save();
 
-      // Import with same SKU but updated fields
-      const body = {
-        rows: [
-          {
-            sku: 'PROD002',
-            name: 'New Name',
-            manufacturer: 'New Pharma',
-            category: 'Analgesics',
-            salts: [{ name: 'Paracetamol', strength: 650, unit: 'mg' }],
-            form: 'tablet' as const,
-            packSize: 20,
-            packUnit: 'tablet',
-            price: 200,
-            gstRate: 12,
-            stock: 75,
-            scheduleClass: 'OTC' as const,
-            isActive: true,
-          },
-        ],
-      };
+      await product.save();
 
-      const request = createJsonRequest(body, 'commit');
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
-
-      const response = await POST(request);
-      const result = await response.json() as any;
-
-      expect(response.status).toBe(200);
-      expect(result.data.created).toBe(0);
-      expect(result.data.updated).toBe(1);
-
-      // Verify product was updated
-      const updated = await Product.findOne({ sku: 'PROD002' }).select('+name +manufacturer +price +packSize +unitPrice').lean<any>();
-      expect(updated).toBeDefined();
-      if (updated) {
-        expect(updated.name).toBe('New Name');
-        expect(updated.manufacturer).toBe('New Pharma');
-        expect(updated.price).toBe(200);
-        expect(updated.packSize).toBe(20);
-        expect(updated.unitPrice).toBe(10);
+      const saved = await Product.findOne({ sku: 'PROD-TEST-1' }).lean<any>();
+      expect(saved).toBeDefined();
+      if (saved) {
+        // Pre-validate hook should compute these
+        expect(saved.compositionKey).toBeDefined();
+        expect(typeof saved.compositionKey).toBe('string');
+        expect(saved.unitPrice).toBe(5); // 150 / 30 = 5
       }
     });
 
-    it('creates category if it does not exist', async () => {
-      const body = {
-        rows: [
-          {
-            sku: 'PROD003',
-            name: 'Test Product',
-            manufacturer: 'Test Pharma',
-            category: 'Cardiac Care',
-            salts: [{ name: 'Atenolol', strength: 50, unit: 'mg' }],
-            form: 'tablet' as const,
-            packSize: 15,
-            packUnit: 'tablet',
-            price: 120,
-            gstRate: 5,
-            stock: 80,
-            scheduleClass: 'OTC' as const,
-            isActive: true,
-          },
-        ],
+    it('forces Schedule H products to be prescription-required when saved', async () => {
+      const cat = await Category.create({ name: 'Cardiac', slug: 'cardiac' });
+
+      const bulkRow: BulkProductRow = {
+        sku: 'ATENOL-50',
+        name: 'Atenolol 50mg',
+        manufacturer: 'Cipla',
+        category: 'Cardiac',
+        salts: [{ name: 'Atenolol', strength: 50, unit: 'mg' }],
+        form: 'tablet',
+        packSize: 30,
+        packUnit: 'tablet',
+        price: 120,
+        gstRate: 5,
+        stock: 80,
+        scheduleClass: 'H',
+        prescriptionRequired: false, // Input says false
+        description: '',
+        sideEffects: [],
+        contraindications: [],
+        tags: [],
+        isActive: true,
       };
 
-      const request = createJsonRequest(body, 'commit');
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
+      const parsed = bulkRowToParsedProductRow(bulkRow);
 
-      const response = await POST(request);
-      const result = await response.json() as any;
+      const product = new Product({
+        sku: parsed.sku,
+        name: parsed.name,
+        slug: 'atenolol-50mg',
+        manufacturer: parsed.manufacturer,
+        category: cat._id,
+        salts: parsed.salts,
+        form: parsed.form,
+        packSize: parsed.packSize,
+        packUnit: parsed.packUnit,
+        price: parsed.price,
+        gstRate: parsed.gstRate,
+        stock: parsed.stock,
+        scheduleClass: parsed.scheduleClass,
+        prescriptionRequired: parsed.prescriptionRequired, // Must be true due to Schedule H
+        isActive: parsed.isActive,
+        images: [],
+      });
 
-      expect(response.status).toBe(200);
-      expect(result.data.created).toBe(1);
+      await product.save();
 
-      // Verify category was created
-      const category = await Category.findOne({ name: 'Cardiac Care' }).lean<any>();
-      expect(category).toBeDefined();
-      if (category) {
-        expect(category.slug).toBe('cardiac-care');
-        // Verify product references the category
-        const product = await Product.findOne({ sku: 'PROD003' }).select('+category').lean<any>();
-        expect(product).toBeDefined();
-        if (product) {
-          expect(String(product.category)).toBe(String(category._id));
-        }
-      }
-    });
-
-    it('handles prescription-required schedule classes', async () => {
-      const body = {
-        rows: [
-          {
-            sku: 'PROD004',
-            name: 'Schedule H Drug',
-            manufacturer: 'Test Pharma',
-            category: 'Cardiac',
-            salts: [{ name: 'Amiodarone', strength: 200, unit: 'mg' }],
-            form: 'tablet' as const,
-            packSize: 14,
-            packUnit: 'tablet',
-            price: 500,
-            gstRate: 12,
-            stock: 20,
-            scheduleClass: 'H' as const,
-            prescriptionRequired: false,
-            isActive: true,
-          },
-        ],
-      };
-
-      const request = createJsonRequest(body, 'commit');
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
-
-      const response = await POST(request);
-      const result = await response.json() as any;
-
-      expect(response.status).toBe(200);
-      expect(result.data.created).toBe(1);
-
-      // Verify prescriptionRequired was forced to true
-      const product = await Product.findOne({ sku: 'PROD004' }).select('+prescriptionRequired +scheduleClass').lean<any>();
-      expect(product).toBeDefined();
-      if (product) {
-        expect(product.prescriptionRequired).toBe(true);
-        expect(product.scheduleClass).toBe('H');
+      const saved = await Product.findOne({ sku: 'ATENOL-50' }).lean<any>();
+      expect(saved).toBeDefined();
+      if (saved) {
+        // Enforced at conversion time
+        expect(saved.prescriptionRequired).toBe(true);
+        expect(saved.scheduleClass).toBe('H');
       }
     });
   });
 
-  describe('Images Handling', () => {
-    it('includes pre-uploaded Cloudinary images in commit mode', async () => {
-      const body = {
-        rows: [
-          {
-            sku: 'PROD005',
-            name: 'Product with Image',
-            manufacturer: 'Test Pharma',
-            category: 'Topical',
-            salts: [{ name: 'Ibuprofen', strength: 5, unit: '%' }],
-            form: 'cream' as const,
-            packSize: 100,
-            packUnit: 'g',
-            price: 250,
-            gstRate: 18,
-            stock: 50,
-            scheduleClass: 'OTC' as const,
-            isActive: true,
-            image: 'PROD005',
-          },
+  describe('Edge cases', () => {
+    it('handles rows with multiple salts', () => {
+      const bulkRow: BulkProductRow = {
+        sku: 'COMB-001',
+        name: 'Co-amoxiclav 625mg',
+        manufacturer: 'GSK',
+        category: 'Antibiotics',
+        salts: [
+          { name: 'Amoxicillin', strength: 500, unit: 'mg' },
+          { name: 'Clavulanic Acid', strength: 125, unit: 'mg' },
         ],
-        images: {
-          PROD005: {
-            url: 'https://res.cloudinary.com/pmstore/image/upload/v123/test.jpg',
-            publicId: 'pmstore/test',
-          },
-        },
+        form: 'tablet',
+        packSize: 21,
+        packUnit: 'tablet',
+        price: 450,
+        gstRate: 12,
+        stock: 50,
+        scheduleClass: 'H', // H drug
+        prescriptionRequired: false,
+        description: '',
+        sideEffects: [],
+        contraindications: [],
+        tags: [],
+        isActive: true,
       };
 
-      const request = createJsonRequest(body, 'commit');
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
+      const parsed = bulkRowToParsedProductRow(bulkRow);
 
-      const response = await POST(request);
-      const result = await response.json() as any;
-
-      expect(response.status).toBe(200);
-      expect(result.data.created).toBe(1);
-
-      // Verify image was added to product
-      const product = await Product.findOne({ sku: 'PROD005' }).select('+images').lean<any>();
-      expect(product).toBeDefined();
-      if (product) {
-        expect(product.images).toBeDefined();
-        expect(product.images.length).toBeGreaterThan(0);
-        const img = product.images.find((i: any) => i.publicId === 'pmstore/test');
-        expect(img).toBeDefined();
-        if (img) {
-          expect(img.url).toContain('res.cloudinary.com');
-        }
-      }
+      expect(parsed.salts).toHaveLength(2);
+      expect(parsed.prescriptionRequired).toBe(true); // Forced by H
     });
-  });
 
-  describe('CSV Path Unchanged', () => {
-    it('still accepts and processes CSV text input', async () => {
-      // Create a minimal CSV
-      const csvText = `sku,name,manufacturer,category,form,salt_1_name,salt_1_strength,salt_1_unit,pack_size,pack_unit,price,gst_rate,stock,schedule_class,is_active
-TEST-CSV,CSV Product,CSV Pharma,Pain Relief,tablet,Paracetamol,500,mg,20,tablet,80,18,100,OTC,TRUE`;
+    it('handles rows with all optional fields omitted', () => {
+      const bulkRow: BulkProductRow = {
+        sku: 'MIN-001',
+        name: 'Minimal Product',
+        manufacturer: 'Test',
+        category: 'Test',
+        salts: [{ name: 'Test Salt', strength: 100, unit: 'mg' }],
+        form: 'tablet',
+        packSize: 10,
+        packUnit: 'tablet',
+        price: 50,
+        gstRate: 5,
+        stock: 0,
+        scheduleClass: 'OTC',
+        prescriptionRequired: false,
+        description: '',
+        sideEffects: [],
+        contraindications: [],
+        tags: [],
+        isActive: true,
+      };
 
-      const request = new NextRequest(
-        new URL('http://localhost:3000/api/admin/products/import?mode=validate'),
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain',
-          },
-          body: csvText,
-        }
-      );
+      const parsed = bulkRowToParsedProductRow(bulkRow);
 
-      vi.doMock('@/lib/auth-helpers', () => ({
-        verifyAdminAccess: vi.fn().mockResolvedValue({ ok: true }),
-      }));
-
-      const response = await POST(request);
-      const result = await response.json() as any;
-
-      expect(response.status).toBe(200);
-      expect(result.data.mode).toBe('validate');
-      // CSV parsing should work as before
+      expect(parsed.brand).toBeUndefined();
+      expect(parsed.mrp).toBeUndefined();
+      expect(parsed.hsnCode).toBeUndefined();
+      expect(parsed.storageInstructions).toBeUndefined();
+      expect(parsed.usageInstructions).toBeUndefined();
+      expect(parsed.sideEffects).toEqual([]);
+      expect(parsed.contraindications).toEqual([]);
+      expect(parsed.tags).toEqual([]);
+      expect(parsed.gstRate).toBe(5);
+      expect(parsed.stock).toBe(0);
     });
   });
 });

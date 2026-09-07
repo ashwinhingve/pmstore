@@ -26,15 +26,15 @@ export async function POST(req: Request) {
     const body = duplicateCheckSchema.parse(await req.json());
     await connectDB();
 
-    const matches = await findDuplicateProducts(
-      body.name,
-      body.salts,
-      body.form,
-      body.manufacturer,
-      body.packSize,
-      body.currentProductId,
-      5
-    );
+    const matches = await findDuplicateProducts({
+      name: body.name,
+      salts: body.salts,
+      form: body.form,
+      manufacturer: body.manufacturer,
+      packSize: body.packSize,
+      currentProductId: body.currentProductId,
+      limit: 5,
+    });
 
     return NextResponse.json({ matches });
   } catch (error: any) {
