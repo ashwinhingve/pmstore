@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { verifyAdminAccess } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
-import SiteSettings from '@/models/SiteSettings';
+import SiteSettings, { type ISiteSettings } from '@/models/SiteSettings';
 import Product from '@/models/Product';
 import { productSliderSchema } from '@/lib/validations/product-slider';
 import { createErrorResponse } from '@/lib/utils/errorHandler';
@@ -36,8 +36,8 @@ export async function GET(
   try {
     await connectDB();
 
-    const settings = await SiteSettings.findOne({ key: 'global' }).lean();
-    const productIds = (settings as any)?.productSliders?.[slot]?.productIds || [];
+    const settings = await SiteSettings.findOne({ key: 'global' }).lean<ISiteSettings | null>();
+    const productIds = settings?.productSliders?.[slot]?.productIds ?? [];
 
     if (!productIds || productIds.length === 0) {
       return NextResponse.json({ products: [], productIds: [] });
@@ -123,7 +123,7 @@ export async function PUT(
         },
       },
       { new: true, upsert: true }
-    ).lean();
+    ).lean<ISiteSettings | null>();
 
     // Revalidate homepage so changes appear immediately
     revalidatePath('/');
