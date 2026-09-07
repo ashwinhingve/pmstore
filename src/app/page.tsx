@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { connectDB } from '@/lib/mongodb';
 import { authOptions } from '@/lib/auth';
 import Product from '@/models/Product';
-import SiteSettings from '@/models/SiteSettings';
+import SiteSettings, { type ISiteSettings } from '@/models/SiteSettings';
 import Category from '@/models/Category';
 import { SITE_SHORT_NAME, SITE_DESCRIPTION } from '@/lib/constants';
 import { HeroSlider } from '@/components/landing/HeroSlider';
@@ -151,7 +151,7 @@ export default async function Home() {
     // Read site settings for admin-curated product sliders
     const settings = await SiteSettings.findOne({ key: 'global' })
       .select('heroSlider featureSlider productSliders')
-      .lean();
+      .lean<ISiteSettings | null>();
 
     // "More to explore" marquee — a wider, cross-category pull (not gated on
     // isTrending) so it reads as a different set from the Trending tab above.
@@ -165,7 +165,7 @@ export default async function Home() {
 
     // "Featured medicines" slider — use admin-curated list if available and non-empty,
     // otherwise fall back to top products by orderCount
-    const featuredProductIds = (settings as any)?.productSliders?.featured?.productIds || [];
+    const featuredProductIds = settings?.productSliders?.featured?.productIds ?? [];
     if (featuredProductIds.length > 0) {
       const featuredDocs = await Product.find({
         _id: { $in: featuredProductIds },
@@ -193,7 +193,7 @@ export default async function Home() {
 
     // OTC-only slider — use admin-curated list if available and non-empty,
     // otherwise fall back to OTC products by orderCount
-    const otcProductIds = (settings as any)?.productSliders?.otc?.productIds || [];
+    const otcProductIds = settings?.productSliders?.otc?.productIds ?? [];
     if (otcProductIds.length > 0) {
       const otcDocs = await Product.find({
         _id: { $in: otcProductIds },
@@ -221,7 +221,7 @@ export default async function Home() {
     // Active hero + feature slides, ordered; serialize ObjectId at the boundary
     // and drop any slide without an image so the carousels never render a blank.
     // (settings already fetched above for productSliders, so we just reuse it)
-    heroSlides = ((settings as any)?.heroSlider?.slides ?? [])
+    heroSlides = (settings?.heroSlider?.slides ?? [])
       .filter((s: any) => s.isActive && s.image)
       .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
       .map((s: any) => ({
@@ -229,7 +229,7 @@ export default async function Home() {
         image: s.image as string,
         title: s.title || undefined,
       }));
-    featureSlides = ((settings as any)?.featureSlider?.slides ?? [])
+    featureSlides = (settings?.featureSlider?.slides ?? [])
       .filter((s: any) => s.isActive && s.image)
       .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
       .map((s: any) => ({

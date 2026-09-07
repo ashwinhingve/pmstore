@@ -65,19 +65,19 @@ export default async function AdminSettingsPage() {
   }));
 
   // Fetch featured and OTC curated products for the panels
-  const featuredProductIds = (settings.productSliders?.featured?.productIds || []).map((id: any) =>
+  const featuredProductIds = (settings.productSliders?.featured?.productIds ?? []).map((id: any) =>
     id._id || id
   );
-  const otcProductIds = (settings.productSliders?.otc?.productIds || []).map((id: any) =>
+  const otcProductIds = (settings.productSliders?.otc?.productIds ?? []).map((id: any) =>
     id._id || id
   );
 
   const [featuredProducts, otcProducts] = await Promise.all([
     featuredProductIds.length > 0
-      ? Product.find({ _id: { $in: featuredProductIds }, isActive: true }).select('_id name manufacturer price unitPrice images slug form category').lean()
+      ? Product.find({ _id: { $in: featuredProductIds }, isActive: true, isDiscontinued: false }).select('_id name manufacturer price unitPrice images slug form category').lean()
       : Promise.resolve([]),
     otcProductIds.length > 0
-      ? Product.find({ _id: { $in: otcProductIds }, isActive: true }).select('_id name manufacturer price unitPrice images slug form category').lean()
+      ? Product.find({ _id: { $in: otcProductIds }, isActive: true, isDiscontinued: false }).select('_id name manufacturer price unitPrice images slug form category').lean()
       : Promise.resolve([]),
   ]);
 
