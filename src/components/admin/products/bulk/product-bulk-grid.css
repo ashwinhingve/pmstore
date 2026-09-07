@@ -1,0 +1,45 @@
+/* Scoped polish for the bulk product-import grid (react-data-grid).
+   Selectors target ARIA roles / stable classes so they survive the library's
+   hashed class names. These rules are unlayered, so they win over rdg's
+   @layer rdg defaults without needing extra specificity. */
+
+.pm-bulk-grid {
+  border: 1px solid var(--foil-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  background: var(--paper-card);
+}
+
+/* The grid itself: drop its own border (the wrapper owns it), give it an
+   intentional height, and use the body font. */
+.pm-bulk-grid [role="grid"] {
+  border: none;
+  block-size: clamp(280px, 60vh, 640px);
+  font-family: var(--font-body);
+}
+
+/* Header cells — quiet uppercase labels. */
+.pm-bulk-grid [role="columnheader"] {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+}
+
+.pm-bulk-grid [role="gridcell"] {
+  color: var(--ink);
+}
+
+/* Zebra striping (class applied via rowClass). */
+.pm-bulk-grid .rdg-row--alt {
+  background: var(--paper-tint);
+}
+
+/* A cell in edit mode holds an <input>/<select>. Let its native suggestion
+   popup and the composition popover escape the cell's default overflow: clip. */
+.pm-bulk-grid [role="gridcell"]:has(input, select) {
+  overflow: visible;
+  z-index: 20;
+}

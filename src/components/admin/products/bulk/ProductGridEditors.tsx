@@ -1,17 +1,32 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { ManufacturerCombobox } from '@/components/admin/products/ManufacturerCombobox';
-import { SaltCombobox } from '@/components/admin/products/SaltCombobox';
+import { useState } from 'react';
 import type { RenderCellProps } from 'react-data-grid';
 import {
   parseCompositionShorthand,
   saltsToshorthand,
-  normalizeAndValidateForm,
 } from '@/lib/import/composition-shorthand-parser';
 import type { BulkProductRow } from '@/lib/validations/bulk-product-import';
-import { PHARMA_CATEGORIES } from '@/lib/categories';
+
+/**
+ * Shared look for a plain in-cell editor: fills the row height, single-weight
+ * border, brand focus. Deliberately slimmer than the page `Input` (which is
+ * h-12 / border-2) so editors sit flush inside a grid cell.
+ */
+const CELL_INPUT_CLASS =
+  'h-full w-full border-2 border-[var(--brand)] bg-[var(--paper-card)] px-2 text-sm text-[var(--ink)] focus:outline-none';
+
+/**
+ * Shared `<datalist>` ids. react-data-grid cells set `overflow: clip`, which
+ * hides any custom (absolutely-positioned) dropdown rendered inside a cell —
+ * that is why the old combobox editors appeared to have "no options". Native
+ * `<datalist>` / `<select>` popups are painted by the browser outside the DOM,
+ * so they are never clipped. The lists themselves are rendered once in
+ * `ProductBulkGrid` and referenced here by id.
+ */
+export const DL_MANUFACTURERS = 'pm-dl-manufacturers';
+export const DL_CATEGORIES = 'pm-dl-categories';
+export const DL_SALTS = 'pm-dl-salts';
 
 /**
  * Text input editor for simple fields (sku, name, price, etc.)
@@ -25,10 +40,10 @@ export function TextEditor({
   const value = String(row[key] ?? '');
 
   return (
-    <Input
+    <input
       value={value}
       onChange={(e) => onRowChange({ ...row, [key]: e.target.value })}
-      className="h-8 text-sm"
+      className={CELL_INPUT_CLASS}
       autoFocus
     />
   );
@@ -46,7 +61,7 @@ export function NumberEditor({
   const value = row[key] ?? '';
 
   return (
-    <Input
+    <input
       type="number"
       step="0.01"
       value={String(value)}
@@ -57,7 +72,8 @@ export function NumberEditor({
           [key]: Number.isFinite(num) ? num : 0,
         });
       }}
-      className="h-8 text-sm"
+      className={`${CELL_INPUT_CLASS} text-right`}
+      style={{ fontVariantNumeric: 'tabular-nums' }}
       autoFocus
     />
   );
@@ -79,7 +95,7 @@ export function SelectEditor({
     <select
       value={value}
       onChange={(e) => onRowChange({ ...row, [key]: e.target.value })}
-      className="h-8 w-full rounded-sm border border-[var(--foil-soft)] bg-[var(--paper)] px-2 text-sm text-[var(--ink)]"
+      className={CELL_INPUT_CLASS}
       autoFocus
     >
       <option value="">—</option>
@@ -116,87 +132,49 @@ export function CheckboxEditor({
 }
 
 /**
- * Manufacturer combobox editor — allows selecting from known manufacturers
- * or adding a new one inline.
+ * Manufacturer editor — a native `<input list>` backed by the shared
+ * `DL_MANUFACTURERS` datalist. The browser paints the suggestion popup, so it
+ * escapes the cell's `overflow: clip`. Free text is allowed (a new manufacturer
+ * saves with the product).
  */
 export function ManufacturerEditor({
   row,
-  column,
   onRowChange,
-  catalogManufacturers = [],
-  onAddManufacturer,
-}: RenderCellProps<BulkProductRow> & {
-  catalogManufacturers?: string[];
-  onAddManufacturer?: (name: string) => void | Promise<void>;
-}) {
+}: RenderCellProps<BulkProductRow>) {
   return (
-    <div className="h-8 overflow-hidden rounded-sm border border-[var(--foil-soft)]">
-      <ManufacturerCombobox
-        value={row.manufacturer || ''}
-        onChange={(v) => onRowChange({ ...row, manufacturer: v })}
-        ariaLabel="Manufacturer"
-        catalogManufacturers={catalogManufacturers}
-        onAddManufacturer={onAddManufacturer}
-      />
-    </div>
+    <input
+      type="text"
+      list={DL_MANUFACTURERS}
+      value={row.manufacturer || ''}
+      onChange={(e) => onRowChange({ ...row, manufacturer: e.target.value })}
+      className={CELL_INPUT_CLASS}
+      aria-label="Manufacturer"
+      placeholder="e.g. Cipla"
+      autoFocus
+    />
   );
 }
 
 /**
- * Category autocomplete editor
+ * Category editor — a native `<input list>` backed by the shared `DL_CATEGORIES`
+ * datalist (the store's real categories merged with the canonical taxonomy).
+ * Free text is allowed so the import can still create a new category by name.
  */
 export function CategoryEditor({
   row,
-  column,
   onRowChange,
 }: RenderCellProps<BulkProductRow>) {
-  const [open, setOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const value = row.category || '';
-  const query = value.toLowerCase();
-  const suggestions = open
-    ? PHARMA_CATEGORIES.filter((c) =>
-        c.name.toLowerCase().includes(query)
-      )
-        .slice(0, 8)
-        .map((c) => c.name)
-    : [];
-
   return (
-    <div className="relative">
-      <Input
-        ref={inputRef}
-        type="text"
-        value={value}
-        onChange={(e) => {
-          onRowChange({ ...row, category: e.target.value });
-          setOpen(true);
-        }}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setTimeout(() => setOpen(false), 100)}
-        className="h-8 text-sm"
-        autoFocus
-        placeholder="Start typing..."
-      />
-      {open && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-0.5 rounded-sm border border-[var(--foil-soft)] bg-[var(--paper)] shadow-sm z-50">
-          {suggestions.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => {
-                onRowChange({ ...row, category: cat });
-                setOpen(false);
-              }}
-              className="block w-full text-left px-3 py-1.5 text-sm hover:bg-[var(--foil-soft)] text-[var(--ink)]"
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+    <input
+      type="text"
+      list={DL_CATEGORIES}
+      value={row.category || ''}
+      onChange={(e) => onRowChange({ ...row, category: e.target.value })}
+      className={CELL_INPUT_CLASS}
+      aria-label="Category"
+      placeholder="Start typing…"
+      autoFocus
+    />
   );
 }
 
@@ -206,19 +184,11 @@ export function CategoryEditor({
  */
 export function CompositionEditor({
   row,
-  column,
   onRowChange,
-  catalogSalts = [],
-  onAddSalt,
-}: RenderCellProps<BulkProductRow> & {
-  catalogSalts?: string[];
-  onAddSalt?: (name: string) => void | Promise<void>;
-}) {
+}: RenderCellProps<BulkProductRow>) {
   const [showPopover, setShowPopover] = useState(false);
-  const shorthand = saltsToshorthand(row.salts);
-  const [shorthandInput, setShorthandInput] = useState(shorthand);
+  const [shorthandInput, setShorthandInput] = useState(() => saltsToshorthand(row.salts));
   const [parseError, setParseError] = useState('');
-  const popoverRef = useRef<HTMLDivElement>(null);
 
   const handleShorthandChange = (text: string) => {
     setShorthandInput(text);
@@ -231,71 +201,74 @@ export function CompositionEditor({
     }
   };
 
-  const handleAddSalt = async (name: string) => {
-    if (onAddSalt) {
-      await onAddSalt(name);
-    }
-  };
-
   return (
-    <div className="relative">
-      <Input
+    <div className="pm-cell-editor relative h-full">
+      <input
         type="text"
         value={shorthandInput}
         onChange={(e) => handleShorthandChange(e.target.value)}
         placeholder="e.g. Paracetamol 650mg + Caffeine 50mg"
-        className={`h-8 text-sm ${parseError ? 'border-[var(--ink)]' : ''}`}
+        className={`${CELL_INPUT_CLASS} ${parseError ? '!border-[var(--ink)]' : ''}`}
         autoFocus
         onFocus={() => setShowPopover(true)}
-        onBlur={() => setTimeout(() => setShowPopover(false), 100)}
+        // Keep the popover open long enough for a click inside it to land.
+        onBlur={() => setTimeout(() => setShowPopover(false), 150)}
       />
-      {parseError && (
-        <div className="text-xs text-[var(--ink)] mt-1">{parseError}</div>
-      )}
       {showPopover && (
         <div
-          ref={popoverRef}
-          className="absolute top-full left-0 right-0 mt-2 p-3 rounded-sm border border-[var(--foil-soft)] bg-[var(--paper)] shadow-lg z-50 max-w-sm"
+          className="absolute top-full left-0 z-50 mt-2 w-[22rem] max-w-[80vw] rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-3 shadow-[var(--shadow-md)]"
+          // Prevent the input's blur from firing before an inner click.
+          onMouseDown={(e) => e.preventDefault()}
         >
-          <div className="text-xs font-medium text-[var(--ink)] mb-2">
-            Composition
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-xs font-semibold text-[var(--ink)]">Composition</span>
+            {parseError && (
+              <span className="text-xs font-medium text-[var(--ink)]">{parseError}</span>
+            )}
           </div>
           <div className="space-y-2">
             {row.salts.map((salt, idx) => (
               <div key={idx} className="flex items-center gap-2">
-                <div className="flex-1">
-                  <SaltCombobox
-                    value={salt.name}
-                    onChange={(v) => {
-                      const newSalts = [...row.salts];
-                      newSalts[idx].name = v;
-                      onRowChange({ ...row, salts: newSalts });
-                    }}
-                    ariaLabel={`Salt ${idx + 1} name`}
-                    catalogSalts={catalogSalts}
-                    onAddSalt={handleAddSalt}
-                  />
-                </div>
+                <input
+                  type="text"
+                  list={DL_SALTS}
+                  value={salt.name}
+                  onChange={(e) => {
+                    const newSalts = row.salts.map((s, i) =>
+                      i === idx ? { ...s, name: e.target.value } : s
+                    );
+                    onRowChange({ ...row, salts: newSalts });
+                  }}
+                  aria-label={`Salt ${idx + 1} name`}
+                  placeholder="Salt name"
+                  className="h-8 flex-1 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] px-2 text-sm text-[var(--ink)] focus:border-[var(--brand)] focus:outline-none"
+                />
                 <input
                   type="number"
                   step="0.1"
                   value={salt.strength}
                   onChange={(e) => {
-                    const newSalts = [...row.salts];
-                    newSalts[idx].strength = parseFloat(e.target.value) || 0;
+                    const newSalts = row.salts.map((s, i) =>
+                      i === idx ? { ...s, strength: parseFloat(e.target.value) || 0 } : s
+                    );
                     onRowChange({ ...row, salts: newSalts });
                   }}
-                  className="w-16 h-7 px-2 text-xs border border-[var(--foil-soft)] rounded-sm"
-                  placeholder="Strength"
+                  className="h-8 w-16 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] px-2 text-sm text-[var(--ink)] focus:border-[var(--brand)] focus:outline-none"
+                  style={{ fontVariantNumeric: 'tabular-nums' }}
+                  placeholder="0"
+                  aria-label={`Salt ${idx + 1} strength`}
                 />
                 <select
                   value={salt.unit}
                   onChange={(e) => {
-                    const newSalts = [...row.salts];
-                    newSalts[idx].unit = e.target.value as any;
+                    const unit = e.target.value as BulkProductRow['salts'][number]['unit'];
+                    const newSalts = row.salts.map((s, i) =>
+                      i === idx ? { ...s, unit } : s
+                    );
                     onRowChange({ ...row, salts: newSalts });
                   }}
-                  className="w-12 h-7 px-1 text-xs border border-[var(--foil-soft)] rounded-sm"
+                  aria-label={`Salt ${idx + 1} unit`}
+                  className="h-8 w-14 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] px-1 text-sm text-[var(--ink)] focus:border-[var(--brand)] focus:outline-none"
                 >
                   <option value="mg">mg</option>
                   <option value="mcg">mcg</option>
@@ -309,8 +282,9 @@ export function CompositionEditor({
                     const newSalts = row.salts.filter((_, i) => i !== idx);
                     onRowChange({ ...row, salts: newSalts });
                   }}
-                  className="h-7 w-7 rounded-sm hover:bg-[var(--foil-soft)] text-[var(--ink-70)] flex items-center justify-center"
+                  className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] text-[var(--ink-70)] hover:bg-[var(--foil-soft)]"
                   type="button"
+                  aria-label={`Remove salt ${idx + 1}`}
                 >
                   ×
                 </button>
@@ -324,7 +298,7 @@ export function CompositionEditor({
                 salts: [...row.salts, { name: '', strength: 0, unit: 'mg' }],
               });
             }}
-            className="mt-2 text-xs px-2 py-1 rounded-sm bg-[var(--brand-soft)] text-[var(--brand)] hover:bg-[var(--brand)] hover:text-[var(--paper)]"
+            className="mt-2 rounded-[var(--radius-sm)] bg-[var(--brand-soft)] px-2.5 py-1 text-xs font-medium text-[var(--brand-deep)] hover:bg-[var(--brand)] hover:text-[var(--brand-ink)]"
             type="button"
           >
             Add salt
