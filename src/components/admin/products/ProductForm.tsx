@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import ImageUploader from './ImageUploader';
 import RichTextEditor from './RichTextEditor';
 import SpecificationsManager from './SpecificationsManager';
@@ -467,17 +468,15 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   Category *
                 </label>
                 {categoryOptions.length > 0 ? (
-                  <select
+                  <Select
                     value={formData.category}
                     onChange={(e) => updateField('category', e.target.value)}
-                    className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm bg-[var(--paper-card)] text-[var(--ink)]"
                     required
-                  >
-                    <option value="">Select a category</option>
-                    {categoryOptions.map((cat) => (
-                      <option key={cat._id} value={cat._id}>{cat.name}</option>
-                    ))}
-                  </select>
+                    options={[
+                      { value: '', label: 'Select a category' },
+                      ...categoryOptions.map((cat) => ({ value: cat._id, label: cat.name })),
+                    ]}
+                  />
                 ) : (
                   <p className="text-sm text-[var(--ink-40)]">
                     No categories yet. Create one under Categories first.
@@ -507,7 +506,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 onChange={(e) => updateField('description', e.target.value)}
                 placeholder="Brief description (1-2 sentences)..."
                 rows={3}
-                className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md resize-none bg-[var(--paper-card)] text-[var(--ink)]"
+                className="w-full resize-none rounded-[var(--radius-sm)] border-2 border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 py-2 text-[var(--ink)] transition-[border-color,box-shadow] duration-[var(--dur-fast)] focus:border-[var(--brand)] focus:outline-none focus:shadow-[0_0_0_3px_var(--brand-soft)]"
                 maxLength={200}
               />
               <p className="mt-1 text-xs text-[var(--ink-40)]">
@@ -619,7 +618,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
               </p>
               <div className="space-y-2">
                 {salts.map((salt, i) => (
-                  <div key={i} className="grid grid-cols-12 gap-2 items-start">
+                  <div key={i} className="grid grid-cols-12 gap-2 items-center">
                     <div className="col-span-6">
                       <SaltCombobox
                         value={salt.name}
@@ -643,16 +642,12 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                       />
                     </div>
                     <div className="col-span-2">
-                      <select
+                      <Select
                         value={salt.unit}
                         onChange={(e) => updateSalt(i, { unit: e.target.value })}
                         aria-label={`Salt ${i + 1} unit`}
-                        className="w-full px-2 py-2 border border-[var(--foil-soft)] rounded-md text-sm"
-                      >
-                        {SALT_UNITS.map((u) => (
-                          <option key={u} value={u}>{u}</option>
-                        ))}
-                      </select>
+                        options={SALT_UNITS.map((u) => ({ value: u, label: u }))}
+                      />
                     </div>
                     <div className="col-span-1 flex justify-center">
                       {salts.length > 1 && (
@@ -676,16 +671,12 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Dosage form *
                 </label>
-                <select
+                <Select
                   value={formData.form}
                   onChange={(e) => updateField('form', e.target.value as ProductFormData['form'])}
-                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm"
                   required
-                >
-                  {DOSAGE_FORMS.map((f) => (
-                    <option key={f} value={f}>{f}</option>
-                  ))}
-                </select>
+                  options={DOSAGE_FORMS.map((f) => ({ value: f, label: f }))}
+                />
               </div>
 
               <div>
@@ -725,16 +716,12 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Pack unit *
                 </label>
-                <select
+                <Select
                   value={formData.packUnit}
                   onChange={(e) => updateField('packUnit', e.target.value)}
-                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm"
                   required
-                >
-                  {PACK_UNITS.map((u) => (
-                    <option key={u} value={u}>{u}</option>
-                  ))}
-                </select>
+                  options={PACK_UNITS.map((u) => ({ value: u, label: u }))}
+                />
               </div>
             </div>
 
@@ -743,15 +730,11 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Schedule class *
                 </label>
-                <select
+                <Select
                   value={formData.scheduleClass}
                   onChange={(e) => updateField('scheduleClass', e.target.value as ProductFormData['scheduleClass'])}
-                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md text-sm"
-                >
-                  {SCHEDULE_CLASSES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
+                  options={SCHEDULE_CLASSES.map((s) => ({ value: s, label: s }))}
+                />
               </div>
 
               <div>
@@ -789,7 +772,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   value={formData.storageInstructions || ''}
                   onChange={(e) => updateField('storageInstructions', e.target.value)}
                   rows={2}
-                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md resize-none bg-[var(--paper-card)] text-[var(--ink)]"
+                  className="w-full resize-none rounded-[var(--radius-sm)] border-2 border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 py-2 text-[var(--ink)] transition-[border-color,box-shadow] duration-[var(--dur-fast)] focus:border-[var(--brand)] focus:outline-none focus:shadow-[0_0_0_3px_var(--brand-soft)]"
                   placeholder="Store below 25°C, away from light"
                 />
               </div>
@@ -802,7 +785,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   value={formData.usageInstructions || ''}
                   onChange={(e) => updateField('usageInstructions', e.target.value)}
                   rows={2}
-                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md resize-none bg-[var(--paper-card)] text-[var(--ink)]"
+                  className="w-full resize-none rounded-[var(--radius-sm)] border-2 border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 py-2 text-[var(--ink)] transition-[border-color,box-shadow] duration-[var(--dur-fast)] focus:border-[var(--brand)] focus:outline-none focus:shadow-[0_0_0_3px_var(--brand-soft)]"
                   placeholder="As directed by the physician"
                 />
               </div>
@@ -1126,7 +1109,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   Selling price (₹)
                 </label>
                 <div
-                  className="flex h-10 items-center rounded-md border border-[var(--foil-soft)] bg-[var(--foil-soft)]/50 px-3 text-sm font-semibold text-[var(--ink)]"
+                  className="flex h-12 items-center rounded-[var(--radius-sm)] border-2 border-[var(--foil-soft)] bg-[var(--foil-soft)]/50 px-4 text-base font-semibold text-[var(--ink)]"
                   style={{ fontFamily: 'var(--font-data)', fontVariantNumeric: 'tabular-nums' }}
                   aria-live="polite"
                 >
@@ -1143,17 +1126,17 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   GST Rate *
                 </label>
-                <select
-                  value={formData.gstRate ?? 5}
+                <Select
+                  value={String(formData.gstRate ?? 5)}
                   onChange={(e) => updateField('gstRate', parseInt(e.target.value))}
-                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--brand)] bg-[var(--paper-card)] text-[var(--ink)]"
-                >
-                  <option value={0}>0% — GST Exempt</option>
-                  <option value={5}>5% — Standard</option>
-                  <option value={12}>12%</option>
-                  <option value={18}>18%</option>
-                  <option value={28}>28%</option>
-                </select>
+                  options={[
+                    { value: '0', label: '0% — GST Exempt' },
+                    { value: '5', label: '5% — Standard' },
+                    { value: '12', label: '12%' },
+                    { value: '18', label: '18%' },
+                    { value: '28', label: '28%' },
+                  ]}
+                />
                 <p className="mt-1 text-xs text-[var(--ink-40)]">
                   Intra-state (MP): CGST+SGST &nbsp;|&nbsp; Inter-state: IGST
                 </p>
@@ -1189,16 +1172,16 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
                   Weight Unit
                 </label>
-                <select
+                <Select
                   value={formData.weightUnit}
                   onChange={(e) => updateField('weightUnit', e.target.value as 'g' | 'kg' | 'L' | 'ml')}
-                  className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md bg-[var(--paper-card)] text-[var(--ink)]"
-                >
-                  <option value="g">Grams (g)</option>
-                  <option value="kg">Kilograms (kg)</option>
-                  <option value="ml">Millilitres (ml)</option>
-                  <option value="L">Litres (L)</option>
-                </select>
+                  options={[
+                    { value: 'g', label: 'Grams (g)' },
+                    { value: 'kg', label: 'Kilograms (kg)' },
+                    { value: 'ml', label: 'Millilitres (ml)' },
+                    { value: 'L', label: 'Litres (L)' },
+                  ]}
+                />
               </div>
             </div>
           </div>
@@ -1269,7 +1252,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 }
                 placeholder={formData.description || 'Product description'}
                 rows={3}
-                className="w-full px-3 py-2 border border-[var(--foil-soft)] rounded-md resize-none bg-[var(--paper-card)] text-[var(--ink)]"
+                className="w-full resize-none rounded-[var(--radius-sm)] border-2 border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 py-2 text-[var(--ink)] transition-[border-color,box-shadow] duration-[var(--dur-fast)] focus:border-[var(--brand)] focus:outline-none focus:shadow-[0_0_0_3px_var(--brand-soft)]"
                 maxLength={160}
               />
               <p className="mt-1 text-xs text-[var(--ink-40)]">
@@ -1391,8 +1374,11 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     <form onSubmit={handleSubmit} className="max-w-5xl">
       {/* Error Message */}
       {error && (
-        <div className="mb-6 bg-[var(--foil-soft)] border border-[var(--foil)] rounded-lg p-4">
-          <p className="text-sm text-[var(--ink-70)]">{error}</p>
+        <div
+          role="alert"
+          className="mb-6 rounded-[var(--radius-md)] border border-[var(--ink)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)]"
+        >
+          <p className="text-sm font-medium text-[var(--ink)]">{error}</p>
         </div>
       )}
 
@@ -1424,7 +1410,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between gap-4 bg-[var(--foil-soft)] border border-[var(--foil-soft)] rounded-lg p-4">
+      <div className="flex items-center justify-between gap-4 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)]">
         <Button
           type="button"
           variant="outline"
@@ -1446,18 +1432,8 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
             </Button>
           )}
 
-          <Button
-            type="submit"
-            disabled={submitting}
-            className="bg-[var(--brand)] hover:bg-[var(--brand)] text-[var(--paper-card)]"
-          >
-            {submitting
-              ? mode === 'create'
-                ? 'Creating...'
-                : 'Updating...'
-              : mode === 'create'
-              ? 'Create Product'
-              : 'Update Product'}
+          <Button type="submit" disabled={submitting} loading={submitting}>
+            {mode === 'create' ? 'Create product' : 'Update product'}
           </Button>
         </div>
       </div>
