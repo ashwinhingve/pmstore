@@ -67,7 +67,7 @@ export function DuplicateWarning({ matches }: DuplicateWarningProps) {
                     {match.packSize > 0 && ` • ${match.packSize} ${match.packUnit}`}
                   </p>
                   {match.unitPrice > 0 && (
-                    <p className="text-xs text-[var(--ink-70)] font-mono">
+                    <p className="price text-xs text-[var(--ink-70)]">
                       ₹{match.unitPrice.toFixed(2)}/unit
                     </p>
                   )}

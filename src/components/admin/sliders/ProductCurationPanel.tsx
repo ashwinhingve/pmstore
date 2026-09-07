@@ -229,7 +229,7 @@ export default function ProductCurationPanel({
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-[var(--ink)] truncate">{product.name}</p>
                     <p className="text-xs text-[var(--ink-40)] truncate">
-                      {product.manufacturer} · ₹{product.unitPrice.toFixed(2)}/unit
+                      {product.manufacturer} · <span className="price">₹{product.unitPrice.toFixed(2)}/unit</span>
                     </p>
                   </div>
 
@@ -293,7 +293,7 @@ export default function ProductCurationPanel({
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-[var(--ink)] truncate">{product.name}</p>
                     <p className="text-xs text-[var(--ink-40)] truncate">
-                      {product.manufacturer} · ₹{product.unitPrice.toFixed(2)}/unit
+                      {product.manufacturer} · <span className="price">₹{product.unitPrice.toFixed(2)}/unit</span>
                     </p>
                   </div>
 
