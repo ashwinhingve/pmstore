@@ -45,6 +45,7 @@ export function useBulkImportState() {
   const [isValidating, setIsValidating] = useState(false);
   const [isCommitting, setIsCommitting] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [progress, setProgress] = useState<{
     doneRows: number;
     totalRows: number;
@@ -202,7 +203,7 @@ export function useBulkImportState() {
         setValidation(null);
         setRows([]);
         setProgress(null);
-        alert(
+        setSuccessMessage(
           `Import complete! Created: ${totalCreated}, Updated: ${totalUpdated}, Failed: ${totalFailed}`
         );
       } catch (err) {
@@ -262,6 +263,7 @@ export function useBulkImportState() {
     isValidating,
     isCommitting,
     error,
+    successMessage,
     progress,
     duplicateWarnings,
     handleValidate,

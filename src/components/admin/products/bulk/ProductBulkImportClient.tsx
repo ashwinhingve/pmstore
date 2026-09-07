@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Loader2, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { toast } from '@/store/useToastStore';
 import { ProductBulkGrid } from './ProductBulkGrid';
 import { BulkImportToolbar } from './BulkImportToolbar';
 import { ImageMatchingPanel } from './ImageMatchingPanel';
@@ -36,6 +37,7 @@ export function ProductBulkImportClient() {
     isValidating,
     isCommitting,
     error,
+    successMessage,
     progress,
     duplicateWarnings,
     handleValidate,
@@ -58,6 +60,13 @@ export function ProductBulkImportClient() {
         .catch(() => {}),
     ]);
   }, []);
+
+  // Show success toast when import completes
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+    }
+  }, [successMessage]);
 
   const progressPct = progress
     ? Math.round((progress.doneRows / Math.max(progress.totalRows, 1)) * 100)

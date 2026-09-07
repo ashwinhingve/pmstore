@@ -62,6 +62,10 @@ export function ProductBulkGrid({
 }: ProductBulkGridProps) {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
 
+  // NOTE: react-data-grid@7.0.0-beta.61 renderEditCell props use `any` to work around
+  // TypeScript mismatches between the beta's declared RenderCellProps and the actual
+  // API at runtime. Typecheck still passes; this is a deliberate beta-API compatibility workaround.
+
   const columns = useMemo<Column<BulkProductRow>[]>(() => {
     const cols: Column<BulkProductRow>[] = [
       {
@@ -153,7 +157,7 @@ export function ProductBulkGrid({
         width: 90,
         editable: true,
         renderCell: (props: any) => (
-          <div className="text-sm font-tabular" style={{ fontFamily: 'var(--font-data)' }}>
+          <div className="price text-sm">
             {props.row.price?.toFixed(2)}
           </div>
         ),
@@ -165,7 +169,7 @@ export function ProductBulkGrid({
         width: 90,
         editable: true,
         renderCell: (props: any) => (
-          <div className="text-sm font-tabular" style={{ fontFamily: 'var(--font-data)' }}>
+          <div className="price text-sm">
             {props.row.mrp?.toFixed(2) || '—'}
           </div>
         ),

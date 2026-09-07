@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Plus, Upload, Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/store/useToastStore';
 import type { BulkProductRow } from '@/lib/validations/bulk-product-import';
 import { parseCsv } from '@/lib/import/csv-parse';
 
@@ -123,8 +124,8 @@ export function BulkImportToolbar({
         onFileSelected(bulkRows);
       } catch (error) {
         console.error('Error reading file:', error);
-        alert(
-          `Error: ${error instanceof Error ? error.message : 'Could not read file'}`
+        toast.error(
+          error instanceof Error ? error.message : 'Could not read file'
         );
       }
     },
