@@ -132,14 +132,30 @@ export default async function SearchPage({
   return (
     <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-8 sm:px-6 lg:px-8">
       <header className="mb-6">
-        <h1 className="text-[length:var(--step-2)] text-[var(--ink)]">
-          Results for <span className="text-[var(--mint)]">“{q}”</span>
-        </h1>
-        <p className="data mt-1 text-sm text-[var(--ink-70)]">
-          {meta.total} {meta.total === 1 ? 'medicine' : 'medicines'}
-        </p>
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
+          <h1 className="text-[length:var(--step-2)] font-extrabold tracking-tight text-[var(--ink)]">
+            Results for{' '}
+            <span
+              style={{
+                backgroundImage: 'var(--surface-brand)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'var(--brand-deep)',
+              }}
+            >
+              “{q}”
+            </span>
+          </h1>
+          <span
+            className="inline-flex items-center rounded-[var(--radius-pill)] bg-[var(--brand-soft)] px-3 py-1 text-sm font-semibold text-[var(--brand-deep)]"
+            style={{ fontVariantNumeric: 'tabular-nums' }}
+          >
+            {meta.total} {meta.total === 1 ? 'medicine' : 'medicines'}
+          </span>
+        </div>
         {data.degraded && (
-          <p className="mt-2 rounded-md bg-[var(--mint-soft)] px-3 py-2 text-sm text-[var(--mint)]">
+          <p className="mt-3 inline-flex rounded-[var(--radius-sm)] bg-[var(--mint-soft)] px-3 py-2 text-sm text-[var(--mint-deep)]">
             Showing basic results. Full typo-tolerant search comes online once the catalogue index
             is built.
           </p>

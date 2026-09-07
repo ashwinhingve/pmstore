@@ -135,15 +135,15 @@ function CompareCard({ group }: { group: CompareProduct[] }) {
   return (
     <article className="flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] hover:shadow-[var(--shadow-md)]">
       {/* Header: composition + savings hook */}
-      <div className="flex items-start justify-between gap-3 border-b border-[var(--foil-soft)] px-4 py-3">
+      <div className="flex items-start justify-between gap-3 border-b border-[var(--foil-soft)] bg-[var(--brand-tint)] px-4 py-3">
         <div className="min-w-0">
-          <h3 className="truncate font-semibold text-[var(--ink)]">{label}</h3>
-          <p className="text-xs text-[var(--ink-40)]">
-            <span style={mono}>{group.length}</span> brands, same salt
+          <h3 className="truncate text-[length:var(--step-1)] font-bold text-[var(--ink)]">{label}</h3>
+          <p className="mt-0.5 text-xs text-[var(--ink-70)]">
+            <span style={mono}>{group.length}</span> brands · same salt
           </p>
         </div>
         {pct > 0 && (
-          <span className="shrink-0 rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--mint)]">
+          <span className="shrink-0 rounded-[var(--radius-pill)] bg-[var(--mint)] px-2.5 py-1 text-xs font-bold text-[var(--brand-ink)] shadow-[var(--shadow-xs)]">
             Save <span style={mono}>{pct}%</span>
           </span>
         )}
@@ -205,9 +205,9 @@ function ProductPane({
   const out = p.stock <= 0;
   return (
     <div
-      className={`flex flex-col gap-2 p-3 ${highlight ? 'bg-[var(--brand-soft)]/40' : ''} ${
-        out ? 'opacity-60' : ''
-      }`}
+      className={`relative flex flex-col gap-2 p-3 ${
+        highlight ? 'bg-[var(--brand-soft)]/60 ring-1 ring-inset ring-[var(--brand)]/20' : ''
+      } ${out ? 'opacity-60' : ''}`}
     >
       <Link href={`/products/${p.slug}`} className="group block">
         <div className="relative mx-auto aspect-square w-full max-w-[7rem] overflow-hidden rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)]">
