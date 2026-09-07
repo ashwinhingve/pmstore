@@ -105,8 +105,8 @@ export function ImageMatchingPanel({
   };
 
   return (
-    <div className="rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper)] p-4">
-      <h3 className="mb-3 font-medium text-[var(--ink)]">Product images</h3>
+    <div className="rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-sm)]">
+      <h3 className="mb-3 font-semibold text-[var(--ink)]">Product images</h3>
       <p className="mb-4 text-xs text-[var(--ink-70)]">
         Name files after SKUs (e.g., <code style={{ fontFamily: 'var(--font-data)' }}>PMS-TAB-DOLO-650.jpg</code>).
         Only matched files will be uploaded. Add images to rows in the grid.

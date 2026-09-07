@@ -21,8 +21,10 @@ export default async function ProductImportPage() {
         <ArrowLeft className="h-4 w-4" /> Back to products
       </Link>
 
-      <h1 className="text-2xl font-bold text-[var(--ink)]">Bulk product import</h1>
-      <p className="mt-1 mb-6 text-[var(--ink-70)]">
+      <h1 className="text-[length:var(--step-2)] font-extrabold tracking-tight text-[var(--ink)]">
+        Bulk product import
+      </h1>
+      <p className="mt-2 mb-6 max-w-3xl text-[var(--ink-70)]">
         Add or update products directly in the grid, or upload a CSV/Excel file. Existing products
         are matched by SKU. Prices, <span style={{ fontFamily: "var(--font-data)" }}>compositionKey</span> and{" "}
         <span style={{ fontFamily: "var(--font-data)" }}>unitPrice</span> are recomputed on save.

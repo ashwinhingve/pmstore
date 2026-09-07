@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Plus, Upload, Download, Loader2 } from 'lucide-react';
+import { Plus, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/store/useToastStore';
 import type { BulkProductRow } from '@/lib/validations/bulk-product-import';
@@ -145,88 +145,85 @@ export function BulkImportToolbar({
   });
 
   return (
-    <div className="flex flex-wrap items-center gap-2 p-4 bg-[var(--paper)] rounded-[var(--radius-sm)] border border-[var(--foil-soft)]">
-      <Button
-        onClick={onAddRow}
-        variant="outline"
-        size="sm"
-        className="gap-2"
-      >
-        <Plus className="h-4 w-4" /> Add row
-      </Button>
-
-      <div className="relative">
-        <Button
-          onClick={() => setShowAddCount(!showAddCount)}
-          variant="outline"
-          size="sm"
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" /> Add {addCount} rows
+    <div className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-sm)] sm:flex-row sm:flex-wrap sm:items-center">
+      {/* Add rows */}
+      <div className="flex items-center gap-2">
+        <Button onClick={onAddRow} variant="outline" size="sm" className="gap-2">
+          <Plus className="h-4 w-4" /> Add row
         </Button>
-        {showAddCount && (
-          <div className="absolute top-full left-0 mt-1 p-2 bg-[var(--paper)] border border-[var(--foil-soft)] rounded-sm shadow-sm z-10">
-            <input
-              type="number"
-              min="1"
-              max="1000"
-              value={addCount}
-              onChange={(e) => setAddCount(Math.max(1, parseInt(e.target.value) || 10))}
-              className="w-16 h-8 px-2 text-sm border border-[var(--foil-soft)] rounded-sm"
-              placeholder="Count"
-              autoFocus
-            />
-            <Button
-              onClick={() => {
-                onAddRows(addCount);
-                setShowAddCount(false);
-              }}
-              size="sm"
-              className="ml-2 gap-2"
-            >
-              Add
-            </Button>
-          </div>
-        )}
-      </div>
 
-      <div className="flex-1" />
-
-      <div
-        {...getRootProps()}
-        className={`flex-1 max-w-xs p-2 border-2 border-dashed rounded-sm text-center cursor-pointer transition-colors ${
-          isDragActive
-            ? 'border-[var(--brand)] bg-[var(--brand-soft)]'
-            : 'border-[var(--foil)] hover:border-[var(--foil-soft)]'
-        }`}
-      >
-        <input {...getInputProps()} />
-        <div className="flex items-center justify-center gap-1 text-xs text-[var(--ink-70)]">
-          <Upload className="h-3 w-3" />
-          {isDragActive ? 'Drop here' : 'Drag CSV/XLSX or click'}
+        <div className="relative">
+          <Button
+            onClick={() => setShowAddCount(!showAddCount)}
+            variant="outline"
+            size="sm"
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" /> Add {addCount} rows
+          </Button>
+          {showAddCount && (
+            <div className="absolute left-0 top-full z-10 mt-1 flex items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-2 shadow-[var(--shadow-md)]">
+              <input
+                type="number"
+                min="1"
+                max="1000"
+                value={addCount}
+                onChange={(e) => setAddCount(Math.max(1, parseInt(e.target.value) || 10))}
+                className="h-9 w-20 rounded-[var(--radius-sm)] border border-[var(--foil-soft)] px-2 text-sm focus:border-[var(--brand)] focus:outline-none"
+                placeholder="Count"
+                aria-label="Number of rows to add"
+                autoFocus
+              />
+              <Button
+                onClick={() => {
+                  onAddRows(addCount);
+                  setShowAddCount(false);
+                }}
+                size="sm"
+              >
+                Add
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
-      <Button
-        onClick={onValidate}
-        disabled={rowCount === 0 || isValidating || isCommitting}
-        variant="outline"
-        size="sm"
-        className="gap-2"
+      {/* File drop */}
+      <div
+        {...getRootProps()}
+        className={`flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-sm)] border-2 border-dashed px-3 text-sm transition-colors sm:min-w-[15rem] ${
+          isDragActive
+            ? 'border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand-deep)]'
+            : 'border-[var(--foil)] text-[var(--ink-70)] hover:border-[var(--brand)] hover:bg-[var(--brand-tint)]'
+        }`}
       >
-        {isValidating && <Loader2 className="h-4 w-4 animate-spin" />}
-        Preview
-      </Button>
+        <input {...getInputProps()} />
+        <Upload className="h-4 w-4 shrink-0" aria-hidden="true" />
+        {isDragActive ? 'Drop the file here' : 'Drag a CSV / Excel file, or click'}
+      </div>
 
-      <Button
-        onClick={onCommit}
-        disabled={!hasValidation || isCommitting || isValidating}
-        title={!hasValidation ? 'Run Preview first' : undefined}
-        className="gap-2"
-      >
-        {isCommitting && <Loader2 className="h-4 w-4 animate-spin" />}
-        Commit
-      </Button>
+      {/* Preview + Commit */}
+      <div className="flex items-center gap-2 sm:ml-auto">
+        <Button
+          onClick={onValidate}
+          disabled={rowCount === 0 || isValidating || isCommitting}
+          loading={isValidating}
+          variant="outline"
+          size="sm"
+        >
+          Preview
+        </Button>
+
+        <Button
+          onClick={onCommit}
+          disabled={!hasValidation || isCommitting || isValidating}
+          loading={isCommitting}
+          title={!hasValidation ? 'Run Preview first' : undefined}
+          size="sm"
+        >
+          Commit
+        </Button>
+      </div>
     </div>
   );
 }
