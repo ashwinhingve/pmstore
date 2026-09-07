@@ -6,12 +6,14 @@ import { type ISiteSettings } from '@/models/SiteSettings';
 
 /**
  * Integration tests for product slider curation API routes (/api/admin/products/sliders/[slot]).
- * Tests the actual exported GET/PUT route handlers directly (not reimplemented logic).
+ * Tests the slot-resolution, pruning, and persistence logic against a real in-memory database,
+ * following the same query patterns as the route handlers (/api/admin/products/sliders/[slot]/route.ts).
  * Uses mongodb-memory-server to test real query behavior and data persistence.
  *
- * Note: Due to Next.js module initialization, we test the route handler logic
- * by directly querying/updating the database following the same patterns the
- * handlers use, which is equivalent to testing the handlers' behavior.
+ * Note: Reimplements the query logic inline (similar to check-duplicate/route.test.ts pattern)
+ * rather than importing and invoking the actual route handlers. This is consistent with the
+ * codebase convention per src/app/api/CLAUDE.md: route handlers are thin, domain logic lives
+ * in src/lib/, so it stays testable without HTTP.
  */
 
 let mongo: MongoMemoryServer;
