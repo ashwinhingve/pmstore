@@ -15,7 +15,7 @@ import { RX_SCHEDULES } from '@/lib/import/product-row';
 export function bulkRowToParsedProductRow(row: BulkProductRow): ParsedProductRow {
   // Enforce prescription requirement for Schedule H/H1/X drugs
   // Never allow a data-entry slip to make an Rx medicine sellable without a prescription
-  const prescriptionRequired = RX_SCHEDULES.includes(row.scheduleClass as any) || row.prescriptionRequired;
+  const prescriptionRequired = RX_SCHEDULES.includes(row.scheduleClass) || row.prescriptionRequired;
 
   return {
     sku: row.sku,

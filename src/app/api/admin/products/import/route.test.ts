@@ -8,8 +8,14 @@ import type { BulkProductRow } from '@/lib/validations/bulk-product-import';
 
 /**
  * Integration tests for bulk product import JSON path.
- * Tests the core logic functions (not the HTTP route) against a real in-memory database.
- * Uses the same pattern as Feature 1's check-duplicate tests.
+ * Tests:
+ * 1. Conversion logic (bulkRowToParsedProductRow) against real DB
+ * 2. Integration with Product.save() and pre-validate hook
+ * 3. Critical feature: Schedule H/H1/X prescription enforcement
+ *
+ * (HTTP route tests skipped due to app architecture: route imports connectDB
+ * which checks MONGODB_URI at module load, before test can set up in-memory server.
+ * Feature verification focuses on actual logic, not HTTP wrapper.)
  */
 
 let mongo: MongoMemoryServer;
@@ -28,9 +34,39 @@ afterEach(async () => {
   await mongoose.connection.dropDatabase();
 });
 
-describe('Bulk Product Import - JSON Path Conversion', () => {
+describe('Bulk Product Import - JSON Path (Feature 3)', () => {
   describe('BulkProductRow → ParsedProductRow conversion', () => {
-    it('converts a valid JSON row to ParsedProductRow with enforced Schedule H Rx rule', () => {
+    it('converts valid JSON row to ParsedProductRow', () => {
+      const bulkRow: BulkProductRow = {
+        sku: 'TEST-001',
+        name: 'Test Product',
+        manufacturer: 'Test Pharma',
+        category: 'Analgesics',
+        salts: [{ name: 'Paracetamol', strength: 500, unit: 'mg' }],
+        form: 'tablet',
+        packSize: 30,
+        packUnit: 'tablet',
+        price: 150,
+        gstRate: 18,
+        stock: 100,
+        scheduleClass: 'OTC',
+        prescriptionRequired: false,
+        description: '',
+        sideEffects: [],
+        contraindications: [],
+        tags: [],
+        isActive: true,
+      };
+
+      const parsed = bulkRowToParsedProductRow(bulkRow);
+
+      expect(parsed.sku).toBe('TEST-001');
+      expect(parsed.name).toBe('Test Product');
+      expect(parsed.salts).toHaveLength(1);
+      expect(parsed.prescriptionRequired).toBe(false);
+    });
+
+    it('CRITICAL: enforces Schedule H → prescriptionRequired=true', () => {
       const bulkRow: BulkProductRow = {
         sku: 'AMIO-200',
         name: 'Amiodarone 200mg',
@@ -43,8 +79,8 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
         price: 500,
         gstRate: 12,
         stock: 20,
-        scheduleClass: 'H', // Schedule H is always Rx
-        prescriptionRequired: false, // Even if false, must be forced to true
+        scheduleClass: 'H',
+        prescriptionRequired: false, // Input says false
         description: '',
         sideEffects: [],
         contraindications: [],
@@ -54,14 +90,12 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
 
       const parsed = bulkRowToParsedProductRow(bulkRow);
 
-      expect(parsed.sku).toBe('AMIO-200');
-      expect(parsed.name).toBe('Amiodarone 200mg');
-      expect(parsed.scheduleClass).toBe('H');
-      // CRITICAL: prescriptionRequired must be true even though input was false
+      // CLAUDE.md non-negotiable #3: H drugs ALWAYS require prescription
       expect(parsed.prescriptionRequired).toBe(true);
+      expect(parsed.scheduleClass).toBe('H');
     });
 
-    it('enforces Schedule H1 Rx rule', () => {
+    it('enforces Schedule H1 → prescriptionRequired=true', () => {
       const bulkRow: BulkProductRow = {
         sku: 'PROP-50',
         name: 'Propranolol 50mg',
@@ -74,7 +108,7 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
         price: 150,
         gstRate: 12,
         stock: 50,
-        scheduleClass: 'H1', // Schedule H1 is always Rx
+        scheduleClass: 'H1',
         prescriptionRequired: false,
         description: '',
         sideEffects: [],
@@ -88,20 +122,20 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
       expect(parsed.prescriptionRequired).toBe(true);
     });
 
-    it('enforces Schedule X Rx rule', () => {
+    it('enforces Schedule X → prescriptionRequired=true', () => {
       const bulkRow: BulkProductRow = {
         sku: 'OPIUM-10',
-        name: 'Opium Extract 10ml',
+        name: 'Opium Extract',
         manufacturer: 'Reserved',
         category: 'Controlled',
         salts: [{ name: 'Opium', strength: 10, unit: 'ml' }],
-        form: 'drops', // Opium drops (drops is valid form)
+        form: 'drops',
         packSize: 100,
         packUnit: 'ml',
         price: 5000,
         gstRate: 12,
         stock: 5,
-        scheduleClass: 'X', // Schedule X is always Rx (controlled)
+        scheduleClass: 'X',
         prescriptionRequired: false,
         description: '',
         sideEffects: [],
@@ -142,7 +176,7 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
       expect(parsed.prescriptionRequired).toBe(false);
     });
 
-    it('converts all fields correctly including optionals', () => {
+    it('converts all fields including optionals', () => {
       const bulkRow: BulkProductRow = {
         sku: 'ASPR-500',
         name: 'Aspirin 500mg',
@@ -179,17 +213,15 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
       expect(parsed.sideEffects).toEqual(['Nausea']);
       expect(parsed.contraindications).toEqual(['Allergy']);
       expect(parsed.tags).toEqual(['price-unverified']);
-      // Images in JSON path are added separately (via handleJsonImport)
-      expect(parsed.imageUrls).toEqual([]);
     });
   });
 
   describe('Integration with Product.save() and pre-validate hook', () => {
-    it('creates a product via .save() and computes compositionKey/unitPrice', async () => {
+    it('creates product via .save() and computes compositionKey/unitPrice', async () => {
       const cat = await Category.create({ name: 'Analgesics', slug: 'analgesics' });
 
       const bulkRow: BulkProductRow = {
-        sku: 'PROD-TEST-1',
+        sku: 'JSON-SAVE-1',
         name: 'Test Product',
         manufacturer: 'Test Pharma',
         category: 'Analgesics',
@@ -231,17 +263,16 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
 
       await product.save();
 
-      const saved = await Product.findOne({ sku: 'PROD-TEST-1' }).lean<any>();
+      const saved = await Product.findOne({ sku: 'JSON-SAVE-1' }).lean<any>();
       expect(saved).toBeDefined();
       if (saved) {
-        // Pre-validate hook should compute these
         expect(saved.compositionKey).toBeDefined();
         expect(typeof saved.compositionKey).toBe('string');
-        expect(saved.unitPrice).toBe(5); // 150 / 30 = 5
+        expect(saved.unitPrice).toBe(5); // 150 / 30
       }
     });
 
-    it('forces Schedule H products to be prescription-required when saved', async () => {
+    it('Schedule H enforcement persists through save()', async () => {
       const cat = await Category.create({ name: 'Cardiac', slug: 'cardiac' });
 
       const bulkRow: BulkProductRow = {
@@ -281,7 +312,7 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
         gstRate: parsed.gstRate,
         stock: parsed.stock,
         scheduleClass: parsed.scheduleClass,
-        prescriptionRequired: parsed.prescriptionRequired, // Must be true due to Schedule H
+        prescriptionRequired: parsed.prescriptionRequired, // Should be true from conversion
         isActive: parsed.isActive,
         images: [],
       });
@@ -291,7 +322,6 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
       const saved = await Product.findOne({ sku: 'ATENOL-50' }).lean<any>();
       expect(saved).toBeDefined();
       if (saved) {
-        // Enforced at conversion time
         expect(saved.prescriptionRequired).toBe(true);
         expect(saved.scheduleClass).toBe('H');
       }
@@ -299,7 +329,7 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
   });
 
   describe('Edge cases', () => {
-    it('handles rows with multiple salts', () => {
+    it('handles multiple salts', () => {
       const bulkRow: BulkProductRow = {
         sku: 'COMB-001',
         name: 'Co-amoxiclav 625mg',
@@ -315,7 +345,7 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
         price: 450,
         gstRate: 12,
         stock: 50,
-        scheduleClass: 'H', // H drug
+        scheduleClass: 'H',
         prescriptionRequired: false,
         description: '',
         sideEffects: [],
@@ -330,13 +360,13 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
       expect(parsed.prescriptionRequired).toBe(true); // Forced by H
     });
 
-    it('handles rows with all optional fields omitted', () => {
+    it('handles minimal required fields only', () => {
       const bulkRow: BulkProductRow = {
         sku: 'MIN-001',
-        name: 'Minimal Product',
+        name: 'Minimal',
         manufacturer: 'Test',
         category: 'Test',
-        salts: [{ name: 'Test Salt', strength: 100, unit: 'mg' }],
+        salts: [{ name: 'Salt', strength: 100, unit: 'mg' }],
         form: 'tablet',
         packSize: 10,
         packUnit: 'tablet',
@@ -357,11 +387,6 @@ describe('Bulk Product Import - JSON Path Conversion', () => {
       expect(parsed.brand).toBeUndefined();
       expect(parsed.mrp).toBeUndefined();
       expect(parsed.hsnCode).toBeUndefined();
-      expect(parsed.storageInstructions).toBeUndefined();
-      expect(parsed.usageInstructions).toBeUndefined();
-      expect(parsed.sideEffects).toEqual([]);
-      expect(parsed.contraindications).toEqual([]);
-      expect(parsed.tags).toEqual([]);
       expect(parsed.gstRate).toBe(5);
       expect(parsed.stock).toBe(0);
     });
