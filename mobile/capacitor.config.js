@@ -36,7 +36,15 @@ const config = {
   // in src/app/(account)/login/page.tsx.
   appendUserAgent: 'PMStoreApp',
   server: {
-    url: 'https://pratigyamedicalstore.com',
+    // MUST be the www origin, not the apex. Capacitor injects the native bridge
+    // (and the JS plugin registry) via addDocumentStartJavaScript scoped to the
+    // exact origin of `url`. The site 308-redirects pratigyamedicalstore.com ->
+    // www.pratigyamedicalstore.com, so if url were the apex the page would end
+    // up on the www origin with NO bridge injected — every JS-bridge plugin
+    // (e.g. @capgo/capacitor-social-login for in-app Google) then reports
+    // "not implemented on android". Point url at the canonical www origin so the
+    // injection origin matches the page.
+    url: 'https://www.pratigyamedicalstore.com',
     androidScheme: 'https',
     allowNavigation: [
       'pratigyamedicalstore.com',
