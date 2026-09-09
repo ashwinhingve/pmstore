@@ -110,6 +110,13 @@ export function buildCompositionKey(salts: Salt[], form: DosageForm): string {
   return `${parts.join('+')}|${normalizeForm(form)}`;
 }
 
+/** Whether two salt lists share at least one active ingredient, by canonical name. */
+export function shareSalt(a: Salt[], b: Salt[]): boolean {
+  if (!a?.length || !b?.length) return false;
+  const names = new Set(a.map((s) => normalizeSaltName(s.name)));
+  return b.some((s) => names.has(normalizeSaltName(s.name)));
+}
+
 /** Human-readable label: "Paracetamol 650 mg" */
 export function formatComposition(salts: Salt[]): string {
   return salts

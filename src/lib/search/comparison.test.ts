@@ -4,8 +4,11 @@ import {
   pickComparisonPair,
   isExactNameMatch,
   scopeToComposition,
+  isSaltNameMatch,
+  scopeToSaltOverlap,
   type ComparableProduct,
 } from './comparison';
+import type { Salt } from '@/lib/pharma/composition';
 
 interface P extends ComparableProduct {
   id: string;
@@ -159,5 +162,87 @@ describe('scopeToComposition', () => {
 
   it('is safe for an empty result set', () => {
     expect(scopeToComposition([], 'dolo')).toEqual([]);
+  });
+});
+
+const paracetamol650: Salt[] = [{ name: 'Paracetamol', strength: 650, unit: 'mg' }];
+const cyanocobalamin: Salt[] = [{ name: 'Cyanocobalamin', strength: 1000, unit: 'mcg' }];
+
+describe('isSaltNameMatch', () => {
+  it('matches a plain salt name', () => {
+    expect(isSaltNameMatch('paracetamol', paracetamol650)).toBe(true);
+  });
+
+  it('matches the salt name with a trailing strength', () => {
+    expect(isSaltNameMatch('paracetamol 650', paracetamol650)).toBe(true);
+    expect(isSaltNameMatch('paracetamol 650mg', paracetamol650)).toBe(true);
+  });
+
+  it('matches via an alias, with or without a strength', () => {
+    expect(isSaltNameMatch('acetaminophen', paracetamol650)).toBe(true);
+    expect(isSaltNameMatch('acetaminophen 650mg', paracetamol650)).toBe(true);
+  });
+
+  it('rejects a generic category word even when it fuzzy-matched a real medicine', () => {
+    // Regression test: "vitamin" must not be treated as the salt name
+    // "cyanocobalamin" just because a Vitamin B12 product top-matched it —
+    // that would wrongly hide Vitamin C, multivitamins, etc.
+    expect(isSaltNameMatch('vitamin', cyanocobalamin)).toBe(false);
+  });
+
+  it('rejects a brand name — a brand is not any product’s salt name', () => {
+    expect(isSaltNameMatch('dolo 650', paracetamol650)).toBe(false);
+  });
+
+  it('rejects a bare strength with no name', () => {
+    expect(isSaltNameMatch('650', paracetamol650)).toBe(false);
+  });
+
+  it('is case- and whitespace-insensitive', () => {
+    expect(isSaltNameMatch('  PARACETAMOL   650MG  ', paracetamol650)).toBe(true);
+  });
+
+  it('is safe for empty input', () => {
+    expect(isSaltNameMatch('', paracetamol650)).toBe(false);
+    expect(isSaltNameMatch('paracetamol', [])).toBe(false);
+  });
+});
+
+describe('scopeToSaltOverlap', () => {
+  const dolo = {
+    _id: '1',
+    name: 'Dolo 650',
+    compositionKey: 'paracetamol-650mg|tablet',
+    salts: paracetamol650,
+  };
+  const paracetamol500 = {
+    _id: '2',
+    name: 'Paracetamol 500',
+    compositionKey: 'paracetamol-500mg|tablet',
+    salts: [{ name: 'Paracetamol', strength: 500, unit: 'mg' }],
+  };
+  const ibuprofen = {
+    _id: '3',
+    name: 'Ibugesic 400',
+    compositionKey: 'ibuprofen-400mg|tablet',
+    salts: [{ name: 'Ibuprofen', strength: 400, unit: 'mg' }],
+  };
+
+  it('narrows to the exact composition plus any salt-overlapping sibling when the query names the salt', () => {
+    const scoped = scopeToSaltOverlap([dolo, ibuprofen, paracetamol500], 'paracetamol');
+    expect(scoped.map((r) => r._id).sort()).toEqual(['1', '2']);
+  });
+
+  it('leaves results unchanged when the query is not a salt name (e.g. a category word)', () => {
+    expect(scopeToSaltOverlap([dolo, ibuprofen], 'vitamin')).toHaveLength(2);
+  });
+
+  it('is a no-op when the top result has no compositionKey', () => {
+    const results = [{ _id: 'x', name: 'Something' }, paracetamol500];
+    expect(scopeToSaltOverlap(results, 'paracetamol')).toHaveLength(2);
+  });
+
+  it('is safe for an empty result set', () => {
+    expect(scopeToSaltOverlap([], 'paracetamol')).toEqual([]);
   });
 });

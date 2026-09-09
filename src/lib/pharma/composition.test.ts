@@ -3,6 +3,7 @@ import {
   normalizeSaltName,
   normalizeForm,
   buildCompositionKey,
+  shareSalt,
   formatComposition,
   computeUnitPrice,
   savingsVs,
@@ -109,6 +110,41 @@ describe('buildCompositionKey', () => {
     expect(() => buildCompositionKey([], 'tablet')).toThrow(/at least one salt/);
     // @ts-expect-error — exercising the runtime guard against null input
     expect(() => buildCompositionKey(null, 'tablet')).toThrow();
+  });
+});
+
+describe('shareSalt', () => {
+  it('is true when the same salt appears at a different strength', () => {
+    const a: Salt[] = [{ name: 'Paracetamol', strength: 650, unit: 'mg' }];
+    const b: Salt[] = [{ name: 'Paracetamol', strength: 500, unit: 'mg' }];
+    expect(shareSalt(a, b)).toBe(true);
+  });
+
+  it('is false when the lists share no ingredient', () => {
+    const a: Salt[] = [{ name: 'Paracetamol', strength: 650, unit: 'mg' }];
+    const b: Salt[] = [{ name: 'Ibuprofen', strength: 400, unit: 'mg' }];
+    expect(shareSalt(a, b)).toBe(false);
+  });
+
+  it('resolves aliases before comparing (acetaminophen ~ paracetamol)', () => {
+    const a: Salt[] = [{ name: 'Acetaminophen', strength: 650, unit: 'mg' }];
+    const b: Salt[] = [{ name: 'Paracetamol', strength: 500, unit: 'mg' }];
+    expect(shareSalt(a, b)).toBe(true);
+  });
+
+  it('finds an overlap between a combo and one of its single-salt ingredients', () => {
+    const combo: Salt[] = [
+      { name: 'Amoxicillin', strength: 500, unit: 'mg' },
+      { name: 'Clavulanic Acid', strength: 125, unit: 'mg' },
+    ];
+    const single: Salt[] = [{ name: 'Amoxicillin', strength: 500, unit: 'mg' }];
+    expect(shareSalt(combo, single)).toBe(true);
+  });
+
+  it('is false for empty input on either side', () => {
+    const salts: Salt[] = [{ name: 'Paracetamol', strength: 650, unit: 'mg' }];
+    expect(shareSalt([], salts)).toBe(false);
+    expect(shareSalt(salts, [])).toBe(false);
   });
 });
 

@@ -5,7 +5,13 @@ import Category from '@/models/Category';
 import Product from '@/models/Product';
 import { searchQuerySchema } from '@/lib/validations/search';
 import { executeSearch, type SearchFacets } from '@/lib/search/execute';
-import { isExactNameMatch, scopeToComposition } from '@/lib/search/comparison';
+import {
+  isExactNameMatch,
+  scopeToComposition,
+  isSaltNameMatch,
+  scopeToSaltOverlap,
+} from '@/lib/search/comparison';
+import type { Salt } from '@/lib/pharma/composition';
 import { normalizeUnit } from '@/lib/pharma/format';
 import { ProductCard, type ProductCardData } from '@/components/products/ProductCard';
 import { SearchComparison } from '@/components/search/SearchComparison';
@@ -126,6 +132,17 @@ export default async function SearchPage({
     typeof topResult.compositionKey === 'string' &&
     Boolean(topResult.compositionKey);
 
+  // Salt search: the query itself names one of the top result's salts (not
+  // just any product that happens to have salts) — e.g. "paracetamol" or
+  // "paracetamol 650". Deliberately excludes category/condition words like
+  // "vitamin", which would otherwise wrongly narrow the grid to whatever the
+  // single top hit's salt is and hide every other equally-relevant vitamin.
+  const saltMatch =
+    !brandMatch &&
+    typeof topResult?.compositionKey === 'string' &&
+    Boolean(topResult?.compositionKey) &&
+    isSaltNameMatch(q, Array.isArray(topResult?.salts) ? (topResult?.salts as Salt[]) : []);
+
   let comparisonProducts: Record<string, unknown>[] = [];
   if (brandMatch) {
     const siblings = await Product.find({
@@ -146,30 +163,40 @@ export default async function SearchPage({
     }
   }
 
-  // Relevance scope: on an unfiltered first-page brand search, the grid shows
-  // only the searched medicine and its genuine same-composition equivalents —
-  // never an unrelated product that merely shared a token. Broad searches (a
-  // salt or a condition) stay wide with the full facets + pagination below.
+  // Relevance scope: on an unfiltered first page, the grid shows only what's
+  // genuinely relevant to what was searched — never an unrelated product that
+  // merely shared a text token. An exact brand match narrows to that
+  // medicine's own composition (brandMatch); a salt-name search narrows to
+  // that salt and anything sharing it (saltMatch). A category/condition word
+  // matches neither and stays wide with the full facets + pagination below.
+  // Scoping is confined to page 1 with no other filter applied so the header's
+  // total count and pagination never disagree with what's rendered — this is
+  // page-layer filtering, after executeSearch() already computed meta.total
+  // from the unfiltered hits.
   const hasNarrowingFilter = Boolean(
     firstString(params.category) ||
       firstString(params.prescriptionRequired) ||
       firstString(params.minPrice) ||
       firstString(params.maxPrice)
   );
-  const brandScoped = Boolean(brandMatch) && !hasNarrowingFilter && parsed.data.page === 1;
+  const compositionScoped =
+    (Boolean(brandMatch) || saltMatch) && !hasNarrowingFilter && parsed.data.page === 1;
 
-  // When scoped, lead the grid with the cheapest per unit so the best value is
-  // obvious at a glance; flag it so its card wears a "Best value" ribbon.
-  const gridResults = brandScoped
-    ? [...scopeToComposition(results, q)].sort(
-        (a, b) => unitPriceOf(a) - unitPriceOf(b)
-      )
-    : results;
+  // Tier A (exact brand match): lead with the cheapest per unit so the best
+  // value is obvious at a glance. Tier B (salt match): keep relevance order —
+  // different strengths/forms aren't a fair apples-to-apples sort key.
+  const gridResults = !compositionScoped
+    ? results
+    : brandMatch
+      ? [...scopeToComposition(results, q)].sort((a, b) => unitPriceOf(a) - unitPriceOf(b))
+      : scopeToSaltOverlap(results, q);
 
-  const bestValueId = brandScoped ? cheapestInStockId(gridResults) : null;
-  const scopedUnit = brandScoped
-    ? normalizeUnit(String(topResult.packUnit ?? 'unit'))
-    : '';
+  // Best-value framing only makes sense for the exact-formula tier — per
+  // CLAUDE.md rule #1, comparing per-tablet price across different strengths
+  // isn't a fair "better deal" claim.
+  const bestValueId = brandMatch && compositionScoped ? cheapestInStockId(gridResults) : null;
+  const scopedUnit =
+    brandMatch && compositionScoped ? normalizeUnit(String(topResult.packUnit ?? 'unit')) : '';
 
   return (
     <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-8 sm:px-6 lg:px-8">
@@ -211,10 +238,20 @@ export default async function SearchPage({
           the medicine actually searched for, not just a fuzzy/salt-only hit. */}
       {comparisonProducts.length > 1 && <SearchComparison products={comparisonProducts} />}
 
+      {/* Salt search (no exact brand match, but the query names a salt): build
+          the comparison card(s) straight from the already-filtered grid —
+          SearchComparison groups by compositionKey internally and renders
+          nothing if no group has 2+ brands, so this is a safe no-op when the
+          salt-relevant set has no comparable pair. */}
+      {compositionScoped && saltMatch && gridResults.length > 0 && (
+        <SearchComparison products={gridResults} />
+      )}
+
       <div className="flex flex-col gap-4 md:flex-row md:gap-6">
-        {/* Mobile + desktop filters — hidden in brand-scoped mode, where the grid
-            is a single composition group and price/category facets are moot. */}
-        {!brandScoped && (
+        {/* Mobile + desktop filters — hidden once composition-scoped (brand or
+            salt match), where the grid is already narrowed to what's relevant
+            and price/category facets are moot. */}
+        {!compositionScoped && (
           <>
             <SearchFilterDrawer>
               <FacetContent params={params} facets={data.facets} catName={catName} />
@@ -230,7 +267,7 @@ export default async function SearchPage({
         )}
 
         <main className="flex-1">
-          {brandScoped && gridResults.length > 0 && (
+          {compositionScoped && gridResults.length > 0 && (
             <p className="mb-4 inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-3 py-1.5 text-sm font-medium text-[var(--mint-deep)]">
               <span
                 className="inline-flex items-center rounded-[var(--radius-pill)] bg-[var(--mint)] px-2 py-0.5 text-xs font-bold text-[var(--brand-ink)]"
@@ -238,9 +275,13 @@ export default async function SearchPage({
               >
                 {gridResults.length}
               </span>
-              {gridResults.length === 1
-                ? 'Only this brand carries this composition'
-                : `brands with this composition — cheapest per ${scopedUnit} first`}
+              {brandMatch
+                ? gridResults.length === 1
+                  ? 'Only this brand carries this composition'
+                  : `brands with this composition — cheapest per ${scopedUnit} first`
+                : gridResults.length === 1
+                  ? 'Only this product contains this salt'
+                  : 'products with this salt — same-composition brands grouped above'}
             </p>
           )}
 
@@ -259,7 +300,7 @@ export default async function SearchPage({
             </ul>
           )}
 
-          {!brandScoped && totalPages > 1 && (
+          {!compositionScoped && totalPages > 1 && (
             <Pagination current={parsed.data.page} totalPages={totalPages} params={params} />
           )}
         </main>

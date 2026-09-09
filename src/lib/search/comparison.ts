@@ -5,6 +5,8 @@
  * which brand is the "alternative" — are unit-tested without a DOM.
  */
 
+import { normalizeSaltName, shareSalt, type Salt } from '@/lib/pharma/composition';
+
 export interface ComparableProduct {
   compositionKey: string;
   stock: number;
@@ -106,4 +108,71 @@ export function scopeToComposition<T extends Record<string, unknown>>(
   const key = typeof top.compositionKey === 'string' ? top.compositionKey : '';
   if (!key || !isExactNameMatch(query, name)) return results;
   return results.filter((r) => r.compositionKey === key);
+}
+
+const STRENGTH_NUMBER = /^\d+(\.\d+)?$/;
+const STRENGTH_UNIT = /^(mg|mcg|g|ml|iu|%)$/i;
+
+/**
+ * Drop a trailing strength from an already-`normalize()`d, space-split query.
+ * `normalize()` inserts a space at digit→letter boundaries, so "650mg" is two
+ * tokens ("650", "mg") by the time this runs — strip the unit token first,
+ * then the number behind it. Never pops the only remaining word.
+ */
+function stripTrailingStrength(words: string[]): string[] {
+  const w = [...words];
+  if (w.length > 1 && STRENGTH_UNIT.test(w[w.length - 1])) w.pop();
+  if (w.length > 1 && STRENGTH_NUMBER.test(w[w.length - 1])) w.pop();
+  return w;
+}
+
+/**
+ * Whether `query` is recognizably a salt-name search — the query itself names
+ * one of `salts`, optionally with a trailing strength ("paracetamol 650",
+ * "paracetamol 650mg") or via an alias ("acetaminophen"). This is deliberately
+ * stricter than "the top result happens to be a real medicine": a category or
+ * condition word like "vitamin" must NOT match here, even though it may
+ * top-match a product (e.g. a Vitamin B12 brand) that has real salts — a
+ * shopper searching "vitamin" wants Vitamin C, B12, multivitamins and more,
+ * not just whatever shares a salt with the single top hit. Rejects a bare
+ * strength ("650") and brand names ("dolo 650") — a brand name is not any
+ * product's salt name, so it never accidentally satisfies this check.
+ */
+export function isSaltNameMatch(query: string, salts: Salt[]): boolean {
+  if (!salts?.length) return false;
+  const q = normalize(query);
+  if (!q) return false;
+
+  const stripped = stripTrailingStrength(q.split(' ')).join(' ');
+  if (!stripped) return false;
+
+  const key = normalizeSaltName(stripped);
+  return salts.some((s) => normalizeSaltName(s.name) === key);
+}
+
+/**
+ * Relevance scope for a salt search. When the query itself names one of the
+ * top result's salts (`isSaltNameMatch`), narrow the results to that
+ * medicine's own composition or anything sharing at least one of its active
+ * ingredients — a genuine same-salt sibling at a different strength or a
+ * combo product, never an unrelated medicine that merely shared a fuzzy text
+ * token. A no-op otherwise (including for category/condition words like
+ * "vitamin", which `isSaltNameMatch` deliberately rejects), so callers can
+ * apply it unconditionally.
+ */
+export function scopeToSaltOverlap<T extends Record<string, unknown>>(
+  results: T[],
+  query: string,
+): T[] {
+  const top = results[0];
+  if (!top) return results;
+  const key = typeof top.compositionKey === 'string' ? top.compositionKey : '';
+  const topSalts = Array.isArray(top.salts) ? (top.salts as Salt[]) : [];
+  if (!key || !isSaltNameMatch(query, topSalts)) return results;
+
+  return results.filter((r) => {
+    if (r.compositionKey === key) return true;
+    const salts = Array.isArray(r.salts) ? (r.salts as Salt[]) : [];
+    return shareSalt(topSalts, salts);
+  });
 }
