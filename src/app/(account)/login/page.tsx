@@ -13,13 +13,23 @@ import { motion } from "framer-motion"
 type Tab = "google" | "mobile"
 type OtpStep = "input" | "otp"
 
-/** True when running inside the Capacitor native app (vs a normal browser). */
+/**
+ * True when running inside the Capacitor native app (vs a normal browser).
+ *
+ * Checks two independent signals so detection never fails: the injected
+ * `window.Capacitor` bridge, AND the "PMStoreApp" marker the app appends to its
+ * WebView User-Agent (`server.appendUserAgent` in mobile/capacitor.config.js).
+ * The UA marker is present the instant the page loads and does not depend on the
+ * bridge being injected into a remote-served page — so the app never falls
+ * through to the web Google flow, which would bounce the user out to Chrome.
+ */
 function isNativeApp(): boolean {
   if (typeof window === "undefined") return false
   const cap = (window as unknown as {
     Capacitor?: { isNativePlatform?: () => boolean }
   }).Capacitor
-  return cap?.isNativePlatform?.() === true
+  if (cap?.isNativePlatform?.() === true) return true
+  return /PMStoreApp/.test(navigator.userAgent)
 }
 
 /**
@@ -88,17 +98,32 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
     setError("")
-    try {
-      if (isNativeApp()) {
-        // In-app: native Google SDK -> idToken -> same-origin session.
+
+    // Inside the app: always use the native Google SDK, and NEVER fall back to
+    // the web OAuth flow. The web flow navigates the WebView to
+    // accounts.google.com, which Capacitor hands to the external browser — the
+    // user would end up signed in on the website in Chrome, not in the app.
+    if (isNativeApp()) {
+      try {
         const idToken = await nativeGoogleIdToken()
         const result = await signIn("google-native", { redirect: false, idToken })
         if (result?.error) {
-          setError("Failed to sign in with Google. Please try again.")
+          // idToken reached the server but verification failed (audience /
+          // client-id mismatch, or GOOGLE_CLIENT_ID not set on the server).
+          setError("Google couldn't verify your sign-in. Please try again, or use the Mobile OTP tab.")
           setIsLoading(false)
         }
-        return
+        // On success the useSession effect below routes you into the app.
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : "please try again"
+        setError(`Google sign-in didn't complete: ${reason}. You can also use the Mobile OTP tab.`)
+        setIsLoading(false)
       }
+      return
+    }
+
+    // Normal browser: the standard web Google redirect flow.
+    try {
       const result = await signIn("google", { redirect: false })
       if (result?.error) {
         setError("Failed to sign in with Google. Please try again.")
