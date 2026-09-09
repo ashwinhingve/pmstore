@@ -5,7 +5,8 @@ import Category from '@/models/Category';
 import Product from '@/models/Product';
 import { searchQuerySchema } from '@/lib/validations/search';
 import { executeSearch, type SearchFacets } from '@/lib/search/execute';
-import { isExactNameMatch } from '@/lib/search/comparison';
+import { isExactNameMatch, scopeToComposition } from '@/lib/search/comparison';
+import { normalizeUnit } from '@/lib/pharma/format';
 import { ProductCard, type ProductCardData } from '@/components/products/ProductCard';
 import { SearchComparison } from '@/components/search/SearchComparison';
 import { SearchFilterDrawer } from '@/components/search/SearchFilterDrawer';
@@ -41,6 +42,21 @@ function firstString(v: string | string[] | undefined): string {
  * strings before crossing into React, matching lib/search/execute.ts's serialize(). */
 function serializeDoc(doc: Record<string, unknown>): Record<string, unknown> {
   return JSON.parse(JSON.stringify(doc));
+}
+
+function unitPriceOf(r: Record<string, unknown>): number {
+  return typeof r.unitPrice === 'number' ? r.unitPrice : Number.POSITIVE_INFINITY;
+}
+
+/** The id of the cheapest-per-unit in-stock product in a scoped set (or null). */
+function cheapestInStockId(results: Record<string, unknown>[]): string | null {
+  let best: Record<string, unknown> | null = null;
+  for (const r of results) {
+    const stock = typeof r.stock === 'number' ? r.stock : 0;
+    if (stock <= 0) continue;
+    if (!best || unitPriceOf(r) < unitPriceOf(best)) best = r;
+  }
+  return best ? String(best._id) : null;
 }
 
 /** Build an href that preserves the current params and applies a patch (null clears). */
@@ -104,13 +120,14 @@ export default async function SearchPage({
   // own formula — never an unrelated pair that happened to co-occur on the
   // results page.
   const topResult = results[0];
-  let comparisonProducts: Record<string, unknown>[] = [];
-  if (
+  const brandMatch =
     topResult &&
     isExactNameMatch(q, String(topResult.name ?? '')) &&
     typeof topResult.compositionKey === 'string' &&
-    topResult.compositionKey
-  ) {
+    Boolean(topResult.compositionKey);
+
+  let comparisonProducts: Record<string, unknown>[] = [];
+  if (brandMatch) {
     const siblings = await Product.find({
       compositionKey: topResult.compositionKey,
       isActive: true,
@@ -128,6 +145,31 @@ export default async function SearchPage({
       comparisonProducts = [topResult, ...siblings.map((s) => serializeDoc(s as Record<string, unknown>))];
     }
   }
+
+  // Relevance scope: on an unfiltered first-page brand search, the grid shows
+  // only the searched medicine and its genuine same-composition equivalents —
+  // never an unrelated product that merely shared a token. Broad searches (a
+  // salt or a condition) stay wide with the full facets + pagination below.
+  const hasNarrowingFilter = Boolean(
+    firstString(params.category) ||
+      firstString(params.prescriptionRequired) ||
+      firstString(params.minPrice) ||
+      firstString(params.maxPrice)
+  );
+  const brandScoped = Boolean(brandMatch) && !hasNarrowingFilter && parsed.data.page === 1;
+
+  // When scoped, lead the grid with the cheapest per unit so the best value is
+  // obvious at a glance; flag it so its card wears a "Best value" ribbon.
+  const gridResults = brandScoped
+    ? [...scopeToComposition(results, q)].sort(
+        (a, b) => unitPriceOf(a) - unitPriceOf(b)
+      )
+    : results;
+
+  const bestValueId = brandScoped ? cheapestInStockId(gridResults) : null;
+  const scopedUnit = brandScoped
+    ? normalizeUnit(String(topResult.packUnit ?? 'unit'))
+    : '';
 
   return (
     <div className="mx-auto max-w-[1600px] xl:w-4/5 px-4 py-8 sm:px-6 lg:px-8">
@@ -170,33 +212,54 @@ export default async function SearchPage({
       {comparisonProducts.length > 1 && <SearchComparison products={comparisonProducts} />}
 
       <div className="flex flex-col gap-4 md:flex-row md:gap-6">
-        {/* Mobile: filters live behind a compact trigger so results show first */}
-        <SearchFilterDrawer>
-          <FacetContent params={params} facets={data.facets} catName={catName} />
-        </SearchFilterDrawer>
+        {/* Mobile + desktop filters — hidden in brand-scoped mode, where the grid
+            is a single composition group and price/category facets are moot. */}
+        {!brandScoped && (
+          <>
+            <SearchFilterDrawer>
+              <FacetContent params={params} facets={data.facets} catName={catName} />
+            </SearchFilterDrawer>
 
-        {/* Desktop: the same facets, inline in a sidebar */}
-        <aside
-          className="hidden h-fit w-full shrink-0 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)] md:block md:w-60"
-          aria-label="Filter results"
-        >
-          <FacetContent params={params} facets={data.facets} catName={catName} />
-        </aside>
+            <aside
+              className="hidden h-fit w-full shrink-0 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 shadow-[var(--shadow-xs)] md:block md:w-60"
+              aria-label="Filter results"
+            >
+              <FacetContent params={params} facets={data.facets} catName={catName} />
+            </aside>
+          </>
+        )}
 
         <main className="flex-1">
-          {results.length === 0 ? (
+          {brandScoped && gridResults.length > 0 && (
+            <p className="mb-4 inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-3 py-1.5 text-sm font-medium text-[var(--mint-deep)]">
+              <span
+                className="inline-flex items-center rounded-[var(--radius-pill)] bg-[var(--mint)] px-2 py-0.5 text-xs font-bold text-[var(--brand-ink)]"
+                style={{ fontVariantNumeric: 'tabular-nums' }}
+              >
+                {gridResults.length}
+              </span>
+              {gridResults.length === 1
+                ? 'Only this brand carries this composition'
+                : `brands with this composition — cheapest per ${scopedUnit} first`}
+            </p>
+          )}
+
+          {gridResults.length === 0 ? (
             <NoResults q={q} />
           ) : (
             <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {results.map((product) => (
+              {gridResults.map((product) => (
                 <li key={String(product._id)}>
-                  <ProductCard product={product as unknown as ProductCardData} />
+                  <ProductCard
+                    product={product as unknown as ProductCardData}
+                    badge={bestValueId && String(product._id) === bestValueId ? 'best-value' : undefined}
+                  />
                 </li>
               ))}
             </ul>
           )}
 
-          {totalPages > 1 && (
+          {!brandScoped && totalPages > 1 && (
             <Pagination current={parsed.data.page} totalPages={totalPages} params={params} />
           )}
         </main>

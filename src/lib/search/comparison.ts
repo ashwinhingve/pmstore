@@ -81,3 +81,29 @@ export function isExactNameMatch(query: string, name: string): boolean {
   if (n === q) return true;
   return n.startsWith(q) && (n.length === q.length || n[q.length] === ' ');
 }
+
+/**
+ * Relevance scope for a brand search. When the shopper searched a specific
+ * medicine — the top result is an exact name/brand match (`isExactNameMatch`)
+ * and carries a real `compositionKey` — narrow the visible results to that
+ * medicine's own composition: it and its genuine same-salt equivalents. A
+ * query like "Dolo 650" then shows Dolo and the other paracetamol-650 brands,
+ * never an unrelated product that merely shared a stray token ("650") or a
+ * loose typo.
+ *
+ * A broad search — a salt ("paracetamol") or a condition, where the top result
+ * is NOT an exact name match — is returned unchanged, staying deliberately
+ * wide. Same-salt siblings reach the results via the salt `should` clause, so
+ * the scoped subset is the full relevant set on the first page.
+ */
+export function scopeToComposition<T extends Record<string, unknown>>(
+  results: T[],
+  query: string,
+): T[] {
+  const top = results[0];
+  if (!top) return results;
+  const name = typeof top.name === 'string' ? top.name : '';
+  const key = typeof top.compositionKey === 'string' ? top.compositionKey : '';
+  if (!key || !isExactNameMatch(query, name)) return results;
+  return results.filter((r) => r.compositionKey === key);
+}

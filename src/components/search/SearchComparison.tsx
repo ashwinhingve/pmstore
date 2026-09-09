@@ -1,49 +1,20 @@
-import Link from 'next/link';
-import { ArrowRight, Check } from 'lucide-react';
-import { computeUnitPrice, formatComposition, type Salt } from '@/lib/pharma/composition';
-import { groupComparableProducts, pickComparisonPair } from '@/lib/search/comparison';
-import { ProductVisual } from '@/components/products/ProductVisual';
-import { CompareAddToCart } from '@/components/search/CompareAddToCart';
+import { computeUnitPrice, type Salt } from '@/lib/pharma/composition';
+import { groupComparableProducts } from '@/lib/search/comparison';
+import { CompareChooserCard, type ComparisonBrand } from '@/components/search/CompareChooserCard';
 
 /**
  * Same-composition comparison, surfaced from the current search results.
  *
  * Groups the visible results by compositionKey (no extra DB queries) and, for
- * any group with more than one brand, shows a fixed side-by-side card: the brand
- * the shopper searched for on the LEFT, and a same-salt brand that costs less per
- * dose on the RIGHT (flagged "Better deal" with what it saves). The order never
- * flips, and the card always leads with the unit price — the only honest way to
- * compare brands (docs/03-DESIGN-SYSTEM.md, CLAUDE.md rule #1). The card links to
- * the full /compare view for the rest; clicking a brand opens its product page.
+ * any group with more than one brand, renders a card: the brand the shopper
+ * searched on the LEFT, and a chooser on the RIGHT to weigh it against any
+ * other same-salt brand (defaulting to the best value). The card always leads
+ * with the unit price — the only honest way to compare brands
+ * (docs/03-DESIGN-SYSTEM.md, CLAUDE.md rule #1) — and links to the full
+ * /compare view for all brands at once.
  */
 
-interface CompareProduct {
-  _id: string;
-  name: string;
-  slug: string;
-  manufacturer: string;
-  price: number;
-  mrp?: number;
-  packSize: number;
-  packUnit: string;
-  unitPrice: number;
-  stock: number;
-  compositionKey: string;
-  salts: Salt[];
-  prescriptionRequired: boolean;
-  image: string | null;
-  form?: string;
-  /** Position in the search results (0 = most relevant to the query). */
-  rank: number;
-}
-
-const money = (n: number) => `₹${n.toFixed(2)}`;
-// Prices/counts read in the normal body sans (client preference, 2026-08-10);
-// tabular-nums keeps the figures aligned.
-const mono = { fontFamily: 'var(--font-body)' as const, fontVariantNumeric: 'tabular-nums' as const };
-const unitNoun = (packUnit: string) => (packUnit === 'ml' ? 'ml' : 'unit');
-
-function coerce(raw: Record<string, unknown>): CompareProduct | null {
+function coerce(raw: Record<string, unknown>): ComparisonBrand | null {
   const compositionKey = typeof raw.compositionKey === 'string' ? raw.compositionKey : '';
   const slug = typeof raw.slug === 'string' ? raw.slug : '';
   const name = typeof raw.name === 'string' ? raw.name : '';
@@ -81,7 +52,7 @@ export function SearchComparison({ products }: { products: Record<string, unknow
       if (p) p.rank = idx; // results arrive in relevance order — index 0 is the top match
       return p;
     })
-    .filter((p): p is CompareProduct => p !== null);
+    .filter((p): p is ComparisonBrand => p !== null);
 
   // Only groups with more than one brand are worth comparing. Show the group
   // that holds the most relevant result first, and cap at 3 so the page stays
@@ -90,209 +61,31 @@ export function SearchComparison({ products }: { products: Record<string, unknow
 
   if (comparable.length === 0) return null;
 
+  const noun = comparable[0][0].packUnit === 'ml' ? 'ml' : 'tablet';
+
   return (
     <section className="mb-8" aria-label="Compare same-composition brands">
       <h2 className="mb-1 text-[length:var(--step-2)] font-bold text-[var(--ink)]">
         Same composition, compared
       </h2>
       <p className="mb-5 max-w-2xl text-sm text-[var(--ink-70)]">
-        The medicine you searched is on the left; a same-salt brand that costs less per{' '}
-        {comparable[0][0].packUnit === 'ml' ? 'ml' : 'tablet'} is on the right — the fair way to
-        compare, since a cheaper-looking pack can cost more per dose.
+        The medicine you searched is on the left; choose any same-salt brand on the right to
+        compare — the fair way, since a cheaper-looking pack can cost more per {noun}.
       </p>
 
-      <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
-        {comparable.map((group) => (
-          <CompareCard key={group[0].compositionKey} group={group} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function CompareCard({ group }: { group: CompareProduct[] }) {
-  // LEFT is always the brand the shopper searched for (the most relevant result
-  // in this composition group). RIGHT is the best-value same-salt alternative —
-  // in stock first, then cheapest per unit. The order never flips.
-  const { searched, alt } = pickComparisonPair(group);
-
-  const label =
-    searched.salts.length > 0 ? formatComposition(searched.salts) : searched.compositionKey;
-
-  // What the alternative saves per dose against the searched brand.
-  const altIsBetter = alt.unitPrice < searched.unitPrice;
-  const unitGap = Math.max(0, searched.unitPrice - alt.unitPrice);
-  const pct = altIsBetter && searched.unitPrice > 0 ? Math.round((unitGap / searched.unitPrice) * 100) : 0;
-
-  // Link to the full side-by-side /compare page — only when both carry a real
-  // Mongo id (coerce() can fall back to the slug).
-  const isObjectId = (s: string) => /^[a-f0-9]{24}$/i.test(s);
-  const compareHref =
-    isObjectId(searched._id) && isObjectId(alt._id)
-      ? `/compare?ids=${searched._id},${alt._id}`
-      : null;
-
-  return (
-    <article className="flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] shadow-[var(--shadow-sm)] transition-shadow duration-[var(--dur-fast)] hover:shadow-[var(--shadow-md)]">
-      {/* Header: composition + savings hook */}
-      <div className="flex items-start justify-between gap-3 border-b border-[var(--foil-soft)] bg-[var(--brand-tint)] px-4 py-3">
-        <div className="min-w-0">
-          <h3 className="truncate text-[length:var(--step-1)] font-bold text-[var(--ink)]">{label}</h3>
-          <p className="mt-0.5 text-xs text-[var(--ink-70)]">
-            <span style={mono}>{group.length}</span> brands · same salt
-          </p>
+      {comparable.length === 1 ? (
+        // A single group (typically a brand search) reads better at a comfortable
+        // width than stranded in a wide multi-column grid.
+        <div className="max-w-2xl">
+          <CompareChooserCard group={comparable[0]} />
         </div>
-        {pct > 0 && (
-          <span className="shrink-0 rounded-[var(--radius-pill)] bg-[var(--mint)] px-2.5 py-1 text-xs font-bold text-[var(--brand-ink)] shadow-[var(--shadow-xs)]">
-            Save <span style={mono}>{pct}%</span>
-          </span>
-        )}
-      </div>
-
-      {/* Searched brand (left) vs the better-value alternative (right) */}
-      <div className="grid flex-1 grid-cols-2 divide-x divide-[var(--foil-soft)]">
-        <ProductPane
-          p={searched}
-          role="searched"
-          noun={unitNoun(searched.packUnit)}
-          highlight={!altIsBetter}
-        />
-        <ProductPane
-          p={alt}
-          role={altIsBetter ? 'deal' : 'alt'}
-          noun={unitNoun(alt.packUnit)}
-          savePerUnit={altIsBetter ? unitGap : 0}
-          highlight={altIsBetter}
-        />
-      </div>
-
-      {/* Footer: open the full side-by-side compare */}
-      {compareHref && (
-        <div className="border-t border-[var(--foil-soft)] px-4 py-3">
-          <Link
-            href={compareHref}
-            className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--brand)] transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
-          >
-            {group.length > 2 ? (
-              <>
-                Compare all <span style={mono}>{group.length}</span> brands
-              </>
-            ) : (
-              'Compare in detail'
-            )}
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+      ) : (
+        <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+          {comparable.map((group) => (
+            <CompareChooserCard key={group[0].compositionKey} group={group} />
+          ))}
         </div>
       )}
-    </article>
+    </section>
   );
-}
-
-/** One brand column inside a comparison card. Leads with the unit price. */
-function ProductPane({
-  p,
-  role,
-  noun,
-  savePerUnit = 0,
-  highlight = false,
-}: {
-  p: CompareProduct;
-  role: 'searched' | 'deal' | 'alt';
-  noun: string;
-  savePerUnit?: number;
-  highlight?: boolean;
-}) {
-  const out = p.stock <= 0;
-  return (
-    <div
-      className={`relative flex flex-col gap-2 p-3 ${
-        highlight ? 'bg-[var(--brand-soft)]/60 ring-1 ring-inset ring-[var(--brand)]/20' : ''
-      } ${out ? 'opacity-60' : ''}`}
-    >
-      <Link href={`/products/${p.slug}`} className="group block">
-        <div className="relative mx-auto aspect-square w-full max-w-[7rem] overflow-hidden rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)]">
-          <ProductVisual imageUrl={p.image} form={p.form} name={p.name} sizes="120px" />
-        </div>
-      </Link>
-
-      <div className="flex flex-wrap items-center gap-1.5">
-        {role === 'searched' ? (
-          <span className="inline-flex rounded-[var(--radius-pill)] bg-[var(--foil-soft)] px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
-            You searched
-          </span>
-        ) : role === 'deal' ? (
-          <span className="inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--brand)] px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--brand-ink)]">
-            <Check className="h-3 w-3" aria-hidden="true" /> Better deal
-          </span>
-        ) : (
-          <span className="inline-flex rounded-[var(--radius-pill)] bg-[var(--foil-soft)] px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--ink-70)]">
-            Alternative
-          </span>
-        )}
-        {p.prescriptionRequired && <RxPill />}
-      </div>
-
-      <Link href={`/products/${p.slug}`} className="group block min-w-0">
-        <p className="truncate font-semibold text-[var(--ink)] group-hover:underline">{p.name}</p>
-        <p className="truncate text-xs text-[var(--ink-70)]">{p.manufacturer || '—'}</p>
-      </Link>
-
-      {/* Price block — unit price is the headline, pack price below (rule #1). */}
-      <div className="mt-auto">
-        <p className="leading-none">
-          <span style={mono} className="text-lg font-bold text-[var(--ink)]">
-            {money(p.unitPrice)}
-          </span>
-          <span className="text-xs text-[var(--ink-40)]">/{noun}</span>
-        </p>
-        <p className="mt-1 text-xs text-[var(--ink-70)]">
-          <span style={mono}>{money(p.price)}</span> · <span style={mono}>{p.packSize}</span>{' '}
-          {p.packUnit}
-          {p.mrp != null && p.mrp > p.price && (
-            <span style={mono} className="ml-1.5 text-[var(--ink-40)] line-through">
-              {money(p.mrp)}
-            </span>
-          )}
-        </p>
-        {role === 'deal' && savePerUnit > 0 ? (
-          <p style={mono} className="mt-1 text-xs font-semibold text-[var(--mint)]">
-            Save {money(savePerUnit)}/{noun}
-          </p>
-        ) : out ? (
-          <p className="mt-1">
-            <OutOfStock />
-          </p>
-        ) : null}
-      </div>
-
-      {/* Add to cart — available straight from the comparison, on both brands. */}
-      <CompareAddToCart
-        product={{
-          _id: p._id,
-          name: p.name,
-          slug: p.slug,
-          price: p.price,
-          image: p.image,
-          packSize: p.packSize,
-          packUnit: p.packUnit,
-          unitPrice: p.unitPrice,
-          mrp: p.mrp,
-          prescriptionRequired: p.prescriptionRequired,
-          stock: p.stock,
-        }}
-      />
-    </div>
-  );
-}
-
-function RxPill() {
-  return (
-    <span className="rounded bg-[var(--rx-soft)] px-1.5 py-0.5 text-xs font-semibold text-[var(--rx)]">
-      Rx
-    </span>
-  );
-}
-
-function OutOfStock() {
-  return <span className="text-xs text-[var(--ink-40)]">Out of stock</span>;
 }

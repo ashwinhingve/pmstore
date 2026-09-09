@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { groupComparableProducts, pickComparisonPair, isExactNameMatch, type ComparableProduct } from './comparison';
+import {
+  groupComparableProducts,
+  pickComparisonPair,
+  isExactNameMatch,
+  scopeToComposition,
+  type ComparableProduct,
+} from './comparison';
 
 interface P extends ComparableProduct {
   id: string;
@@ -128,5 +134,30 @@ describe('isExactNameMatch', () => {
   it('is safe for empty input', () => {
     expect(isExactNameMatch('', 'Dolo 650mg Tablet')).toBe(false);
     expect(isExactNameMatch('dolo', '')).toBe(false);
+  });
+});
+
+describe('scopeToComposition', () => {
+  const dolo = { _id: '1', name: 'Dolo 650mg Tablet', compositionKey: 'paracetamol-650mg|tablet' };
+  const calpol = { _id: '2', name: 'Calpol 650', compositionKey: 'paracetamol-650mg|tablet' };
+  const strayShelcal = { _id: '3', name: 'Shelcal 650', compositionKey: 'calcium-650mg|tablet' };
+
+  it('narrows a brand search to the top result’s own composition', () => {
+    const scoped = scopeToComposition([dolo, calpol, strayShelcal], 'dolo 650');
+    expect(scoped.map((r) => r._id)).toEqual(['1', '2']);
+  });
+
+  it('leaves a broad (salt) search wide — top result is not an exact name match', () => {
+    const results = [dolo, strayShelcal];
+    expect(scopeToComposition(results, 'paracetamol')).toHaveLength(2);
+  });
+
+  it('is a no-op when the top result has no compositionKey', () => {
+    const results = [{ _id: '1', name: 'Dolo 650' }, { _id: '2', name: 'Y', compositionKey: 'z' }];
+    expect(scopeToComposition(results, 'dolo 650')).toHaveLength(2);
+  });
+
+  it('is safe for an empty result set', () => {
+    expect(scopeToComposition([], 'dolo')).toEqual([]);
   });
 });

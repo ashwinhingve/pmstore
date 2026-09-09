@@ -4,8 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { RxBadge } from "@/components/shared/RxBadge";
+import { Badge } from "@/components/shared/Badge";
 import { PriceBlock } from "@/components/shared/PriceBlock";
 import { formatINR, formatPack, type ScheduleClass } from "@/lib/pharma/format";
+import { formatComposition, type Salt } from "@/lib/pharma/composition";
+import { getCategoryTint } from "@/lib/pharma/medicine-visual";
 import { ProductVisual } from "@/components/products/ProductVisual";
 import { WhatsAppGlyph } from "@/components/shared/WhatsAppGlyph";
 import { useCartStore } from "@/store/useCartStore";
@@ -32,6 +35,7 @@ export interface ProductCardData {
   stock?: number;
   category?: { name: string } | string;
   manufacturer?: string;
+  salts?: Salt[];
   averageRating?: number;
   average_rating?: number;
   totalReviews?: number;
@@ -45,9 +49,11 @@ export interface ProductCardData {
 interface ProductCardProps {
   product: ProductCardData;
   showSaleBadge?: boolean;
+  /** "best-value" flags the cheapest-per-unit brand in a scoped brand search. */
+  badge?: "best-value";
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, badge }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
@@ -97,6 +103,20 @@ export function ProductCard({ product }: ProductCardProps) {
   const categoryName =
     typeof product.category === "string" ? product.category : product.category?.name;
   const outOfStock = typeof product.stock === "number" && product.stock <= 0;
+
+  // Category colour for the packaging chip — the same tint the visual tile uses,
+  // so a card reads as one coloured unit.
+  const tint = getCategoryTint(categoryName);
+  const composition =
+    product.salts && product.salts.length > 0 ? formatComposition(product.salts) : null;
+  const formLabel = product.form
+    ? product.form.charAt(0).toUpperCase() + product.form.slice(1)
+    : null;
+  const packLabel =
+    product.packSize && product.packUnit ? formatPack(product.packSize, product.packUnit) : null;
+  // "Tablet · 15 tablets" — dosage form + how much medicine you get, the detail
+  // shoppers scan for. Packaging/quantity stays visible right under the name.
+  const packagingLine = [formLabel, packLabel].filter(Boolean).join(" · ");
 
   // Newly added within the last 30 days
   const isNew = (() => {
@@ -167,9 +187,15 @@ export function ProductCard({ product }: ProductCardProps) {
         <Scale className="h-4 w-4" aria-hidden="true" />
       </button>
 
-      {/* Info — kept deliberately compact: name, price, one action. */}
+      {/* Info — name, the medicine's details, price, one action. */}
       <div className="flex flex-1 flex-col p-3">
-        <h3 className="mb-1.5 line-clamp-2 font-[family-name:var(--font-display)] text-sm font-semibold leading-snug text-[var(--ink)]">
+        {badge === "best-value" && (
+          <Badge tone="mint" className="mb-1.5 w-fit">
+            Best value
+          </Badge>
+        )}
+
+        <h3 className="mb-1 line-clamp-2 font-[family-name:var(--font-display)] text-sm font-semibold leading-snug text-[var(--ink)]">
           <Link
             href={`/products/${product.slug}`}
             className="outline-none after:absolute after:inset-0 after:content-[''] focus-visible:underline"
@@ -177,6 +203,32 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </Link>
         </h3>
+
+        {/* The details a shopper scans: composition, then packaging + quantity. */}
+        {composition && (
+          <p className="mb-1.5 line-clamp-1 text-xs text-[var(--ink-70)]">{composition}</p>
+        )}
+        <div className="mb-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+          {packagingLine && (
+            <span
+              className="inline-flex items-center rounded-[var(--radius-pill)] px-2 py-0.5 text-[0.6875rem] font-semibold tabular-nums"
+              style={{ backgroundColor: tint.bg, color: tint.fg }}
+            >
+              {packagingLine}
+            </span>
+          )}
+          {!outOfStock && (
+            <span className="inline-flex items-center gap-1 text-[0.6875rem] font-medium text-[var(--mint)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--mint)]" aria-hidden="true" />
+              In stock
+            </span>
+          )}
+        </div>
+        {product.manufacturer && (
+          <p className="mb-1 line-clamp-1 text-[0.6875rem] text-[var(--ink-40)]">
+            {product.manufacturer}
+          </p>
+        )}
 
         {/* Price — unit price line always leads when we have the data. */}
         <div className="mt-auto pt-2">

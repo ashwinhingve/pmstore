@@ -6,7 +6,7 @@ import { EmptyState } from '@/components/shared/EmptyState';
 import { Badge } from '@/components/shared/Badge';
 import { CompareCard } from '@/components/compare/CompareCard';
 import { AddBestToCartButton } from '@/components/compare/AddBestToCartButton';
-import { buildCompareViewModel, type CompareProduct } from '@/lib/pharma/compare';
+import { buildCompareViewModel, buildMultiCompare, type CompareProduct } from '@/lib/pharma/compare';
 import { getCompareProducts } from '@/lib/pharma/compare-data';
 import { formatINR, packUnitShort } from '@/lib/pharma/format';
 
@@ -64,10 +64,79 @@ export default async function ComparePage({ searchParams }: { searchParams: Sear
           description="Open any medicine and choose Compare, or pick two brands from your search results. We'll show which one costs less per tablet."
           action={{ label: 'Browse medicines', href: '/products' }}
         />
-      ) : (
+      ) : products.length === 2 ? (
         <Comparison products={products} />
+      ) : (
+        <MultiComparison products={products} />
       )}
     </Container>
+  );
+}
+
+/** Three or more brands, ranked on price per unit with the cheapest flagged. */
+function MultiComparison({ products }: { products: CompareProduct[] }) {
+  const vm = buildMultiCompare(products);
+  const ordered = vm.ranked
+    .map((r) => products.find((p) => p._id === r._id))
+    .filter((p): p is CompareProduct => Boolean(p));
+  const cheapest = products.find((p) => p._id === vm.cheapestId) ?? products[0];
+  const searched = products.find((p) => p._id === vm.searchedId) ?? products[0];
+  const cheapestSavings = vm.ranked.find((r) => r._id === vm.cheapestId)?.savings ?? null;
+  const unit = packUnitShort(cheapest.packUnit);
+
+  return (
+    <section aria-label="Product comparison" className="mt-2">
+      {vm.sameComposition ? (
+        <p className="text-[var(--ink-70)]">
+          <span className="strength">{vm.ranked.length}</span> brands of the same composition —{' '}
+          <span className="strength">{vm.compositionLabel}</span> — priced per {unit}, cheapest
+          first.
+        </p>
+      ) : (
+        <p className="flex items-start gap-2 text-[var(--ink-70)]">
+          <Info className="mt-1 h-4 w-4 shrink-0 text-[var(--ink-40)]" aria-hidden="true" />
+          These brands don&apos;t all share the same salts — one is not a substitute for another.
+          The comparison below is price per {unit} only.
+        </p>
+      )}
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
+        {ordered.map((p) => (
+          <CompareCard key={p._id} product={p} isBest={p._id === vm.cheapestId} />
+        ))}
+      </div>
+
+      <aside
+        aria-label="Best value"
+        className="mt-6 flex flex-col gap-4 rounded-[var(--radius-lg)] border border-[var(--mint)] bg-[var(--mint-soft)] p-5 shadow-[var(--shadow-sm)] sm:flex-row sm:items-center sm:justify-between sm:p-6"
+      >
+        <div>
+          <Badge tone="mint">Best value</Badge>
+          <p className="mt-2 font-medium text-[var(--ink)]">
+            {cheapest._id === searched._id ? (
+              <>
+                {searched.name} is the cheapest per {unit} of the{' '}
+                <span className="data">{vm.ranked.length}</span> brands here.
+              </>
+            ) : cheapestSavings ? (
+              <>
+                {cheapest.name} costs the least per {unit} — save{' '}
+                <span className="price font-semibold text-[var(--mint)]">
+                  {formatINR(cheapestSavings.perPack)}
+                </span>{' '}
+                on a pack (<span className="data">{cheapestSavings.percent}%</span> less per {unit})
+                vs {searched.name}.
+              </>
+            ) : (
+              <>
+                {cheapest.name} is the cheapest you can order per {unit}.
+              </>
+            )}
+          </p>
+        </div>
+        <AddBestToCartButton product={cheapest} />
+      </aside>
+    </section>
   );
 }
 

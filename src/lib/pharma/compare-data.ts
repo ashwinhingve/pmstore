@@ -13,8 +13,11 @@ import Product from '@/models/Product';
 import type { CompareProduct } from './compare';
 import type { DosageForm, Salt } from './composition';
 
+/** Upper bound on a single comparison — enough to hold a salt's brand set. */
+export const MAX_COMPARE = 8;
+
 const COMPARE_FIELDS =
-  '_id name slug manufacturer price mrp packSize packUnit unitPrice stock scheduleClass prescriptionRequired salts form compositionKey images';
+  '_id name slug manufacturer price mrp packSize packUnit unitPrice stock scheduleClass prescriptionRequired salts form compositionKey images averageRating totalReviews orderCount';
 
 interface LeanCompareDoc {
   _id: unknown;
@@ -33,6 +36,9 @@ interface LeanCompareDoc {
   form: DosageForm;
   compositionKey: string;
   images?: { url?: string }[];
+  averageRating?: number;
+  totalReviews?: number;
+  orderCount?: number;
 }
 
 export const getCompareProducts = cache(async (idsCsv: string): Promise<CompareProduct[]> => {
@@ -43,7 +49,7 @@ export const getCompareProducts = cache(async (idsCsv: string): Promise<CompareP
         .map((s) => s.trim())
         .filter((id) => isValidObjectId(id))
     ),
-  ].slice(0, 2);
+  ].slice(0, MAX_COMPARE);
 
   if (ids.length === 0) return [];
 
@@ -74,5 +80,8 @@ export const getCompareProducts = cache(async (idsCsv: string): Promise<CompareP
       form: d.form,
       compositionKey: d.compositionKey,
       image: d.images?.[0]?.url ?? null,
+      averageRating: d.averageRating ?? 0,
+      totalReviews: d.totalReviews ?? 0,
+      orderCount: d.orderCount ?? 0,
     }));
 });

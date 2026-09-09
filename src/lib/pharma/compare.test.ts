@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildCompareViewModel, type CompareProduct } from './compare';
+import { buildCompareViewModel, buildMultiCompare, type CompareProduct } from './compare';
 
 function product(overrides: Partial<CompareProduct>): CompareProduct {
   return {
@@ -95,5 +95,60 @@ describe('buildCompareViewModel', () => {
   it('keeps the given product order in the view model', () => {
     const vm = buildCompareViewModel([calpol, dolo]);
     expect(vm.products.map((p) => p._id)).toEqual(['p2', 'p1']);
+  });
+});
+
+describe('buildMultiCompare', () => {
+  const pricier = product({ _id: 'p3', name: 'Pricey 650', unitPrice: 2.5, price: 37.5 });
+
+  it('ranks cheapest-per-unit first and flags it as the best value', () => {
+    const vm = buildMultiCompare([dolo, calpol, pricier]);
+    expect(vm.searchedId).toBe('p1'); // first id = the searched brand
+    expect(vm.cheapestId).toBe('p2'); // Calpol, cheapest per tablet
+    expect(vm.ranked[0]._id).toBe('p2');
+    expect(vm.ranked.map((r) => r._id)).toEqual(['p2', 'p1', 'p3']);
+  });
+
+  it('reports the cheapest brand’s savings against the searched brand', () => {
+    const vm = buildMultiCompare([dolo, calpol, pricier]);
+    const cheapest = vm.ranked.find((r) => r._id === vm.cheapestId);
+    expect(cheapest?.savings).toEqual({ perUnit: 0.57, perPack: 8.55, percent: 28 });
+  });
+
+  it('labels the shared composition when every brand matches', () => {
+    const vm = buildMultiCompare([dolo, calpol, pricier]);
+    expect(vm.sameComposition).toBe(true);
+    expect(vm.compositionLabel).toBe('Paracetamol 650 mg');
+  });
+
+  it('names the searched brand the best value when it is already the cheapest', () => {
+    const cheapDolo = product({ unitPrice: 1.0, price: 15 });
+    const vm = buildMultiCompare([cheapDolo, calpol, pricier]);
+    expect(vm.cheapestId).toBe('p1');
+  });
+
+  it('never names an out-of-stock brand the best value, even when cheaper', () => {
+    const cheaperGone = product({ _id: 'p2', unitPrice: 0.5, stock: 0 });
+    const vm = buildMultiCompare([dolo, cheaperGone, pricier]);
+    expect(vm.cheapestId).toBe('p1'); // cheapest of the in-stock pool
+  });
+
+  it('flags mixed compositions and drops the label', () => {
+    const ibu = product({
+      _id: 'p3',
+      name: 'Ibugesic 400',
+      unitPrice: 1.2,
+      price: 12,
+      packSize: 10,
+      compositionKey: 'ibuprofen-400mg|tablet',
+      salts: [{ name: 'Ibuprofen', strength: 400, unit: 'mg' }],
+    });
+    const vm = buildMultiCompare([dolo, calpol, ibu]);
+    expect(vm.sameComposition).toBe(false);
+    expect(vm.compositionLabel).toBeNull();
+  });
+
+  it('requires at least two products', () => {
+    expect(() => buildMultiCompare([dolo])).toThrow();
   });
 });
