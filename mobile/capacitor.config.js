@@ -27,6 +27,14 @@ const config = {
   appId: 'com.pratigyamedicalstore.app',
   appName: 'PM Store',
   webDir: 'www',
+  // Marker appended to the WebView User-Agent so the site can reliably tell it
+  // is running inside this app — independent of the injected `window.Capacitor`
+  // on a remote page. The login page's isNativeApp() reads this to route Google
+  // sign-in through the native SDK instead of the web OAuth flow (which bounces
+  // out to Chrome). MUST be top-level (or under `android`) — Capacitor does NOT
+  // read appendUserAgent from inside `server`. Keep in sync with isNativeApp()
+  // in src/app/(account)/login/page.tsx.
+  appendUserAgent: 'PMStoreApp',
   server: {
     url: 'https://pratigyamedicalstore.com',
     androidScheme: 'https',
@@ -38,13 +46,6 @@ const config = {
     // On a network error the WebView loads this bundled page (www/index.html,
     // served from the local asset server) instead of a blank screen.
     errorPath: 'index.html',
-    // Marker appended to the WebView User-Agent so the site can reliably tell
-    // it is running inside this app — independent of the timing/shape of the
-    // injected `window.Capacitor` on a remote page. The login page reads this
-    // to route Google sign-in through the native SDK instead of the web OAuth
-    // flow (which would bounce out to Chrome). Keep in sync with the
-    // `isNativeApp()` check in src/app/(account)/login/page.tsx.
-    appendUserAgent: 'PMStoreApp',
   },
   plugins: {
     SplashScreen: {
