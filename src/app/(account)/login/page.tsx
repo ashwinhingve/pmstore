@@ -42,9 +42,14 @@ async function nativeGoogleIdToken(): Promise<string> {
   const webClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
   if (!webClientId) throw new Error("Google sign-in is not configured")
   await SocialLogin.initialize({ google: { webClientId } })
+  // No custom `scopes`: the plugin already requests email + profile + openid by
+  // default (GoogleProvider.java), and passing any `scopes` array forces its
+  // legacy flow that needs a modified MainActivity ("You CANNOT use scopes
+  // without modifying the main activity"). We only need the idToken, which the
+  // default Credential Manager flow returns.
   const res = await SocialLogin.login({
     provider: "google",
-    options: { scopes: ["profile", "email"] },
+    options: {},
   })
   const result = res.result as { idToken?: string | null }
   if (!result.idToken) throw new Error("No Google idToken returned")
