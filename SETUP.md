@@ -128,7 +128,12 @@ All free-tier friendly (the project runs on free tiers plus a small VPS).
 5. **Cloudinary** — https://cloudinary.com/console → dashboard shows cloud name / API key / secret.
 6. **Fast2SMS** *(optional)* — https://www.fast2sms.com → *Dev API* for `FAST2SMS_API_KEY`
    (Indian mobile OTP; note DLT rules).
-7. **Delhivery** *(optional)* — client's Delhivery One account → API token.
+7. **Delhivery** *(optional)* — client's Delhivery One account → API token. To use in-app
+   **pickup requests**, register the store warehouse in the Delhivery One dashboard under the
+   exact name in `DELHIVERY_RETURN_NAME`; Delhivery allows one open pickup per warehouse per day,
+   so admin's per-order "Request pickup" button books the day's pickup once and later orders reuse
+   it. `DELHIVERY_PICKUP_TIME` (default `14:00:00`, IST) sets the requested slot. Shiprocket
+   pickups are per-shipment and need no extra config beyond the pickup location.
 8. **Firebase / FCM** *(optional)* — Firebase console → *Project settings → Service accounts →
    Generate private key*; map the JSON to `FCM_*`.
 9. **WhatsApp** *(optional)* — Meta developers dashboard (`WHATSAPP_*`); the bot only replies to

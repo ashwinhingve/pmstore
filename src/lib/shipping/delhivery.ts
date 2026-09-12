@@ -3,7 +3,41 @@ import type {
   ShipmentCreationData,
   ShipmentCreationResult,
   TrackingResult,
+  PickupRequestData,
+  PickupRequestResult,
 } from './types';
+
+/**
+ * The date (YYYY-MM-DD, IST) to schedule a Delhivery pickup for. Requests raised
+ * after the afternoon cutoff roll to the next day, since same-day pickup is no
+ * longer feasible. Delhivery expects a local (IST) date, not UTC.
+ */
+export function defaultPickupDate(now: Date = new Date(), cutoffHourIST = 15): string {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+  }).formatToParts(now);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+  let year = Number(get('year'));
+  let month = Number(get('month'));
+  let day = Number(get('day'));
+  const hour = Number(get('hour'));
+
+  if (hour >= cutoffHourIST) {
+    const d = new Date(Date.UTC(year, month - 1, day));
+    d.setUTCDate(d.getUTCDate() + 1);
+    year = d.getUTCFullYear();
+    month = d.getUTCMonth() + 1;
+    day = d.getUTCDate();
+  }
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${year}-${pad(month)}-${pad(day)}`;
+}
 
 interface DelhiveryConfig {
   apiKey: string;
@@ -188,6 +222,64 @@ class DelhiveryService implements IShippingProvider {
     } catch (error: any) {
       console.error('Error creating Delhivery shipment:', error);
       return { success: false, error: error.message || 'Failed to create shipment' };
+    }
+  }
+
+  async requestPickup(
+    data: PickupRequestData
+  ): Promise<{ success: boolean; result?: PickupRequestResult; error?: string }> {
+    if (!this.config) {
+      return { success: false, error: 'Delhivery service not configured' };
+    }
+
+    try {
+      const pickupDate = data.pickupDate || defaultPickupDate();
+      const pickupTime = (process.env.DELHIVERY_PICKUP_TIME || '14:00:00').trim();
+
+      const body = {
+        // Must be the warehouse name registered with Delhivery (One dashboard /
+        // Warehouse Creation API), matched exactly.
+        pickup_location: this.config.returnName,
+        pickup_date: pickupDate,
+        pickup_time: pickupTime,
+        expected_package_count: data.packageCount && data.packageCount > 0 ? data.packageCount : 1,
+      };
+
+      const response = await fetch(`${this.config.baseUrl}/fm/request/new/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${this.config.apiKey}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const raw = await response.json().catch(() => ({}));
+
+      if (response.ok && raw.pickup_id) {
+        return {
+          success: true,
+          result: {
+            pickupId: String(raw.pickup_id),
+            scheduledDate: pickupDate,
+          },
+        };
+      }
+
+      const errMsg = String(
+        raw.error || raw.pr_exist || raw.detail || raw.message || 'Delhivery pickup request failed'
+      );
+      const lower = errMsg.toLowerCase();
+      let clean = errMsg;
+      if (lower.includes('already') || lower.includes('pr_exist') || lower.includes('exist')) {
+        clean = `A Delhivery pickup is already scheduled for ${pickupDate}. Delhivery collects all ready packages in one visit — no further request is needed today.`;
+      } else if (lower.includes('warehouse') || lower.includes('pickup_location') || lower.includes('client')) {
+        clean = `Delhivery does not recognise the pickup warehouse "${this.config.returnName}". Register it in the Delhivery One dashboard under this exact name, then retry.`;
+      }
+      return { success: false, error: clean };
+    } catch (error: any) {
+      console.error('Error requesting Delhivery pickup:', error);
+      return { success: false, error: error.message || 'Failed to request pickup' };
     }
   }
 

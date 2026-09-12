@@ -23,6 +23,15 @@ export interface IShipment extends Document {
   pickupDate?: Date;
   deliveryDate?: Date;
   currentLocation?: string;
+  /** Courier pickup-request id — Delhivery pickup_id / Shiprocket pickup_token_number.
+   *  Delhivery: shared across all shipments picked up on the same day. */
+  pickupId?: string;
+  /** 'Scheduled' once a pickup has been requested. */
+  pickupStatus?: string;
+  /** The day the courier will collect (UTC midnight of the scheduled date). */
+  pickupScheduledDate?: Date;
+  /** When we raised the pickup request. */
+  pickupRequestedAt?: Date;
   scans: IShipmentScan[];
   createdAt: Date;
   updatedAt: Date;
@@ -69,6 +78,18 @@ const ShipmentSchema = new Schema<IShipment>(
     currentLocation: {
       type: String,
     },
+    pickupId: {
+      type: String,
+    },
+    pickupStatus: {
+      type: String,
+    },
+    pickupScheduledDate: {
+      type: Date,
+    },
+    pickupRequestedAt: {
+      type: Date,
+    },
     scans: [
       {
         status: { type: String, required: true },
@@ -86,6 +107,8 @@ const ShipmentSchema = new Schema<IShipment>(
 ShipmentSchema.index({ shipmentStatus: 1 });
 ShipmentSchema.index({ createdAt: -1 });
 ShipmentSchema.index({ provider: 1 });
+// Supports the Delhivery "one pickup per day" reuse lookup.
+ShipmentSchema.index({ provider: 1, pickupScheduledDate: -1 });
 
 export default mongoose.models.Shipment ||
   mongoose.model<IShipment>('Shipment', ShipmentSchema);

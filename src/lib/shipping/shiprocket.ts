@@ -3,6 +3,8 @@ import type {
   ShipmentCreationData,
   ShipmentCreationResult,
   TrackingResult,
+  PickupRequestData,
+  PickupRequestResult,
 } from './types';
 
 const BASE_URL = 'https://apiv2.shiprocket.in/v1/external';
@@ -320,6 +322,53 @@ class ShiprocketService implements IShippingProvider {
     } catch (err) {
       console.error('Shiprocket assignCourierAndGetAWB error:', err);
       return {};
+    }
+  }
+
+  /**
+   * Schedule a pickup for a shipment. Requires the AWB/courier to already be
+   * assigned (createShipment does this). Shiprocket picks the pickup date itself.
+   */
+  async requestPickup(
+    data: PickupRequestData
+  ): Promise<{ success: boolean; result?: PickupRequestResult; error?: string }> {
+    if (!this.isConfigured) {
+      return { success: false, error: 'Shiprocket not configured' };
+    }
+
+    try {
+      const headers = await this.authHeaders();
+      const res = await fetch(`${BASE_URL}/courier/generate/pickup`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ shipment_id: [data.providerShipmentId] }),
+      });
+
+      const raw = await res.json().catch(() => ({}));
+
+      if (res.ok && raw.pickup_status === 1) {
+        const scheduled = raw.response?.pickup_scheduled_date;
+        return {
+          success: true,
+          result: {
+            pickupId: String(raw.response?.pickup_token_number || ''),
+            scheduledDate: scheduled ? String(scheduled).split(' ')[0] : undefined,
+          },
+        };
+      }
+
+      // Shiprocket returns a message (often HTTP 200 or 400) when a pickup is
+      // already queued/scheduled for the shipment. That's the desired end state,
+      // so treat it as success rather than surfacing an error.
+      const message = String(raw.message || raw.errors?.join?.(', ') || 'Shiprocket pickup request failed');
+      if (/already|queue|scheduled|generated/i.test(message)) {
+        return { success: true, result: { pickupId: '', message } };
+      }
+      console.error('Shiprocket requestPickup error:', raw);
+      return { success: false, error: message };
+    } catch (error: any) {
+      console.error('Error requesting Shiprocket pickup:', error);
+      return { success: false, error: error.message || 'Failed to request pickup' };
     }
   }
 

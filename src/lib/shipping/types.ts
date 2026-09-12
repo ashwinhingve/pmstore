@@ -34,6 +34,25 @@ export interface ShipmentCreationResult {
   estimatedDelivery?: string;
 }
 
+export interface PickupRequestData {
+  /** Shiprocket: the numeric shipment_id. Delhivery: unused (pickup is warehouse-level). */
+  providerShipmentId: string;
+  /** YYYY-MM-DD. Delhivery uses this; Shiprocket schedules its own date. Provider default when omitted. */
+  pickupDate?: string;
+  /** Delhivery expected_package_count — a best-effort estimate. Defaults to 1. */
+  packageCount?: number;
+}
+
+export interface PickupRequestResult {
+  /** Delhivery pickup_id / Shiprocket pickup_token_number. May be '' when the provider
+   *  reports the pickup is already scheduled but returns no fresh id. */
+  pickupId: string;
+  /** YYYY-MM-DD the courier will collect. */
+  scheduledDate?: string;
+  /** Provider message, surfaced for the already-scheduled case. */
+  message?: string;
+}
+
 export interface TrackingResult {
   waybill: string;
   status: string;           // provider-native status string
@@ -61,6 +80,15 @@ export interface IShippingProvider {
   createShipment(
     data: ShipmentCreationData
   ): Promise<{ success: boolean; result?: ShipmentCreationResult; error?: string }>;
+
+  /**
+   * Ask the courier to collect the parcel(s). Shiprocket schedules a pickup for
+   * one shipment; Delhivery schedules a warehouse pickup for the day. An
+   * already-scheduled pickup is reported as success, not an error.
+   */
+  requestPickup(
+    data: PickupRequestData
+  ): Promise<{ success: boolean; result?: PickupRequestResult; error?: string }>;
 
   /**
    * @param identifier  Shiprocket: providerShipmentId (numeric). Delhivery: waybill.

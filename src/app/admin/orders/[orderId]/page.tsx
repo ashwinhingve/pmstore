@@ -9,6 +9,7 @@ import OrderDetailsCard from '@/components/admin/OrderDetailsCard';
 import OrderItemsList from '@/components/admin/OrderItemsList';
 import OrderTimelineAdmin from '@/components/admin/OrderTimelineAdmin';
 import CreateShipmentButton from '@/components/admin/CreateShipmentButton';
+import RequestPickupButton from '@/components/admin/RequestPickupButton';
 import ShipmentScanTimeline from '@/components/admin/ShipmentScanTimeline';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -110,6 +111,10 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
     estimatedDelivery: null,
     shipmentStatus: shipment?.shipmentStatus || null,
     shipmentDate: shipment?.createdAt?.toISOString() || null,
+    pickupId: shipment?.pickupId || null,
+    pickupScheduledDate: shipment?.pickupScheduledDate
+      ? shipment.pickupScheduledDate.toISOString().split('T')[0]
+      : null,
     scans: shipment?.scans?.map((s: any) => ({
       status: s.status,
       location: s.location || '',
@@ -264,6 +269,17 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
                       </div>
                     </div>
                   </div>
+                  {orderData.pickupId && (
+                    <div>
+                      <p className="text-sm text-[var(--ink-70)]">Pickup id</p>
+                      <p className="text-sm font-medium text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>
+                        {orderData.pickupId}
+                        {orderData.pickupScheduledDate && (
+                          <span className="text-[var(--ink-70)]"> · {orderData.pickupScheduledDate}</span>
+                        )}
+                      </p>
+                    </div>
+                  )}
                   {orderData.trackingUrl && (
                     <a
                       href={orderData.trackingUrl}
@@ -396,6 +412,16 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
               orderId={orderData.id}
               orderNumber={orderData.orderNumber}
               paymentMethod={orderData.paymentMethod}
+            />
+          )}
+
+          {/* Request pickup — shown once a courier shipment exists (not for local delivery) */}
+          {orderData.provider && orderData.provider !== 'manual' && (
+            <RequestPickupButton
+              orderId={orderData.id}
+              provider={orderData.provider as 'delhivery' | 'shiprocket'}
+              pickupId={orderData.pickupId}
+              pickupScheduledDate={orderData.pickupScheduledDate}
             />
           )}
 

@@ -22,6 +22,18 @@ export const createShipmentSchema = z.object({
 });
 
 /**
+ * Pickup request validation. Provider is derived from the shipment, never the
+ * client. pickupDate is Delhivery-only (Shiprocket schedules its own).
+ */
+export const requestPickupSchema = z.object({
+  orderId: z.string().min(1, 'Order ID is required'),
+  pickupDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Pickup date must be YYYY-MM-DD')
+    .optional(),
+});
+
+/**
  * Tracking request validation
  */
 export const trackShipmentSchema = z.object({
@@ -84,6 +96,7 @@ export const shippingAddressSchema = z.object({
 
 export type DelhiveryWebhookPayload = z.infer<typeof delhiveryWebhookSchema>;
 export type CreateShipmentRequest = z.infer<typeof createShipmentSchema>;
+export type RequestPickupRequest = z.infer<typeof requestPickupSchema>;
 export type TrackShipmentRequest = z.infer<typeof trackShipmentSchema>;
 export type CheckServiceabilityRequest = z.infer<typeof checkServiceabilitySchema>;
 export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
