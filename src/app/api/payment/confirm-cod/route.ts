@@ -9,6 +9,7 @@ import Discount from '@/models/Discount';
 import { emailService } from '@/lib/notifications/email';
 import { smsService } from '@/lib/notifications/sms';
 import { whatsappService } from '@/lib/notifications/whatsapp';
+import { notifyOwnerNewOrderWhatsApp } from '@/lib/notifications/owner-whatsapp';
 import { buildStockDecrement } from '@/lib/checkout/stock';
 
 /**
@@ -111,6 +112,17 @@ export async function POST(req: NextRequest) {
           paymentMethod: 'cod',
         }).catch((err) => {
           console.error('COD Telegram notification error:', err);
+        });
+
+        notifyOwnerNewOrderWhatsApp({
+          orderNumber: order.orderNumber,
+          items: orderItems.map((i) => ({ name: i.productName, quantity: i.quantity })),
+          itemCount,
+          totalAmount: order.totalAmount,
+          paymentMethod: 'cod',
+          prescriptionRequired: !!order.prescriptionId,
+        }).catch((err) => {
+          console.error('COD owner WhatsApp notification error:', err);
         });
 
         emailService.notifyAdminNewOrder({

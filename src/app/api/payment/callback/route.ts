@@ -9,6 +9,7 @@ import { cashfreeService } from '@/lib/payment/cashfree';
 import { emailService } from '@/lib/notifications/email';
 import { smsService } from '@/lib/notifications/sms';
 import { whatsappService } from '@/lib/notifications/whatsapp';
+import { notifyOwnerNewOrderWhatsApp } from '@/lib/notifications/owner-whatsapp';
 import { createShipmentForOrder } from '@/lib/shipping/createShipmentForOrder';
 import Discount from '@/models/Discount';
 import { applyRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimit';
@@ -302,6 +303,17 @@ export async function GET(request: NextRequest) {
               console.error('Error sending Telegram order notification:', error);
             });
 
+            notifyOwnerNewOrderWhatsApp({
+              orderNumber,
+              items: orderItems.map((i) => ({ name: i.productName, quantity: i.quantity })),
+              itemCount,
+              totalAmount,
+              paymentMethod,
+              prescriptionRequired: !!order.prescriptionId,
+            }).catch((error) => {
+              console.error('Error sending owner WhatsApp order notification:', error);
+            });
+
             emailService.notifyAdminNewOrder({
               orderNumber,
               customerName,
@@ -562,6 +574,17 @@ export async function POST(request: NextRequest) {
                 paymentMethod: order.paymentMethod,
               }).catch((err) => {
                 console.error('Webhook: Telegram notification error:', err);
+              });
+
+              notifyOwnerNewOrderWhatsApp({
+                orderNumber,
+                items: orderItems.map((i) => ({ name: i.productName, quantity: i.quantity })),
+                itemCount,
+                totalAmount: order.totalAmount,
+                paymentMethod: order.paymentMethod,
+                prescriptionRequired: !!order.prescriptionId,
+              }).catch((err) => {
+                console.error('Webhook: owner WhatsApp notification error:', err);
               });
 
               emailService.notifyAdminNewOrder({
