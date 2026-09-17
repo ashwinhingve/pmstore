@@ -17,7 +17,7 @@ import type { DosageForm, Salt } from './composition';
 export const MAX_COMPARE = 8;
 
 const COMPARE_FIELDS =
-  '_id name slug manufacturer price mrp packSize packUnit unitPrice stock scheduleClass prescriptionRequired salts form compositionKey images averageRating totalReviews orderCount';
+  '_id name slug manufacturer price mrp packSize packUnit unitPrice stock scheduleClass prescriptionRequired salts form compositionKey expiryDate images averageRating totalReviews orderCount';
 
 interface LeanCompareDoc {
   _id: unknown;
@@ -35,6 +35,7 @@ interface LeanCompareDoc {
   salts: Salt[];
   form: DosageForm;
   compositionKey: string;
+  expiryDate?: string | Date;
   images?: { url?: string }[];
   averageRating?: number;
   totalReviews?: number;
@@ -79,6 +80,7 @@ export const getCompareProducts = cache(async (idsCsv: string): Promise<CompareP
       salts: (d.salts ?? []).map((s) => ({ name: s.name, strength: s.strength, unit: s.unit })),
       form: d.form,
       compositionKey: d.compositionKey,
+      expiryDate: d.expiryDate ? new Date(d.expiryDate).toISOString() : null,
       image: d.images?.[0]?.url ?? null,
       averageRating: d.averageRating ?? 0,
       totalReviews: d.totalReviews ?? 0,

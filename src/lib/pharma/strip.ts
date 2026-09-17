@@ -33,6 +33,7 @@ export interface StripProductInput {
   orderCount?: number;
   salts?: Salt[];
   form?: DosageForm;
+  expiryDate?: string | Date | null;
   images?: { url?: string }[];
 }
 
@@ -60,6 +61,7 @@ function toCandidate(p: StripProductInput): AlternativeCandidate {
     orderCount: p.orderCount ?? 0,
     image: p.images?.[0]?.url ?? null,
     form: p.form,
+    expiryDate: p.expiryDate ? new Date(p.expiryDate).toISOString() : null,
   };
 }
 

@@ -35,6 +35,10 @@ export async function PATCH(
     if (body.videoUrl === '') {
       delete body.videoUrl;
     }
+    // An empty expiry date must not reach the Date cast — treat it as "not set".
+    if (body.expiryDate === '') {
+      delete body.expiryDate;
+    }
 
     // Validate with Zod (partial update)
     const validated = productUpdateSchema.parse(body);

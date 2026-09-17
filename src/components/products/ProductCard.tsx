@@ -8,6 +8,7 @@ import { Badge } from "@/components/shared/Badge";
 import { PriceBlock } from "@/components/shared/PriceBlock";
 import { formatINR, formatPack, type ScheduleClass } from "@/lib/pharma/format";
 import { formatComposition, type Salt } from "@/lib/pharma/composition";
+import { ExpiryLine } from "@/components/shared/ExpiryLine";
 import { getCategoryTint } from "@/lib/pharma/medicine-visual";
 import { ProductVisual } from "@/components/products/ProductVisual";
 import { WhatsAppGlyph } from "@/components/shared/WhatsAppGlyph";
@@ -42,6 +43,7 @@ export interface ProductCardData {
   review_count?: number;
   isFeatured?: boolean;
   createdAt?: string | Date;
+  expiryDate?: string | Date;
   weight?: number;
   weightUnit?: string;
 }
@@ -229,6 +231,9 @@ export function ProductCard({ product, badge }: ProductCardProps) {
             {product.manufacturer}
           </p>
         )}
+
+        {/* Expiry — shown on every card (government requirement). */}
+        {product.expiryDate && <ExpiryLine date={product.expiryDate} className="mb-1" />}
 
         {/* Price — unit price line always leads when we have the data. */}
         <div className="mt-auto pt-2">

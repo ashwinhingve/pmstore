@@ -43,7 +43,7 @@ export async function GET(
         ? { compositionKey: product.compositionKey }
         : { category: categoryId }),
     })
-      .select('name slug price originalPrice unitPrice packSize packUnit images averageRating category')
+      .select('name slug price originalPrice unitPrice packSize packUnit images averageRating category expiryDate')
       .populate('category', 'name slug')
       .limit(4)
       .lean();

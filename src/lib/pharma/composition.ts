@@ -169,6 +169,8 @@ export interface AlternativeCandidate {
   image?: string | null;
   /** Dosage form — drives the fallback designed tile when there is no photo. */
   form?: string;
+  /** Batch expiry (ISO string) — shown on the Strip pill (govt requirement). */
+  expiryDate?: string | null;
 }
 
 export type AlternativeBadge = 'cheapest' | 'best-rated' | 'most-popular' | 'current';

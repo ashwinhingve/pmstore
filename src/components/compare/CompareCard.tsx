@@ -4,6 +4,7 @@ import { Badge } from '@/components/shared/Badge';
 import { RxBadge } from '@/components/shared/RxBadge';
 import { ProductVisual } from '@/components/products/ProductVisual';
 import { formatINR, packUnitShort, type ScheduleClass } from '@/lib/pharma/format';
+import { ExpiryLine } from '@/components/shared/ExpiryLine';
 import type { CompareProduct } from '@/lib/pharma/compare';
 
 /**
@@ -70,6 +71,9 @@ export function CompareCard({ product, isBest }: { product: CompareProduct; isBe
           </span>
         )}
       </div>
+
+      {/* Expiry — shown on every card (government requirement). */}
+      {product.expiryDate && <ExpiryLine date={product.expiryDate} />}
 
       <Link
         href={`/products/${product.slug}`}

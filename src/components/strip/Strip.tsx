@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { formatINR, packUnitShort } from '@/lib/pharma/format';
 import { Badge } from '@/components/shared/Badge';
 import { ProductVisual } from '@/components/products/ProductVisual';
+import { ExpiryLine } from '@/components/shared/ExpiryLine';
 import type { StripViewModel } from '@/lib/pharma/strip';
 import type { RankedAlternative } from '@/lib/pharma/composition';
 
@@ -114,6 +115,9 @@ function Pill({ alt }: { alt: RankedAlternative }) {
       <span className="price text-[length:var(--step--1)] text-[var(--ink-40)]">
         {formatINR(alt.price)}
       </span>
+
+      {/* Expiry — shown on every card (government requirement). */}
+      {alt.expiryDate && <ExpiryLine date={alt.expiryDate} />}
     </Link>
   );
 }

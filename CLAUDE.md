@@ -47,7 +47,8 @@ These cause real harm if broken. Do not deviate without asking.
 2. **`compositionKey` and `unitPrice` are derived, never hand-entered.** They are computed in a
    Mongoose pre-save hook from `salts`/`form` and `price`/`packSize`. Never use `insertMany` or
    `updateMany` on products — it skips the hook and silently breaks the Strip. Use `save()` or
-   `bulkWrite` with explicitly computed values.
+   `bulkWrite` with explicitly computed values. A product flagged `noComposition` (brushes,
+   devices — no salts, no dosage form) has no `compositionKey` and simply never joins a comparison.
 
 3. **Prescription upload is MANDATORY for Schedule H/H1/X items only (client decision,
    2026-09-04 — supersedes the 2026-08-01 "fully optional" policy for these items).** A product's

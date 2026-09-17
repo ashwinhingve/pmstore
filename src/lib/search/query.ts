@@ -158,6 +158,7 @@ const CARD_PROJECTION = {
   prescriptionRequired: 1,
   scheduleClass: 1,
   compositionKey: 1,
+  expiryDate: 1,
   images: 1,
   averageRating: 1,
   totalReviews: 1,

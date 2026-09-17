@@ -183,8 +183,15 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     seo: initialData?.seo || { keywords: [] },
     videoUrl: initialData?.videoUrl || '',
     // ---- Pharma ---- (compositionKey and unitPrice are derived server-side)
-    salts: initialData?.salts || [{ name: '', strength: 0, unit: 'mg' }],
-    form: initialData?.form || 'tablet',
+    noComposition: initialData?.noComposition || false,
+    salts: initialData?.noComposition
+      ? []
+      : initialData?.salts || [{ name: '', strength: 0, unit: 'mg' }],
+    form: initialData?.noComposition ? undefined : initialData?.form || 'tablet',
+    // Stored as a Date; the <input type="date"> needs a YYYY-MM-DD string.
+    expiryDate: initialData?.expiryDate
+      ? new Date(initialData.expiryDate).toISOString().slice(0, 10)
+      : '',
     manufacturer: initialData?.manufacturer || '',
     packSize: initialData?.packSize || 1,
     packUnit: initialData?.packUnit || 'tablet',
@@ -287,6 +294,21 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     updateField('salts', [...salts, { name: '', strength: 0, unit: 'mg' }] as ProductFormData['salts']);
   const removeSalt = (index: number) =>
     updateField('salts', salts.filter((_, i) => i !== index) as ProductFormData['salts']);
+
+  // "No composition" clears salts + dosage form (a brush has neither); unticking
+  // restores a single blank salt row and the default form so the fields are usable again.
+  const toggleNoComposition = (checked: boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      noComposition: checked,
+      salts: checked
+        ? []
+        : (prev.salts as SaltRow[])?.length
+          ? prev.salts
+          : ([{ name: '', strength: 0, unit: 'mg' }] as ProductFormData['salts']),
+      form: checked ? undefined : prev.form || 'tablet',
+    }));
+  };
 
   // Persist a new salt to the catalogue so it's suggested next time. Optimistic:
   // show it immediately, revert if the save fails.
@@ -598,86 +620,110 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       case 'pharma':
         return (
           <div className="space-y-6">
-            {/* Salts / composition */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-[var(--ink)]">
-                  Composition (salts) *
-                </label>
-                <button
-                  type="button"
-                  onClick={addSalt}
-                  className="text-sm font-medium text-[var(--brand)] hover:text-[var(--brand)]"
-                >
-                  + Add salt
-                </button>
-              </div>
-              <p className="text-xs text-[var(--ink-40)] mb-3">
-                Composition key and price-per-unit are derived automatically from these
-                values and the pack size — they are not entered by hand.
-              </p>
-              <div className="space-y-2">
-                {salts.map((salt, i) => (
-                  <div key={i} className="grid grid-cols-12 gap-2 items-center">
-                    <div className="col-span-6">
-                      <SaltCombobox
-                        value={salt.name}
-                        onChange={(v) => updateSalt(i, { name: v })}
-                        ariaLabel={`Salt ${i + 1} name`}
-                        required
-                        catalogSalts={catalogSalts}
-                        onAddSalt={handleAddSalt}
-                      />
-                    </div>
-                    <div className="col-span-3">
-                      <Input
-                        type="number"
-                        min="0"
-                        step="any"
-                        value={salt.strength || ''}
-                        onChange={(e) => updateSalt(i, { strength: parseFloat(e.target.value) || 0 })}
-                        placeholder="Strength"
-                        aria-label={`Salt ${i + 1} strength`}
-                        required
-                      />
-                    </div>
-                    <div className="col-span-2">
-                      <Select
-                        value={salt.unit}
-                        onChange={(e) => updateSalt(i, { unit: e.target.value })}
-                        aria-label={`Salt ${i + 1} unit`}
-                        options={SALT_UNITS.map((u) => ({ value: u, label: u }))}
-                      />
-                    </div>
-                    <div className="col-span-1 flex justify-center">
-                      {salts.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeSalt(i)}
-                          aria-label={`Remove salt ${i + 1}`}
-                          className="h-9 w-9 flex items-center justify-center text-[var(--ink-40)] hover:text-[var(--ink)]"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* No-composition opt-out — for brushes, devices and other non-medicinal items. */}
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={!!formData.noComposition}
+                onChange={(e) => toggleNoComposition(e.target.checked)}
+                className="mt-0.5 w-4 h-4 text-[var(--brand)] border-[var(--foil-soft)] rounded focus:ring-[var(--brand)]"
+              />
+              <span className="text-sm font-medium text-[var(--ink)]">
+                This product does not have composition
+                <span className="mt-0.5 block text-xs font-normal text-[var(--ink-40)]">
+                  For non-medicinal items like brushes or devices — skips salts and dosage form.
+                </span>
+              </span>
+            </label>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Salts / composition */}
+            {!formData.noComposition ? (
               <div>
-                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
-                  Dosage form *
-                </label>
-                <Select
-                  value={formData.form}
-                  onChange={(e) => updateField('form', e.target.value as ProductFormData['form'])}
-                  required
-                  options={DOSAGE_FORMS.map((f) => ({ value: f, label: f }))}
-                />
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-[var(--ink)]">
+                    Composition (salts) *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addSalt}
+                    className="text-sm font-medium text-[var(--brand)] hover:text-[var(--brand)]"
+                  >
+                    + Add salt
+                  </button>
+                </div>
+                <p className="text-xs text-[var(--ink-40)] mb-3">
+                  Composition key and price-per-unit are derived automatically from these
+                  values and the pack size — they are not entered by hand.
+                </p>
+                <div className="space-y-2">
+                  {salts.map((salt, i) => (
+                    <div key={i} className="grid grid-cols-12 gap-2 items-center">
+                      <div className="col-span-6">
+                        <SaltCombobox
+                          value={salt.name}
+                          onChange={(v) => updateSalt(i, { name: v })}
+                          ariaLabel={`Salt ${i + 1} name`}
+                          required
+                          catalogSalts={catalogSalts}
+                          onAddSalt={handleAddSalt}
+                        />
+                      </div>
+                      <div className="col-span-3">
+                        <Input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={salt.strength || ''}
+                          onChange={(e) => updateSalt(i, { strength: parseFloat(e.target.value) || 0 })}
+                          placeholder="Strength"
+                          aria-label={`Salt ${i + 1} strength`}
+                          required
+                        />
+                      </div>
+                      <div className="col-span-2">
+                        <Select
+                          value={salt.unit}
+                          onChange={(e) => updateSalt(i, { unit: e.target.value })}
+                          aria-label={`Salt ${i + 1} unit`}
+                          options={SALT_UNITS.map((u) => ({ value: u, label: u }))}
+                        />
+                      </div>
+                      <div className="col-span-1 flex justify-center">
+                        {salts.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeSalt(i)}
+                            aria-label={`Remove salt ${i + 1}`}
+                            className="h-9 w-9 flex items-center justify-center text-[var(--ink-40)] hover:text-[var(--ink)]"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
+            ) : (
+              <p className="rounded-[var(--radius-sm)] border border-dashed border-[var(--foil-soft)] bg-[var(--paper-tint)] px-3 py-2 text-sm text-[var(--ink-40)]">
+                No composition — salts and dosage form are skipped for this product.
+              </p>
+            )}
+
+            <div className={formData.noComposition ? '' : 'grid grid-cols-1 md:grid-cols-2 gap-6'}>
+              {!formData.noComposition && (
+                <div>
+                  <label className="block text-sm font-medium text-[var(--ink)] mb-2">
+                    Dosage form *
+                  </label>
+                  <Select
+                    value={formData.form ?? ''}
+                    onChange={(e) => updateField('form', e.target.value as ProductFormData['form'])}
+                    required
+                    options={DOSAGE_FORMS.map((f) => ({ value: f, label: f }))}
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-[var(--ink)] mb-2">
@@ -1182,6 +1228,24 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                     { value: 'L', label: 'Litres (L)' },
                   ]}
                 />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-[var(--ink)] mb-2">
+                  Expiry date
+                </label>
+                <Input
+                  type="date"
+                  value={formData.expiryDate || ''}
+                  onChange={(e) =>
+                    updateField('expiryDate', e.target.value as ProductFormData['expiryDate'])
+                  }
+                />
+                <p className="mt-1 text-xs text-[var(--ink-40)]">
+                  Shown on the product card (government requirement). Leave blank if not applicable.
+                </p>
               </div>
             </div>
           </div>

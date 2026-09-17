@@ -6,6 +6,7 @@ import { ArrowRight, Check } from 'lucide-react';
 import { formatComposition, type Salt } from '@/lib/pharma/composition';
 import { formatPack } from '@/lib/pharma/format';
 import { ProductVisual } from '@/components/products/ProductVisual';
+import { ExpiryLine } from '@/components/shared/ExpiryLine';
 import { CompareAddToCart } from '@/components/search/CompareAddToCart';
 
 /**
@@ -36,6 +37,8 @@ export interface ComparisonBrand {
   prescriptionRequired: boolean;
   image: string | null;
   form?: string;
+  /** Batch expiry (ISO string) — shown on the comparison pane. */
+  expiryDate?: string | null;
   /** Position in the search results (0 = most relevant to the query). */
   rank: number;
 }
@@ -251,6 +254,9 @@ function ProductPane({
           </p>
         ) : null}
       </div>
+
+      {/* Expiry — shown on every card (government requirement). */}
+      {p.expiryDate && <ExpiryLine date={p.expiryDate} />}
 
       {/* Add to cart — available straight from the comparison, on both brands. */}
       <CompareAddToCart

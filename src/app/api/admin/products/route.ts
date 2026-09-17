@@ -20,6 +20,9 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    // An empty expiry date must not reach the Date cast — treat it as "not set".
+    if (body.expiryDate === '') delete body.expiryDate;
+
     // Validate with Zod
     const validated = productSchema.parse(body);
 

@@ -152,7 +152,7 @@ export default async function SearchPage({
       _id: { $ne: topResult._id },
     })
       .select(
-        'name slug manufacturer price mrp packSize packUnit unitPrice stock compositionKey salts prescriptionRequired images form'
+        'name slug manufacturer price mrp packSize packUnit unitPrice stock compositionKey salts prescriptionRequired expiryDate images form'
       )
       .sort({ unitPrice: 1 })
       .limit(30)

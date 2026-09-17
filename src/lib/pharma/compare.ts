@@ -33,6 +33,8 @@ export interface CompareProduct {
   compositionKey: string;
   salts: Salt[];
   form: DosageForm;
+  /** Batch expiry (ISO string) — shown on the compare card. */
+  expiryDate?: string | null;
   /** First product image URL (or null) — for the side-by-side compare thumbnail. */
   image?: string | null;
   /** Optional signals used by the N-way ranking (default 0 when absent). */
@@ -127,6 +129,7 @@ function toCandidate(p: CompareProduct): AlternativeCandidate {
     orderCount: p.orderCount ?? 0,
     image: p.image ?? null,
     form: p.form,
+    expiryDate: p.expiryDate ?? null,
   };
 }
 

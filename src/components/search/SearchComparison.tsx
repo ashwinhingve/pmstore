@@ -41,6 +41,10 @@ function coerce(raw: Record<string, unknown>): ComparisonBrand | null {
     prescriptionRequired: raw.prescriptionRequired === true,
     image: images[0]?.url ?? null,
     form: typeof raw.form === 'string' ? raw.form : undefined,
+    expiryDate:
+      typeof raw.expiryDate === 'string' || raw.expiryDate instanceof Date
+        ? new Date(raw.expiryDate).toISOString()
+        : null,
     rank: 0,
   };
 }
