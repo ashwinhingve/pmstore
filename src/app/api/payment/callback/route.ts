@@ -16,6 +16,7 @@ import { applyRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimit';
 import { generatePaymentIdempotencyKey, idempotencyService } from '@/lib/utils/idempotency';
 import { createRequestLogger, LogMessages, MetricNames } from '@/lib/utils/logger';
 import { buildStockDecrement } from '@/lib/checkout/stock';
+import { recordSaleMovement } from '@/lib/inventory/stock-mutations';
 
 // Cashfree redirects here via GET with ?order_id=xxx after payment
 export async function GET(request: NextRequest) {
@@ -244,6 +245,19 @@ export async function GET(request: NextRequest) {
         throw error;
       } finally {
         session.endSession();
+      }
+
+      // Mirror the sale into the inventory ledger (batches drawn down FEFO +
+      // history). Runs after the payment transaction commits and never throws,
+      // so it can't affect the order — Product.stock was decremented above.
+      try {
+        const soldItems = await OrderItem.find({ orderId: order._id });
+        await recordSaleMovement(
+          soldItems.map((i) => ({ productId: i.productId, productName: i.productName, quantity: i.quantity })),
+          { orderId: order._id, orderNumber: order.orderNumber, userId: order.userId }
+        );
+      } catch (ledgerErr) {
+        console.error('Payment callback: inventory ledger update failed:', ledgerErr);
       }
 
       // Create shipment — sendNotifications:true so shipment tracking SMS/email fires.
@@ -517,6 +531,17 @@ export async function POST(request: NextRequest) {
             }
           } catch (stockErr) {
             logger.error('Webhook: stock deduction failed', stockErr as Error, { orderNumber });
+          }
+
+          // Mirror the sale into the inventory ledger (best-effort, never throws).
+          try {
+            const soldItems = await OrderItem.find({ orderId: order._id });
+            await recordSaleMovement(
+              soldItems.map((i) => ({ productId: i.productId, productName: i.productName, quantity: i.quantity })),
+              { orderId: order._id, orderNumber: order.orderNumber, userId: order.userId }
+            );
+          } catch (ledgerErr) {
+            logger.error('Webhook: inventory ledger update failed', ledgerErr as Error, { orderNumber });
           }
 
           // Increment discount usage

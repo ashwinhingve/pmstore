@@ -88,16 +88,20 @@ export interface IProduct extends Document {
   relatedProducts?: mongoose.Types.ObjectId[];
   // ---- Pharma ----
   salts: Salt[];
-  form: DosageForm;
-  compositionKey: string; // DERIVED — buildCompositionKey(salts, form), never hand-entered
+  form?: DosageForm; // absent for non-medicinal products (see noComposition)
+  noComposition: boolean; // true for brushes/devices etc. — no salts, no compositionKey
+  compositionKey?: string; // DERIVED — buildCompositionKey(salts, form); absent when noComposition
   manufacturer: string;
   packSize: number; // 15 tablets, 100 ml
   packUnit: string; // 'tablet' | 'ml' | 'g' | 'unit'
   unitPrice: number; // DERIVED — price / packSize, never hand-entered
+  expiryDate?: Date; // batch expiry, shown on every product card (govt requirement)
   mrp?: number;
   prescriptionRequired: boolean;
   scheduleClass: ScheduleClass;
   hsnCode?: string;
+  rackLocation?: string; // shelf/rack where this stock lives — inventory use only
+  reorderLevel?: number; // stock at/below this flags the product for reordering
   storageInstructions?: string;
   usageInstructions?: string;
   sideEffects: string[];
@@ -300,6 +304,7 @@ const ProductSchema = new Schema<IProduct>(
         },
       },
     ],
+    // Required for a medicine; a non-medicinal product (noComposition) has none.
     form: {
       type: String,
       enum: [
@@ -307,15 +312,29 @@ const ProductSchema = new Schema<IProduct>(
         'ointment', 'gel', 'drops', 'inhaler', 'powder', 'sachet', 'spray',
         'patch', 'other',
       ],
-      required: true,
+      required: function (this: IProduct) {
+        return !this.noComposition;
+      },
     },
-    // DERIVED in pre('validate') — see below. Never hand-entered.
-    compositionKey: { type: String, required: true, index: true },
+    // Ticked for brushes/devices etc. that legitimately have no composition.
+    noComposition: { type: Boolean, default: false },
+    // DERIVED in pre('validate') — see below. Never hand-entered. Required for a
+    // medicine (guards empty salts, since the hook leaves it unset then); absent
+    // and not required for a no-composition product.
+    compositionKey: {
+      type: String,
+      index: true,
+      required: function (this: IProduct) {
+        return !this.noComposition;
+      },
+    },
     manufacturer: { type: String, required: true, trim: true, index: true },
     packSize: { type: Number, required: true, min: 1 }, // 15 tablets, 100 ml
     packUnit: { type: String, required: true }, // 'tablet' | 'ml' | 'g' | 'unit'
     // DERIVED in pre('validate') — price / packSize. Never hand-entered.
     unitPrice: { type: Number, required: true, min: 0 },
+    // Batch expiry — optional, shown on every product card (govt requirement).
+    expiryDate: { type: Date },
     mrp: { type: Number, min: 0 },
     prescriptionRequired: { type: Boolean, default: false, index: true },
     scheduleClass: {
@@ -324,6 +343,12 @@ const ProductSchema = new Schema<IProduct>(
       default: 'OTC',
     },
     hsnCode: { type: String, trim: true },
+    // Shelf/rack location — maintained from the inventory module, shown in the
+    // stock view so counter staff can find the physical stock.
+    rackLocation: { type: String, trim: true },
+    // Reorder point — stock at/below this is "low" and surfaces in the reorder
+    // list. Defaults to 10 (the catalogue-wide fallback) when unset.
+    reorderLevel: { type: Number, min: 0, default: 10 },
     storageInstructions: String,
     usageInstructions: String,
     sideEffects: { type: [String], default: [] },
@@ -342,8 +367,12 @@ const ProductSchema = new Schema<IProduct>(
 // compositionKey/unitPrice would fail. Bulk paths that skip document middleware
 // (insertMany/updateMany/findOneAndUpdate) must compute these explicitly.
 ProductSchema.pre('validate', function (next) {
-  if (this.salts?.length && (this.isModified('salts') || this.isModified('form'))) {
+  if (this.salts?.length && this.form && (this.isModified('salts') || this.isModified('form'))) {
     this.compositionKey = buildCompositionKey(this.salts, this.form);
+  } else if (!this.salts?.length && (this.isModified('salts') || this.isModified('noComposition'))) {
+    // Composition removed (e.g. converted to a no-composition product) — drop the
+    // stale key so it never lingers and wrongly groups the product in comparisons.
+    this.compositionKey = undefined;
   }
   // Money is stored in rupees rounded to 2 decimals at write time (root CLAUDE.md).
   if (this.isModified('price')) this.price = Math.round(this.price * 100) / 100;

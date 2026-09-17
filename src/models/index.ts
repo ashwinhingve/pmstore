@@ -20,3 +20,11 @@ export { default as RefillReminder, type IRefillReminder } from './RefillReminde
 export { default as Newsletter, type INewsletter } from './Newsletter';
 export { default as WholesaleEnquiry, type IWholesaleEnquiry } from './WholesaleEnquiry';
 export { default as CustomOrder, type ICustomOrder } from './CustomOrder';
+// ---- Inventory ----
+export { default as Supplier, type ISupplier } from './Supplier';
+export { default as StockBatch, type IStockBatch } from './StockBatch';
+export { default as Purchase, type IPurchase } from './Purchase';
+export { default as PurchaseReturn, type IPurchaseReturn } from './PurchaseReturn';
+export { default as InventoryAdjustment, type IInventoryAdjustment } from './InventoryAdjustment';
+export { default as InventoryHistory, type IInventoryHistory } from './InventoryHistory';
+export { default as Counter, type ICounter } from './Counter';

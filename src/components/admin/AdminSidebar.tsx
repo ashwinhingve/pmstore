@@ -20,6 +20,14 @@ import {
   Inbox,
   FlaskConical,
   Factory,
+  Warehouse,
+  Building2,
+  ShoppingCart,
+  PackageSearch,
+  SlidersHorizontal,
+  RotateCcw,
+  ScrollText,
+  ListChecks,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -62,6 +70,19 @@ export const adminNavigation: NavGroup[] = [
     ],
   },
   {
+    title: 'Inventory',
+    items: [
+      { label: 'Overview', href: '/admin/inventory', icon: Warehouse },
+      { label: 'Stock & batches', href: '/admin/inventory/stock', icon: PackageSearch },
+      { label: 'Reorder list', href: '/admin/inventory/reorder', icon: ListChecks },
+      { label: 'Purchases', href: '/admin/inventory/purchases', icon: ShoppingCart },
+      { label: 'Suppliers', href: '/admin/inventory/suppliers', icon: Building2 },
+      { label: 'Adjustments', href: '/admin/inventory/adjustments', icon: SlidersHorizontal },
+      { label: 'Purchase returns', href: '/admin/inventory/returns', icon: RotateCcw },
+      { label: 'Stock history', href: '/admin/inventory/history', icon: ScrollText },
+    ],
+  },
+  {
     title: 'People',
     items: [
       { label: 'Users', href: '/admin/users', icon: Users },
@@ -77,8 +98,24 @@ export const adminNavigation: NavGroup[] = [
   },
 ];
 
+// The single active item is the one whose href is the longest match for the
+// current path, so a section index (e.g. /admin/inventory) doesn't stay lit on
+// its own children (/admin/inventory/stock) alongside the child.
+function activeHrefFor(pathname: string): string {
+  let best = '';
+  for (const group of adminNavigation) {
+    for (const item of group.items) {
+      if ((pathname === item.href || pathname.startsWith(item.href + '/')) && item.href.length > best.length) {
+        best = item.href;
+      }
+    }
+  }
+  return best;
+}
+
 export function AdminNavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const activeHref = activeHrefFor(pathname);
 
   return (
     <nav className="flex-1 space-y-5 px-3" aria-label="Admin">
@@ -90,7 +127,7 @@ export function AdminNavLinks({ onNavigate }: { onNavigate?: () => void }) {
           <div className="space-y-0.5">
             {group.items.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+              const isActive = item.href === activeHref;
 
               return (
                 <Link

@@ -194,6 +194,52 @@ Every `/api/v1` response includes `"apiVersion": 1`. When a breaking change is n
 
 ---
 
+## Admin — Inventory
+
+All under `/api/admin/inventory/*`. Admin-only via `verifyAdminAccess()` (role re-read from the
+DB per rule #4). Validation from `src/lib/validations/{supplier,purchase,inventory-adjustment,
+purchase-return}.ts`; errors via `src/lib/inventory/api-error.ts`. Stock is only ever mutated
+through `src/lib/inventory/stock-mutations.ts`. Money (line totals, subtotal, tax, total) is
+recomputed server-side — never trusted from the client.
+
+```
+GET  /suppliers                  list + search (?active=true → all active, for dropdowns)
+POST /suppliers                  create
+GET  /suppliers/[id]             detail
+PUT  /suppliers/[id]             update
+DELETE /suppliers/[id]           soft delete (isActive:false)
+
+GET  /purchases                  list + filter (status, supplierId) + search
+POST /purchases                  create (status:'received' applies stock at once)
+GET  /purchases/[id]             detail with items
+PUT  /purchases/[id]             action: receive | cancel | pay, or edit a draft
+DELETE /purchases/[id]           delete a non-received purchase only
+
+POST /adjustments                record + apply a manual adjustment (in/out)
+GET  /adjustments                list + filter (productId, direction)
+
+POST /returns                    record + apply a purchase return (lowers stock)
+GET  /returns                    list + filter (supplierId) + search
+GET  /returns/[id]               detail
+
+GET  /stock                      per-product stock + live batches; filter=low|out|expiring|expired;
+                                 ?productId= returns one product's batches (form batch picker)
+GET  /reorder                    products at/below reorder level + last supplier + suggested qty
+GET  /history                    the stock ledger; filter type, productId, from, to
+GET  /overview                   valuation + attention counts for the dashboard
+GET  /export?type=stock|history|purchases   CSV download (honours the list filters)
+```
+
+Low-stock is per-product: `stock <= reorderLevel` (Product field, default 10) — shared by the
+overview, the stock filter, the reorder list and the main dashboard. An `out` adjustment may carry
+a `batchId` to write off one specific batch (e.g. an expired lot); otherwise it draws FEFO.
+
+A received purchase is locked: reverse it with a purchase return, not an edit/delete. Receiving
+returns `409` if already received. An `out` adjustment or return that would oversell returns a
+`400 INSUFFICIENT_STOCK` and applies nothing.
+
+---
+
 ## Rate limits
 
 Via `src/lib/middleware/rateLimit.ts`, keyed by IP and by user where signed in.

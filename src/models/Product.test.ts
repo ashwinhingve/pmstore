@@ -84,4 +84,35 @@ describe('Product derive hook', () => {
     const p = await Product.create({ ...baseProduct(), description: '' });
     expect(p._id).toBeDefined();
   });
+
+  // Non-medicinal products (brushes, devices) legitimately have no composition:
+  // with noComposition set, empty salts + no form are allowed and no
+  // compositionKey is derived, so they never join a same-salt comparison.
+  it('saves a no-composition product (empty salts, no form) without a compositionKey', async () => {
+    const brush: any = baseProduct();
+    brush.name = 'Bamboo toothbrush';
+    brush.noComposition = true;
+    brush.salts = [];
+    delete brush.form;
+    const p = await Product.create(brush);
+    expect(p._id).toBeDefined();
+    expect(p.compositionKey).toBeUndefined();
+    expect(p.unitPrice).toBeGreaterThan(0); // still derived from price / packSize
+  });
+
+  it('clears a stale compositionKey when a product is converted to no-composition', async () => {
+    const p = await Product.create(baseProduct());
+    expect(p.compositionKey).toBe('paracetamol-650mg|tablet');
+    p.noComposition = true;
+    p.salts = [] as any;
+    p.form = undefined;
+    await p.save();
+    expect(p.compositionKey).toBeUndefined();
+  });
+
+  it('stores an expiry date', async () => {
+    const p = await Product.create({ ...baseProduct(), expiryDate: '2027-05-01' });
+    expect(p.expiryDate).toBeInstanceOf(Date);
+    expect(p.expiryDate?.toISOString().slice(0, 10)).toBe('2027-05-01');
+  });
 });

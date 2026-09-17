@@ -12,7 +12,8 @@ import RevenueChart from '@/components/admin/RevenueChart';
 import OrdersStatusDonut from '@/components/admin/OrdersStatusDonut';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import { Card } from '@/components/ui/card';
-import { Clock, CreditCard, PackageX, Activity } from 'lucide-react';
+import { getInventoryOverview } from '@/lib/inventory/valuation';
+import { Clock, CreditCard, PackageX, Activity, CalendarClock, CalendarX } from 'lucide-react';
 
 /**
  * Admin Dashboard Overview
@@ -175,19 +176,19 @@ export default async function AdminDashboard() {
     },
   ]);
 
-  // Calculate low stock products — matches the Products page's own
-  // `stockLevel=low` filter exactly, so the number here always agrees with
-  // what the drill-down link shows (out-of-stock is a separate filter there).
-  const lowStockCount = await Product.countDocuments({
-    stock: { $gt: 0, $lte: 10 },
-  });
+  // Inventory rollups (per-product reorder level + batch expiry) — one source
+  // shared with the Inventory section so the numbers always agree.
+  const inventory = await getInventoryOverview();
+  const lowStockCount = inventory.lowStock;
 
   const firstOfMonthISO = startOfMonth.toISOString().slice(0, 10);
   const sevenDaysAgoISO = sevenDaysAgo.toISOString().slice(0, 10);
   const pendingOrdersHref = '/admin/orders?status=confirmed,processing&paymentStatus=paid';
   const activeShipmentsHref = `/admin/shipments?status=${encodeURIComponent(ACTIVE_SHIPMENT_STATUSES.join(','))}`;
   const failedPaymentsHref = `/admin/payments?status=failed&dateFrom=${sevenDaysAgoISO}`;
-  const lowStockHref = '/admin/products?stockLevel=low';
+  const lowStockHref = '/admin/inventory/stock?filter=low';
+  const expiringHref = '/admin/inventory/stock?filter=expiring';
+  const expiredHref = '/admin/inventory/stock?filter=expired';
 
   // Prepare stats data
   const stats = {
@@ -250,6 +251,45 @@ export default async function AdminDashboard() {
 
       {/* Stats Grid */}
       <DashboardStats stats={stats} />
+
+      {/* Inventory alerts — batch expiry + reorder, drilling into the Inventory section */}
+      <Card variant="elevated" padding="lg">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-[length:var(--step-1)] font-bold text-[var(--ink)]">Inventory alerts</h2>
+          <Link href="/admin/inventory" className="text-sm font-medium text-[var(--brand-deep)] hover:underline">
+            Open inventory
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {[
+            { href: lowStockHref, icon: PackageX, label: 'Low stock', value: inventory.lowStock, alert: inventory.lowStock > 0 },
+            { href: expiringHref, icon: CalendarClock, label: 'Expiring soon', value: inventory.expiringSoon, alert: inventory.expiringSoon > 0 },
+            { href: expiredHref, icon: CalendarX, label: 'Expired', value: inventory.expired, alert: inventory.expired > 0 },
+          ].map(({ href, icon: Icon, label, value, alert }) => (
+            <Link
+              key={label}
+              href={href}
+              className="flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--foil-soft)] bg-[var(--paper)] p-4 shadow-[var(--shadow-sm)] transition-shadow hover:shadow-[var(--shadow-md)]"
+            >
+              <span
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)]"
+                style={{
+                  backgroundColor: alert ? 'var(--tint-amber-soft)' : 'var(--foil-soft)',
+                  color: alert ? 'var(--tint-amber)' : 'var(--ink-40)',
+                }}
+              >
+                <Icon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-[length:var(--step-1)] font-bold tabular-nums text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>
+                  {value}
+                </p>
+                <p className="text-sm text-[var(--ink-70)]">{label}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </Card>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

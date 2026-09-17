@@ -57,8 +57,10 @@ export const dosageFormEnum = z.enum([
 
 export const scheduleClassEnum = z.enum(['OTC', 'H', 'H1', 'X', 'G']);
 
-// Main product validation schema
-export const productSchema = z.object({
+// Main product validation schema. The cross-field composition rule (salts/form
+// required unless `noComposition`) lives in the refined exports below, so
+// `productUpdateSchema` can still call `.partial()` on this plain object.
+export const productBaseSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters'),
   slug: z
     .string()
@@ -111,15 +113,27 @@ export const productSchema = z.object({
   ),
   relatedProducts: z.array(z.string()).optional(),
   // ---- Pharma ---- (compositionKey and unitPrice are DERIVED server-side, not accepted here)
-  salts: z.array(saltSchema).min(1, 'At least one salt is required'),
-  form: dosageFormEnum,
+  // salts + form are conditionally required — see the refine on the exports
+  // below. `.optional()` (no default) keeps an omitted value undefined, so a
+  // partial update that doesn't touch salts isn't mistaken for "salts emptied".
+  salts: z.array(saltSchema).optional(),
+  form: dosageFormEnum.optional(),
+  noComposition: z.boolean().default(false),
   manufacturer: z.string().min(1, 'Manufacturer is required'),
   packSize: z.number().min(1, 'Pack size must be at least 1'),
   packUnit: z.string().min(1, 'Pack unit is required'),
+  // Batch expiry — a date-only string (Mongoose casts it to a Date on save).
+  expiryDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Use a valid date')
+    .optional()
+    .or(z.literal('')),
   mrp: z.number().min(0).optional(),
   prescriptionRequired: z.boolean().default(false),
   scheduleClass: scheduleClassEnum.default('OTC'),
   hsnCode: z.string().optional(),
+  rackLocation: z.string().max(60).optional().or(z.literal('')),
+  reorderLevel: z.number().int().min(0).optional(),
   storageInstructions: z.string().optional(),
   usageInstructions: z.string().optional(),
   sideEffects: z.array(z.string()).default([]),
@@ -127,12 +141,43 @@ export const productSchema = z.object({
   isDiscontinued: z.boolean().default(false),
 });
 
-// Type exports
-export type ProductFormData = z.infer<typeof productSchema>;
+// Composition is mandatory by default. A product ticked "no composition"
+// (brushes, devices, non-medicinal items) may skip salts + dosage form.
+export const productSchema = productBaseSchema.superRefine((d, ctx) => {
+  if (d.noComposition) return;
+  if (!d.salts?.length) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['salts'],
+      message: 'Add at least one salt, or tick “This product does not have composition”.',
+    });
+  }
+  if (!d.form) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['form'],
+      message: 'Choose a dosage form, or tick “This product does not have composition”.',
+    });
+  }
+});
+
+// Type exports (infer from the base object — ZodEffects preserves the shape)
+export type ProductFormData = z.infer<typeof productBaseSchema>;
 export type ProductImageData = z.infer<typeof productImageSchema>;
 export type ProductVariantData = z.infer<typeof productVariantSchema>;
 export type ProductSpecificationData = z.infer<typeof productSpecificationSchema>;
 export type ProductSEOData = z.infer<typeof productSEOSchema>;
 
-// Partial schema for updates
-export const productUpdateSchema = productSchema.partial();
+// Partial schema for updates. The refine only fires when `salts` is actually
+// present in the payload, so a genuine partial update that omits it is
+// unaffected; the admin form always sends the full object, so it's enforced there.
+export const productUpdateSchema = productBaseSchema.partial().superRefine((d, ctx) => {
+  if (d.noComposition === true) return;
+  if (d.salts !== undefined && d.salts.length < 1) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['salts'],
+      message: 'Add at least one salt, or tick “This product does not have composition”.',
+    });
+  }
+});

@@ -11,6 +11,7 @@ import { smsService } from '@/lib/notifications/sms';
 import { whatsappService } from '@/lib/notifications/whatsapp';
 import { notifyOwnerNewOrderWhatsApp } from '@/lib/notifications/owner-whatsapp';
 import { buildStockDecrement } from '@/lib/checkout/stock';
+import { recordSaleMovement } from '@/lib/inventory/stock-mutations';
 
 /**
  * POST /api/payment/confirm-cod
@@ -74,6 +75,14 @@ export async function POST(req: NextRequest) {
         );
       }
     }
+
+    // Mirror the sale into the inventory ledger: draw batches down FEFO and log
+    // the movement. Best-effort — recordSaleMovement never throws, so a ledger
+    // hiccup can't fail a confirmed order (Product.stock is already decremented).
+    await recordSaleMovement(
+      orderItems.map((i) => ({ productId: i.productId, productName: i.productName, quantity: i.quantity })),
+      { orderId: order._id, orderNumber: order.orderNumber, userId: session.user.id }
+    );
 
     // Send notifications (non-blocking)
     try {
