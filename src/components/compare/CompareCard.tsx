@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/shared/Badge';
+import { DiscountBadge } from '@/components/shared/DiscountBadge';
 import { RxBadge } from '@/components/shared/RxBadge';
 import { ProductVisual } from '@/components/products/ProductVisual';
 import { formatINR, packUnitShort, type ScheduleClass } from '@/lib/pharma/format';
@@ -41,6 +42,11 @@ export function CompareCard({ product, isBest }: { product: CompareProduct; isBe
           name={product.name}
           fit="contain"
           sizes="(max-width: 640px) 100vw, 40vw"
+        />
+        <DiscountBadge
+          mrp={product.mrp}
+          price={product.price}
+          className="pointer-events-none absolute left-2.5 top-2.5"
         />
       </div>
 

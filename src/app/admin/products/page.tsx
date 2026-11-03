@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/auth-helpers';
 import connectDB from '@/lib/mongodb/connection';
 import Product from '@/models/Product';
+import { buildAdminProductQuery } from '@/lib/admin/product-search';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import ProductsTable from '@/components/admin/ProductsTable';
 
@@ -58,11 +59,9 @@ export default async function AdminProductsPage({
   }
 
   if (search) {
-    query.$or = [
-      { name: { $regex: search, $options: 'i' } },
-      { sku: { $regex: search, $options: 'i' } },
-      { description: { $regex: search, $options: 'i' } },
-    ];
+    // Tokenised match across name/sku/description/manufacturer/salt/tags/category.
+    const searchFilter = await buildAdminProductQuery(search);
+    if (searchFilter) Object.assign(query, searchFilter);
   }
 
   if (stockLevel === 'low') {

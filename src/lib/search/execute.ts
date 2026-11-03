@@ -82,10 +82,31 @@ export async function executeSearch(params: SearchQuery): Promise<SearchResponse
   }
 }
 
-/** Degraded search over the MongoDB `$text` index — no fuzzy, no synonyms. */
+/** Degraded search without Atlas — tokenised regex, no fuzzy, no synonyms. */
 async function textFallback(params: SearchQuery, filters: SearchFilters): Promise<SearchResponse> {
   const { q, page, limit } = params;
-  const query: Record<string, unknown> = { isActive: true, isDiscontinued: false, $text: { $search: q } };
+  const query: Record<string, unknown> = { isActive: true, isDiscontinued: false };
+
+  // $text matches only whole, name/description/tags-indexed words and never the
+  // manufacturer or salt. A tokenised regex OR is both broader (partial words)
+  // and manufacturer-aware — each word must match somewhere, so "dolo 650" still
+  // narrows while a single word stays inclusive.
+  const tokens = q.trim().split(/\s+/).filter(Boolean);
+  if (tokens.length > 0) {
+    query.$and = tokens.map((t) => {
+      const rx = { $regex: escapeRegex(t), $options: 'i' };
+      return {
+        $or: [
+          { name: rx },
+          { 'salts.name': rx },
+          { manufacturer: rx },
+          { tags: rx },
+          { description: rx },
+        ],
+      };
+    });
+  }
+
   if (filters.category) query.category = filters.category;
   if (filters.prescriptionRequired !== undefined) query.prescriptionRequired = filters.prescriptionRequired;
   if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
@@ -95,11 +116,10 @@ async function textFallback(params: SearchQuery, filters: SearchFilters): Promis
     query.price = price;
   }
 
-  // Honour the sort param; 'relevance' (null spec) keeps the textScore order.
+  // Honour the sort param; with no textScore available, 'relevance' falls back
+  // to most-ordered first — a sensible proxy for a small pharmacy catalogue.
   const explicitSort = sortSpec(params.sort);
-  const finder = explicitSort
-    ? Product.find(query).sort(explicitSort)
-    : Product.find(query, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } });
+  const finder = Product.find(query).sort(explicitSort ?? { orderCount: -1 });
 
   const [results, total] = await Promise.all([
     finder.skip((page - 1) * limit).limit(limit).lean(),
@@ -141,6 +161,7 @@ export async function executeSuggest(params: SearchSuggestQuery): Promise<{ data
         $or: [
           { name: { $regex: prefix, $options: 'i' } },
           { 'salts.name': { $regex: prefix, $options: 'i' } },
+          { manufacturer: { $regex: prefix, $options: 'i' } },
         ],
       },
       { name: 1, slug: 1, form: 1, price: 1, unitPrice: 1, packSize: 1, packUnit: 1, images: 1 }

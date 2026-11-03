@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { DiscountBadge } from '@/components/shared/DiscountBadge';
 import { BulkActionDrawer, type BulkAction } from '@/components/admin/BulkActionDrawer';
 import { toast } from '@/store/useToastStore';
 import {
@@ -82,6 +83,7 @@ export default function ProductsTable({
 }: ProductsTableProps) {
   const router = useRouter();
   const [searchInput, setSearchInput] = useState(currentFilters.search);
+  const [isPending, startTransition] = useTransition();
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkAction, setBulkAction] = useState<BulkAction | null>(null);
@@ -113,13 +115,29 @@ export default function ProductsTable({
       if (value) params.set(key, value);
     });
 
-    router.push(`/admin/products?${params.toString()}`);
+    // startTransition keeps the input responsive and gives us a pending flag
+    // for the "Searching…" affordance while the server re-queries.
+    startTransition(() => {
+      router.push(`/admin/products?${params.toString()}`);
+    });
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     updateFilters({ search: searchInput, page: '1' });
   };
+
+  // Real-time search: re-query ~350ms after typing stops, so the admin never
+  // has to press Enter. The guard skips the redundant nav right after a
+  // server round-trip syncs the URL back to what's typed. Enter still works.
+  useEffect(() => {
+    if (searchInput === currentFilters.search) return;
+    const id = setTimeout(() => {
+      updateFilters({ search: searchInput, page: '1' });
+    }, 350);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchInput]);
 
   const handleDelete = async (productId: string, productName: string) => {
     if (!confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
@@ -183,11 +201,21 @@ export default function ProductsTable({
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--ink-40)] w-5 h-5" />
               <Input
                 type="text"
-                placeholder="Search by name, SKU, or description..."
+                placeholder="Search name, SKU, brand, salt, category…"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="pl-10"
+                aria-label="Search products"
+                className="pl-10 pr-24"
               />
+              {isPending && (
+                <span
+                  className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1.5 text-xs text-[var(--ink-40)]"
+                  aria-live="polite"
+                >
+                  <span className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--ink-40)] border-t-transparent" />
+                  Searching…
+                </span>
+              )}
             </div>
           </form>
 
@@ -395,9 +423,12 @@ export default function ProductsTable({
                       <div>
                         <p className="font-medium text-[var(--ink)]" style={{ fontFamily: 'var(--font-data)' }}>₹{product.price.toLocaleString('en-IN')}</p>
                         {product.originalPrice && product.originalPrice > product.price && (
-                          <p className="text-xs text-[var(--ink-40)] line-through" style={{ fontFamily: 'var(--font-data)' }}>
-                            ₹{product.originalPrice.toLocaleString('en-IN')}
-                          </p>
+                          <div className="mt-0.5 flex items-center gap-1.5">
+                            <span className="text-xs text-[var(--ink-40)] line-through" style={{ fontFamily: 'var(--font-data)' }}>
+                              ₹{product.originalPrice.toLocaleString('en-IN')}
+                            </span>
+                            <DiscountBadge mrp={product.originalPrice} price={product.price} size="sm" />
+                          </div>
                         )}
                       </div>
                     </td>

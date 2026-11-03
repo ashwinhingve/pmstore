@@ -6,6 +6,7 @@ import Product from '@/models/Product';
 import { productSchema } from '@/lib/validations/product';
 import { generateUniqueSlug } from '@/lib/utils/slugify';
 import { ensureUniqueSKU } from '@/lib/utils/sku-generator';
+import { buildAdminProductQuery } from '@/lib/admin/product-search';
 
 /**
  * POST /api/admin/products
@@ -138,11 +139,9 @@ export async function GET(req: NextRequest) {
     }
 
     if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { sku: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-      ];
+      // Tokenised match across name/sku/description/manufacturer/salt/tags/category.
+      const searchFilter = await buildAdminProductQuery(search);
+      if (searchFilter) Object.assign(query, searchFilter);
     }
 
     // Stock level filter

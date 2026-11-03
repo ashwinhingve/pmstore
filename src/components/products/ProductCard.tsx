@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { RxBadge } from "@/components/shared/RxBadge";
 import { Badge } from "@/components/shared/Badge";
+import { DiscountBadge } from "@/components/shared/DiscountBadge";
 import { PriceBlock } from "@/components/shared/PriceBlock";
 import { formatINR, formatPack, type ScheduleClass } from "@/lib/pharma/format";
 import { formatComposition, type Salt } from "@/lib/pharma/composition";
@@ -27,6 +28,7 @@ export interface ProductCardData {
   slug: string;
   price: number;
   originalPrice?: number;
+  mrp?: number;
   unitPrice?: number;
   packSize?: number;
   packUnit?: string;
@@ -150,6 +152,15 @@ export function ProductCard({ product, badge }: ProductCardProps) {
             <RxBadge scheduleClass={product.scheduleClass} />
           </div>
         )}
+
+        {/* Discount — top-left, below the Rx flag when one is present. */}
+        <DiscountBadge
+          mrp={product.originalPrice ?? product.mrp}
+          price={product.price}
+          className={`pointer-events-none absolute left-2.5 ${
+            product.scheduleClass ? "top-11" : "top-2.5"
+          }`}
+        />
 
         {isNew && !outOfStock && (
           <span className="pointer-events-none absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-[var(--radius-pill)] bg-[var(--brand)] px-2 py-0.5 text-[0.6875rem] font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-xs)]">

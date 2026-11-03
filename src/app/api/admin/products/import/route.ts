@@ -44,6 +44,9 @@ interface RowOptions {
   imagesBySku: Map<string, File>;
   // For JSON path: Cloudinary image URLs/publicIds pre-uploaded
   imagesCloudinary?: Map<string, { url: string; publicId: string }>;
+  // What to do when a row's SKU already exists: overwrite it ('update',
+  // default — today's behavior) or leave the stored product untouched ('skip').
+  onDuplicate?: 'skip' | 'update';
 }
 
 /**
@@ -80,13 +83,14 @@ export async function POST(req: NextRequest) {
     if (adminCheck.error) return adminCheck.error;
 
     const mode = req.nextUrl.searchParams.get('mode') === 'validate' ? 'validate' : 'commit';
+    const onDuplicate = req.nextUrl.searchParams.get('onDuplicate') === 'skip' ? 'skip' : 'update';
     const contentType = req.headers.get('content-type');
 
     await connectDB();
 
     // JSON path
     if (contentType?.includes('application/json')) {
-      return handleJsonImport(req, mode);
+      return handleJsonImport(req, mode, onDuplicate);
     }
 
     // CSV path (existing logic)
@@ -145,7 +149,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No data rows found in CSV' }, { status: 400 });
     }
 
-    const opts: RowOptions = { requireSaltAndImage, imagesBySku };
+    const opts: RowOptions = { requireSaltAndImage, imagesBySku, onDuplicate };
     return mode === 'validate' ? runValidate(rows, opts) : runCommit(rows, opts);
   } catch (error: any) {
     console.error('Import route error:', error);
@@ -157,7 +161,11 @@ export async function POST(req: NextRequest) {
  * Handle JSON import request. Converts BulkProductRow[] to ParsedProductRow[]
  * and flows through the same validate/commit logic as CSV path.
  */
-async function handleJsonImport(req: NextRequest, mode: 'validate' | 'commit'): Promise<NextResponse> {
+async function handleJsonImport(
+  req: NextRequest,
+  mode: 'validate' | 'commit',
+  onDuplicate: 'skip' | 'update',
+): Promise<NextResponse> {
   try {
     const body = bulkProductImportBodySchema.parse(await req.json());
 
@@ -186,6 +194,7 @@ async function handleJsonImport(req: NextRequest, mode: 'validate' | 'commit'): 
       requireSaltAndImage: false, // JSON mode has no template requirement
       imagesBySku: new Map(),
       imagesCloudinary,
+      onDuplicate,
     };
 
     // In JSON mode, validate mode also includes per-row duplicate warnings
@@ -271,10 +280,12 @@ async function runValidate(
   // sequential save() would produce.
   let willCreate = 0;
   let willUpdate = 0;
+  let willSkip = 0;
   const seen = new Set(existingSkus);
   for (const p of parsed) {
     if (seen.has(p.sku)) {
-      willUpdate++;
+      if (opts.onDuplicate === 'skip') willSkip++;
+      else willUpdate++;
     } else {
       willCreate++;
       seen.add(p.sku);
@@ -301,6 +312,7 @@ async function runValidate(
         valid: parsed.length,
         willCreate,
         willUpdate,
+        willSkip,
         newCategories,
         duplicateSkusInFile,
         errors: errors.slice(0, 50),
@@ -427,8 +439,16 @@ async function runCommit(
   const categoryCache = new Map<string, string>();
   let created = 0;
   let updated = 0;
+  let skipped = 0;
 
   for (const p of parsed) {
+    // Skip-existing mode: leave a stored product untouched (checked by SKU
+    // against both the DB prefetch and products created earlier in this file).
+    if (opts.onDuplicate === 'skip' && productBySku.has(p.sku)) {
+      skipped++;
+      continue;
+    }
+
     const matchedImage = opts.imagesBySku.get(p.sku.trim().toUpperCase());
 
     try {
@@ -552,6 +572,7 @@ async function runCommit(
       data: {
         created,
         updated,
+        skipped,
         failed: errors.length,
         errors: errors.slice(0, 50),
       },
@@ -579,8 +600,14 @@ async function runCommitWithParsedRows(
   const categoryCache = new Map<string, string>();
   let created = 0;
   let updated = 0;
+  let skipped = 0;
 
   for (const p of parsed) {
+    if (opts.onDuplicate === 'skip' && productBySku.has(p.sku)) {
+      skipped++;
+      continue;
+    }
+
     // Check for Cloudinary image from the images map
     let matchedCloudinaryImage = null;
     if (opts.imagesCloudinary) {
@@ -708,6 +735,7 @@ async function runCommitWithParsedRows(
       data: {
         created,
         updated,
+        skipped,
         failed: errors.length,
         errors: errors.slice(0, 50),
       },

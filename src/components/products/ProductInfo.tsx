@@ -8,6 +8,7 @@ import { useGatedAddToCart } from '@/hooks/useGatedAddToCart';
 import { toast } from '@/store/useToastStore';
 import { formatINR, normalizeUnit, formatPack, type ScheduleClass } from '@/lib/pharma/format';
 import { RxBadge } from '@/components/shared/RxBadge';
+import { DiscountBadge } from '@/components/shared/DiscountBadge';
 import VariantSelector from './VariantSelector';
 import ProductReviews from './ProductReviews';
 
@@ -67,9 +68,9 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentOriginalPrice = selectedVariant ? selectedVariant.originalPrice : product.originalPrice;
   const currentStock = selectedVariant ? selectedVariant.stock : product.stock;
-  const discount = currentOriginalPrice && currentOriginalPrice > currentPrice
-    ? Math.round(((currentOriginalPrice - currentPrice) / currentOriginalPrice) * 100)
-    : product.discountPercentage || 0;
+  // MRP that the badge/strikethrough compare against (variant MRP, else the
+  // product's originalPrice, else its printed mrp).
+  const effectiveMrp = currentOriginalPrice ?? product.mrp;
 
   const stockStatus = currentStock === 0
     ? { label: 'Out of stock', color: 'text-[var(--ink-70)]', available: false }
@@ -199,16 +200,12 @@ export default function ProductInfo({ product, autoOpenReview }: ProductInfoProp
           <span className="price text-[length:var(--step-2)] font-bold text-[var(--ink)]">
             {formatINR(currentPrice)}
           </span>
-          {currentOriginalPrice && currentOriginalPrice > currentPrice && (
-            <>
-              <span className="price text-lg text-[var(--ink-40)] line-through">
-                {formatINR(currentOriginalPrice)}
-              </span>
-              <span className="rounded-[var(--radius-pill)] bg-[var(--mint-soft)] px-3 py-1 text-sm font-semibold text-[var(--mint-deep)]">
-                {discount}% off
-              </span>
-            </>
+          {effectiveMrp && effectiveMrp > currentPrice && (
+            <span className="price text-lg text-[var(--ink-40)] line-through">
+              {formatINR(effectiveMrp)}
+            </span>
           )}
+          <DiscountBadge mrp={effectiveMrp} price={currentPrice} className="px-3 py-1 text-sm" />
         </div>
         {product.unitPrice != null && product.packSize && product.packUnit && (
           <p className="price mt-1.5 text-sm text-[var(--ink-70)]">

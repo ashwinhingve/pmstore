@@ -7,6 +7,7 @@ import { formatComposition, type Salt } from '@/lib/pharma/composition';
 import { formatPack } from '@/lib/pharma/format';
 import { ProductVisual } from '@/components/products/ProductVisual';
 import { ExpiryLine } from '@/components/shared/ExpiryLine';
+import { DiscountBadge } from '@/components/shared/DiscountBadge';
 import { CompareAddToCart } from '@/components/search/CompareAddToCart';
 
 /**
@@ -191,6 +192,12 @@ function ProductPane({
       <Link href={`/products/${p.slug}`} className="group block">
         <div className="relative mx-auto aspect-square w-full max-w-[7rem] overflow-hidden rounded-[var(--radius-sm)] border border-[var(--foil-soft)] bg-[var(--paper-card)]">
           <ProductVisual imageUrl={p.image} form={p.form} name={p.name} sizes="120px" />
+          <DiscountBadge
+            mrp={p.mrp}
+            price={p.price}
+            size="sm"
+            className="pointer-events-none absolute left-1.5 top-1.5"
+          />
         </div>
       </Link>
 

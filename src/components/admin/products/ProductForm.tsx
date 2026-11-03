@@ -52,11 +52,22 @@ function getYouTubeEmbedUrl(url: string): string {
 /** Seed the pricing tab (MRP + discount%) when editing an existing product. */
 function deriveInitialPricing(
   d?: Partial<ProductFormData>,
-): { mrp: number; discountPercentage: number } {
-  const price = typeof d?.price === 'number' ? d.price : 0;
+): { mrp: number | undefined; discountPercentage: number | undefined } {
+  const hasPrice = typeof d?.price === 'number' && d.price > 0;
+  const hasMrp = typeof d?.mrp === 'number' && d.mrp > 0;
+  const hasOriginal = typeof d?.originalPrice === 'number' && d.originalPrice > 0;
+
+  // New product with nothing to seed → leave MRP/discount empty so the inputs
+  // show their placeholder ("Enter MRP") instead of a stuck "0" the admin has
+  // to delete before typing.
+  if (!hasPrice && !hasMrp && !hasOriginal) {
+    return { mrp: undefined, discountPercentage: undefined };
+  }
+
+  const price = hasPrice ? (d!.price as number) : 0;
   let mrp = price;
-  if (typeof d?.mrp === 'number' && d.mrp > 0) mrp = d.mrp;
-  else if (typeof d?.originalPrice === 'number' && d.originalPrice > 0) mrp = d.originalPrice;
+  if (hasMrp) mrp = d!.mrp as number;
+  else if (hasOriginal) mrp = d!.originalPrice as number;
 
   const discount =
     typeof d?.discountPercentage === 'number' && d.discountPercentage > 0
@@ -163,10 +174,12 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     longDescription: initialData?.longDescription || '',
     category: initialData?.category || '',
     subcategory: initialData?.subcategory || '',
-    price: initialData?.price || 0,
+    // Numeric fields start empty on a new product so they show a placeholder,
+    // not a literal "0" (price is derived from MRP − discount).
+    price: initialData?.price,
     originalPrice: initialData?.originalPrice ?? initialPricing.mrp,
     discountPercentage: initialPricing.discountPercentage,
-    stock: initialData?.stock || 0,
+    stock: initialData?.stock,
     images: initialData?.images || [],
     weight: initialData?.weight || 500,
     weightUnit: initialData?.weightUnit || 'g',
@@ -383,17 +396,46 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
   // `originalPrice` are derived so there is never a manual selling-price field.
   const setPricing = (patch: { mrp?: number; discountPercentage?: number }) => {
     setFormData((prev) => {
-      const mrp = patch.mrp ?? prev.mrp ?? 0;
-      const discountPercentage = patch.discountPercentage ?? prev.discountPercentage ?? 0;
-      const price = computeSellingPrice(mrp, discountPercentage);
+      // `'mrp' in patch` lets a cleared field send `undefined` to mean "empty",
+      // distinct from "not part of this change" — so clearing MRP really empties
+      // it instead of silently restoring the previous value.
+      const mrp = 'mrp' in patch ? patch.mrp : prev.mrp;
+      const discountPercentage =
+        'discountPercentage' in patch ? patch.discountPercentage : prev.discountPercentage;
+      const price =
+        typeof mrp === 'number' && mrp > 0
+          ? computeSellingPrice(mrp, discountPercentage ?? 0)
+          : undefined;
       return { ...prev, mrp, discountPercentage, originalPrice: mrp, price };
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // MRP drives the derived selling price, so it must be a real positive
+    // number before we save (backstops the browser's `required` on the field).
+    const mrpNum = typeof formData.mrp === 'number' ? formData.mrp : NaN;
+    if (!(mrpNum > 0)) {
+      setError('Enter an MRP greater than 0 before saving.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
+
+    // Normalise numbers that are allowed to be empty in the form: empty stock
+    // means 0 on save, and the selling price is always (re)derived from MRP.
+    const discountPct = formData.discountPercentage ?? 0;
+    const payload = {
+      ...formData,
+      mrp: mrpNum,
+      originalPrice: mrpNum,
+      discountPercentage: discountPct,
+      price: formData.price ?? computeSellingPrice(mrpNum, discountPct),
+      stock: formData.stock ?? 0,
+    };
 
     try {
       const url =
@@ -406,7 +448,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -1123,8 +1165,12 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   min="0"
                   step="0.01"
                   value={formData.mrp ?? ''}
-                  onChange={(e) => setPricing({ mrp: parseFloat(e.target.value) || 0 })}
-                  placeholder="Printed maximum retail price"
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    const n = parseFloat(v);
+                    setPricing({ mrp: v === '' || Number.isNaN(n) ? undefined : n });
+                  }}
+                  placeholder="Enter MRP"
                   required
                 />
                 <p className="mt-1 text-xs text-[var(--ink-40)]">Printed maximum retail price</p>
@@ -1139,13 +1185,15 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                   min="0"
                   max="100"
                   step="0.01"
-                  value={formData.discountPercentage || ''}
-                  onChange={(e) =>
+                  value={formData.discountPercentage ?? ''}
+                  onChange={(e) => {
+                    const v = e.target.value;
                     setPricing({
-                      discountPercentage: Math.min(100, Math.max(0, parseFloat(e.target.value) || 0)),
-                    })
-                  }
-                  placeholder="0"
+                      discountPercentage:
+                        v === '' ? undefined : Math.min(100, Math.max(0, parseFloat(v) || 0)),
+                    });
+                  }}
+                  placeholder="e.g. 10"
                 />
                 <p className="mt-1 text-xs text-[var(--ink-40)]">Percent off the MRP</p>
               </div>
@@ -1195,9 +1243,15 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <Input
                   type="number"
                   min="0"
-                  value={formData.stock || ''}
-                  onChange={(e) => updateField('stock', parseInt(e.target.value) || 0)}
-                  placeholder="0"
+                  value={formData.stock ?? ''}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setFormData((prev) => ({
+                      ...prev,
+                      stock: v === '' ? undefined : parseInt(v) || 0,
+                    }));
+                  }}
+                  placeholder="Enter quantity"
                   required
                 />
               </div>

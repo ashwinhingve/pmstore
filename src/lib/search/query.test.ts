@@ -33,19 +33,21 @@ describe('buildSearchPipeline', () => {
     expect(search.compound.minimumShouldMatch).toBe(1);
   });
 
-  it('searches name and salts.name, but not manufacturer (precision over recall)', () => {
+  it('searches name, salts.name and manufacturer (manufacturer as a low tier)', () => {
     const { compound } = searchStage(buildSearchPipeline({ q: 'paracetamol' }));
     const paths = compound.should.map((c: any) => c.text.path);
     expect(paths).toContain('name');
     expect(paths).toContain('salts.name');
-    expect(paths).not.toContain('manufacturer');
+    expect(paths).toContain('manufacturer');
   });
 
-  it('boosts brand name above salt name', () => {
+  it('boosts brand name above salt name above manufacturer', () => {
     const { compound } = searchStage(buildSearchPipeline({ q: 'dolo' }));
     const nameBoost = compound.should.find((c: any) => c.text.path === 'name').text.score.boost.value;
     const saltBoost = compound.should.find((c: any) => c.text.path === 'salts.name').text.score.boost.value;
+    const mfrBoost = compound.should.find((c: any) => c.text.path === 'manufacturer').text.score.boost.value;
     expect(nameBoost).toBeGreaterThan(saltBoost);
+    expect(saltBoost).toBeGreaterThan(mfrBoost);
   });
 
   it('always filters to active, non-discontinued products', () => {

@@ -481,6 +481,12 @@ function NoResults({ q }: { q: string }) {
       <p className="mx-auto mt-2 max-w-sm text-sm text-[var(--ink-70)]">
         Check the spelling, or try the salt name — for example “paracetamol” instead of a brand.
       </p>
+      <Link
+        href="/products"
+        className="mt-5 inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[var(--foil)] bg-[var(--paper-card)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--foil-soft)]"
+      >
+        Browse all medicines
+      </Link>
     </div>
   );
 }

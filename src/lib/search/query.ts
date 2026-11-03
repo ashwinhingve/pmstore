@@ -11,19 +11,22 @@
  *                        salt-synonym expansion
  *   compound.filter  →  isActive: true, isDiscontinued: false (+ optional facets)
  *
- * Precision over recall: we deliberately match only the brand name and the active
- * salt (plus its aliases). We do NOT match the manufacturer — a maker's name would
- * pull that maker's whole catalogue into results for an unrelated medicine — and we
- * cap typo tolerance at a single edit so results stay close to what was typed.
+ * Precision over recall on the primary signals: brand name and the active salt
+ * (plus its aliases) carry the big boosts, and typo tolerance is capped at a
+ * single edit so results stay close to what was typed. The manufacturer is also
+ * matched, but at a LOW boost (below salt) — a shopper who types a company name
+ * ("Cipla", "Sun Pharma") should find its products, yet a maker hit must never
+ * outrank a genuine brand or salt match for an unrelated medicine.
  */
 
 export const SEARCH_INDEX = 'products_search';
 /** Synonym mapping name declared in scripts/atlas-search-index.json. */
 export const SYNONYM_MAPPING = 'salt_synonyms';
 
-/** Boosts: a brand-name hit outranks a salt hit. */
+/** Boosts: a brand-name hit outranks a salt hit, which outranks a maker hit. */
 const BOOST_NAME = 3;
 const BOOST_SALT = 2;
+const BOOST_MANUFACTURER = 1;
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 50;
@@ -139,6 +142,9 @@ function shouldClauses(q: string) {
         score: { boost: { value: BOOST_SALT } },
       },
     },
+    // Manufacturer, low tier: finds a maker's catalogue without ever outranking
+    // a brand or salt match (BOOST_MANUFACTURER < BOOST_SALT < BOOST_NAME).
+    { text: { query: q, path: 'manufacturer', score: { boost: { value: BOOST_MANUFACTURER } }, ...fuzzyPart } },
   ];
 }
 
@@ -229,6 +235,16 @@ export function buildSuggestPipeline(params: SuggestParams): Record<string, unkn
                 path: 'salts.name',
                 synonyms: SYNONYM_MAPPING,
                 score: { boost: { value: BOOST_SALT } },
+              },
+            },
+            // Manufacturer, low tier — so typing a company name suggests its
+            // products too, ranked below brand and salt matches.
+            {
+              text: {
+                query: q,
+                path: 'manufacturer',
+                score: { boost: { value: BOOST_MANUFACTURER } },
+                ...fuzzyPart,
               },
             },
           ],
