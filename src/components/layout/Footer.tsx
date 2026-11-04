@@ -16,6 +16,7 @@ const shopLinks = [
 const companyLinks = [
   { href: "/about", label: "About us" },
   { href: "/how-it-works", label: "How it works" },
+  { href: "/download", label: "Download Android app" },
   { href: "/wholesale", label: "Wholesale supply" },
   { href: "/contact", label: "Contact" },
   { href: "/faq", label: "FAQs" },
