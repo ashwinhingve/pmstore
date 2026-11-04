@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { FileUp, Home, Info, Package, Phone, Pill, Bookmark, User, LayoutDashboard, ClipboardList, HelpCircle } from "lucide-react";
+import { FileUp, Home, Info, Package, Phone, Pill, Bookmark, User, LayoutDashboard, ClipboardList, HelpCircle, Download } from "lucide-react";
 import { Drawer } from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
 import { PHARMA_CATEGORIES } from "@/lib/categories";
@@ -96,9 +96,18 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </div>
 
         <Link
+          href="/download"
+          onClick={onClose}
+          className="mt-4 flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-[var(--brand)] px-4 font-semibold text-[var(--brand-deep)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--brand-soft)]"
+        >
+          <Download className="h-5 w-5" aria-hidden="true" />
+          Download Android app
+        </Link>
+
+        <Link
           href="/prescriptions"
           onClick={onClose}
-          className="mt-4 flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[image:var(--surface-brand)] px-4 font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-xs)] transition-[filter,box-shadow] duration-[var(--dur-fast)] hover:shadow-[var(--shadow-brand)] hover:brightness-105"
+          className="mt-3 flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[image:var(--surface-brand)] px-4 font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-xs)] transition-[filter,box-shadow] duration-[var(--dur-fast)] hover:shadow-[var(--shadow-brand)] hover:brightness-105"
         >
           <FileUp className="h-5 w-5" aria-hidden="true" />
           Upload prescription

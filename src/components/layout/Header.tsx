@@ -21,6 +21,7 @@ import {
   LayoutDashboard,
   Package,
   Bookmark,
+  Download,
 } from "lucide-react";
 import { SITE_SHORT_NAME } from "@/lib/constants";
 
@@ -90,6 +91,19 @@ export function Header() {
           <div className="hidden w-56 md:block lg:w-80">
             <SearchBar />
           </div>
+
+          {/* Download the Android app — icon-only on phones/tablets (the inline
+              search drops out of the bar on mobile, leaving room), label from lg. */}
+          <Link href="/download" className="inline-flex">
+            <Button
+              size="sm"
+              aria-label="Download the Android app"
+              className="gap-1.5 rounded-[var(--radius-pill)] bg-[var(--ink)] font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-sm)] ring-1 ring-inset ring-[var(--ink)]/10 transition-[transform,box-shadow,background-color] duration-[var(--dur-fast)] hover:-translate-y-0.5 hover:bg-[var(--ink)]/90 hover:text-[var(--brand-ink)] hover:shadow-[var(--shadow-md)]"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden lg:inline">Get the app</span>
+            </Button>
+          </Link>
 
           {/* Admin dashboard — only for admins (role read from the DB session) */}
           {mounted && status === 'authenticated' && session?.user?.role === 'admin' && (

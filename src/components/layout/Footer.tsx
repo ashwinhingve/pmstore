@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MessageCircle, Mail, Phone, MapPin } from "lucide-react";
+import { MessageCircle, Mail, Phone, MapPin, Download } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { FooterContactForm } from "@/components/layout/FooterContactForm";
 import { SITE_SHORT_NAME, SITE_DESCRIPTION, CONTACT, SOCIAL_LINKS } from "@/lib/constants";
@@ -16,7 +16,6 @@ const shopLinks = [
 const companyLinks = [
   { href: "/about", label: "About us" },
   { href: "/how-it-works", label: "How it works" },
-  { href: "/download", label: "Download Android app" },
   { href: "/wholesale", label: "Wholesale supply" },
   { href: "/contact", label: "Contact" },
   { href: "/faq", label: "FAQs" },
@@ -84,6 +83,15 @@ export function Footer() {
                 <MessageCircle className="h-5 w-5" aria-hidden="true" />
               </Link>
             </div>
+
+            {/* Download the Android app */}
+            <Link
+              href="/download"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-[var(--brand)] px-5 font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-brand)] transition-[background-color,transform] duration-[var(--dur-fast)] hover:-translate-y-0.5 hover:bg-[var(--brand-deep)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)] sm:w-fit"
+            >
+              <Download className="h-5 w-5" aria-hidden="true" />
+              Download Android app
+            </Link>
           </div>
 
           {/* Link columns */}
