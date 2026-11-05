@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Bell } from 'lucide-react';
+import Link from 'next/link';
+import { Bell, Trash2 } from 'lucide-react';
 import { SavingsCounter } from '@/components/account/SavingsCounter';
 import { AccountShell } from '@/components/account/AccountShell';
 
@@ -109,6 +110,43 @@ export default function AccountSettingsPage() {
                     }`}
                   />
                 </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Account — data & deletion */}
+          <section>
+            <div className="mb-4">
+              <h2 className="text-[length:var(--step-0)] font-semibold text-[var(--ink)]">
+                Account
+              </h2>
+              <p className="mt-1 text-sm text-[var(--ink-70)]">
+                Manage your account and personal data.
+              </p>
+            </div>
+
+            <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-5 shadow-[var(--shadow-sm)]">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <Trash2
+                    className="mt-0.5 h-5 w-5 shrink-0 text-[var(--ink)]"
+                    aria-hidden="true"
+                  />
+                  <div>
+                    <p className="font-semibold text-[var(--ink)]">Delete account</p>
+                    <p className="mt-1 text-sm text-[var(--ink-70)]">
+                      Request deletion of your account and personal data. Records we must keep by
+                      law are retained for the required period, then deleted.
+                    </p>
+                  </div>
+                </div>
+
+                <Link
+                  href="/delete-account"
+                  className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border-2 border-[var(--foil)] px-4 font-medium text-[var(--ink)] transition-colors duration-[var(--dur-fast)] hover:bg-[var(--foil-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
+                >
+                  Delete account
+                </Link>
               </div>
             </div>
           </section>
