@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
               Your privacy is important to us
             </p>
             <p className="text-base text-[var(--ink-40)]">
-              Last Updated: August 2026
+              Last Updated: November 2026
             </p>
           </AnimatedSection>
         </div>
@@ -155,10 +155,11 @@ export default function PrivacyPolicyPage() {
                     store, only to fulfil your order:
                   </p>
                   <ul className="space-y-2 text-[var(--ink)]">
+                    <li>• <strong>Delivery partners</strong> (e.g. Shiprocket, Delhivery, or our own delivery staff) — to deliver your order. We share the details a courier needs to reach you: your <strong>name, phone number, email address, delivery address, and the items in your order</strong>. Orders within our local delivery area are delivered by our own staff and are not shared with any courier.</li>
                     <li>• <strong>Payment gateways</strong> (Razorpay, Cashfree) — to process payments securely</li>
-                    <li>• <strong>Cloud image storage</strong> (Cloudinary) — to store product and prescription images</li>
                     <li>• <strong>Email service</strong> (Brevo) — to send order and account emails</li>
-                    <li>• <strong>Delivery partners</strong> (e.g. Shiprocket, Delhivery, or our own delivery staff) — to deliver your order</li>
+                    <li>• <strong>SMS service</strong> (Fast2SMS) — to send order, OTP and delivery updates to your phone</li>
+                    <li>• <strong>Cloud image storage</strong> (Cloudinary) — to store product and prescription images</li>
                     <li>• <strong>Sign-in provider</strong> (Google) — if you choose to log in with Google</li>
                   </ul>
                   <p className="text-[var(--ink)] leading-relaxed mt-3">
