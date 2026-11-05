@@ -10,6 +10,7 @@ import { emailService } from '@/lib/notifications/email';
 import { smsService } from '@/lib/notifications/sms';
 import { whatsappService } from '@/lib/notifications/whatsapp';
 import { notifyOwnerNewOrderWhatsApp } from '@/lib/notifications/owner-whatsapp';
+import { claimOwnerWhatsappAlert } from '@/lib/notifications/owner-notify-guard';
 import { buildStockDecrement } from '@/lib/checkout/stock';
 import { recordSaleMovement } from '@/lib/inventory/stock-mutations';
 
@@ -123,16 +124,23 @@ export async function POST(req: NextRequest) {
           console.error('COD Telegram notification error:', err);
         });
 
-        notifyOwnerNewOrderWhatsApp({
-          orderNumber: order.orderNumber,
-          items: orderItems.map((i) => ({ name: i.productName, quantity: i.quantity })),
-          itemCount,
-          totalAmount: order.totalAmount,
-          paymentMethod: 'cod',
-          prescriptionRequired: !!order.prescriptionId,
-        }).catch((err) => {
-          console.error('COD owner WhatsApp notification error:', err);
-        });
+        // Claim the alert first so it's sent exactly once per order (guards the
+        // dual Cashfree callback + retries; COD is single-path but kept uniform).
+        claimOwnerWhatsappAlert(order._id)
+          .then((won) => {
+            if (!won) return;
+            return notifyOwnerNewOrderWhatsApp({
+              orderNumber: order.orderNumber,
+              items: orderItems.map((i) => ({ name: i.productName, quantity: i.quantity })),
+              itemCount,
+              totalAmount: order.totalAmount,
+              paymentMethod: 'cod',
+              prescriptionRequired: !!order.prescriptionId,
+            });
+          })
+          .catch((err) => {
+            console.error('COD owner WhatsApp notification error:', err);
+          });
 
         emailService.notifyAdminNewOrder({
           orderNumber: order.orderNumber,

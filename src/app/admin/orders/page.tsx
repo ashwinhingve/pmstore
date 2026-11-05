@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import OrdersTable from '@/components/admin/OrdersTable';
+import TestWhatsAppButton from '@/components/admin/TestWhatsAppButton';
 import { isManualDeliveryPincode } from '@/lib/constants';
 
 interface SearchParams {
@@ -136,7 +137,9 @@ export default async function AdminOrdersPage({
       <AdminPageHeader
         title="Order management"
         description={<>Manage all orders from your store (<span style={{ fontFamily: 'var(--font-data)' }}>{totalOrders.toLocaleString()}</span> total)</>}
-      />
+      >
+        <TestWhatsAppButton />
+      </AdminPageHeader>
 
       {/* Status Overview Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">

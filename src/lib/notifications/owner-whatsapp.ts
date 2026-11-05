@@ -9,9 +9,11 @@
  *
  * Setup (one-time, owner's phone): add +34 644 51 95 23 to contacts, WhatsApp
  * it "I allow callmebot to send me messages", then set the returned apikey.
- *   CALLMEBOT_PHONE    owner's number, digits incl. country code (e.g. 919755550126)
- *   CALLMEBOT_APIKEY   the key CallMeBot replies with
- * Unset either and the channel self-disables (the other alerts are unaffected).
+ *   CALLMEBOT_APIKEY   the key CallMeBot replies with — the only REQUIRED var
+ *   CALLMEBOT_PHONE    optional override; defaults to the store WhatsApp number
+ *                      (CONTACT_WHATSAPP_DIGITS — the SAME number the homepage
+ *                      corner button uses), so the alert lands on that number.
+ * Unset the apikey and the channel self-disables (the other alerts are unaffected).
  *
  * Health-data rule (CLAUDE.md #6): CallMeBot relays the text through a third
  * party, so the message carries NO customer name, phone or address — only what
@@ -19,6 +21,8 @@
  * delivery details sit securely behind login. Never log the phone or the URL
  * (it holds the number and apikey); log a status code only.
  */
+
+import { CONTACT_WHATSAPP_DIGITS } from '@/lib/constants';
 
 /** Max line items to spell out before collapsing to a "+N more" summary. */
 const MAX_ITEMS = 30;
@@ -71,13 +75,14 @@ export function buildOwnerOrderMessage(order: OwnerOrderAlert, adminUrl: string)
  * true on a successful send.
  */
 export async function notifyOwnerNewOrderWhatsApp(order: OwnerOrderAlert): Promise<boolean> {
-  const phone = process.env.CALLMEBOT_PHONE;
+  // Recipient defaults to the store WhatsApp number (same as the homepage corner
+  // button); CALLMEBOT_PHONE only overrides it. The apikey is the one secret
+  // CallMeBot hands out, so it alone gates whether the channel is configured.
+  const phone = process.env.CALLMEBOT_PHONE || CONTACT_WHATSAPP_DIGITS;
   const apikey = process.env.CALLMEBOT_APIKEY;
 
-  if (!phone || !apikey) {
-    console.warn(
-      'Owner WhatsApp alert not configured — set CALLMEBOT_PHONE and CALLMEBOT_APIKEY'
-    );
+  if (!apikey) {
+    console.warn('Owner WhatsApp alert not configured — set CALLMEBOT_APIKEY');
     return false;
   }
 
@@ -98,6 +103,17 @@ export async function notifyOwnerNewOrderWhatsApp(order: OwnerOrderAlert): Promi
     if (!res.ok) {
       // Status only — the URL carries the phone number and apikey. Health-data rule.
       console.error(`Owner WhatsApp alert failed with status ${res.status}`);
+      return false;
+    }
+    // CallMeBot answers 200 even for soft failures (bad/expired apikey, number
+    // not registered), so HTTP status alone isn't proof of delivery. Its accepted
+    // responses say the message was "queued"/"sent"/"will receive it"; anything
+    // else is a failure. The body echoes the phone number, so NEVER log it —
+    // only a generic line (health-data rule).
+    const body = await res.text();
+    const accepted = /queued|will receive|\bsent\b|message to/i.test(body);
+    if (!accepted) {
+      console.error('Owner WhatsApp alert: CallMeBot did not accept the message (check apikey/number registration)');
       return false;
     }
     return true;

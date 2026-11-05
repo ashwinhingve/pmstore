@@ -65,6 +65,16 @@ export function waHref(message?: string): string {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
+/**
+ * The store WhatsApp number as bare digits including the country code, e.g.
+ * "919755550126" — derived from the same `CONTACT.whatsapp` the homepage corner
+ * button uses. The CallMeBot owner order alert defaults its recipient to this,
+ * so the alert always lands on the exact number shown on the site without a
+ * second place to keep in sync. (`CALLMEBOT_PHONE` can still override it if the
+ * shop ever watches a different phone.)
+ */
+export const CONTACT_WHATSAPP_DIGITS = CONTACT.whatsapp.replace(/\D/g, "");
+
 // Registered legal identity — single source of truth for the compliance/legal pages.
 // Values verified against the store's official documents (Udyam Registration, MP Shops &
 // Establishments "Gumasta", and the FDA drug sale licence). This is a RETAIL pharmacy

@@ -50,6 +50,13 @@ export interface IOrder extends Document {
   cancelReason?: string;
   shipmentCreationFailed?: boolean;
   shipmentFailureReason?: string;
+  /**
+   * Set once, the first time the owner's WhatsApp order alert is claimed (see
+   * `claimOwnerWhatsappAlert`). Acts as an exactly-once marker so the dual
+   * Cashfree callback (GET redirect + POST webhook) and any retry can't send the
+   * same order's alert twice. Absent until the first claim wins.
+   */
+  ownerWhatsappNotifiedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -201,6 +208,11 @@ const OrderSchema = new Schema<IOrder>(
     },
     shipmentFailureReason: {
       type: String,
+    },
+    // Exactly-once marker for the owner WhatsApp alert (see claimOwnerWhatsappAlert).
+    // No default — the field's absence is what the atomic claim matches on.
+    ownerWhatsappNotifiedAt: {
+      type: Date,
     },
   },
   {
