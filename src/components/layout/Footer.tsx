@@ -27,6 +27,7 @@ const legalLinks = [
   { href: "/refund-policy", label: "Refund policy" },
   { href: "/shipping-policy", label: "Shipping policy" },
   { href: "/drug-licence", label: "Drug licence" },
+  { href: "/delete-account", label: "Delete account" },
 ];
 
 const linkClass =
