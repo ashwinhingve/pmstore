@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
@@ -41,10 +40,11 @@ interface PaginationInfo {
 }
 
 export default function OrdersPage() {
-  const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showFilters, setShowFilters] = useState(false);
@@ -56,16 +56,10 @@ export default function OrdersPage() {
     totalOrders: 0,
   });
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login?redirect=/orders');
-    } else if (status === 'authenticated') {
-      fetchOrders();
-    }
-  }, [status]);
-
-  async function fetchOrders(page = 1) {
+  const fetchOrders = useCallback(async (page = 1) => {
     setIsLoading(true);
+    setLoadError('');
+    setSessionExpired(false);
     try {
       const params = new URLSearchParams();
 
@@ -79,6 +73,12 @@ export default function OrdersPage() {
       const url = `/api/orders?${params.toString()}`;
       const response = await fetch(url);
 
+      if (!response.ok) {
+        setSessionExpired(response.status === 401);
+        throw new Error(response.status === 401
+          ? 'Your session has expired. Sign in again to view your orders.'
+          : 'Unable to load your orders. Please try again.');
+      }
       if (response.ok) {
         const data = await response.json();
         setOrders(data.orders || []);
@@ -89,17 +89,17 @@ export default function OrdersPage() {
         });
       }
     } catch (error) {
-      console.error('Failed to fetch orders:', error);
+      setLoadError(error instanceof Error ? error.message : 'Unable to load your orders. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [filter, searchQuery, dateFrom, dateTo]);
 
   useEffect(() => {
     if (status === 'authenticated') {
-      fetchOrders(1);
+      void fetchOrders(1);
     }
-  }, [filter, searchQuery, dateFrom, dateTo]);
+  }, [status, fetchOrders]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +116,7 @@ export default function OrdersPage() {
 
   const hasActiveFilters = filter !== 'all' || searchQuery || dateFrom || dateTo;
 
-  if (status === 'loading' || isLoading) {
+  if (status === 'loading' || (status === 'authenticated' && isLoading)) {
     return (
       <div className="min-h-screen bg-[var(--paper)] py-12">
         <div className="mx-auto max-w-5xl px-4" aria-hidden="true">
@@ -179,7 +179,7 @@ export default function OrdersPage() {
             <h1 className="mb-1 text-[length:var(--step-2)] text-[var(--ink)]">My orders</h1>
             <p className="text-[var(--ink-70)]">
               Track and manage your orders
-              {pagination.totalOrders > 0 && (
+              {status === 'authenticated' && !loadError && pagination.totalOrders > 0 && (
                 <span className="data"> ({pagination.totalOrders} total)</span>
               )}
             </p>
@@ -187,7 +187,7 @@ export default function OrdersPage() {
 
           <div className="max-w-5xl mx-auto">
             {/* Search and Filter Bar */}
-            <div className="mb-6 space-y-4">
+            {status === 'authenticated' && <div className="mb-6 space-y-4">
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search */}
                 <form onSubmit={handleSearch} className="flex-1 min-w-0">
@@ -321,30 +321,41 @@ export default function OrdersPage() {
                   </div>
                 </div>
               )}
-            </div>
+            </div>}
 
             {/* Orders List */}
-            {orders.length === 0 ? (
-              <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-12 text-center shadow-[var(--shadow-sm)]">
-                <ShippingArt className="mx-auto mb-6 w-52" />
+            {status === 'authenticated' && loadError ? (
+              <div role="alert" className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 text-center">
+                <h2 className="mb-2 text-[length:var(--step-1)]">Unable to load orders</h2>
+                <p className="mb-4 text-[var(--ink-70)]">{loadError}</p>
+                <Button variant="outline" onClick={() => fetchOrders(1)}>Try again</Button>
+                {sessionExpired && <Button asChild variant="link"><Link href="/login?redirect=/orders">Sign in again</Link></Button>}
+              </div>
+            ) : status === 'unauthenticated' || orders.length === 0 ? (
+              <div className="rounded-[var(--radius-lg)] border border-[var(--foil-soft)] bg-[var(--paper-card)] p-6 sm:p-12 text-center shadow-[var(--shadow-sm)]">
+                <ShippingArt className="mx-auto mb-6 w-52 max-w-full" />
                 <h2 className="mb-2 text-[length:var(--step-1)] text-[var(--ink)]">
-                  {hasActiveFilters ? 'No orders match these filters' : 'No orders yet'}
+                  {status === 'authenticated' && hasActiveFilters ? 'No orders match these filters' : 'No orders yet'}
                 </h2>
                 <p className="mb-6 text-[var(--ink-70)]">
-                  {hasActiveFilters
+                  {status === 'authenticated' && hasActiveFilters
                     ? 'Try a different status or date range.'
                     : 'Order the medicines you need and track them here.'}
                 </p>
-                {hasActiveFilters ? (
+                {status === 'authenticated' && hasActiveFilters ? (
                   <Button onClick={handleClearFilters} className="bg-[var(--brand)] hover:bg-[var(--brand-deep)]">
                     Clear filters
                   </Button>
                 ) : (
-                  <Link href="/products">
-                    <Button className="bg-[var(--brand)] hover:bg-[var(--brand-deep)]">
-                      Browse medicines
-                    </Button>
-                  </Link>
+                  <Button asChild className="bg-[var(--brand)] hover:bg-[var(--brand-deep)]">
+                    <Link href="/products">Browse medicines</Link>
+                  </Button>
+                )}
+                {status === 'unauthenticated' && (
+                  <p className="mt-5 text-sm text-[var(--ink-70)]">
+                    Already placed an order?{' '}
+                    <Link href="/login?redirect=/orders" className="inline-flex min-h-11 items-center underline">Sign in to view your orders</Link>
+                  </p>
                 )}
               </div>
             ) : (

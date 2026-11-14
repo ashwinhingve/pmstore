@@ -72,7 +72,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // --- Auth-only protected routes ---
-  const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
+  // The orders landing page is a public empty shell; order details stay protected.
+  const isProtectedRoute = pathname !== "/orders" && PROTECTED_ROUTES.some((route) =>
     pathname.startsWith(route)
   );
   if (isProtectedRoute && !token) {

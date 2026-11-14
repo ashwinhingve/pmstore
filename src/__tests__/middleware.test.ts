@@ -115,3 +115,27 @@ describe('unauthenticated access (regression guard)', () => {
     expect(res.status).toBe(401);
   });
 });
+
+
+describe('orders landing page and private order details', () => {
+  it('allows visitors to see the orders empty state without redirecting', async () => {
+    getToken.mockResolvedValue(null);
+    const res = await middleware(request('/orders'));
+    expect(res.status).toBe(200);
+    expect(res.headers.get('location')).toBeNull();
+  });
+
+  it.each(['/orders/ORD-PRIVATE', '/orders/ORD-PRIVATE/track'])(
+    'keeps anonymous access to %s behind sign-in', async (path) => {
+      getToken.mockResolvedValue(null);
+      const res = await middleware(request(path));
+      expect(isRedirect(res)).toBe(true);
+      expect(res.headers.get('location')).toContain('/login');
+    }
+  );
+
+  it('allows authenticated customers to open their orders page', async () => {
+    getToken.mockResolvedValue(CLIENT);
+    expect((await middleware(request('/orders'))).status).toBe(200);
+  });
+});

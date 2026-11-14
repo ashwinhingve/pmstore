@@ -49,3 +49,11 @@ Automated integration and browser checks use temporary databases, synthetic user
 - Signed Android APK and AAB: `build/releases/`; signatures verified and AAB validated with official Google bundletool. The wrapper loads the hosted site, which must be deployed for web changes to appear.
 
 Final production-browser run passed all nine groups with no page errors, including changing reduced-motion preference and reloading. Synthetic checkout: the same destination cost ₹90 with the new offer disabled and ₹0 when eligible; a non-eligible destination remained ₹90. The created eligible order retained fee ₹0 after the offer was disabled. In a separate synthetic billing case, recording a verified partner charge of ₹89 left the customer fee ₹30 and total ₹130 unchanged. These are test fixtures, not a live courier tariff or a reconciliation of the reported real ₹89 debit.
+
+## Orders landing page follow-up
+
+`middleware.ts` previously redirected every `/orders` visitor without an active session to the generic welcome/sign-in screen, before the existing empty state could render. The exact `/orders` landing page now shows **No orders yet**, Browse medicines and an optional account sign-in link. Anonymous visitors do not request private order data. Order-detail/tracking routes and `/api/orders` still require authentication.
+
+`src/app/(shop)/orders/page.tsx` also distinguishes request failures from an empty history, offers retry and session renewal, removes duplicate initial fetch effects, and constrains the illustration on narrow screens. Middleware regression tests are in `src/__tests__/middleware.test.ts`.
+
+Follow-up verification: 23 middleware tests, TypeScript and targeted ESLint passed. The Android output APK/AAB checksums match `build/releases/`. The follow-up browser run was not completed; the earlier six-width browser results above apply to the preceding release.
