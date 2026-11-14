@@ -44,8 +44,8 @@ editing the config so `errorPath` reaches the native `capacitor.config.json`.**
 - **Hardware back button**: should navigate WebView history and exit at the root (Capacitor
   default) — confirm it doesn't exit the app mid-flow.
 - **Offline**: pull the network and confirm `www/index.html` shows (not a blank page).
-- **Prescription upload**: WebView file/camera picker (permissions declared: CAMERA,
-  READ_MEDIA_IMAGES).
+- **Prescription upload**: WebView system file chooser and optional camera capture (existing CAMERA permission;
+  no broad media/storage permission).
 
 ## Google sign-in (in-app)
 Google blocks OAuth in embedded WebViews. In-app Google uses a **native Google plugin** → NextAuth
