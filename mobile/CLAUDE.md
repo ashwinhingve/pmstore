@@ -48,6 +48,11 @@ editing the config so `errorPath` reaches the native `capacitor.config.json`.**
   no broad media/storage permission).
 
 ## Google sign-in (in-app)
+Native Facebook Login is disabled in `capacitor.config.js` and pinned out of Gradle dependencies
+with `socialLogin.facebook.include=false`; Google remains enabled. Run `npx cap sync android` after
+provider changes and verify the release dependency graph/merged manifest before publishing.
+See `docs/ANDROID-GOOGLE-ONLY-LOGIN.md` for the code-4 release audit.
+
 Google blocks OAuth in embedded WebViews. In-app Google uses a **native Google plugin** → NextAuth
 `google-native` Credentials provider (`src/lib/auth.ts`) that verifies the idToken and sets a
 same-origin session in the WebView. Requires a **Google Cloud Android OAuth client** for

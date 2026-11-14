@@ -56,6 +56,10 @@ const config = {
     errorPath: 'index.html',
   },
   plugins: {
+    // Google Login is used; exclude the unused native Facebook SDK.
+    SocialLogin: {
+      providers: { google: true, facebook: false },
+    },
     SplashScreen: {
       launchShowDuration: 800,
       backgroundColor: '#FFFFFF',
