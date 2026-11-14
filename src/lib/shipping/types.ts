@@ -1,5 +1,8 @@
+import type { ParcelMeasurements } from './parcel';
+
 export interface ShipmentCreationData {
   orderId: string;
+  pickupLocation?: import('./delivery-policy').PickupLocation;
   orderNumber: string;
   customerName: string;
   customerPhone: string;
@@ -17,9 +20,10 @@ export interface ShipmentCreationData {
     sku: string;
     quantity: number;
     price: number;
-    weight: number; // grams per unit
+    weight?: number; // known grams per unit; never used as the packed shipment weight
   }>;
-  totalWeight: number; // grams
+  totalWeight: number; // measured packed grams, never inferred from item count
+  parcel: ParcelMeasurements;
   totalValue: number;
   paymentMethod: 'prepaid' | 'cod';
   codAmount?: number;
@@ -37,6 +41,7 @@ export interface ShipmentCreationResult {
 export interface PickupRequestData {
   /** Shiprocket: the numeric shipment_id. Delhivery: unused (pickup is warehouse-level). */
   providerShipmentId: string;
+  warehouseName?: string;
   /** YYYY-MM-DD. Delhivery uses this; Shiprocket schedules its own date. Provider default when omitted. */
   pickupDate?: string;
   /** Delhivery expected_package_count — a best-effort estimate. Defaults to 1. */

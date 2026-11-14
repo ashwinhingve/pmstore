@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { AnimatedSection } from '@/components/shared/AnimatedSection';
+import { CONTACT } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
 import {
   Package,
@@ -82,9 +83,9 @@ export default function OrdersPage() {
         const data = await response.json();
         setOrders(data.orders || []);
         setPagination({
-          currentPage: data.currentPage || 1,
-          totalPages: data.totalPages || 1,
-          totalOrders: data.totalOrders || 0,
+          currentPage: data.pagination?.page ?? data.currentPage ?? 1,
+          totalPages: data.pagination?.pages ?? data.totalPages ?? 1,
+          totalOrders: data.pagination?.total ?? data.totalOrders ?? 0,
         });
       }
     } catch (error) {
@@ -174,6 +175,7 @@ export default function OrdersPage() {
         <AnimatedSection direction="up">
           {/* Header */}
           <div className="mx-auto mb-8 max-w-5xl">
+            <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="float-right inline-flex min-h-11 items-center text-sm underline lg:hidden">Need help? Chat with us</a>
             <h1 className="mb-1 text-[length:var(--step-2)] text-[var(--ink)]">My orders</h1>
             <p className="text-[var(--ink-70)]">
               Track and manage your orders
@@ -188,7 +190,7 @@ export default function OrdersPage() {
             <div className="mb-6 space-y-4">
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search */}
-                <form onSubmit={handleSearch} className="flex-1">
+                <form onSubmit={handleSearch} className="flex-1 min-w-0">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--ink-40)]" />
                     <input
@@ -355,11 +357,11 @@ export default function OrdersPage() {
                     >
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         {/* Order Info */}
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-3">
                             {getStatusIcon(order.orderStatus)}
                             <div>
-                              <h3 className="data text-lg font-bold text-[var(--ink)]">
+                              <h3 className="data break-all text-lg font-bold text-[var(--ink)]">
                                 Order #{order.orderNumber}
                               </h3>
                               <p className="data text-sm text-[var(--ink-70)]">
@@ -407,17 +409,13 @@ export default function OrdersPage() {
 
                         {/* Actions */}
                         <div className="flex flex-col gap-2 md:w-40">
-                          <Link href={`/orders/${order.orderNumber}`}>
-                            <Button variant="outline" className="w-full">
-                              View details
-                            </Button>
-                          </Link>
+                          <Button asChild variant="outline" className="w-full touch-manipulation scroll-mb-24">
+                            <Link href={`/orders/${encodeURIComponent(order.orderNumber)}`}>View details</Link>
+                          </Button>
                           {(order.waybill || order.trackingNumber) && (
-                            <Link href={`/orders/${order.orderNumber}/track`}>
-                              <Button variant="outline" className="w-full">
-                                Track order
-                              </Button>
-                            </Link>
+                            <Button asChild variant="outline" className="w-full touch-manipulation scroll-mb-24">
+                              <Link href={`/orders/${encodeURIComponent(order.orderNumber)}/track`}>Track order</Link>
+                            </Button>
                           )}
                           {order.paymentStatus === 'failed' && (
                             <Button className="w-full bg-[var(--ink)] text-[var(--paper-card)] hover:bg-[var(--ink-deep)]">

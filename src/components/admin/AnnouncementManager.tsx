@@ -8,6 +8,7 @@ interface Announcement {
   id: string;
   text: string;
   emoji: string;
+  icon?: string;
   isActive: boolean;
 }
 
@@ -59,6 +60,7 @@ export default function AnnouncementManager({ initialData }: { initialData: Bann
             announcements: announcements.map((a) => ({
               text: a.text,
               emoji: a.emoji,
+              icon: a.icon,
               isActive: a.isActive,
             })),
           },

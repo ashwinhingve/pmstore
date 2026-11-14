@@ -1,67 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { verifyAdminAccess } from '@/lib/auth-helpers';
+import { applyRateLimit } from '@/lib/middleware/rateLimit';
+import { createErrorResponse } from '@/lib/utils/errorHandler';
+import Order from '@/models/Order';
 import { createShipmentForOrder } from '@/lib/shipping/createShipmentForOrder';
-import { getDefaultProvider } from '@/lib/shipping/providerFactory';
+import { bookingRequestSchema } from '@/lib/shipping/admin-request';
+import { estimateDelhivery } from '@/lib/shipping/estimate';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { orderId, provider = getDefaultProvider() } = body;
-
-    if (!orderId) {
-      return NextResponse.json(
-        { error: 'Order ID is required' },
-        { status: 400 }
-      );
+    const access = await verifyAdminAccess();
+    if (access.error) return access.error;
+    const limited = await applyRateLimit(request, { windowMs: 60000, maxRequests: 10, keyPrefix: 'shipping-book' });
+    if (limited) return limited;
+    const parsed = bookingRequestSchema.safeParse(await request.json().catch(() => null));
+    if (!parsed.success) return NextResponse.json({ error: 'A valid order ID and courier are required.' }, { status: 400 });
+    const { orderId, provider } = parsed.data;
+    const order = await Order.findById(orderId).populate('shippingAddressId');
+    if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    const parcel = order.confirmedParcel;
+    let estimate;
+    if (parcel && provider === 'delhivery' && !order.trackingNumber && !order.shipmentBookingState) {
+      try {
+        estimate = await estimateDelhivery(parcel, order.shippingAddressId.postalCode, order.paymentMethod === 'cod' && order.paymentStatus !== 'paid' ? 'cod' : 'prepaid', order.totalAmount, order.pickupLocation?.pincode);
+      } catch { /* A missing quote never becomes a fabricated cost. */ }
     }
-
-    if (!['delhivery', 'shiprocket'].includes(provider)) {
-      return NextResponse.json(
-        { error: 'Invalid provider. Must be "delhivery" or "shiprocket"' },
-        { status: 400 }
-      );
-    }
-
-    // Allow internal server-to-server calls via shared secret header
-    const internalSecret = request.headers.get('x-internal-secret');
-    const isInternal = internalSecret && internalSecret === process.env.INTERNAL_API_SECRET;
-
-    if (!isInternal) {
-      const session = await getServerSession(authOptions);
-      if (!session || session.user?.role !== 'admin') {
-        return NextResponse.json(
-          { error: 'Unauthorized' },
-          { status: 401 }
-        );
-      }
-    }
-
-    const result = await createShipmentForOrder(orderId, provider as 'delhivery' | 'shiprocket');
-
-    if (result.success) {
-      return NextResponse.json({
-        success: true,
-        message: 'Shipment created successfully',
-        waybill: result.waybill,
-        trackingUrl: result.trackingUrl,
-      });
-    } else {
-      // Use 422 for provider-side failures (serviceability, bad pincode, etc.)
-      // so the client gets a readable message rather than a generic 500
-      return NextResponse.json(
-        { error: result.error || 'Failed to create shipment' },
-        { status: 422 }
-      );
-    }
-  } catch (error: any) {
-    console.error('Error creating shipment:', error);
-    return NextResponse.json(
-      {
-        error: 'Failed to create shipment',
-        message: error.message || 'Internal server error',
-      },
-      { status: 500 }
-    );
+    const result = await createShipmentForOrder(orderId, provider, true, parcel ? { parcel, estimate } : undefined);
+    return NextResponse.json(result, { status: result.success ? 200 : 422 });
+  } catch (error) {
+    return createErrorResponse(error);
   }
 }

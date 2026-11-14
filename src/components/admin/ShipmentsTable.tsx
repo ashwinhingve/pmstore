@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Badge, statusBadgeVariant } from '@/components/ui/badge';
 import { formatDateTime } from '@/lib/utils/format-date';
+import CreateShipmentButton from './CreateShipmentButton';
 
 interface Shipment {
   id: string;
@@ -28,6 +29,10 @@ interface Shipment {
   provider: string;
   trackingUrl: string | null;
   origin: string | null;
+  customerShippingCost: number;
+  estimatedCost: number | null;
+  billedCost: number | null;
+  billingStatus: string | null;
   destination: string | null;
   estimatedDelivery: string | null;
   deliveredAt: string | null;
@@ -49,7 +54,9 @@ interface PendingOrder {
   customerEmail: string;
   customerPhone: string;
   totalAmount: number;
-  paymentMethod: 'cod';
+  paymentMethod: string;
+  manual?: boolean;
+  bookingState?: string;
   createdAt: string;
 }
 
@@ -92,9 +99,6 @@ export default function ShipmentsTable({
   const [localSearch, setLocalSearch] = useState(filters.search);
   const [localFilters, setLocalFilters] = useState(filters);
   const [providerFilter, setProviderFilter] = useState<'all' | 'delhivery' | 'shiprocket'>('all');
-  const [creatingFor, setCreatingFor] = useState<string | null>(null);
-  const [pendingProvider, setPendingProvider] = useState<Record<string, 'delhivery' | 'shiprocket'>>({});
-  const [pendingResults, setPendingResults] = useState<Record<string, string>>({});
   const [isPolling, setIsPolling] = useState(false);
   const [pollResult, setPollResult] = useState<string | null>(null);
 
@@ -170,32 +174,9 @@ export default function ShipmentsTable({
       ? shipments
       : shipments.filter((s) => (s.provider || 'delhivery') === providerFilter);
 
-  async function handleCreateShipment(orderId: string) {
-    const provider = pendingProvider[orderId] || 'delhivery';
-    setCreatingFor(orderId);
-    try {
-      const res = await fetch('/api/shipping/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, provider }),
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setPendingResults((prev) => ({ ...prev, [orderId]: data.waybill }));
-        router.refresh();
-      } else {
-        setPendingResults((prev) => ({ ...prev, [orderId]: `Error: ${data.error || 'Failed'}` }));
-      }
-    } catch (err: any) {
-      setPendingResults((prev) => ({ ...prev, [orderId]: `Error: ${err.message}` }));
-    } finally {
-      setCreatingFor(null);
-    }
-  }
-
   return (
     <div className="space-y-6">
-      {/* Pending COD orders — awaiting shipment creation */}
+      {/* Paid and COD-confirmed orders awaiting parcel confirmation */}
       {pendingOrders.length > 0 && (
         <div className="rounded-lg bg-[var(--paper-card)] shadow-[var(--shadow-sm)] border border-[var(--foil-soft)]">
           <div className="px-6 py-4 border-b border-[var(--foil-soft)] flex items-center gap-2">
@@ -206,9 +187,6 @@ export default function ShipmentsTable({
           </div>
           <div className="divide-y divide-[var(--foil-soft)]">
             {pendingOrders.map((order) => {
-              const result = pendingResults[order.id];
-              const isCreating = creatingFor === order.id;
-              const selectedProvider = pendingProvider[order.id] || 'delhivery';
 
               return (
                 <div key={order.id} className="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
@@ -221,7 +199,7 @@ export default function ShipmentsTable({
                         {order.orderNumber}
                       </Link>
                       <span className="inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-[var(--foil-soft)] text-[var(--ink)]">
-                        COD
+                        {order.paymentMethod === 'cod' ? 'COD' : 'Prepaid'}
                       </span>
                     </div>
                     <p className="text-sm text-[var(--ink)] mt-0.5">{order.customerName}</p>
@@ -232,40 +210,9 @@ export default function ShipmentsTable({
                     </p>
                   </div>
 
-                  {result ? (
-                    <div className={`text-xs font-medium px-3 py-1.5 rounded-md ${
-                      result.startsWith('Error')
-                        ? 'bg-[var(--foil-soft)] text-[var(--ink)]'
-                        : 'bg-[var(--brand-soft)] text-[var(--brand)]'
-                    }`}>
-                      {result.startsWith('Error') ? result : `Waybill: ${result}`}
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <select
-                        value={selectedProvider}
-                        onChange={(e) =>
-                          setPendingProvider((prev) => ({
-                            ...prev,
-                            [order.id]: e.target.value as 'delhivery' | 'shiprocket',
-                          }))
-                        }
-                        disabled={isCreating}
-                        className="text-xs border border-[var(--foil-soft)] rounded px-2 py-1.5 bg-[var(--paper-card)] text-[var(--ink)] focus:outline-none focus:ring-1 focus:ring-[var(--ink)]"
-                      >
-                        <option value="delhivery">Delhivery</option>
-                        <option value="shiprocket">Shiprocket</option>
-                      </select>
-                      <button
-                        type="button"
-                        onClick={() => handleCreateShipment(order.id)}
-                        disabled={isCreating}
-                        className="px-3 py-1.5 bg-[var(--ink)] text-[var(--paper-card)] text-xs font-semibold rounded hover:opacity-90 disabled:opacity-50 whitespace-nowrap"
-                      >
-                        {isCreating ? 'Creating...' : 'Create shipment'}
-                      </button>
-                    </div>
-                  )}
+                  <div className="w-full sm:max-w-md">
+                    <CreateShipmentButton orderId={order.id} orderNumber={order.orderNumber} paymentMethod={order.paymentMethod} manual={order.manual} bookingState={order.bookingState} />
+                  </div>
                 </div>
               );
             })}
@@ -512,6 +459,9 @@ export default function ShipmentsTable({
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="text-sm text-[var(--ink)]">{shipment.courier}</div>
+                      <div className="text-xs text-[var(--ink-70)]">Customer delivery: ₹{shipment.customerShippingCost.toFixed(2)}</div>
+                      <div className="text-xs text-[var(--ink-70)]">Estimate: {shipment.estimatedCost === null ? 'unavailable' : `₹${shipment.estimatedCost.toFixed(2)}`}</div>
+                      <div className="text-xs text-[var(--ink-70)]">Actual: {shipment.billedCost === null ? 'pending verification' : `₹${shipment.billedCost.toFixed(2)} · ${shipment.billingStatus}`}</div>
                       <span
                         className={`inline-flex mt-1 px-1.5 py-0.5 text-xs font-medium rounded-full ${
                           provider === 'shiprocket'

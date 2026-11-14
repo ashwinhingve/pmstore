@@ -1,5 +1,7 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 import { CONTACT } from '@/lib/constants';
 import { WhatsAppGlyph } from '@/components/shared/WhatsAppGlyph';
 
@@ -15,6 +17,7 @@ import { WhatsAppGlyph } from '@/components/shared/WhatsAppGlyph';
  * auto-reply bot, which is a separate, server-side integration.
  */
 export function WhatsAppButton() {
+  const orderPage = usePathname()?.startsWith('/orders');
   return (
     <a
       href={CONTACT.whatsappHref}
@@ -22,7 +25,7 @@ export function WhatsAppButton() {
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
       title="Chat with us on WhatsApp"
-      className="group fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px)+0.75rem)] right-[calc(1rem+env(safe-area-inset-right,0px))] z-30 flex h-14 items-center rounded-[var(--radius-pill)] bg-[var(--mint)] pl-4 pr-4 text-[var(--paper-card)] shadow-[var(--shadow-lg)] outline-none transition-[background-color,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:bg-[var(--mint-deep)] focus-visible:ring-2 focus-visible:ring-[var(--mint)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--paper)] motion-reduce:transition-none print:hidden lg:bottom-[calc(1rem+env(safe-area-inset-bottom,0px))]"
+      className={cn("group fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px)+0.75rem)] right-[calc(1rem+env(safe-area-inset-right,0px))] z-30 flex h-14 items-center rounded-[var(--radius-pill)] bg-[var(--mint)] pl-4 pr-4 text-[var(--paper-card)] shadow-[var(--shadow-lg)] outline-none transition-[background-color,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:bg-[var(--mint-deep)] focus-visible:ring-2 focus-visible:ring-[var(--mint)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--paper)] motion-reduce:transition-none print:hidden lg:bottom-[calc(1rem+env(safe-area-inset-bottom,0px))]", orderPage && 'hidden lg:flex')}
     >
       <WhatsAppGlyph className="h-6 w-6 shrink-0" />
       {/* Expands on hover/focus for pointer users; the aria-label always names it. */}

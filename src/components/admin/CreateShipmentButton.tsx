@@ -1,131 +1,92 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import type { ParcelMeasurements } from '@/lib/shipping/parcel';
 
 interface Props {
   orderId: string;
   orderNumber: string;
   paymentMethod?: string;
+  manual?: boolean;
+  initialParcel?: ParcelMeasurements;
+  bookingState?: string;
 }
 
-export default function CreateShipmentButton({ orderId, orderNumber, paymentMethod }: Props) {
+export default function CreateShipmentButton({ orderId, orderNumber, paymentMethod, manual, initialParcel, bookingState }: Props) {
   const router = useRouter();
+  const id = useId();
   const [provider, setProvider] = useState<'delhivery' | 'shiprocket'>('delhivery');
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ waybill: string; trackingUrl?: string } | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [values, setValues] = useState<Record<keyof ParcelMeasurements, string>>({
+    weightGrams: initialParcel ? String(initialParcel.weightGrams) : '',
+    lengthCm: initialParcel ? String(initialParcel.lengthCm) : '',
+    widthCm: initialParcel ? String(initialParcel.widthCm) : '',
+    heightCm: initialParcel ? String(initialParcel.heightCm) : '',
+  });
+  const [confirmed, setConfirmed] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState('');
+  const [estimate, setEstimate] = useState<number | null>(null);
+  const [waybill, setWaybill] = useState('');
 
-  async function handleCreate() {
-    setLoading(true);
-    setError(null);
-    setResult(null);
-
+  async function submit(book: boolean) {
+    setBusy(true);
+    setMessage('');
     try {
-      const res = await fetch('/api/shipping/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, provider }),
+      const parcel = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, Number(value)]));
+      const response = await fetch(book ? '/api/shipping/create' : '/api/shipping/parcel', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(book ? { orderId, provider } : { orderId, provider, parcel, action: 'estimate' }),
       });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        setResult({ waybill: data.waybill, trackingUrl: data.trackingUrl });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(typeof data.error === 'string' ? data.error : data.error?.message || 'Unable to process shipment. Refresh and try again.');
+      if (book) {
+        setWaybill(data.waybill);
         router.refresh();
       } else {
-        setError(data.error || data.message || 'Failed to create shipment');
+        setConfirmed(true);
+        setEstimate(data.estimate?.total ?? null);
+        setMessage(data.message || 'Packed measurements confirmed. Review the estimate before booking.');
       }
-    } catch (err: any) {
-      setError(err.message || 'Network error');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Unable to process shipment.');
     } finally {
-      setLoading(false);
+      setBusy(false);
     }
   }
 
-  if (result) {
-    return (
-      <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 rounded-full bg-[var(--brand-soft)] flex items-center justify-center">
-            <svg className="w-4 h-4 text-[var(--brand)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h3 className="text-sm font-semibold text-[var(--brand)]">Shipment created</h3>
-        </div>
-        <p className="text-sm text-[var(--ink-70)] mb-1">Waybill</p>
-        <p className="text-sm data font-semibold text-[var(--ink)] mb-3" style={{ fontFamily: 'var(--font-data)' }}>{result.waybill}</p>
-        {result.trackingUrl && (
-          <a
-            href={result.trackingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--ink)] hover:text-[var(--ink-70)]"
-          >
-            Track shipment
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
-        )}
-      </div>
-    );
+  if (waybill) return <p role="status" className="text-sm text-[var(--ink)]">Shipment created: {waybill}</p>;
+
+  if (bookingState === 'creating' || bookingState === 'uncertain') {
+    return <p role="status" className="text-sm text-[var(--ink)]">Booking is in progress or needs reconciliation. Check the courier dashboard for {orderNumber} before retrying.</p>;
   }
 
-  const isCod = paymentMethod === 'cod';
-
+  const fields: Array<[keyof ParcelMeasurements, string]> = [
+    ['weightGrams', 'Total packed weight (g)'], ['lengthCm', 'Length (cm)'],
+    ['widthCm', 'Width (cm)'], ['heightCm', 'Height (cm)'],
+  ];
   return (
-    <div className="bg-[var(--paper-card)] rounded-lg shadow-sm border border-[var(--foil-soft)] p-6">
-      <div className="flex items-center gap-2 mb-1">
-        <svg className="w-4 h-4 text-[var(--ink)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-        </svg>
-        <h3 className="text-sm font-semibold text-[var(--ink)]">Create shipment</h3>
-      </div>
-      <p className="text-xs text-[var(--ink-70)] mb-4">
-        {isCod ? 'COD order — select courier to dispatch' : 'Select courier to create shipment'}
-      </p>
-
-      {/* Provider radio cards */}
-      <div className="grid grid-cols-2 gap-2 mb-4">
-        {(['delhivery', 'shiprocket'] as const).map((p) => (
-          <button
-            key={p}
-            type="button"
-            onClick={() => setProvider(p)}
-            disabled={loading}
-            className={`relative flex flex-col items-center gap-1 p-3 rounded-lg border-2 text-xs font-medium transition-all ${
-              provider === p
-                ? p === 'shiprocket'
-                  ? 'border-[var(--ink)] bg-[var(--foil-soft)] text-[var(--ink)]'
-                  : 'border-[var(--ink)] bg-[var(--foil-soft)] text-[var(--ink)]'
-                : 'border-[var(--foil-soft)] bg-[var(--paper-card)] text-[var(--ink-70)] hover:border-[var(--ink)]'
-            }`}
-          >
-            <span className="text-lg">
-              {p === 'delhivery' ? '🔵' : '🟠'}
-            </span>
-            {p === 'delhivery' ? 'Delhivery' : 'Shiprocket'}
-            {provider === p && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-current opacity-70" />
-            )}
-          </button>
-        ))}
-      </div>
-
-      <button
-        type="button"
-        onClick={handleCreate}
-        disabled={loading}
-        className="w-full py-2.5 bg-[var(--ink)] text-[var(--paper-card)] text-sm font-semibold rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-      >
-        {loading ? 'Creating shipment...' : `Ship with ${provider === 'delhivery' ? 'Delhivery' : 'Shiprocket'}`}
-      </button>
-
-      {error && (
-        <p className="mt-2 text-xs text-[var(--ink)]">{error}</p>
-      )}
-    </div>
+    <section aria-label={`Book shipment for ${orderNumber}`} className="rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 space-y-3">
+      <h3 className="text-sm font-semibold text-[var(--ink)]">{manual ? 'Local delivery' : 'Confirm parcel and book shipment'}</h3>
+      {!manual && <>
+        <p className="text-sm text-[var(--ink-70)]">Weigh the complete parcel, including packaging. Product weights are not used for courier booking.</p>
+        <label htmlFor={`${id}-provider`} className="block text-sm">Courier</label>
+        <select id={`${id}-provider`} value={provider} disabled={busy} onChange={(e) => { setProvider(e.target.value as typeof provider); setConfirmed(false); setEstimate(null); }} className="min-h-11 rounded border border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 text-sm">
+          <option value="delhivery">Delhivery Surface</option><option value="shiprocket">Shiprocket</option>
+        </select>
+        <form onSubmit={(e) => { e.preventDefault(); void submit(false); }} className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {fields.map(([key, label]) => <div key={key}>
+              <label htmlFor={`${id}-${key}`} className="block text-sm mb-1">{label}</label>
+              <input id={`${id}-${key}`} type="number" min={key === 'weightGrams' ? '1' : '0.1'} max={key === 'weightGrams' ? '1000000' : '1000'} step={key === 'weightGrams' ? '1' : '0.1'} required disabled={busy} value={values[key]} onChange={(e) => { setValues({ ...values, [key]: e.target.value }); setConfirmed(false); setEstimate(null); }} className="min-h-11 w-full rounded border border-[var(--foil-soft)] bg-[var(--paper-card)] px-3 text-sm data" />
+            </div>)}
+          </div>
+          <button type="submit" disabled={busy} className="min-h-11 rounded border border-[var(--foil-soft)] px-3 text-sm disabled:opacity-50">Confirm parcel and estimate</button>
+        </form>
+        <p className="text-sm text-[var(--ink-70)]">{paymentMethod === 'cod' ? 'COD' : 'Prepaid'} · Courier estimate: {estimate === null ? 'unavailable' : `₹${estimate.toFixed(2)} (including provider taxes)`}. Final billing may differ after courier measurement. Customer delivery fees stay unchanged.</p>
+      </>}
+      {message && <p role="status" className="text-sm text-[var(--ink)]">{message}</p>}
+      <button type="button" disabled={busy || (!manual && !confirmed)} onClick={() => void submit(true)} className="min-h-11 rounded bg-[var(--ink)] text-[var(--paper-card)] px-4 text-sm font-semibold disabled:opacity-50">{busy ? 'Please wait…' : manual ? 'Create local delivery' : 'Book shipment'}</button>
+    </section>
   );
 }

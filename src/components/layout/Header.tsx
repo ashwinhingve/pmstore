@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { SITE_SHORT_NAME } from "@/lib/constants";
 
-export function Header() {
+export function Header({ banner }: { banner?: import('@/lib/site-settings').BannerContent }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -47,7 +47,7 @@ export function Header() {
   return (
     <>
       {/* Announcement strip — scrolls away, keeps the sticky header at 72px */}
-      <AnnouncementBar />
+      <AnnouncementBar content={banner} />
 
       <header
         className={cn(
@@ -57,17 +57,17 @@ export function Header() {
             : "border-transparent"
         )}
       >
-        <div className="mx-auto flex h-18 max-w-[1600px] xl:w-4/5 items-center gap-5 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-18 w-full max-w-[1600px] items-center gap-2 sm:gap-5 px-4 sm:px-6 lg:px-8">
         {/* Logo and Brand */}
         <Link
           href="/"
-          className="group flex items-center gap-3 transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
+          className="group flex min-w-0 items-center gap-2 sm:gap-3 transition-opacity duration-[var(--dur-fast)] hover:opacity-80"
           aria-label={`${SITE_SHORT_NAME} - Home`}
         >
           <div className="shrink-0 text-[var(--brand-ink)]">
             <Logo size={44} variant="mark" />
           </div>
-          <span className="inline font-[family-name:var(--font-display)] text-2xl leading-tight tracking-tight text-[var(--brand-ink)] sm:text-xl md:text-xl lg:hidden xl:inline">
+          <span className="inline truncate font-[family-name:var(--font-display)] text-2xl leading-tight tracking-tight text-[var(--brand-ink)] sm:text-xl md:text-xl lg:hidden xl:inline">
             {(() => {
               const [first, ...rest] = SITE_SHORT_NAME.split(" ");
               return (
@@ -86,9 +86,9 @@ export function Header() {
         </div>
 
         {/* Right Side Actions */}
-        <div className="ml-auto flex items-center gap-1.5 md:gap-2.5">
+        <div className="ml-auto flex shrink-0 items-center gap-1.5 md:gap-2.5">
           {/* Search — primary navigation (docs/03-DESIGN-SYSTEM.md) */}
-          <div className="hidden w-56 md:block lg:w-80">
+          <div className="hidden w-32 shrink-0 md:block lg:w-40 xl:w-56">
             <SearchBar />
           </div>
 
@@ -101,7 +101,7 @@ export function Header() {
               className="gap-1.5 rounded-[var(--radius-pill)] bg-[var(--ink)] font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-sm)] ring-1 ring-inset ring-[var(--ink)]/10 transition-[transform,box-shadow,background-color] duration-[var(--dur-fast)] hover:-translate-y-0.5 hover:bg-[var(--ink)]/90 hover:text-[var(--brand-ink)] hover:shadow-[var(--shadow-md)]"
             >
               <Download className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden lg:inline">Get the app</span>
+              <span className="hidden xl:inline">Get the app</span>
             </Button>
           </Link>
 
@@ -109,11 +109,12 @@ export function Header() {
           {mounted && status === 'authenticated' && session?.user?.role === 'admin' && (
             <Link href="/admin/dashboard" className="hidden sm:inline-flex">
               <Button
+                aria-label="Admin dashboard"
                 size="sm"
                 className="gap-1.5 rounded-[var(--radius-pill)] bg-[var(--ink)] font-semibold text-[var(--brand-ink)] shadow-[var(--shadow-sm)] ring-1 ring-inset ring-[var(--ink)]/10 transition-[transform,box-shadow,background-color] duration-[var(--dur-fast)] hover:-translate-y-0.5 hover:bg-[var(--ink)]/90 hover:text-[var(--brand-ink)] hover:shadow-[var(--shadow-md)]"
               >
                 <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
-                Admin
+                <span className="hidden xl:inline">Admin</span>
               </Button>
             </Link>
           )}
@@ -136,15 +137,15 @@ export function Header() {
               }
               header={
                 <div>
-                  <p className="truncate text-sm font-semibold text-[var(--ink)]">
+                  <p className="break-words text-sm font-semibold text-[var(--ink)]">
                     {session.user.name || 'User'}
                   </p>
-                  <p className="truncate text-xs text-[var(--ink-70)]">
+                  <p className="break-all text-sm text-[var(--ink-70)]">
                     {session.user.email}
                   </p>
                   {session.user.role === 'admin' && (
                     <span className="mt-1.5 inline-block rounded-full bg-[var(--ink)] px-2 py-0.5 text-xs font-semibold text-[var(--paper-card)]">
-                      Admin
+                      <span className="hidden xl:inline">Admin</span>
                     </span>
                   )}
                 </div>

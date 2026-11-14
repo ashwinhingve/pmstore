@@ -1,3 +1,4 @@
+import { massInGrams } from '@/lib/shipping/parcel';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { ZodError } from 'zod';
@@ -9,7 +10,7 @@ import Product from '@/models/Product';
 import Address from '@/models/Address';
 import Discount from '@/models/Discount';
 import Prescription, { type IPrescription } from '@/models/Prescription';
-import { calculateShipping } from '@/lib/shipping/calculateShipping';
+import { customerDelivery } from '@/lib/checkout/delivery-quote';
 import { calculateOrderGST } from '@/lib/gst';
 import { checkoutSchema } from '@/lib/validations/checkout';
 import { applyRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimit';
@@ -148,6 +149,7 @@ export async function POST(req: NextRequest) {
       let resolvedSku = product.sku;
       let resolvedName = product.name;
       let resolvedWeight = product.weight;
+      let resolvedWeightUnit = product.weightUnit;
       const resolvedGstRate: number = product.gstRate ?? 5;
 
       if (item.variantId) {
@@ -157,12 +159,13 @@ export async function POST(req: NextRequest) {
           resolvedSku = variant.sku;
           resolvedName = `${product.name} - ${variant.name}`;
           resolvedWeight = variant.weight ?? product.weight;
+          resolvedWeightUnit = variant.weight != null ? (variant.weightUnit ?? product.weightUnit) : product.weightUnit;
         }
       }
 
       const itemSubtotal = resolvedPrice * item.quantity;
       subtotal += itemSubtotal;
-      totalWeight += resolvedWeight * item.quantity;
+      totalWeight += (massInGrams(resolvedWeight, resolvedWeightUnit) ?? 0) * item.quantity;
 
       gstItems.push({ inclusivePrice: resolvedPrice, quantity: item.quantity, gstRate: resolvedGstRate });
 
@@ -180,12 +183,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Calculate shipping cost
-    const shippingCalc = calculateShipping(
+    const delivery = await customerDelivery(
       subtotal,
       totalWeight,
       shippingAddress.postalCode
     );
-    const shippingCost = shippingCalc.tier.cost;
+    const shippingCalc = delivery.calculation;
+    const shippingCost = delivery.shippingCost;
+    if (body.expectedShippingCost !== undefined && Math.abs(body.expectedShippingCost - shippingCost) > 0.005) {
+      return NextResponse.json({ error: 'Delivery fee changed. Review the updated delivery estimate.', code: 'SHIPPING_CHANGED', shippingCost }, { status: 409 });
+    }
 
     // Calculate GST — prices are GST-inclusive; tax is extracted, NOT added on top
     const gstBreakdown = calculateOrderGST(gstItems, shippingAddress.state || '');
@@ -290,6 +297,8 @@ export async function POST(req: NextRequest) {
       items: [],
       subtotal,
       shippingCost,
+      pickupLocation: delivery.pickup,
+      deliveryFeeReason: delivery.reason,
       taxAmount,
       cgst,
       sgst,
@@ -337,6 +346,7 @@ export async function POST(req: NextRequest) {
           orderNumber: order.orderNumber,
           subtotal: order.subtotal,
           shippingCost: order.shippingCost,
+          deliveryFeeReason: order.deliveryFeeReason,
           taxAmount: order.taxAmount,
           discountAmount: order.discountAmount,
           totalAmount: order.totalAmount,

@@ -1,4 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { pickupSchema, partnerBillingSchema } from './delivery-fields';
+import type { PickupLocation } from '@/lib/shipping/delivery-policy';
+import { confirmedParcelSchema, courierEstimateSchema } from './shipping-fields';
+import type { ConfirmedParcel, CourierEstimate } from '@/lib/shipping/parcel';
 
 export interface IShipmentScan {
   status: string;
@@ -12,6 +16,12 @@ export interface IShipment extends Document {
   orderId: mongoose.Types.ObjectId;
   waybill: string;
   courierName: string;
+  pickupLocation?: PickupLocation;
+  partnerBilling?: import('@/lib/validations/partner-billing').PartnerBilling;
+  billingHistory?: import('@/lib/validations/partner-billing').PartnerBilling[];
+  billingVersion?: number;
+  parcel?: ConfirmedParcel;
+  courierEstimate?: CourierEstimate;
   provider: 'delhivery' | 'shiprocket' | 'manual';
   /** Provider's internal ID used for API calls.
    *  Delhivery: same as waybill.
@@ -50,6 +60,12 @@ const ShipmentSchema = new Schema<IShipment>(
       required: true,
       unique: true,
     },
+    pickupLocation: { type: pickupSchema },
+    billingVersion: { type: Number },
+    partnerBilling: { type: partnerBillingSchema },
+    billingHistory: { type: [partnerBillingSchema], default: undefined },
+    parcel: { type: confirmedParcelSchema },
+    courierEstimate: { type: courierEstimateSchema },
     courierName: {
       type: String,
     },

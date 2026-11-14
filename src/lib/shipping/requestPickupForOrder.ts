@@ -51,11 +51,16 @@ export async function requestPickupForOrder(
 
     // ── Delhivery: reuse the day's pickup rather than raising a conflicting one ──
     if (provider === 'delhivery') {
+      const warehouseName = shipment.pickupLocation?.delhiveryWarehouse || process.env.DELHIVERY_RETURN_NAME || '';
+      const warehouseFilter = warehouseName === (process.env.DELHIVERY_RETURN_NAME || '')
+        ? { $or: [{ 'pickupLocation.delhiveryWarehouse': warehouseName }, { pickupLocation: { $exists: false } }] }
+        : { 'pickupLocation.delhiveryWarehouse': warehouseName };
       const targetDate = pickupDate || defaultPickupDate();
       const scheduledDateObj = new Date(targetDate); // UTC midnight of the target day
 
       const existing = await Shipment.findOne({
         provider: 'delhivery',
+        ...warehouseFilter,
         pickupId: { $nin: [null, ''] },
         pickupScheduledDate: scheduledDateObj,
       }).sort({ pickupRequestedAt: -1 });
@@ -78,12 +83,14 @@ export async function requestPickupForOrder(
       // Best-effort estimate of parcels awaiting a Delhivery pickup (incl. this one).
       const packageCount = await Shipment.countDocuments({
         provider: 'delhivery',
+        ...warehouseFilter,
         pickupId: { $in: [null, ''] },
       });
 
       const result = await service.requestPickup({
         providerShipmentId: shipment.providerShipmentId,
         pickupDate: targetDate,
+        warehouseName,
         packageCount: Math.max(1, packageCount),
       });
 

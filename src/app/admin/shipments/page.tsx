@@ -2,6 +2,7 @@ import { requireAdmin } from '@/lib/auth-helpers';
 import { connectDB } from '@/lib/mongodb';
 import Shipment from '@/models/Shipment';
 import Order from '@/models/Order';
+import { isManualRoute } from '@/lib/shipping/delivery-policy';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import ShipmentsTable from '@/components/admin/ShipmentsTable';
 
@@ -93,7 +94,11 @@ export default async function AdminShipmentsPage({
         courier: shipment.courierName || '',
         provider: shipment.provider || 'delhivery',
         trackingUrl: shipment.trackingUrl || null,
-        origin: null,
+        origin: shipment.pickupLocation?.name ?? null,
+        customerShippingCost: order?.shippingCost ?? 0,
+        estimatedCost: shipment.courierEstimate?.total ?? null,
+        billedCost: shipment.partnerBilling?.amount ?? null,
+        billingStatus: shipment.partnerBilling?.status ?? null,
         destination: shipment.currentLocation || null,
         estimatedDelivery: null,
         deliveredAt: shipment.deliveryDate?.toISOString() || null,
@@ -103,14 +108,18 @@ export default async function AdminShipmentsPage({
     })
   );
 
-  // ── Fetch pending COD orders (no shipment created yet) ──────────────────────
+  // ── Fetch paid / confirmed COD orders awaiting admin booking ──────────────────────
   const rawCodOrders = await Order.find({
-    paymentMethod: 'cod',
-    orderStatus: 'confirmed',
-    paymentStatus: 'pending',
+    trackingNumber: { $in: [null, ''] },
+    shippingProvider: { $ne: 'manual' },
+    orderStatus: { $in: ['confirmed', 'processing'] },
+    $or: [
+      { paymentStatus: 'paid' },
+      { paymentMethod: 'cod', orderStatus: 'confirmed', paymentStatus: 'pending' },
+    ],
   })
     .populate('userId', 'name email')
-    .populate('shippingAddressId', 'fullName phoneNumber')
+    .populate('shippingAddressId', 'fullName phoneNumber postalCode')
     .sort({ createdAt: -1 })
     .limit(50)
     .lean() as any[];
@@ -133,7 +142,9 @@ export default async function AdminShipmentsPage({
       customerEmail: (o.userId as any)?.email || 'N/A',
       customerPhone: (o.shippingAddressId as any)?.phoneNumber || '',
       totalAmount: o.totalAmount,
-      paymentMethod: 'cod' as const,
+      paymentMethod: o.paymentMethod,
+      bookingState: o.shipmentBookingState,
+      manual: isManualRoute(o.shippingAddressId?.postalCode, o.pickupLocation),
       createdAt: o.createdAt.toISOString(),
     }));
 

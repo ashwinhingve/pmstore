@@ -11,7 +11,7 @@ import { smsService } from '@/lib/notifications/sms';
 import { whatsappService } from '@/lib/notifications/whatsapp';
 import { notifyOwnerNewOrderWhatsApp } from '@/lib/notifications/owner-whatsapp';
 import { claimOwnerWhatsappAlert } from '@/lib/notifications/owner-notify-guard';
-import { createShipmentForOrder } from '@/lib/shipping/createShipmentForOrder';
+import { createLocalShipmentForOrder } from '@/lib/shipping/createShipmentForOrder';
 import Discount from '@/models/Discount';
 import { applyRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimit';
 import { generatePaymentIdempotencyKey, idempotencyService } from '@/lib/utils/idempotency';
@@ -261,10 +261,10 @@ export async function GET(request: NextRequest) {
         console.error('Payment callback: inventory ledger update failed:', ledgerErr);
       }
 
-      // Create shipment — sendNotifications:true so shipment tracking SMS/email fires.
+      // Courier booking waits for admin parcel confirmation; local delivery can proceed.
       // Order confirmation is a separate message sent below.
       try {
-        const shipmentResult = await createShipmentForOrder(order._id.toString(), undefined, true);
+        const shipmentResult = await createLocalShipmentForOrder(order._id.toString());
         if (shipmentResult.success) {
           console.log('Shipment created for order:', orderNumber, 'waybill:', shipmentResult.waybill);
         } else {
@@ -559,10 +559,10 @@ export async function POST(request: NextRequest) {
             });
           }
 
-          // Create shipment — sendNotifications:true so shipment tracking fires.
+          // Courier booking waits for admin parcel confirmation; local delivery can proceed.
           // Order confirmation is sent separately below.
           try {
-            const shipmentResult = await createShipmentForOrder(order._id.toString(), undefined, true);
+            const shipmentResult = await createLocalShipmentForOrder(order._id.toString());
             if (shipmentResult.success) {
               logger.info('Shipment created via webhook', { orderNumber, waybill: shipmentResult.waybill });
             } else {

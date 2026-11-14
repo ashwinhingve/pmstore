@@ -1,5 +1,6 @@
 import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
+import { createLocalShipmentForOrder } from '@/lib/shipping/createShipmentForOrder';
 import { createLogger, LogMessages } from '@/lib/utils/logger';
 import { emailService } from '@/lib/notifications/email';
 import { whatsappService } from '@/lib/notifications/whatsapp';
@@ -215,32 +216,10 @@ export class ShipmentQueue {
    * Create shipment via API
    */
   private async createShipment(orderId: string): Promise<boolean> {
-    try {
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-
-      const response = await fetch(`${baseUrl}/api/shipping/create`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-internal-secret': process.env.INTERNAL_API_SECRET || '',
-        },
-        body: JSON.stringify({
-          orderId,
-          isRetry: true,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Shipment API error: ${response.status} - ${errorText}`);
-      }
-
-      const result = await response.json();
-      return result.success === true;
-    } catch (error: any) {
-      this.logger.error(`Shipment creation API call failed for ${orderId}`, error);
-      throw error;
-    }
+    // Legacy queue items cannot bypass admin parcel confirmation or rebook after a timeout.
+    // Courier orders remain visible in admin; only local hand-delivery can proceed here.
+    const result = await createLocalShipmentForOrder(orderId);
+    return result.success;
   }
 
   /**

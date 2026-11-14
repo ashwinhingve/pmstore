@@ -31,6 +31,7 @@ export const checkoutSchema = z.object({
     quantity: z.number().min(1, 'Quantity must be at least 1'),
     price: z.number().optional(),
   })).min(1, 'Cart cannot be empty'),
+  expectedShippingCost: z.number().finite().min(0).optional(),
   shippingAddressId: z.string().min(1, 'Shipping address is required'),
   billingAddressId: z.string().optional(),
   discountId: z.string().optional(),

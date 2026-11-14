@@ -77,7 +77,7 @@ class ShiprocketService implements IShippingProvider {
   async checkServiceability(
     pincode: string,
     originPincode?: string,
-    weight = 500,
+    weight?: number,
     cod = false
   ): Promise<{ serviceable: boolean; estimatedDays?: number; error?: string }> {
     if (!this.isConfigured) {
@@ -86,7 +86,10 @@ class ShiprocketService implements IShippingProvider {
 
     try {
       const origin = originPincode || process.env.WAREHOUSE_PINCODE || '';
-      const weightKg = (weight / 1000).toFixed(2);
+      if (!weight || !Number.isFinite(weight) || weight <= 0) {
+        return { serviceable: false, error: 'Measured parcel weight is required' };
+      }
+      const weightKg = String(weight / 1000);
       const params = new URLSearchParams({
         pickup_postcode: origin,
         delivery_postcode: pincode,
@@ -133,7 +136,7 @@ class ShiprocketService implements IShippingProvider {
       const headers = await this.authHeaders();
 
       // Fetch actual pickup location name from Shiprocket if not set or wrong
-      const pickupLocation = await this.getPickupLocationName();
+      const pickupLocation = await this.getPickupLocationName(data.pickupLocation?.shiprocketWarehouse);
 
       const payload = {
         order_id: data.orderNumber,
@@ -179,10 +182,11 @@ class ShiprocketService implements IShippingProvider {
         giftwrap_charges: 0,
         transaction_charges: 0,
         total_discount: 0,
-        sub_total: data.totalValue,
-        length: parseFloat(process.env.SHIPROCKET_DEFAULT_LENGTH || '15'),
-        breadth: parseFloat(process.env.SHIPROCKET_DEFAULT_BREADTH || '12'),
-        height: parseFloat(process.env.SHIPROCKET_DEFAULT_HEIGHT || '10'),
+        // Shiprocket derives COD collection from sub_total plus the zero charges above.
+        sub_total: data.paymentMethod === 'cod' ? (data.codAmount ?? data.totalValue) : data.totalValue,
+        length: data.parcel.lengthCm,
+        breadth: data.parcel.widthCm,
+        height: data.parcel.heightCm,
         weight: data.totalWeight / 1000, // kg
       };
 
@@ -244,8 +248,8 @@ class ShiprocketService implements IShippingProvider {
    * Returns the configured pickup location name, falling back to the first
    * active pickup location in the Shiprocket account.
    */
-  private async getPickupLocationName(): Promise<string> {
-    const configured = process.env.SHIPROCKET_PICKUP_LOCATION;
+  private async getPickupLocationName(requiredName?: string): Promise<string> {
+    const configured = requiredName || process.env.SHIPROCKET_PICKUP_LOCATION;
     try {
       const headers = await this.authHeaders();
       const res = await fetch(`${BASE_URL}/settings/company/pickup`, {
@@ -256,7 +260,10 @@ class ShiprocketService implements IShippingProvider {
       const locations: any[] = data.data?.shipping_address || [];
       console.log('Shiprocket pickup locations:', locations.map((l: any) => l.pickup_location));
 
-      if (locations.length === 0) return configured || 'Primary';
+      if (locations.length === 0) {
+        if (requiredName) throw new Error('Registered pickup not found');
+        return configured || 'Primary';
+      }
 
       // If configured name matches exactly, use it
       if (configured) {
@@ -266,12 +273,14 @@ class ShiprocketService implements IShippingProvider {
         if (match) return match.pickup_location;
       }
 
+      if (requiredName) throw new Error('Registered pickup is missing or inactive');
       // Fall back to first active location
       const active = locations.find((l: any) => l.status === 1) || locations[0];
       const name: string = active.pickup_location;
       console.log(`Shiprocket: using pickup location "${name}" (configured: "${configured}")`);
       return name;
     } catch (err) {
+      if (requiredName) throw new Error('Verify the selected warehouse in Shiprocket before booking.');
       console.error('Shiprocket: failed to fetch pickup locations:', err);
       return configured || 'Primary';
     }

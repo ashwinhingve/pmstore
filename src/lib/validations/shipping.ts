@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { bookingRequestSchema } from '@/lib/shipping/admin-request';
 
 /**
  * Delhivery webhook payload validation schema
@@ -16,10 +17,7 @@ export const delhiveryWebhookSchema = z.object({
 /**
  * Shipment creation request validation
  */
-export const createShipmentSchema = z.object({
-  orderId: z.string().min(1, 'Order ID is required'),
-  isAutomatic: z.boolean().optional(),
-});
+export const createShipmentSchema = bookingRequestSchema;
 
 /**
  * Pickup request validation. Provider is derived from the shipment, never the

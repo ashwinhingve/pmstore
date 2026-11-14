@@ -82,7 +82,7 @@ export const productBaseSchema = z.object({
     .array(productImageSchema)
     .min(1, 'At least one image is required')
     .max(4, 'Maximum 4 images allowed'),
-  weight: z.number().min(0).default(500),
+  weight: z.number().finite().positive().optional(),
   weightUnit: z.enum(['g', 'kg', 'L', 'ml']).default('g'),
   dimensions: z
     .object({

@@ -117,4 +117,21 @@ describe('requestPickupForOrder', () => {
     const saved = await Shipment.findOne({ orderId: d2.orderId });
     expect(saved.pickupId).toBe('777');
   });
+  it('keeps pickup requests separate for different registered warehouses', async () => {
+    const first = shipmentDoc({ provider: 'delhivery', providerShipmentId: 'W-A', waybill: 'W-A', pickupLocation: { id: 'a', delhiveryWarehouse: 'Warehouse A' } });
+    const second = shipmentDoc({ provider: 'delhivery', providerShipmentId: 'W-B', waybill: 'W-B', pickupLocation: { id: 'b', delhiveryWarehouse: 'Warehouse B' } });
+    await Shipment.create(first); await Shipment.create(second);
+    const fetch = vi.fn()
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ pickup_id: 101 }) })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ pickup_id: 202 }) });
+    vi.stubGlobal('fetch', fetch);
+    const a = await requestPickupForOrder(first.orderId.toString(), '2026-09-12');
+    const b = await requestPickupForOrder(second.orderId.toString(), '2026-09-12');
+    expect(a.pickupId).toBe('101'); expect(b.pickupId).toBe('202');
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(JSON.parse(fetch.mock.calls[0][1].body).pickup_location).toBe('Warehouse A');
+    expect(JSON.parse(fetch.mock.calls[1][1].body).pickup_location).toBe('Warehouse B');
+    vi.unstubAllGlobals();
+  });
+
 });

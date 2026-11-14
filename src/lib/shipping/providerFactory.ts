@@ -16,10 +16,8 @@ export function getShippingProvider(provider: string): IShippingProvider {
 }
 
 /**
- * The courier used for auto-created shipments (paid-order callback, retry queue,
- * payment sync) when no provider is passed explicitly. Driven by env so the
- * pharmacy can switch couriers without a deploy. Falls back to 'delhivery' if
- * the env var is unset or invalid, so a missing config never breaks fulfilment.
+ * Default courier when no explicit selection is supplied. Courier booking still
+ * requires admin-confirmed packed measurements; payments never auto-book it.
  */
 export function getDefaultProvider(): ShippingProviderName {
   const p = process.env.DEFAULT_SHIPPING_PROVIDER;

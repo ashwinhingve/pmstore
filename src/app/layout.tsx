@@ -1,3 +1,5 @@
+import SiteSettings, { type ISiteSettings } from '@/models/SiteSettings';
+import { publicAnnouncements } from '@/lib/site-settings';
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Bricolage_Grotesque, Public_Sans, Martian_Mono } from "next/font/google";
@@ -114,12 +116,20 @@ async function getMarketingSettings() {
   }
 }
 
+async function getBannerContent() {
+  try {
+    await connectDB();
+    const settings = await SiteSettings.findOne({ key: 'global' }).lean<ISiteSettings | null>();
+    return publicAnnouncements(settings);
+  } catch { return { enabled: false, announcements: [] }; }
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const marketing = await getMarketingSettings();
+  const [marketing, banner] = await Promise.all([getMarketingSettings(), getBannerContent()]);
 
   return (
     <html
@@ -196,7 +206,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </a>
         <SessionProvider>
           <SiteChrome
-            header={<Header />}
+            header={<Header banner={banner} />}
             footer={<Footer />}
             floating={
               <>

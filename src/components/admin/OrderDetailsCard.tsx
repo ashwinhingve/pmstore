@@ -21,11 +21,11 @@ export default function OrderDetailsCard({ orderData }: OrderDetailsCardProps) {
           </span>
         </div>
 
-        {orderData.shippingCost > 0 && (
+        {(
           <div className="flex items-center justify-between text-sm">
-            <span className="text-[var(--ink-70)]">Shipping</span>
+            <span className="text-[var(--ink-70)]">Customer delivery fee</span>
             <span className="font-medium text-[var(--ink)] data" style={{ fontFamily: 'var(--font-data)' }}>
-              ₹{orderData.shippingCost.toLocaleString('en-IN')}
+              {orderData.shippingCost === 0 ? 'FREE DELIVERY – ₹0' : `₹${orderData.shippingCost.toLocaleString('en-IN')}`}
             </span>
           </div>
         )}

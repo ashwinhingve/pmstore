@@ -1,4 +1,4 @@
-import { isManualDeliveryPincode, FREE_SHIPPING_THRESHOLD } from '@/lib/constants';
+import { isManualDeliveryPincode, FREE_SHIPPING_THRESHOLD, CONTACT } from '@/lib/constants';
 
 export interface ShippingTier {
   name: 'free' | 'standard' | 'express';
@@ -54,11 +54,12 @@ const VALUE_TIERS: ValueTier[] = [
 export function calculateShipping(
   cartTotal: number,
   cartWeight: number,
-  postalCode: string
+  postalCode: string,
+  originPincode?: string,
 ): ShippingCalculation {
   // Local hand-delivery zone (store's own pincode): always free, same/next day,
   // and never handed to a courier — bypass the value/weight/distance model.
-  if (isManualDeliveryPincode(postalCode)) {
+  if (isManualDeliveryPincode(postalCode) && (!originPincode || originPincode === CONTACT.address.postalCode)) {
     return {
       tier: { name: 'free', cost: 0, estimatedDays: 1 },
       breakdown: { baseRate: 0, weightCharge: 0, distanceCharge: 0, total: 0 },
@@ -86,7 +87,7 @@ export function calculateShipping(
   ) || WEIGHT_TIERS[WEIGHT_TIERS.length - 1];
 
   // Calculate distance-based charge
-  const distanceCharge = calculateDistanceCharge(postalCode);
+  const distanceCharge = calculateDistanceCharge(postalCode, originPincode);
 
   const breakdown: ShippingBreakdown = {
     baseRate: valueTier.baseCost,
@@ -119,9 +120,9 @@ export function calculateShipping(
  * @param postalCode - Destination PIN code
  * @returns Distance charge in rupees
  */
-function calculateDistanceCharge(postalCode: string): number {
+function calculateDistanceCharge(postalCode: string, originPincode?: string): number {
   // Get base PIN from environment or use default (Mumbai: 400001)
-  const basePinString = process.env.DELHIVERY_RETURN_PINCODE || '400001';
+  const basePinString = originPincode || process.env.DELHIVERY_RETURN_PINCODE || '400001';
   const basePin = parseInt(basePinString.replace(/\D/g, ''), 10);
   const destPin = parseInt(postalCode.replace(/\D/g, ''), 10);
 

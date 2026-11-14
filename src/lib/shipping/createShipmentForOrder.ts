@@ -6,7 +6,8 @@ import { getShippingProvider, getDefaultProvider } from './providerFactory';
 import type { ShipmentCreationData } from './types';
 import { emailService } from '@/lib/notifications/email';
 import { smsService } from '@/lib/notifications/sms';
-import { isManualDeliveryPincode } from '@/lib/constants';
+import { isManualRoute } from './delivery-policy';
+import { massInGrams, parcelSchema, type ConfirmedParcel, type CourierEstimate } from './parcel';
 
 /**
  * Create a shipment for a paid (or COD-confirmed) order using the specified provider.
@@ -20,9 +21,12 @@ import { isManualDeliveryPincode } from '@/lib/constants';
 export async function createShipmentForOrder(
   orderId: string,
   providerArg?: 'delhivery' | 'shiprocket',
-  sendNotifications = true
+  sendNotifications = true,
+  confirmation?: { parcel: ConfirmedParcel; estimate?: CourierEstimate },
 ): Promise<{ success: boolean; waybill?: string; trackingUrl?: string; error?: string }> {
   const provider = providerArg ?? getDefaultProvider();
+  let claimed = false;
+  let dispatched = false;
   try {
     await connectDB();
 
@@ -34,16 +38,17 @@ export async function createShipmentForOrder(
       return { success: false, error: 'Order not found' };
     }
 
-    // Accept both paid online orders and COD orders (paymentStatus: 'pending', orderStatus: 'confirmed')
-    const isCod = order.paymentMethod === 'cod' && order.orderStatus === 'confirmed';
-    if (order.paymentStatus !== 'paid' && !isCod) {
-      return { success: false, error: 'Order must be paid or COD-confirmed before creating shipment' };
-    }
-
     // Idempotency: return existing shipment if already created
     const existing = await Shipment.findOne({ orderId: order._id });
     if (existing) {
       return { success: true, waybill: existing.waybill, trackingUrl: existing.trackingUrl };
+    }
+
+    // Accept both paid online orders and COD orders (paymentStatus: 'pending', orderStatus: 'confirmed')
+    const isCod = order.paymentMethod === 'cod' && order.paymentStatus === 'pending' && order.orderStatus === 'confirmed';
+    if (['cancelled', 'refunded', 'delivered', 'shipped'].includes(order.orderStatus) ||
+        (order.paymentStatus !== 'paid' && !isCod)) {
+      return { success: false, error: 'Order must be paid or COD-confirmed before creating shipment' };
     }
 
     const shippingAddress = order.shippingAddressId as any;
@@ -54,24 +59,67 @@ export async function createShipmentForOrder(
     // Local hand-delivery zone (e.g. the store's own Bhopal pincode): the store
     // delivers these itself, so never hand them to a courier. Record a 'manual'
     // shipment so the order still tracks a status, and let admin fulfil it.
-    if (isManualDeliveryPincode(shippingAddress.postalCode)) {
+    if (isManualRoute(shippingAddress.postalCode, order.pickupLocation)) {
       return createManualShipment(order, shippingAddress, sendNotifications);
     }
 
-    const shippingService = getShippingProvider(provider);
-    // Estimated delivery days for order update (best-effort, no pre-check gate)
-    const serviceability = { estimatedDays: 3 };
+    if (!confirmation || !parcelSchema.safeParse({
+      weightGrams: confirmation.parcel.weightGrams,
+      lengthCm: confirmation.parcel.lengthCm,
+      widthCm: confirmation.parcel.widthCm,
+      heightCm: confirmation.parcel.heightCm,
+    }).success || !confirmation.parcel.confirmedBy) {
+      return { success: false, error: 'Admin must confirm the measured packed weight and dimensions before courier booking.' };
+    }
+    if (provider === 'delhivery' && (!process.env.DELHIVERY_API_KEY?.trim() ||
+        !/^\d{6}$/.test(order.pickupLocation?.pincode ?? process.env.DELHIVERY_RETURN_PINCODE?.trim() ?? '') ||
+        !(order.pickupLocation?.delhiveryWarehouse ?? process.env.DELHIVERY_RETURN_NAME?.trim()))) {
+      return { success: false, error: 'Configure Delhivery credentials, pickup PIN and registered warehouse before booking.' };
+    }
+    if (provider === 'shiprocket' && order.pickupLocation && !order.pickupLocation.shiprocketWarehouse) {
+      return { success: false, error: 'Map this pickup to its registered Shiprocket warehouse before booking.' };
+    }
+    if (provider === 'shiprocket' && !(process.env.SHIPROCKET_EMAIL && process.env.SHIPROCKET_PASSWORD)) {
+      return { success: false, error: 'Configure Shiprocket credentials before booking.' };
+    }
 
-    // Build items + weight
+    // One claim covers payment callbacks, admin double clicks, workers and retries.
+    // Never expire this claim automatically: a timed-out request may have booked remotely.
+    const claim = await Order.findOneAndUpdate({
+      _id: order._id,
+      shipmentBookingState: { $nin: ['creating', 'uncertain', 'booked'] },
+      orderStatus: { $nin: ['cancelled', 'refunded', 'delivered', 'shipped'] },
+      paymentStatus: order.paymentStatus,
+      'confirmedParcel.confirmedAt': confirmation.parcel.confirmedAt,
+      'confirmedParcel.weightGrams': confirmation.parcel.weightGrams,
+      'confirmedParcel.lengthCm': confirmation.parcel.lengthCm,
+      'confirmedParcel.widthCm': confirmation.parcel.widthCm,
+      'confirmedParcel.heightCm': confirmation.parcel.heightCm,
+      trackingNumber: { $in: [null, ''] },
+    }, {
+      $set: {
+        confirmedParcel: confirmation.parcel,
+        shipmentBookingState: 'creating',
+        shipmentBookingStartedAt: new Date(),
+      },
+      $unset: { courierEstimate: 1 },
+    }, { new: true });
+    if (!claim) {
+      return { success: false, error: 'Booking is in progress or needs reconciliation. Check the courier dashboard before retrying.' };
+    }
+    claimed = true;
+    if (confirmation.estimate) {
+      await Order.updateOne({ _id: order._id }, { $set: { courierEstimate: confirmation.estimate } });
+    }
+    const shippingService = getShippingProvider(provider);
+    const serviceability = { estimatedDays: 3 };
     const orderItems = await OrderItem.find({ orderId: order._id }).populate('productId');
-    const totalWeight = orderItems.reduce((sum, item) => {
-      const product = item.productId as any;
-      return sum + (product?.weight || 500) * item.quantity;
-    }, 0);
+    const totalWeight = confirmation.parcel.weightGrams;
 
     const creationData: ShipmentCreationData = {
       orderId: order._id.toString(),
       orderNumber: order.orderNumber,
+      pickupLocation: order.pickupLocation,
       customerName: shippingAddress.fullName,
       customerPhone: shippingAddress.phoneNumber,
       customerEmail: (order.userId as any)?.email,
@@ -88,19 +136,21 @@ export async function createShipmentForOrder(
         sku: item.productSku || item.productName,
         quantity: item.quantity,
         price: item.priceAtPurchase,
-        weight: (item.productId as any)?.weight || 500,
+        weight: massInGrams((item.productId as any)?.weight, (item.productId as any)?.weightUnit),
       })),
       totalWeight,
+      parcel: confirmation.parcel,
       totalValue: order.subtotal,
       paymentMethod: isCod ? 'cod' : 'prepaid',
       codAmount: isCod ? order.totalAmount : undefined,
     };
 
+    dispatched = true;
     const response = await shippingService.createShipment(creationData);
 
     if (!response.success || !response.result) {
-      console.error(`${provider} shipment creation failed:`, response.error);
-      return { success: false, error: response.error || `${provider} API failed` };
+      await Order.updateOne({ _id: order._id }, { $set: { shipmentBookingState: 'uncertain' } });
+      return { success: false, error: 'The courier did not confirm booking. Check its dashboard before retrying; a shipment may already exist.' };
     }
 
     const { waybill, shipmentId, courierName, trackingUrl, estimatedDelivery } = response.result;
@@ -109,6 +159,9 @@ export async function createShipmentForOrder(
     const shipment = await Shipment.create({
       orderId: order._id,
       waybill,
+      parcel: confirmation.parcel,
+      pickupLocation: order.pickupLocation,
+      courierEstimate: confirmation.estimate,
       courierName,
       provider,
       providerShipmentId: shipmentId,
@@ -125,6 +178,7 @@ export async function createShipmentForOrder(
     });
 
     // Update Order
+    order.shipmentBookingState = 'booked';
     order.trackingNumber = waybill;
     order.shippingProvider = provider;
     order.orderStatus = 'processing';
@@ -175,8 +229,15 @@ export async function createShipmentForOrder(
     console.log(`Shipment created via ${provider} for order ${order.orderNumber} — waybill: ${waybill}`);
     return { success: true, waybill, trackingUrl };
   } catch (error: any) {
-    console.error('Error in createShipmentForOrder:', error);
-    return { success: false, error: error.message };
+    if (claimed) {
+      await Order.updateOne({ _id: orderId }, dispatched
+        ? { $set: { shipmentBookingState: 'uncertain' } }
+        : { $unset: { shipmentBookingState: 1, shipmentBookingStartedAt: 1 } }).catch(() => {});
+    }
+    console.error('Shipment creation failed', { orderId, dispatched });
+    return { success: false, error: dispatched
+      ? 'Booking needs reconciliation. Check the courier dashboard before retrying.'
+      : 'Unable to prepare shipment. Check the parcel and order details.' };
   }
 }
 
@@ -238,4 +299,14 @@ async function createManualShipment(
 
   console.log(`Manual (local) delivery recorded for order ${order.orderNumber}`);
   return { success: true, waybill };
+}
+
+/** Payment confirmation may fulfil local orders; courier bookings always need an admin. */
+export async function createLocalShipmentForOrder(orderId: string): Promise<{ success: boolean; waybill?: string; error?: string }> {
+  await connectDB();
+  const order = await Order.findById(orderId).populate('shippingAddressId');
+  if (!order || !isManualRoute(order.shippingAddressId?.postalCode, order.pickupLocation)) {
+    return { success: true }; // awaiting admin parcel confirmation, not a booking failure
+  }
+  return createShipmentForOrder(orderId);
 }

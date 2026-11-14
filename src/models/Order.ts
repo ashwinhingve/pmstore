@@ -1,4 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { confirmedParcelSchema, courierEstimateSchema } from './shipping-fields';
+import { pickupSchema } from './delivery-fields';
+import type { PickupLocation } from '@/lib/shipping/delivery-policy';
+import type { ConfirmedParcel, CourierEstimate } from '@/lib/shipping/parcel';
 
 export interface IOrder extends Document {
   _id: mongoose.Types.ObjectId;
@@ -7,6 +11,12 @@ export interface IOrder extends Document {
   items: mongoose.Types.ObjectId[];
   subtotal: number;
   shippingCost: number;
+  pickupLocation?: PickupLocation;
+  deliveryFeeReason?: 'normal' | 'local' | 'threshold' | 'location';
+  confirmedParcel?: ConfirmedParcel;
+  courierEstimate?: CourierEstimate;
+  shipmentBookingState?: 'creating' | 'uncertain' | 'booked';
+  shipmentBookingStartedAt?: Date;
   taxAmount: number;    // total GST (informational — already included in subtotal)
   cgst: number;         // CGST for intra-state (MP) orders
   sgst: number;         // SGST for intra-state (MP) orders
@@ -91,6 +101,12 @@ const OrderSchema = new Schema<IOrder>(
       default: 0,
       min: 0,
     },
+    pickupLocation: { type: pickupSchema },
+    deliveryFeeReason: { type: String, enum: ['normal', 'local', 'threshold', 'location'] },
+    confirmedParcel: { type: confirmedParcelSchema },
+    courierEstimate: { type: courierEstimateSchema },
+    shipmentBookingState: { type: String, enum: ['creating', 'uncertain', 'booked'] },
+    shipmentBookingStartedAt: { type: Date },
     taxAmount: {
       type: Number,
       required: true,

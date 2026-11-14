@@ -1,7 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { deliverySettingsSchema } from './delivery-fields';
+import type { DeliveryPolicy } from '@/lib/shipping/delivery-policy';
 
 export interface IAnnouncement {
   text: string;
+  icon?: string;
   emoji: string;
   isActive: boolean;
 }
@@ -44,6 +47,8 @@ export interface IProductSlot {
 export interface ISiteSettings extends Document {
   _id: mongoose.Types.ObjectId;
   key: string;
+  delivery?: DeliveryPolicy;
+  announcementDefaultsMigratedAt?: Date;
   announcementBanner: {
     enabled: boolean;
     announcements: IAnnouncement[];
@@ -70,6 +75,8 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
       unique: true,
       default: 'global',
     },
+    delivery: { type: deliverySettingsSchema },
+    announcementDefaultsMigratedAt: Date,
     announcementBanner: {
       enabled: {
         type: Boolean,
@@ -79,6 +86,7 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
         {
           text: { type: String, required: true },
           emoji: { type: String, default: '' },
+          icon: String,
           isActive: { type: Boolean, default: true },
         },
       ],

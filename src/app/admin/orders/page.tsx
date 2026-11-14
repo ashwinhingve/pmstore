@@ -4,7 +4,7 @@ import Order from '@/models/Order';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import OrdersTable from '@/components/admin/OrdersTable';
 import TestWhatsAppButton from '@/components/admin/TestWhatsAppButton';
-import { isManualDeliveryPincode } from '@/lib/constants';
+import { isManualRoute } from '@/lib/shipping/delivery-policy';
 
 interface SearchParams {
   page?: string;
@@ -109,7 +109,7 @@ export default async function AdminOrdersPage({
     orderStatus: order.orderStatus,
     createdAt: order.createdAt.toISOString(),
     waybill: order.waybill || null,
-    isManualDelivery: isManualDeliveryPincode(order.shippingAddressId?.postalCode),
+    isManualDelivery: isManualRoute(order.shippingAddressId?.postalCode, order.pickupLocation),
   }));
 
   // Get status counts for filters

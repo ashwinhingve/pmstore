@@ -38,6 +38,25 @@ export default function CheckoutPage() {
     discountAmount: number;
     totalAmount: number;
   } | null>(null);
+  const [deliveryQuote, setDeliveryQuote] = useState<{ addressId: string; shippingCost: number; reason: string } | null>(null);
+  const [quoting, setQuoting] = useState(false);
+  const [quoteError, setQuoteError] = useState('');
+  const [quoteAttempt, setQuoteAttempt] = useState(0);
+  useEffect(() => {
+    if (!selectedAddressId || !items.length || currentStep !== 'address') return;
+    const controller = new AbortController();
+    setQuoting(true); setDeliveryQuote(null); setQuoteError('');
+    fetch('/api/checkout/calculate-shipping', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: controller.signal,
+      body: JSON.stringify({ shippingAddressId: selectedAddressId, items: items.map(item => ({ productId: item.product.id, variantId: item.product.variantId || undefined, quantity: item.quantity })) }),
+    }).then(async response => {
+      const data = await response.json();
+      if (!response.ok) throw new Error(typeof data.error === 'string' ? data.error : data.error?.message || 'Unable to calculate delivery.');
+      if (!controller.signal.aborted) setDeliveryQuote({ ...data, addressId: selectedAddressId });
+    }).catch(error => { if (!controller.signal.aborted) setQuoteError(error.message); })
+      .finally(() => { if (!controller.signal.aborted) setQuoting(false); });
+    return () => controller.abort();
+  }, [selectedAddressId, items, currentStep, quoteAttempt]);
   const [creatingOrder, setCreatingOrder] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
 
@@ -83,6 +102,7 @@ export default function CheckoutPage() {
       setOrderError('This order includes prescription medicines. Attach a valid prescription to continue.');
       return;
     }
+    if (!deliveryQuote || deliveryQuote.addressId !== addressId || quoting) { setOrderError('Wait for the delivery estimate before continuing.'); return; }
     setSelectedAddressId(addressId);
     setCreatingOrder(true);
     setOrderError(null);
@@ -114,6 +134,7 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           items: cartItems,
           shippingAddressId: addressId,
+          expectedShippingCost: deliveryQuote.shippingCost,
           discountId: discount?.id || undefined,
           prescriptionId: prescriptionId || undefined,
         }),
@@ -122,7 +143,8 @@ export default function CheckoutPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create order');
+        if (data.code === 'SHIPPING_CHANGED') setDeliveryQuote({ addressId, shippingCost: data.shippingCost, reason: data.shippingCost === 0 ? 'free' : 'normal' });
+        throw new Error(typeof data.error === 'string' ? data.error : data.error?.message || 'Failed to create order');
       }
 
       // Store order details (use backend-calculated values)
@@ -148,15 +170,16 @@ export default function CheckoutPage() {
 
   const cartSubtotal = getTotalPrice();
   const cartDiscount = getDiscountAmount();
-  const estimatedShipping = cartSubtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 30;
+  const estimatedShipping = deliveryQuote?.shippingCost ?? (cartSubtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 30);
   // Prices are GST-inclusive — no separate tax added to total
   const estimatedTotal = Math.max(0, cartSubtotal + estimatedShipping - cartDiscount);
 
   // Use backend values once order is created, otherwise show estimates
-  const subtotal = orderDetails?.subtotal ?? cartSubtotal;
-  const shipping = orderDetails?.shippingCost ?? estimatedShipping;
-  const discountAmt = orderDetails?.discountAmount ?? cartDiscount;
-  const total = orderDetails?.totalAmount ?? estimatedTotal;
+  const activeOrder = currentStep === 'payment' ? orderDetails : null;
+  const subtotal = activeOrder?.subtotal ?? cartSubtotal;
+  const shipping = activeOrder?.shippingCost ?? estimatedShipping;
+  const discountAmt = activeOrder?.discountAmount ?? cartDiscount;
+  const total = activeOrder?.totalAmount ?? estimatedTotal;
 
   return (
     <div className="min-h-screen bg-[var(--paper)] py-12">
@@ -171,6 +194,7 @@ export default function CheckoutPage() {
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2">
+              {(quoteError || quoting) && <p role="status" className="mb-3 text-sm">{quoting ? 'Calculating delivery…' : quoteError}{quoteError && <button type="button" className="ml-2 min-h-11 underline" onClick={() => setQuoteAttempt(attempt => attempt + 1)}>Retry delivery estimate</button>}</p>}
               {/* Progress Steps */}
               <ol className="mb-8 flex items-center justify-center gap-4" aria-label="Checkout steps">
                 <li className="flex items-center" aria-current={currentStep === 'address' ? 'step' : undefined}>
@@ -247,7 +271,7 @@ export default function CheckoutPage() {
                         </p>
                       </div>
                     )}
-                    <AddressStep onNext={handleAddressNext} disabled={creatingOrder} />
+                    <AddressStep onNext={handleAddressNext} onSelectionChange={setSelectedAddressId} disabled={creatingOrder || quoting || (!!selectedAddressId && !deliveryQuote)} />
                     {creatingOrder && (
                       <div className="mt-4 text-center">
                         <div className="inline-block w-6 h-6 border-4 border-[var(--ink)] border-t-transparent rounded-full animate-spin"></div>
@@ -318,8 +342,8 @@ export default function CheckoutPage() {
                   <div className="flex justify-between text-[var(--ink-70)]">
                     <span>Shipping</span>
                     <span className="data font-medium">
-                      {shipping === 0 ? (
-                        <span className="font-sans text-[var(--mint)]">Free</span>
+                      {!activeOrder && !deliveryQuote ? 'Select an address' : shipping === 0 ? (
+                        <span className="font-sans text-[var(--mint)]">FREE DELIVERY – ₹0</span>
                       ) : (
                         `₹${shipping}`
                       )}

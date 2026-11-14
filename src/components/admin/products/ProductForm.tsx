@@ -181,7 +181,7 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
     discountPercentage: initialPricing.discountPercentage,
     stock: initialData?.stock,
     images: initialData?.images || [],
-    weight: initialData?.weight || 500,
+    weight: initialData?.weight ?? undefined,
     weightUnit: initialData?.weightUnit || 'g',
     tags: initialData?.tags || [],
     gstRate: initialData?.gstRate ?? 5,
@@ -1263,8 +1263,9 @@ export default function ProductForm({ mode, initialData }: ProductFormProps) {
                 <Input
                   type="number"
                   min="0"
-                  value={formData.weight}
-                  onChange={(e) => updateField('weight', parseFloat(e.target.value) || 500)}
+                  value={formData.weight ?? ''}
+                  placeholder="Unknown — enter measured product weight"
+                  onChange={(e) => updateField('weight', e.target.value === '' ? undefined : Number(e.target.value))}
                 />
               </div>
 

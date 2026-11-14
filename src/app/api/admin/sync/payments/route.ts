@@ -4,7 +4,7 @@ import { connectDB } from '@/lib/mongodb';
 import Order from '@/models/Order';
 import Transaction from '@/models/Transaction';
 import { cashfreeService } from '@/lib/payment/cashfree';
-import { createShipmentForOrder } from '@/lib/shipping/createShipmentForOrder';
+import { createLocalShipmentForOrder } from '@/lib/shipping/createShipmentForOrder';
 
 /**
  * POST /api/admin/sync/payments
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
 
         // Try to create shipment if not already done
         try {
-          await createShipmentForOrder(order._id.toString());
+          await createLocalShipmentForOrder(order._id.toString());
         } catch {
           // Non-fatal: shipment creation might already exist
         }

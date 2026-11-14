@@ -63,7 +63,7 @@ export interface IProduct extends Document {
   discountPercentage?: number;
   stock: number;
   images: IProductImage[];
-  weight: number; // Weight in grams
+  weight?: number; // Optional product weight; courier booking uses measured packed weight
   weightUnit: string;
   dimensions?: {
     length?: number;
@@ -191,7 +191,6 @@ const ProductSchema = new Schema<IProduct>(
     },
     weight: {
       type: Number,
-      default: 500, // Default 500 grams
       min: 0,
     },
     weightUnit: {

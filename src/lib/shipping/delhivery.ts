@@ -135,6 +135,13 @@ class DelhiveryService implements IShippingProvider {
     }
 
     try {
+      const pickup = data.pickupLocation;
+      const origin = pickup ? {
+        ...this.config, returnName: pickup.delhiveryWarehouse, returnPincode: pickup.pincode,
+        returnAddress: pickup.address, returnCity: pickup.city, returnState: pickup.state,
+        returnCountry: pickup.country, returnPhone: pickup.phone,
+      } : this.config;
+      if (!origin.returnName) return { success: false, error: 'A registered Delhivery warehouse is required.' };
       const shipmentPayload = {
         shipments: [
           {
@@ -147,24 +154,25 @@ class DelhiveryService implements IShippingProvider {
             phone: data.customerPhone,
             order: data.orderNumber,
             payment_mode: data.paymentMethod === 'cod' ? 'COD' : 'Prepaid',
-            return_pin: this.config.returnPincode,
-            return_city: this.config.returnCity,
-            return_phone: this.config.returnPhone,
-            return_add: this.config.returnAddress,
-            return_state: this.config.returnState,
-            return_country: this.config.returnCountry,
+            return_pin: origin.returnPincode,
+            return_city: origin.returnCity,
+            return_phone: origin.returnPhone,
+            return_add: origin.returnAddress,
+            return_state: origin.returnState,
+            return_country: origin.returnCountry,
             products_desc: data.items.map((i) => `${i.name} x ${i.quantity}`).join(', '),
             hsn_code: '',
-            cod_amount: data.paymentMethod === 'cod' ? String(data.codAmount || data.totalValue) : '0',
+            cod_amount: data.paymentMethod === 'cod' ? String(data.codAmount ?? data.totalValue) : '0',
             order_date: new Date().toISOString().split('T')[0],
             total_amount: data.totalValue.toString(),
-            seller_add: this.config.returnAddress,
-            seller_name: this.config.returnName,
+            seller_add: origin.returnAddress,
+            seller_name: origin.returnName,
             seller_inv: data.orderNumber,
             quantity: data.items.reduce((s, i) => s + i.quantity, 0).toString(),
             waybill: '',
-            shipment_width: '10',
-            shipment_height: '10',
+            shipment_length: String(data.parcel.lengthCm),
+            shipment_width: String(data.parcel.widthCm),
+            shipment_height: String(data.parcel.heightCm),
             weight: data.totalWeight.toString(),
             seller_gst_tin: '',
             shipping_mode: 'Surface',
@@ -172,12 +180,12 @@ class DelhiveryService implements IShippingProvider {
           },
         ],
         pickup_location: {
-          name: this.config.returnName,
-          add: this.config.returnAddress,
-          city: this.config.returnCity,
-          pin_code: this.config.returnPincode,
-          country: this.config.returnCountry,
-          phone: this.config.returnPhone,
+          name: origin.returnName,
+          add: origin.returnAddress,
+          city: origin.returnCity,
+          pin_code: origin.returnPincode,
+          country: origin.returnCountry,
+          phone: origin.returnPhone,
         },
       };
 
@@ -196,7 +204,7 @@ class DelhiveryService implements IShippingProvider {
 
       const raw = await response.json();
 
-      if (raw.success && raw.packages && raw.packages.length > 0) {
+      if (response.ok && raw.success && typeof raw.packages?.[0]?.waybill === 'string' && raw.packages[0].waybill.trim()) {
         const waybill: string = raw.packages[0].waybill;
         return {
           success: true,
@@ -239,7 +247,7 @@ class DelhiveryService implements IShippingProvider {
       const body = {
         // Must be the warehouse name registered with Delhivery (One dashboard /
         // Warehouse Creation API), matched exactly.
-        pickup_location: this.config.returnName,
+        pickup_location: data.warehouseName || this.config.returnName,
         pickup_date: pickupDate,
         pickup_time: pickupTime,
         expected_package_count: data.packageCount && data.packageCount > 0 ? data.packageCount : 1,

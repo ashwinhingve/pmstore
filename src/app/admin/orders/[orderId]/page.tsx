@@ -10,11 +10,12 @@ import OrderItemsList from '@/components/admin/OrderItemsList';
 import OrderTimelineAdmin from '@/components/admin/OrderTimelineAdmin';
 import CreateShipmentButton from '@/components/admin/CreateShipmentButton';
 import RequestPickupButton from '@/components/admin/RequestPickupButton';
+import PartnerBillingForm from '@/components/admin/PartnerBillingForm';
 import ShipmentScanTimeline from '@/components/admin/ShipmentScanTimeline';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { isManualDeliveryPincode } from '@/lib/constants';
+import { isManualRoute } from '@/lib/shipping/delivery-policy';
 
 interface PageProps {
   params: Promise<{
@@ -122,7 +123,7 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
       remarks: s.remarks || '',
     })) || [],
     showCreateShipment:
-      !shipment &&
+      !shipment && !['cancelled', 'refunded', 'delivered', 'shipped'].includes(order.orderStatus) &&
       (order.paymentStatus === 'paid' ||
         (order.paymentMethod === 'cod' && order.orderStatus === 'confirmed')),
 
@@ -231,7 +232,7 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
                   {orderData.shippingAddress.city}, {orderData.shippingAddress.state}{' '}
                   <span style={{ fontFamily: 'var(--font-data)' }}>{orderData.shippingAddress.postalCode}</span>
                 </p>
-                {isManualDeliveryPincode(orderData.shippingAddress.postalCode) && (
+                {isManualRoute(orderData.shippingAddress.postalCode, order.pickupLocation) && (
                   <Badge variant="strong" className="mt-1">Deliver manually</Badge>
                 )}
               </div>
@@ -412,7 +413,28 @@ export default async function AdminOrderDetailsPage({ params }: PageProps) {
               orderId={orderData.id}
               orderNumber={orderData.orderNumber}
               paymentMethod={orderData.paymentMethod}
+              manual={isManualRoute(order.shippingAddressId?.postalCode, order.pickupLocation)}
+              bookingState={order.shipmentBookingState}
+              initialParcel={order.confirmedParcel ? {
+                weightGrams: order.confirmedParcel.weightGrams,
+                lengthCm: order.confirmedParcel.lengthCm,
+                widthCm: order.confirmedParcel.widthCm,
+                heightCm: order.confirmedParcel.heightCm,
+              } : undefined}
             />
+          )}
+
+          {shipment && shipment.provider !== 'manual' && (
+            <section className="rounded-lg border border-[var(--foil-soft)] bg-[var(--paper-card)] p-4 space-y-2 text-sm">
+              <h3 className="font-semibold">Courier parcel</h3>
+              {shipment.parcel ? <p className="data">Packed weight: {shipment.parcel.weightGrams} g · {shipment.parcel.lengthCm} × {shipment.parcel.widthCm} × {shipment.parcel.heightCm} cm</p> : <p>Parcel measurements were not recorded for this existing shipment. Check its declared weight in the courier dashboard.</p>}
+              <p>Estimated courier cost: {shipment.courierEstimate ? `₹${shipment.courierEstimate.total.toFixed(2)} (including provider taxes)` : 'unavailable'}.</p>
+              <PartnerBillingForm shipmentId={String(shipment._id)} waybill={shipment.waybill} initialVersion={shipment.billingVersion ?? 0} initialData={shipment.partnerBilling ? { ...shipment.partnerBilling, chargeDate: shipment.partnerBilling.chargeDate.toISOString() } : undefined} />
+              <p>To correct an existing booking, update its weight and dimensions in the courier dashboard using AWB {shipment.waybill}. Keep the same AWB; do not create another shipment. Any wallet adjustment must be confirmed by the courier.</p>
+            </section>
+          )}
+          {['creating', 'uncertain'].includes(order.shipmentBookingState) && !shipment && (
+            <p role="status" className="text-sm">Booking is in progress or needs reconciliation. Check the courier dashboard for this order before retrying.</p>
           )}
 
           {/* Request pickup — shown once a courier shipment exists (not for local delivery) */}

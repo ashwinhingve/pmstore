@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
 import { connectDB } from './mongodb';
 import User from '@/models/User';
+import { currentRole } from './auth-role';
 import Otp from '@/models/Otp';
 import { emailService } from '@/lib/notifications/email';
 
@@ -366,6 +367,7 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
+      token.role = token.id ? await currentRole(String(token.id)) : 'client';
       return token;
     },
     async session({ session, token }) {

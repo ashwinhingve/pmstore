@@ -1,6 +1,8 @@
 import { requireAdmin } from '@/lib/auth-helpers';
 import { connectDB } from '@/lib/mongodb';
-import SiteSettings from '@/models/SiteSettings';
+import { ensureSiteSettings } from '@/lib/site-settings';
+import { readDeliveryPolicy } from '@/lib/shipping/delivery-policy';
+import DeliverySettingsManager from '@/components/admin/DeliverySettingsManager';
 import Product from '@/models/Product';
 import AnnouncementManager from '@/components/admin/AnnouncementManager';
 import HeroSliderManager from '@/components/admin/HeroSliderManager';
@@ -12,22 +14,7 @@ export default async function AdminSettingsPage() {
   await requireAdmin();
   await connectDB();
 
-  let settings = await SiteSettings.findOne({ key: 'global' }).lean() as any;
-
-  if (!settings) {
-    settings = await SiteSettings.create({
-      key: 'global',
-      announcementBanner: {
-        enabled: true,
-        announcements: [
-          { text: 'Free Shipping Above ₹499', emoji: '🚚', isActive: true },
-          { text: 'Boost Your Daily Nutrition with PMSTORE', emoji: '✨', isActive: true },
-        ],
-      },
-      heroSlider: { slides: [] },
-    });
-    settings = settings.toObject();
-  }
+  const settings = (await ensureSiteSettings()).toObject();
 
   const bannerData = {
     enabled: settings.announcementBanner?.enabled ?? true,
@@ -35,6 +22,7 @@ export default async function AdminSettingsPage() {
       id: a._id?.toString() || Math.random().toString(36).slice(2),
       text: a.text,
       emoji: a.emoji || '',
+      icon: a.icon,
       isActive: a.isActive ?? true,
     })),
   };
@@ -111,6 +99,8 @@ export default async function AdminSettingsPage() {
         title="Site Settings"
         description="Manage homepage content, announcement banner, and sliders."
       />
+
+      <DeliverySettingsManager initialData={readDeliveryPolicy(settings.delivery)} />
 
       {/* Hero Slider */}
       <HeroSliderManager initialSlides={heroSlides} />
